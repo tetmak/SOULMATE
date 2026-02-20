@@ -73,7 +73,7 @@ Vercel Dashboard → Settings → Environment Variables → şunları ekle:
 1. RevenueCat Dashboard → Project Settings → Integrations → Webhooks
 2. "+ New" tıkla
 3. Ayarlar:
-   - **URL:** `https://SENIN_DOMAIN.vercel.app/api/revenuecat-webhook`
+   - **URL:** `https://soulmate-kohl.vercel.app/api/revenuecat-webhook`
    - **Authorization Header:** `Bearer REVENUECAT_WEBHOOK_AUTH_KEY_DEGERIN`
 4. Kaydet
 
