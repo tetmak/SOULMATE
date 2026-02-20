@@ -121,10 +121,14 @@
         try {
             var session = await window.auth.getSession();
             if (!session || !session.user) return false;
-            var res = await window.supabaseClient.from('subscriptions').select('*').eq('user_id', session.user.id).eq('status', 'active').single();
+            var res = await window.supabaseClient.from('subscriptions').select('*').eq('user_id', session.user.id).in('status', ['active', 'cancelled']).single();
             if (res.data) {
-                localStorage.setItem('kader_premium', JSON.stringify({ active: true, plan: res.data.plan || 'monthly', expires_at: res.data.expires_at, source: 'supabase', cached_at: new Date().toISOString() }));
-                return true;
+                // İptal edilmiş ama süresi dolmamış abonelik hâlâ aktif sayılır
+                var isActive = res.data.status === 'active' || (res.data.expires_at && new Date(res.data.expires_at) > new Date());
+                if (isActive) {
+                    localStorage.setItem('kader_premium', JSON.stringify({ active: true, plan: res.data.plan || 'monthly', expires_at: res.data.expires_at, source: 'supabase', cached_at: new Date().toISOString() }));
+                    return true;
+                }
             }
         } catch(e) {}
         return false;
@@ -292,7 +296,32 @@
         isReady: function() { return rcReady; },
         init: async function() { try { var s = await window.auth.getSession(); if(s&&s.user){await initRC(s.user.id);} } catch(e){} return rcReady; },
         getPackageByPlan: async function(plan) { if(!rcReady||!rcInstance) return null; try { var off = await rcInstance.getOfferings(); if(!off.current) return null; var pkgs = off.current.availablePackages||[]; return pkgs.find(function(p){return p.identifier.toLowerCase().indexOf(plan)!==-1;})||pkgs[0]||null; } catch(e){return null;} },
-        purchasePackage: async function(pkg, container) { if(!rcReady||!rcInstance||!pkg) return {success:false}; try { var result = await rcInstance.purchase({rcPackage:pkg}); customerInfo = result.customerInfo; return {success:isPremium()}; } catch(e){return {success:false,error:e.message};} },
+        purchasePackage: async function(pkg, container) {
+            if(!rcReady||!rcInstance||!pkg) return {success:false};
+            try {
+                var result = await rcInstance.purchase({rcPackage:pkg});
+                customerInfo = result.customerInfo;
+                var success = isPremium();
+                // Başarılı ödeme — Supabase'e de kaydet
+                if (success) {
+                    try {
+                        var session = await window.auth.getSession();
+                        if (session && session.user) {
+                            var plan = (pkg.identifier || '').toLowerCase().indexOf('year') !== -1 ? 'yearly' : 'monthly';
+                            var days = plan === 'yearly' ? 365 : 30;
+                            var expires = new Date(); expires.setDate(expires.getDate() + days);
+                            await window.supabaseClient.from('subscriptions').upsert({
+                                user_id: session.user.id, plan: plan, status: 'active',
+                                starts_at: new Date().toISOString(), expires_at: expires.toISOString(),
+                                amount: plan === 'yearly' ? 59999 : 7999, currency: 'TRY',
+                                payment_provider: 'revenuecat', updated_at: new Date().toISOString()
+                            }, { onConflict: 'user_id' });
+                        }
+                    } catch(e) { console.warn('[Premium] Supabase sync error:', e); }
+                }
+                return {success: success};
+            } catch(e){return {success:false,error:e.message};}
+        },
         PRICE: PREMIUM_PRICE, FREE_LIMITS: FREE_LIMITS,
         simulate: simulatePremium, clear: clearPremium
     };
