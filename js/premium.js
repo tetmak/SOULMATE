@@ -24,7 +24,7 @@
     // ═══════════════════════════════════════════════════════════
     //    YAPILANDIRMA — RevenueCat Dashboard'dan al
     // ═══════════════════════════════════════════════════════════
-    var RC_API_KEY = 'sk_WvjBmSPIwaOUODxTUkiCIxkcRcyyI';
+    var RC_API_KEY = 'sk_VUfQqHnfjQeLnFygOCGCcQnYyTnIv';
     var RC_PURCHASE_LINK = '';
     var RC_ENTITLEMENT = 'premium';
 
