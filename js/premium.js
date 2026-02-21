@@ -82,7 +82,7 @@
     // ─── PADDLE EVENT HANDLER ──────────────────────────────────
     function handlePaddleEvent(event) {
         if (!event || !event.name) return;
-        console.log('[Premium] Paddle event:', event.name, event.data || '', event.type || '');
+        console.log('[Premium] Paddle event:', event.name, JSON.stringify(event, null, 2));
 
         if (event.name === 'checkout.completed') {
             var data = event.data;
@@ -220,6 +220,7 @@
         }
 
         // Kullanıcı bilgilerini al
+        console.log('[Premium] Checkout açılıyor, priceId:', priceId, 'plan:', plan);
         var checkoutConfig = {
             items: [{ priceId: priceId, quantity: 1 }]
         };
