@@ -1,0 +1,25 @@
+{
+  "name": "kader-soulmate",
+  "version": "1.0.0",
+  "description": "Kader - Mistik Numeroloji ve Ruh Eşi Uygulaması",
+  "main": "index.html",
+  "scripts": {
+    "build": "bash scripts/build.sh",
+    "cap:build": "npm run build && npx cap sync",
+    "cap:sync": "npx cap sync",
+    "cap:open:ios": "npx cap open ios",
+    "cap:open:android": "npx cap open android"
+  },
+  "author": "Kader App",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@capacitor/android": "^8.1.0",
+    "@capacitor/cli": "^8.1.0",
+    "@capacitor/core": "^8.1.0",
+    "@capacitor/ios": "^8.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
+}
