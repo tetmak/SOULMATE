@@ -67,8 +67,13 @@
             await loadPaddleSDK();
             if (!window.Paddle) return;
 
-            if (PADDLE_ENV === 'sandbox' && window.Paddle.Environment && window.Paddle.Environment.set) {
-                window.Paddle.Environment.set('sandbox');
+            if (PADDLE_ENV === 'sandbox') {
+                try {
+                    window.Paddle.Environment.set('sandbox');
+                    console.log('[Premium] Sandbox modu ayarlandı');
+                } catch(envErr) {
+                    console.warn('[Premium] Paddle.Environment.set hatası:', envErr);
+                }
             }
             window.Paddle.Initialize({
                 token: PADDLE_CLIENT_TOKEN,
