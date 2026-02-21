@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Cosmic Energy Calendar</title>
+    <script src="js/api-base.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -481,7 +482,7 @@
             prompt += 'Format:\n[GUIDANCE]\n...\n[INSIGHT]\n...\n\n';
             prompt += 'Be poetic but practical. Use Turkish. No headings, no bullets, just flowing text.';
             
-            fetch('/api/openai', {
+            fetch((window.__KADER_API_BASE||'') + '/api/openai', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

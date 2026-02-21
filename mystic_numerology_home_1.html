@@ -9,6 +9,7 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>Mystic Numerology Home</title>
+    <script src="js/api-base.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet" />
@@ -457,7 +458,7 @@ body{min-height:max(884px,100dvh)}
             '. Doğum tarihi: ' + ud.birthDate +
             '. Bugünün enerjisini bu kişiye özel anlat. Başlık yok, madde işareti yok.';
 
-        fetch('/api/openai', {
+        fetch((window.__KADER_API_BASE||'') + '/api/openai', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

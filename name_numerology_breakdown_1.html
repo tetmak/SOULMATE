@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Name Numerology Breakdown</title>
+    <script src="js/api-base.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;700&amp;display=swap"
@@ -923,7 +924,7 @@
                             loaded = false; // tekrar denenebilsin
                         }, 30000);
 
-                        fetch('/api/openai', {
+                        fetch((window.__KADER_API_BASE||'') + '/api/openai', {
                             method: 'POST',
                             signal: controller.signal,
                             headers: { 'Content-Type': 'application/json' },
@@ -1133,7 +1134,7 @@ SAĞLIK BAŞLIĞI İSTENİRSE sağlık ve psikoloji odaklı analiz yap.` });
             }
 
             try {
-                var r = await fetch('/api/openai', {
+                var r = await fetch((window.__KADER_API_BASE||'') + '/api/openai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ model: 'gpt-4o-mini', messages: messagesWithExamples, temperature: 0.75, max_tokens: 600 })
