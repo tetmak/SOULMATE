@@ -337,7 +337,63 @@
         var mE = modal.querySelector('#pw-m'), yE = modal.querySelector('#pw-y');
         mE.addEventListener('click', function() { sel='monthly'; mE.style.borderColor='rgba(139,92,246,0.5)'; mE.style.background='rgba(139,92,246,0.08)'; yE.style.borderColor='rgba(255,255,255,0.08)'; yE.style.background='rgba(255,255,255,0.03)'; });
         yE.addEventListener('click', function() { sel='yearly'; yE.style.borderColor='rgba(139,92,246,0.5)'; yE.style.background='rgba(139,92,246,0.08)'; mE.style.borderColor='rgba(255,255,255,0.08)'; mE.style.background='rgba(255,255,255,0.03)'; });
-        modal.querySelector('#pw-btn').addEventListener('click', function() { startPurchase(sel); });
+
+        var pwBtn = modal.querySelector('#pw-btn');
+        var purchasing = false;
+        pwBtn.addEventListener('click', async function() {
+            if (purchasing) return;
+            purchasing = true;
+            var originalText = pwBtn.innerHTML;
+            pwBtn.innerHTML = '<span style="display:inline-block;width:18px;height:18px;border:2px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:pw-spin 0.6s linear infinite"></span><span style="margin-left:8px">İşleniyor...</span>';
+            pwBtn.style.opacity = '0.7';
+            pwBtn.style.pointerEvents = 'none';
+
+            // Spinner animasyonu ekle
+            if (!document.getElementById('pw-spin-style')) {
+                var spinStyle = document.createElement('style');
+                spinStyle.id = 'pw-spin-style';
+                spinStyle.textContent = '@keyframes pw-spin{to{transform:rotate(360deg)}}';
+                document.head.appendChild(spinStyle);
+            }
+
+            try {
+                // Native platform → RevenueCat
+                if (window.revenuecat && window.revenuecat.isNative()) {
+                    if (!window.revenuecat.isReady()) await window.revenuecat.init();
+                    if (!window.revenuecat.isReady()) {
+                        showPaywallError(modal, 'Satın alma servisi başlatılamadı. İnternet bağlantınızı kontrol edin.');
+                        purchasing = false;
+                        pwBtn.innerHTML = originalText;
+                        pwBtn.style.opacity = '1';
+                        pwBtn.style.pointerEvents = 'auto';
+                        return;
+                    }
+                    var result = await window.revenuecat.purchase(sel);
+                    if (result.success) {
+                        pwBtn.innerHTML = '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1">check_circle</span><span style="margin-left:8px">Başarılı!</span>';
+                        pwBtn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
+                        pwBtn.style.opacity = '1';
+                        setTimeout(function() { window.location.reload(); }, 800);
+                        return;
+                    } else if (result.error === 'cancelled') {
+                        // Kullanıcı iptal etti — sessizce buton eski haline dönsün
+                    } else {
+                        showPaywallError(modal, 'Satın alma başarısız oldu. Lütfen tekrar deneyin.');
+                    }
+                } else {
+                    // Web → Paddle (startPurchase zaten handle ediyor)
+                    startPurchase(sel);
+                }
+            } catch(e) {
+                console.error('[Premium] Purchase error:', e);
+                showPaywallError(modal, 'Bir hata oluştu. Lütfen tekrar deneyin.');
+            }
+
+            purchasing = false;
+            pwBtn.innerHTML = originalText;
+            pwBtn.style.opacity = '1';
+            pwBtn.style.pointerEvents = 'auto';
+        });
 
         function close() { modal.style.transform='translateY(100%)'; setTimeout(function(){overlay.remove();paywallVisible=false;},400); }
         modal.querySelector('#pw-close').addEventListener('click', close);
@@ -355,6 +411,18 @@
                 }
             });
         }
+    }
+
+    function showPaywallError(modal, msg) {
+        var existing = modal.querySelector('.pw-error');
+        if (existing) existing.remove();
+        var errDiv = document.createElement('div');
+        errDiv.className = 'pw-error';
+        errDiv.style.cssText = 'margin:0 0 12px;padding:10px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);border-radius:12px;display:flex;align-items:center;gap:8px';
+        errDiv.innerHTML = '<span class="material-symbols-outlined" style="color:#ef4444;font-size:16px">error</span><span style="color:rgba(255,255,255,0.6);font-size:12px;font-family:Space Grotesk,sans-serif">' + msg + '</span>';
+        var btn = modal.querySelector('#pw-btn');
+        if (btn) btn.parentNode.insertBefore(errDiv, btn);
+        setTimeout(function() { if (errDiv.parentNode) errDiv.remove(); }, 5000);
     }
 
     function perkRow(icon, title) {

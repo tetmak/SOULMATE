@@ -25,6 +25,7 @@
     var rcReady = false;
     var rcOfferings = null;
     var Purchases = null;
+    var listenerRegistered = false;
 
     // ─── PLATFORM TESPİTİ ─────────────────────────────────────
     function isNativePlatform() {
@@ -89,12 +90,51 @@
                 console.warn('[RevenueCat] Offerings yükleme hatası:', e);
             }
 
+            // Gerçek zamanlı abonelik değişikliği listener'ı
+            registerListener();
+
             rcReady = true;
             return true;
 
         } catch(e) {
             console.error('[RevenueCat] Init hatası:', e);
             return false;
+        }
+    }
+
+    // ─── REAL-TIME LISTENER ─────────────────────────────────
+    function registerListener() {
+        if (listenerRegistered || !Purchases) return;
+        try {
+            Purchases.addCustomerInfoUpdateListener(function(info) {
+                console.log('[RevenueCat] CustomerInfo güncellendi');
+                if (info && info.customerInfo) {
+                    var active = info.customerInfo.entitlements && info.customerInfo.entitlements.active;
+                    if (active && active[RC_ENTITLEMENT_ID]) {
+                        var ent = active[RC_ENTITLEMENT_ID];
+                        console.log('[RevenueCat] Premium durumu değişti → aktif');
+                        localStorage.setItem('kader_premium', JSON.stringify({
+                            active: true,
+                            plan: ent.productIdentifier && ent.productIdentifier.indexOf('yearly') !== -1 ? 'yearly' : 'monthly',
+                            expires_at: ent.expirationDate || null,
+                            source: 'revenuecat',
+                            store: ent.store || getNativePlatform(),
+                            cached_at: new Date().toISOString()
+                        }));
+                        syncPremiumToSupabase(ent);
+                        // UI'ı bilgilendir
+                        window.dispatchEvent(new CustomEvent('kader:premium-changed', { detail: { active: true } }));
+                    } else {
+                        console.log('[RevenueCat] Premium durumu değişti → pasif');
+                        localStorage.removeItem('kader_premium');
+                        window.dispatchEvent(new CustomEvent('kader:premium-changed', { detail: { active: false } }));
+                    }
+                }
+            });
+            listenerRegistered = true;
+            console.log('[RevenueCat] Listener kayıt edildi');
+        } catch(e) {
+            console.warn('[RevenueCat] Listener kayıt hatası:', e);
         }
     }
 

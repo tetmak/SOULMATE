@@ -18,6 +18,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/revenuecat.js"></script>
+    <script src="js/premium.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -217,6 +219,73 @@
                     </div>
                 </div>
             </div>
+            <!-- Subscription & Billing Section -->
+            <div class="mt-6" id="sec-subscription">
+                <h3
+                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display">
+                    Abonelik & Faturalandırma</h3>
+                <!-- Plan Status Card -->
+                <div id="sub-card" class="mx-4 rounded-xl overflow-hidden" style="background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(236,72,153,0.04));border:1px solid rgba(139,92,246,0.12)">
+                    <div class="p-4 flex items-center gap-4">
+                        <div id="sub-icon" class="size-12 rounded-full flex items-center justify-center shrink-0" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">
+                            <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings:'FILL' 1">workspace_premium</span>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p id="sub-title" class="text-slate-900 dark:text-white text-base font-bold">Yükleniyor...</p>
+                            <p id="sub-detail" class="text-slate-500 dark:text-[#b9b29d] text-xs mt-0.5">Abonelik bilgileri kontrol ediliyor</p>
+                        </div>
+                        <div id="sub-badge" class="shrink-0 px-3 py-1 rounded-full text-xs font-bold" style="display:none"></div>
+                    </div>
+                    <!-- Expiry info (premium only) -->
+                    <div id="sub-expiry" class="px-4 pb-3" style="display:none">
+                        <div class="flex items-center gap-2 text-xs" style="color:rgba(139,92,246,0.6)">
+                            <span class="material-symbols-outlined" style="font-size:14px">schedule</span>
+                            <span id="sub-expiry-text"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Action Buttons -->
+                <div id="sub-actions" class="px-4 mt-3 space-y-0">
+                    <!-- Upgrade button (free users) -->
+                    <div id="sub-upgrade"
+                        class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-14 justify-between cursor-pointer rounded-t-lg border-b border-slate-100 dark:border-border-dark"
+                        style="display:none"
+                        onclick="if(window.premium)window.premium.showPaywall('Tüm özelliklere sınırsız erişim için Premium\'a geç!')">
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center justify-center rounded-lg shrink-0 size-10" style="background:rgba(139,92,246,0.1)">
+                                <span class="material-symbols-outlined" style="color:#8b5cf6">upgrade</span>
+                            </div>
+                            <p class="text-slate-900 dark:text-white text-base font-medium leading-normal">Premium'a Yükselt</p>
+                        </div>
+                        <span class="material-symbols-outlined text-slate-400 dark:text-white">chevron_right</span>
+                    </div>
+                    <!-- Manage subscription (premium users) -->
+                    <div id="sub-manage"
+                        class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-14 justify-between cursor-pointer rounded-t-lg border-b border-slate-100 dark:border-border-dark"
+                        style="display:none">
+                        <div class="flex items-center gap-4">
+                            <div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
+                                <span class="material-symbols-outlined">manage_accounts</span>
+                            </div>
+                            <p class="text-slate-900 dark:text-white text-base font-normal leading-normal">Aboneliği Yönet</p>
+                        </div>
+                        <span class="material-symbols-outlined text-slate-400 dark:text-white">chevron_right</span>
+                    </div>
+                    <!-- Restore purchases (native only) -->
+                    <div id="sub-restore"
+                        class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-14 justify-between cursor-pointer rounded-b-lg"
+                        style="display:none">
+                        <div class="flex items-center gap-4">
+                            <div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
+                                <span class="material-symbols-outlined">restore</span>
+                            </div>
+                            <p id="sub-restore-text" class="text-slate-900 dark:text-white text-base font-normal leading-normal">Satın Alımları Geri Yükle</p>
+                        </div>
+                        <span class="material-symbols-outlined text-slate-400 dark:text-white">chevron_right</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Security & Privacy Section -->
             <div class="mt-6">
                 <h3
@@ -367,6 +436,125 @@
             });
 
         }, 100);
+
+        // ─── Subscription Management Logic ─────────────────────
+        setTimeout(async function() {
+            var subTitle = document.getElementById('sub-title');
+            var subDetail = document.getElementById('sub-detail');
+            var subBadge = document.getElementById('sub-badge');
+            var subExpiry = document.getElementById('sub-expiry');
+            var subExpiryText = document.getElementById('sub-expiry-text');
+            var subUpgrade = document.getElementById('sub-upgrade');
+            var subManage = document.getElementById('sub-manage');
+            var subRestore = document.getElementById('sub-restore');
+            var subIcon = document.getElementById('sub-icon');
+            var subCard = document.getElementById('sub-card');
+
+            var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+
+            // Premium durumunu kontrol et
+            var isPremiumUser = false;
+            var premiumData = null;
+            try {
+                var cache = JSON.parse(localStorage.getItem('kader_premium') || 'null');
+                if (cache && cache.active) {
+                    if (!cache.expires_at || new Date(cache.expires_at) > new Date()) {
+                        isPremiumUser = true;
+                        premiumData = cache;
+                    }
+                }
+            } catch(e) {}
+
+            // Async full check
+            if (!isPremiumUser && window.premium) {
+                isPremiumUser = await window.premium.checkStatus();
+                if (isPremiumUser) {
+                    try { premiumData = JSON.parse(localStorage.getItem('kader_premium') || 'null'); } catch(e) {}
+                }
+            }
+
+            if (isPremiumUser && premiumData) {
+                // ─── Premium User UI ───
+                var planLabel = premiumData.plan === 'yearly' ? 'Yıllık Plan' : 'Aylık Plan';
+                var sourceLabel = premiumData.source === 'paddle' ? 'Web' :
+                                  premiumData.source === 'revenuecat' ? (premiumData.store === 'ios' ? 'App Store' : 'Google Play') :
+                                  premiumData.source === 'supabase' ? 'Sunucu' : 'Aktif';
+
+                subTitle.textContent = 'Kader Premium';
+                subDetail.textContent = planLabel + ' · ' + sourceLabel;
+
+                subBadge.textContent = 'AKTİF';
+                subBadge.style.display = 'block';
+                subBadge.style.background = 'rgba(16,185,129,0.15)';
+                subBadge.style.color = '#10b981';
+
+                // Expiry date
+                if (premiumData.expires_at) {
+                    var expDate = new Date(premiumData.expires_at);
+                    var now = new Date();
+                    var daysLeft = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
+                    subExpiryText.textContent = 'Yenileme: ' + expDate.toLocaleDateString('tr-TR') + ' (' + daysLeft + ' gün)';
+                    subExpiry.style.display = 'block';
+                }
+
+                // Manage button
+                subManage.style.display = 'flex';
+                subManage.addEventListener('click', function() {
+                    if (isNative) {
+                        var platform = window.Capacitor.getPlatform();
+                        if (platform === 'ios') {
+                            window.open('https://apps.apple.com/account/subscriptions', '_system');
+                        } else {
+                            window.open('https://play.google.com/store/account/subscriptions', '_system');
+                        }
+                    } else {
+                        // Web: Paddle customer portal
+                        alert('Abonelik yönetimi için e-posta adresinize gönderilen Paddle bağlantısını kullanın.');
+                    }
+                });
+
+            } else {
+                // ─── Free User UI ───
+                subIcon.style.background = 'rgba(139,92,246,0.15)';
+                subIcon.innerHTML = '<span class="material-symbols-outlined" style="color:#a78bfa;font-size:22px">lock</span>';
+                subCard.style.background = 'rgba(57,54,40,0.3)';
+                subCard.style.border = '1px solid rgba(255,255,255,0.05)';
+
+                subTitle.textContent = 'Ücretsiz Plan';
+                subDetail.textContent = 'Temel özellikler · Sınırlı kullanım';
+
+                subBadge.textContent = 'FREE';
+                subBadge.style.display = 'block';
+                subBadge.style.background = 'rgba(255,255,255,0.05)';
+                subBadge.style.color = 'rgba(255,255,255,0.4)';
+
+                subUpgrade.style.display = 'flex';
+            }
+
+            // Native: Restore purchases butonu
+            if (isNative) {
+                subRestore.style.display = 'flex';
+                subRestore.addEventListener('click', async function() {
+                    var restoreText = document.getElementById('sub-restore-text');
+                    restoreText.textContent = 'Geri yükleniyor...';
+                    if (window.premium && window.premium.restorePurchases) {
+                        var ok = await window.premium.restorePurchases();
+                        if (ok) {
+                            restoreText.textContent = 'Başarılı! Yenileniyor...';
+                        } else {
+                            restoreText.textContent = 'Aktif abonelik bulunamadı';
+                            setTimeout(function() { restoreText.textContent = 'Satın Alımları Geri Yükle'; }, 2500);
+                        }
+                    }
+                });
+            }
+
+            // Premium değişikliği dinle
+            window.addEventListener('kader:premium-changed', function() {
+                window.location.reload();
+            });
+
+        }, 300);
     </script>
 
 
