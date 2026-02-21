@@ -306,6 +306,39 @@
                 <p class="text-slate-900 dark:text-white text-base font-bold">Intellect</p>
             </div>
         </div>
+        <!-- ═══ CONTEXT-AWARE INSIGHT ═══ -->
+        <section id="context-insight-section" class="px-4 pb-4" style="display:none;">
+            <div class="rounded-xl border border-primary/20 bg-card-dark overflow-hidden">
+                <div class="p-4 border-b border-white/5">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="material-symbols-outlined text-primary text-lg">neurology</span>
+                        <h3 class="text-white font-bold text-sm tracking-wide">Bağlamsal Analiz</h3>
+                        <span class="px-1.5 py-0.5 rounded bg-primary/15 text-primary text-[9px] font-black uppercase tracking-wider">AI</span>
+                    </div>
+                    <p class="text-white/40 text-xs">Sayıların + zaman bağlamının birleşik yorumu</p>
+                </div>
+                <!-- Period Tags -->
+                <div id="ctx-period-tags" class="flex flex-wrap gap-2 px-4 pt-3 pb-1" style="display:none;"></div>
+                <!-- Intensity Bar -->
+                <div id="ctx-intensity-bar" class="px-4 py-2" style="display:none;">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-white/30 text-[10px] font-bold uppercase tracking-widest">Yoğunluk</span>
+                        <span id="ctx-intensity-val" class="text-primary text-xs font-bold"></span>
+                    </div>
+                    <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <div id="ctx-intensity-fill" class="h-full rounded-full transition-all" style="width:0%;background:linear-gradient(90deg,#f2cc0d,#ef4444);"></div>
+                    </div>
+                </div>
+                <!-- Modüller -->
+                <div id="ctx-modules" class="p-4 space-y-4">
+                    <div class="flex items-center gap-2 py-6 justify-center" style="color:rgba(242,204,13,0.4);font-size:13px;">
+                        <span class="material-symbols-outlined" style="animation:spin 2s linear infinite;font-size:16px;">autorenew</span>
+                        <span>Bağlamsal analiz hazırlanıyor...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <div class="px-4 py-6">
             <button id="view-detailed-reading-btn"
                 onclick="(function(){ var p = new URLSearchParams(window.location.search); var k = p.get('kisi'); var r = 'past_reading_archive_detail.html' + (k ? '?kisi=' + encodeURIComponent(k) : ''); window.location.href = 'premium_crystal_store.html?return=' + encodeURIComponent(r); })();"
@@ -357,6 +390,7 @@
     </div>
 
     <script src="js/numerology-engine.js"></script>
+    <script src="js/numerology-context-engine.js"></script>
     <script src="js/numerology-ai.js"></script>
     <script>
         // ─── Numeroloji hesaplamaları (PYTHAGOREAN SİSTEM) ────────────
@@ -1167,6 +1201,145 @@ SAĞLIK BAŞLIĞI İSTENİRSE sağlık ve psikoloji odaklı analiz yap.` });
     })();
     </script>
     <!-- accordion-ai.js kaldırıldı — numerology-engine.js tarafından yönetiliyor -->
+
+    <!-- Context-Aware Insight Integration -->
+    <script>
+    (function() {
+        if (!window.NumerologyContext) return;
+
+        window.addEventListener('load', async function() {
+            // Kullanıcı verisini topla
+            var params = new URLSearchParams(window.location.search);
+            var kisiName = params.get('kisi');
+            var data = null;
+
+            if (kisiName && window.profile) {
+                try {
+                    var conn = await window.profile.getConnectionDetail(kisiName);
+                    if (conn) data = { name: conn.fullName, birthDate: conn.birthDate };
+                } catch(e) {}
+            }
+            if (!data) {
+                try { data = JSON.parse(localStorage.getItem('kader_user_data')); } catch(e) {}
+            }
+            if (!data || !data.name || !data.birthDate) return;
+
+            var name = data.name.trim();
+            var birthDate = data.birthDate;
+
+            // Mevcut hesaplamaları kullan (DEĞİŞTİRME)
+            var lp = NumerologyEngine.calcLifePath(birthDate);
+            var expr = NumerologyEngine.calcNameNumber(name, 'pythagorean');
+            var soul = NumerologyEngine.calcSoulUrge(name, 'pythagorean');
+            var pers = NumerologyEngine.calcPersonality(name, 'pythagorean');
+
+            // Karmik borç algıla
+            var KARMIC_DEBTS_CTX = [13,14,16,19];
+            var rawLP = birthDate.replace(/\D/g,'').split('').reduce(function(a,x){return a+parseInt(x);},0);
+            var karmicDebt = null;
+            KARMIC_DEBTS_CTX.forEach(function(k) { if (rawLP === k) karmicDebt = k; });
+            if (!karmicDebt && birthDate) {
+                var bp = birthDate.split('-');
+                var bDay = parseInt(bp[2]||0);
+                var bMonth = parseInt(bp[1]||0);
+                if (KARMIC_DEBTS_CTX.includes(bDay)) karmicDebt = bDay;
+                else if (KARMIC_DEBTS_CTX.includes(bMonth)) karmicDebt = bMonth;
+            }
+
+            // Context Build (Step 1)
+            var weightedCtx = NumerologyContext.buildContext({
+                life_path: lp,
+                personality_number: pers,
+                expression_number: expr,
+                soul_urge: soul,
+                karmic_debt: karmicDebt,
+                birthDate: birthDate
+            });
+
+            // Section'ı göster
+            var section = document.getElementById('context-insight-section');
+            if (!section) return;
+            section.style.display = 'block';
+
+            // Period tags
+            if (weightedCtx.period) {
+                var tagsEl = document.getElementById('ctx-period-tags');
+                if (tagsEl) {
+                    tagsEl.style.display = 'flex';
+                    var tags = [
+                        { label: 'Kişisel Yıl', val: weightedCtx.period.personal_year, color: '#f2cc0d' },
+                        { label: 'Kişisel Ay', val: weightedCtx.period.personal_month, color: '#a78bfa' },
+                        { label: 'Kişisel Gün', val: weightedCtx.period.personal_day, color: '#60a5fa' }
+                    ];
+                    tagsEl.innerHTML = tags.map(function(t) {
+                        return '<div style="display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.04);border:1px solid ' + t.color + '30;border-radius:8px;padding:4px 10px;">' +
+                            '<span style="color:' + t.color + ';font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">' + t.label + '</span>' +
+                            '<span style="color:white;font-size:14px;font-weight:800;">' + t.val + '</span></div>';
+                    }).join('');
+                }
+            }
+
+            // Intensity bar
+            var intBar = document.getElementById('ctx-intensity-bar');
+            if (intBar) {
+                intBar.style.display = 'block';
+                var pct = Math.round((weightedCtx.intensity / 2.5) * 100);
+                document.getElementById('ctx-intensity-val').textContent = weightedCtx.intensity + ' / 2.5';
+                document.getElementById('ctx-intensity-fill').style.width = pct + '%';
+            }
+
+            // Modüler yorumları çek (Step 2 & 3)
+            try {
+                var result = await NumerologyContext.analyzeWithCache({
+                    life_path: lp,
+                    personality_number: pers,
+                    expression_number: expr,
+                    soul_urge: soul,
+                    karmic_debt: karmicDebt,
+                    birthDate: birthDate
+                }, name);
+
+                var modulesEl = document.getElementById('ctx-modules');
+                if (!modulesEl) return;
+
+                var modules = [];
+                if (result.interpretation.core_personality) {
+                    modules.push({ icon: 'person', title: 'Temel Kişilik', text: result.interpretation.core_personality, color: '#f2cc0d' });
+                }
+                if (result.interpretation.current_period) {
+                    modules.push({ icon: 'calendar_today', title: 'Güncel Dönem', text: result.interpretation.current_period, color: '#a78bfa' });
+                }
+                if (result.interpretation.karmic_layer) {
+                    modules.push({ icon: 'cycle', title: 'Karmik Baskı', text: result.interpretation.karmic_layer, color: '#ef4444' });
+                }
+                if (result.interpretation.guidance) {
+                    modules.push({ icon: 'lightbulb', title: 'Bilinçli Kullanım', text: result.interpretation.guidance, color: '#22c55e' });
+                }
+
+                if (modules.length === 0) {
+                    modulesEl.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px;text-align:center;padding:16px;">Analiz hazırlanamadı.</p>';
+                    return;
+                }
+
+                modulesEl.innerHTML = modules.map(function(m, idx) {
+                    return '<div style="border-left:3px solid ' + m.color + ';padding:12px 16px;background:rgba(255,255,255,0.02);border-radius:0 8px 8px 0;animation:acc-in 0.4s ease ' + (idx * 0.15) + 's both;">' +
+                        '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">' +
+                            '<span class="material-symbols-outlined" style="font-size:16px;color:' + m.color + ';">' + m.icon + '</span>' +
+                            '<span style="color:' + m.color + ';font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;">' + m.title + '</span>' +
+                        '</div>' +
+                        '<p style="color:rgba(255,255,255,0.75);font-size:13px;line-height:1.7;">' + m.text + '</p>' +
+                    '</div>';
+                }).join('');
+
+            } catch(e) {
+                console.error('[ContextInsight] Error:', e);
+                var modulesEl2 = document.getElementById('ctx-modules');
+                if (modulesEl2) modulesEl2.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px;text-align:center;padding:16px;">Bağlamsal analiz yüklenemedi.</p>';
+            }
+        });
+    })();
+    </script>
+
 <script src="js/bottom-nav.js"></script>
 </body>
 

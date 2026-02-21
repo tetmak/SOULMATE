@@ -195,8 +195,41 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
       personalityNumber: calcPersonality(context.name, system)
     };
 
-    const cardPromptFn = CARD_PROMPTS[type] || CARD_PROMPTS.full;
-    const userPrompt = cardPromptFn(numCtx);
+    let cardPromptFn = CARD_PROMPTS[type] || CARD_PROMPTS.full;
+    let userPrompt = cardPromptFn(numCtx);
+
+    // Context Engine varsa — full analiz promptuna bağlam bilgisi ekle
+    if (type === 'full' && window.NumerologyContext && context.birthDate) {
+      try {
+        const weightedCtx = window.NumerologyContext.buildContext({
+          life_path: numCtx.lifePathNumber,
+          personality_number: numCtx.personalityNumber,
+          expression_number: numCtx.expressionNumber,
+          soul_urge: numCtx.soulUrgeNumber,
+          karmic_debt: null, // karmic ayrı kart olarak işleniyor
+          birthDate: context.birthDate
+        });
+
+        let contextAddition = '\n\nBAĞLAM BİLGİSİ (bunu analize entegre et):\n';
+        contextAddition += '- Baskın temalar: ' + weightedCtx.dominant_themes.join(', ') + '\n';
+        contextAddition += '- Gerilim alanları: ' + weightedCtx.tension_areas.join(', ') + '\n';
+        contextAddition += '- Yoğunluk: ' + weightedCtx.intensity + '/2.5\n';
+        if (weightedCtx.period) {
+          contextAddition += '- Kişisel Yıl: ' + weightedCtx.period.personal_year + ' (Yıl temaları: ' + weightedCtx.period.year_themes.join(', ') + ')\n';
+          contextAddition += '- Kişisel Ay: ' + weightedCtx.period.personal_month + ', Kişisel Gün: ' + weightedCtx.period.personal_day + '\n';
+          contextAddition += 'ÖNEMLİ: Bu kişi şu an Kişisel Yıl ' + weightedCtx.period.personal_year + ' döneminde. ';
+          contextAddition += 'Analizi bu döneme göre uyarla — hangi temalar şu an aktif, hangileri arka planda.\n';
+        }
+        if (weightedCtx.is_master_path) {
+          contextAddition += '- ÜSTAT SAYI AKTİF — yoğunluğu ve çift katmanlı doğayı vurgula.\n';
+        }
+
+        userPrompt += contextAddition;
+      } catch(e) {
+        // Context engine hata verirse orijinal promptu kullan
+        console.warn('[NumerologyEngine] Context enrichment skipped:', e);
+      }
+    }
 
     try {
       const response = await fetch(API_BASE + '/api/openai', {
@@ -459,6 +492,7 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
     calcNameNumber,
     calcSoulUrge,
     calcLifePath,
+    calcPersonality,
     getLetterValues,
     renderBreakdown,
     initBreakdownPage
