@@ -6,6 +6,14 @@
 (function () {
   'use strict';
 
+  // Native app (Capacitor) ise Vercel production URL'sini kullan
+  var _isNative = window.location.protocol === 'capacitor:' ||
+                  window.location.protocol === 'ionic:' ||
+                  window.location.hostname === 'localhost' ||
+                  window.location.protocol === 'file:' ||
+                  (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
+
   var CHALDEAN = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 8, G: 3, H: 5, I: 1, J: 1, K: 2, L: 3, M: 4, N: 5, O: 7, P: 8, Q: 1, R: 2, S: 3, T: 4, U: 6, V: 6, W: 6, X: 5, Y: 1, Z: 7 };
   var VOWELS = 'AEIOU';
 
@@ -102,7 +110,7 @@
     ].join(' ');
 
     try {
-      var res = await fetch('/api/openai', {
+      var res = await fetch(API_BASE + '/api/openai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

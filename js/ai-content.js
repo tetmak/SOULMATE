@@ -9,6 +9,14 @@
   var PAGE = window.location.pathname.split('/').pop() || '';
   var CACHE_PREFIX = 'kader_ai_';
 
+  // Native app (Capacitor) ise Vercel production URL'sini kullan
+  var isNative = window.location.protocol === 'capacitor:' ||
+                 window.location.protocol === 'ionic:' ||
+                 window.location.hostname === 'localhost' ||
+                 window.location.protocol === 'file:' ||
+                 (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  var API_BASE = isNative ? 'https://soulmate-kohl.vercel.app' : '';
+
   // ─── Skeleton loading stili ────────────────────────────────────────
   var skeletonStyle = document.createElement('style');
   skeletonStyle.textContent = `
@@ -48,7 +56,7 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
     var cached = sessionStorage.getItem(CACHE_PREFIX + btoa(prompt).slice(0,40));
     if (cached) return cached;
 
-    var r = await fetch('/api/openai', {
+    var r = await fetch(API_BASE + '/api/openai', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

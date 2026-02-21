@@ -8,6 +8,14 @@
 
   // ─── PİSAGOR TABLOSU ─────────────────────────────────────────
   // 1:A,J,S,Ş | 2:B,K,T | 3:C,Ç,L,U,Ü | 4:D,M,V | 5:E,N,W | 6:F,O,Ö,X | 7:G,Ğ,P,Y | 8:H,Q,Z | 9:I,İ,R
+  // Native app (Capacitor) ise Vercel production URL'sini kullan
+  var _isNative = window.location.protocol === 'capacitor:' ||
+                  window.location.protocol === 'ionic:' ||
+                  window.location.hostname === 'localhost' ||
+                  window.location.protocol === 'file:' ||
+                  (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
+
   var TABLE = {
     A:1, B:2, C:3, D:4, E:5, F:6, G:7, H:8, I:9,
     J:1, K:2, L:3, M:4, N:5, O:6, P:7, Q:8, R:9,
@@ -222,7 +230,7 @@ YAZI KURALLARI:
     var maxTokens = (type === 'full_compat') ? 1000 : 350;
 
     try {
-      var res = await fetch('/api/openai', {
+      var res = await fetch(API_BASE + '/api/openai', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

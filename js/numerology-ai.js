@@ -5,6 +5,14 @@
 (function() {
   'use strict';
 
+  // Native app (Capacitor) ise Vercel production URL'sini kullan
+  var _isNative = window.location.protocol === 'capacitor:' ||
+                  window.location.protocol === 'ionic:' ||
+                  window.location.hostname === 'localhost' ||
+                  window.location.protocol === 'file:' ||
+                  (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
+
   // ─── Sayfa context'ini otomatik algıla ───────────────────────────
   function getPageContext() {
     var path = window.location.pathname.split('/').pop() || '';
@@ -416,7 +424,7 @@ Kişiliğin:
     var oaiMessages = [{ role: 'system', content: systemPrompt }];
     apiMessages.forEach(function(m) { oaiMessages.push(m); });
 
-    var response = await fetch('/api/openai', {
+    var response = await fetch(API_BASE + '/api/openai', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

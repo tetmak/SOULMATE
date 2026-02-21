@@ -1,6 +1,14 @@
 const NumerologyEngine = (function () {
   'use strict';
 
+  // Native app (Capacitor) ise Vercel production URL'sini kullan
+  var _isNative = window.location.protocol === 'capacitor:' ||
+                  window.location.protocol === 'ionic:' ||
+                  window.location.hostname === 'localhost' ||
+                  window.location.protocol === 'file:' ||
+                  (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+  var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
+
   // ─── HARF TABLOLARI ───────────────────────────────────────────
   const CHALDEAN = {
     A: 1, B: 2, C: 3, D: 4, E: 5, F: 8, G: 3, H: 5, I: 1, J: 1, K: 2, L: 3, M: 4,
@@ -191,7 +199,7 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
     const userPrompt = cardPromptFn(numCtx);
 
     try {
-      const response = await fetch('/api/openai', {
+      const response = await fetch(API_BASE + '/api/openai', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
