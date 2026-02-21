@@ -63,10 +63,10 @@
   // Neden açıklama şablonları — sayısal referanslı
   var REASON_TEMPLATES = {
     day_positive: function(day, action) {
-      return 'Kişisel Gün ' + day + ', ' + ACTION_LABELS[action] + ' için destekleyici bir enerji taşıyor.';
+      return 'Kişisel Gün ' + day + ', ' + ACTION_LABELS[action] + ' için destekleyici bir sayısal etki taşıyor.';
     },
     day_negative: function(day, action) {
-      return 'Kişisel Gün ' + day + ', ' + ACTION_LABELS[action] + ' için zorlu bir frekans oluşturuyor.';
+      return 'Kişisel Gün ' + day + ', ' + ACTION_LABELS[action] + ' için zorlu bir sayısal kombinasyon oluşturuyor.';
     },
     day_neutral: function(day, action) {
       return 'Kişisel Gün ' + day + ', ' + ACTION_LABELS[action] + ' konusunda belirgin bir yönlendirme yapmıyor.';
@@ -92,17 +92,17 @@
   var WARNING_TEMPLATES = {
     7: function(action) {
       if (action === 'start' || action === 'signature')
-        return 'Gün 7 içe dönük analiz enerjisi taşır. Dışa dönük aksiyonlar için uygun değil.';
+        return 'Gün 7 içe dönük analiz eğilimi taşır. Dışa dönük aksiyonlar için uygun değil.';
       return null;
     },
     9: function(action) {
       if (action === 'start')
-        return 'Gün 9 sonlandırma enerjisi taşır. Yeni başlangıçlar yerine mevcut süreçleri kapatmak için daha uygun.';
+        return 'Gün 9 sonlandırma eğilimi taşır. Yeni başlangıçlar yerine mevcut süreçleri kapatmak için daha uygun.';
       return null;
     },
     5: function(action) {
       if (action === 'signature')
-        return 'Gün 5 değişkenlik enerjisi taşır. Bağlayıcı kararlar için istikrarsız bir zemin.';
+        return 'Gün 5 değişkenlik eğilimi taşır. Bağlayıcı kararlar için istikrarsız bir zemin.';
       return null;
     },
     year_9_start: function() {

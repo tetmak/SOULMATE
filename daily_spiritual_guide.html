@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>Daily Spiritual Guide</title>
+  <title>Daily Guide</title>
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -87,9 +87,9 @@
     <div class="flex-1 flex flex-col items-center justify-center px-6 py-2 pb-8 w-full">
       <!-- Headline -->
       <div class="w-full text-center mb-6">
-        <h2 class="text-slate-900 dark:text-white tracking-tight text-[28px] font-bold leading-tight">Your Affirmation
+        <h2 class="text-slate-900 dark:text-white tracking-tight text-[28px] font-bold leading-tight">Daily Analysis
         </h2>
-        <p class="text-slate-500 dark:text-purple-300 mt-1 text-sm">Swipe for daily guidance</p>
+        <p class="text-slate-500 dark:text-purple-300 mt-1 text-sm">Numerical guidance for today</p>
       </div>
       
       <!-- Daily Affirmation Card -->
@@ -157,7 +157,7 @@
       <!-- Handle + Header -->
       <div style="width:40px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin:0 auto 16px"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-        <h3 style="font-size:17px;font-weight:800;color:white">Share Affirmation</h3>
+        <h3 style="font-size:17px;font-weight:800;color:white">Share Analysis</h3>
         <button onclick="closeShare()"
           style="width:32px;height:32px;background:rgba(255,255,255,0.08);border:none;border-radius:50%;color:rgba(255,255,255,0.5);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center">✕</button>
       </div>
@@ -182,7 +182,7 @@
               style="padding:5px 14px;border-radius:999px;background:rgba(0,0,0,0.07);border:1px solid rgba(0,0,0,0.1)">
               <span
                 style="font-size:9px;text-transform:uppercase;letter-spacing:0.2em;font-weight:800;color:#2d2050">Daily
-                Insight</span>
+                Analysis</span>
             </div>
             <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
               <div
@@ -196,8 +196,7 @@
         </div>
       </div>
 
-      <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:13px;margin-bottom:24px">Pozitif enerjini
-        dünyayla paylaş ✨</p>
+      <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:13px;margin-bottom:24px">Günlük analizini paylaş</p>
 
       <!-- Share Buttons -->
       <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:24px">
@@ -260,62 +259,62 @@
     var DAILY_AFFIRMATIONS = [
       {
         vibration: 1,
-        title: '"I am the creator of my reality."',
-        guidance: 'Today marks a powerful new beginning. Your thoughts become things — focus on what you want to manifest. Take bold action toward your dreams.',
+        title: 'Vibration 1 — Initiation & Action',
+        guidance: 'Numerical dominance favors starting actions and direct decisions. Momentum is supported. Delay reduces efficiency.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAlbHUdFS86eFASIV8ZsUHtjeQasp3243hgfT-ih3mtVE20EmRUgUWtu9LtPgGT1OiFXVN2H7gipbAkz9qhk9LV1NmHQa9aYXOJIM4PyO6TCjA0_Xqte6av9NAg6FkHmBm4P-5t4Edrg-xRevfi-PSUJcmkddKYWcM1PUC_73R8ltKlOIRnP8PVoM2ZfVzp28nWelNgP0TYKZrcXK1v-2g0AuDZmJiz8rUgnMqdp8M0jvSaGvMaPEcGIiG7vZeqAVDkTctmvIZNxTA'
       },
       {
         vibration: 2,
-        title: '"I find peace in balance and harmony."',
-        guidance: 'Cooperation is your superpower today. Listen more, speak less. Trust that relationships will flow with ease when you release control.',
+        title: 'Vibration 2 — Evaluation & Coordination',
+        guidance: 'Numerical influence supports balance, negotiation, and dual-sided evaluation. Independent force is less effective.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDfVMMu0WAdPvSICBqYYV0Jbkr1VZ4QoKfSZD2ghTnAAOJ6pIKDCHCdoGhuSViP1vTd9TInb_K85TIdZbXKfsChj1m72j9V9I8kK9SRwTKjIUrBRLEkddmGEJpg5z6e2fk1dcuA7uSVRWiRJuiUwZEbKOZ78ST1LEiYLRr8a6HVS-7AJefxSbl_yG875ijCCa_pyt2W8k-7Tbq6aNVQN-Q9bgZscDM3qJDbGgyzzUzyw4Nh4MAdTCjoT7MC-vPzM8g3Ygh6PuSXzmI'
       },
       {
         vibration: 3,
-        title: '"I express my truth fearlessly."',
-        guidance: 'Your creativity is a gift to the world. Share your ideas, write that post, start that project. Joy multiplies when you let your light shine.',
+        title: 'Vibration 3 — Expression & Output',
+        guidance: 'Expression and idea transmission are favored. Structure and discipline are secondary today.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAlbHUdFS86eFASIV8ZsUHtjeQasp3243hgfT-ih3mtVE20EmRUgUWtu9LtPgGT1OiFXVN2H7gipbAkz9qhk9LV1NmHQa9aYXOJIM4PyO6TCjA0_Xqte6av9NAg6FkHmBm4P-5t4Edrg-xRevfi-PSUJcmkddKYWcM1PUC_73R8ltKlOIRnP8PVoM2ZfVzp28nWelNgP0TYKZrcXK1v-2g0AuDZmJiz8rUgnMqdp8M0jvSaGvMaPEcGIiG7vZeqAVDkTctmvIZNxTA'
       },
       {
         vibration: 4,
-        title: '"I build foundations that last."',
-        guidance: 'Discipline meets destiny today. Focus on the work that matters. Small, consistent steps create extraordinary results over time.',
+        title: 'Vibration 4 — Structure & Execution',
+        guidance: 'Systematic work and disciplined execution are supported. Flexibility is reduced.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDfVMMu0WAdPvSICBqYYV0Jbkr1VZ4QoKfSZD2ghTnAAOJ6pIKDCHCdoGhuSViP1vTd9TInb_K85TIdZbXKfsChj1m72j9V9I8kK9SRwTKjIUrBRLEkddmGEJpg5z6e2fk1dcuA7uSVRWiRJuiUwZEbKOZ78ST1LEiYLRr8a6HVS-7AJefxSbl_yG875ijCCa_pyt2W8k-7Tbq6aNVQN-Q9bgZscDM3qJDbGgyzzUzyw4Nh4MAdTCjoT7MC-vPzM8g3Ygh6PuSXzmI'
       },
       {
         vibration: 5,
-        title: '"I embrace change with open arms."',
-        guidance: 'Freedom flows through you today. Break routines, try something new, say yes to adventure. The universe rewards those who dare to evolve.',
+        title: 'Vibration 5 — Change & Movement',
+        guidance: 'Adaptability and fast response are favored. Fixed plans may break.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAlbHUdFS86eFASIV8ZsUHtjeQasp3243hgfT-ih3mtVE20EmRUgUWtu9LtPgGT1OiFXVN2H7gipbAkz9qhk9LV1NmHQa9aYXOJIM4PyO6TCjA0_Xqte6av9NAg6FkHmBm4P-5t4Edrg-xRevfi-PSUJcmkddKYWcM1PUC_73R8ltKlOIRnP8PVoM2ZfVzp28nWelNgP0TYKZrcXK1v-2g0AuDZmJiz8rUgnMqdp8M0jvSaGvMaPEcGIiG7vZeqAVDkTctmvIZNxTA'
       },
       {
         vibration: 6,
-        title: '"I nurture love in all its forms."',
-        guidance: 'Your heart is your compass today. Show kindness to yourself and others. Beauty surrounds you — pause and appreciate it.',
+        title: 'Vibration 6 — Responsibility & Stability',
+        guidance: 'Commitment, responsibility, and maintenance actions are supported. Risk-taking is less efficient.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDfVMMu0WAdPvSICBqYYV0Jbkr1VZ4QoKfSZD2ghTnAAOJ6pIKDCHCdoGhuSViP1vTd9TInb_K85TIdZbXKfsChj1m72j9V9I8kK9SRwTKjIUrBRLEkddmGEJpg5z6e2fk1dcuA7uSVRWiRJuiUwZEbKOZ78ST1LEiYLRr8a6HVS-7AJefxSbl_yG875ijCCa_pyt2W8k-7Tbq6aNVQN-Q9bgZscDM3qJDbGgyzzUzyw4Nh4MAdTCjoT7MC-vPzM8g3Ygh6PuSXzmI'
       },
       {
         vibration: 7,
-        title: '"I trust the timing of my life."',
-        guidance: 'Turn inward today. Meditation, journaling, or quiet reflection will reveal hidden truths. Trust your intuition above all else.',
+        title: 'Vibration 7 — Analysis & Internal Focus',
+        guidance: 'Observation, analysis, and internal evaluation are supported. External pressure actions are weakened.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAlbHUdFS86eFASIV8ZsUHtjeQasp3243hgfT-ih3mtVE20EmRUgUWtu9LtPgGT1OiFXVN2H7gipbAkz9qhk9LV1NmHQa9aYXOJIM4PyO6TCjA0_Xqte6av9NAg6FkHmBm4P-5t4Edrg-xRevfi-PSUJcmkddKYWcM1PUC_73R8ltKlOIRnP8PVoM2ZfVzp28nWelNgP0TYKZrcXK1v-2g0AuDZmJiz8rUgnMqdp8M0jvSaGvMaPEcGIiG7vZeqAVDkTctmvIZNxTA'
       },
       {
         vibration: 8,
-        title: '"Abundance flows to me effortlessly."',
-        guidance: 'You are a magnet for success today. Make bold financial decisions, negotiate with confidence, claim what's rightfully yours.',
+        title: 'Vibration 8 — Control & Material Focus',
+        guidance: 'Authority, financial matters, and control-based actions are supported. Emotional sensitivity is reduced.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDfVMMu0WAdPvSICBqYYV0Jbkr1VZ4QoKfSZD2ghTnAAOJ6pIKDCHCdoGhuSViP1vTd9TInb_K85TIdZbXKfsChj1m72j9V9I8kK9SRwTKjIUrBRLEkddmGEJpg5z6e2fk1dcuA7uSVRWiRJuiUwZEbKOZ78ST1LEiYLRr8a6HVS-7AJefxSbl_yG875ijCCa_pyt2W8k-7Tbq6aNVQN-Q9bgZscDM3qJDbGgyzzUzyw4Nh4MAdTCjoT7MC-vPzM8g3Ygh6PuSXzmI'
       },
       {
         vibration: 9,
-        title: '"I release what no longer serves me."',
-        guidance: 'Completion energy surrounds you. Let go of old grudges, finish projects, close chapters. Space must be cleared for the new.',
+        title: 'Vibration 9 — Closure & Completion',
+        guidance: 'Finalization and closure actions are supported. New beginnings lack backing.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAlbHUdFS86eFASIV8ZsUHtjeQasp3243hgfT-ih3mtVE20EmRUgUWtu9LtPgGT1OiFXVN2H7gipbAkz9qhk9LV1NmHQa9aYXOJIM4PyO6TCjA0_Xqte6av9NAg6FkHmBm4P-5t4Edrg-xRevfi-PSUJcmkddKYWcM1PUC_73R8ltKlOIRnP8PVoM2ZfVzp28nWelNgP0TYKZrcXK1v-2g0AuDZmJiz8rUgnMqdp8M0jvSaGvMaPEcGIiG7vZeqAVDkTctmvIZNxTA'
       },
       {
         vibration: 11,
-        title: '"I am a channel for divine wisdom."',
-        guidance: 'Master Number 11 amplifies your spiritual gifts today. Pay attention to synchronicities, dreams, and sudden insights. You're being guided.',
+        title: 'Vibration 11 — High Numerical Intensity',
+        guidance: 'Master number amplifies all numerical influences. Analytical depth is heightened. Decision weight increases.',
         bg: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDfVMMu0WAdPvSICBqYYV0Jbkr1VZ4QoKfSZD2ghTnAAOJ6pIKDCHCdoGhuSViP1vTd9TInb_K85TIdZbXKfsChj1m72j9V9I8kK9SRwTKjIUrBRLEkddmGEJpg5z6e2fk1dcuA7uSVRWiRJuiUwZEbKOZ78ST1LEiYLRr8a6HVS-7AJefxSbl_yG875ijCCa_pyt2W8k-7Tbq6aNVQN-Q9bgZscDM3qJDbGgyzzUzyw4Nh4MAdTCjoT7MC-vPzM8g3Ygh6PuSXzmI'
       }
     ];

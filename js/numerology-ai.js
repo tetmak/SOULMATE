@@ -1,7 +1,7 @@
 /**
- * KADER — AEL (Decision Timing Interface)
- * Floating orb + karar zamanlama arayüzü
- * Chatbot kararları AÇIKLAR, ALMAZ. Tüm kararlar DecisionTiming engine'den gelir.
+ * KADER — Decision Sphere
+ * Floating sphere + deterministic decision timing interface.
+ * Chatbot EXPLAINS decisions, does NOT make them. All decisions come from DecisionTiming engine.
  */
 (function() {
   'use strict';
@@ -37,9 +37,13 @@
       transition: transform 0.2s, box-shadow 0.3s;
       -webkit-tap-highlight-color: transparent;
     }
+    @keyframes ds-pulse {
+      0%, 100% { box-shadow: 0 2px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.06); }
+      50% { box-shadow: 0 2px 20px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1); }
+    }
     #ael-orb:hover {
       transform: scale(1.08);
-      box-shadow: 0 2px 24px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.08);
+      animation: ds-pulse 1.5s ease-in-out infinite;
     }
     #ael-orb:active { transform: scale(0.95); }
     #ael-orb-dot {
@@ -342,16 +346,16 @@
   wrapper.innerHTML = `
     <div id="ael-orb"><div id="ael-orb-dot"></div></div>
     <div id="ael-tooltip">
-      <div id="ael-tooltip-title">AEL</div>
-      <div id="ael-tooltip-sub">Karar zamanlamanı hesaplar</div>
+      <div id="ael-tooltip-title">Decision Sphere</div>
+      <div id="ael-tooltip-sub">Numerical decision analysis</div>
     </div>
     <div id="ael-overlay">
       <div id="ael-modal">
         <div id="ael-header">
           <div id="ael-header-icon"><div class="dot"></div></div>
           <div id="ael-header-info">
-            <div id="ael-header-name">AEL</div>
-            <div id="ael-header-status">Karar zamanlama sistemi</div>
+            <div id="ael-header-name">Decision Sphere</div>
+            <div id="ael-header-status">Numerical decision analysis</div>
           </div>
           <button id="ael-close">&#10005;</button>
         </div>
@@ -383,7 +387,7 @@
         </div>
         <div id="ael-chat"></div>
         <div id="ael-input-area">
-          <textarea id="ael-input" placeholder="Bu sonucu sor..." rows="1"></textarea>
+          <textarea id="ael-input" placeholder="Bir karar türü sor veya açıklama iste..." rows="1"></textarea>
           <button id="ael-send"><span class="material-symbols-outlined">send</span></button>
         </div>
       </div>
@@ -422,7 +426,7 @@
     var el = document.getElementById('ael-period');
     if (!el) return;
     if (!personalPeriod.day) {
-      el.innerHTML = '<div style="padding:4px 0;font-size:11px;color:rgba(255,255,255,0.2);font-family:Space Grotesk,sans-serif;">Doğum tarihi gerekli</div>';
+      el.innerHTML = '<div style="padding:4px 0;font-size:11px;color:rgba(255,255,255,0.2);font-family:Space Grotesk,sans-serif;">Doğum tarihi tanımlı değil</div>';
       return;
     }
     var tags = [
@@ -484,10 +488,8 @@
     overlay.style.display = 'flex';
     setTimeout(function() { modal.style.transform = 'translateY(0)'; }, 10);
 
-    // İlk açılışta hoş geldin mesajı
-    if (document.getElementById('ael-chat').children.length === 0) {
-      addAelMessage('Zamanlama hesaplayıcısına hoş geldin. Bir karar alanı seç, sayısal analizini yapayım.');
-    }
+    // Focus input on open — no greeting text
+    setTimeout(function() { document.getElementById('ael-input').focus(); }, 400);
   };
 
   window.aelClose = function() {
@@ -511,7 +513,7 @@
     btn.addEventListener('click', function() {
       var action = this.dataset.action;
       if (!personalPeriod.day) {
-        addAelMessage('Doğum tarihin tanımlı değil. Analiz için doğum tarihine ihtiyacım var.');
+        addAelMessage('Doğum tarihi tanımlı değil. Sayısal analiz için doğum tarihi gerekli.');
         return;
       }
       if (!window.DecisionTiming) {
@@ -540,11 +542,10 @@
       // Chat'e özet mesaj ekle
       var label = window.DecisionTiming.ACTION_LABELS[action] || action;
       addAelMessage(
-        label.charAt(0).toUpperCase() + label.slice(1) + ' analizi: Skor ' + currentResult.score + '/100 — "' + currentResult.label + '". ' +
+        label.charAt(0).toUpperCase() + label.slice(1) + ': ' + currentResult.score + '/100 — ' + currentResult.label + '. ' +
         'Risk: ' + currentResult.risk_level + '. ' +
         currentResult.main_reason +
-        (currentResult.warning ? ' Uyarı: ' + currentResult.warning : '') +
-        '\n\nBu sonucu sormak istediğin bir şey var mı?'
+        (currentResult.warning ? ' Uyarı: ' + currentResult.warning : '')
       );
     });
   });
@@ -633,19 +634,21 @@
     if (t) t.remove();
   }
 
-  // AEL System prompt — kararları AÇIKLAR, ALMAZ
+  // Decision Sphere system prompt — EXPLAINS decisions, does NOT make them
   function buildAelSystem() {
-    var sys = 'Sen AEL, bir karar zamanlama açıklama sistemisin. ' +
+    var sys = 'Sen Decision Sphere, bir sayısal karar zamanlama açıklama sistemisin. ' +
       'Kararları SEN ALMIYORSUN. Kararlar deterministik bir motor tarafından alınıyor. ' +
       'Senin görevin motorun çıktısını kullanıcıya AÇIKLAMAK.\n\n' +
       'KURALLAR:\n' +
       '- Skoru, etiketi veya riski DEĞİŞTİREMEZSİN.\n' +
-      '- "Evren diyor" veya "yıldızlar gösteriyor" gibi ifadeler YASAK.\n' +
+      '- "Evren", "ruhsal", "kozmik", "kader", "manifestasyon", "enerji" (metafiziksel) gibi ifadeler YASAK.\n' +
+      '- Bunların yerine "sayısal etki", "olasılık eğilimi", "karar zamanlaması", "analitik eğilim" kullan.\n' +
       '- Açıklamaları SAYISAL nedenlere dayandır (ör: "Kişisel Gün 8 olduğu için...").\n' +
-      '- Kısa ve nötr tonda cevap ver. 2-4 cümle yeterli.\n' +
+      '- Kısa ve nötr tonda cevap ver. 1-2 cümle yeterli.\n' +
       '- Türkçe yaz.\n' +
+      '- Motivasyonel dil KULLANMA. Sadece analitik açıklama yap.\n' +
       '- Kullanıcı farklı bir karar türü sorarsa, mevcut sonucu referans al ama yeni motor çağrısı yapmadığını belirt.\n' +
-      '- Asla kehanet, astroloji veya tarot dili kullanma.\n';
+      '- Asla kehanet, astroloji, tarot dili veya spiritüel çerçeveleme kullanma.\n';
 
     if (currentResult && currentAction) {
       sys += '\nMEVCUT MOTOR ÇIKTISI:\n' +
@@ -665,6 +668,33 @@
     return sys;
   }
 
+  // ═══════════════════════════════════════════════════════════
+  // NATURAL LANGUAGE → ACTION TYPE INFERENCE
+  // ═══════════════════════════════════════════════════════════
+  var ACTION_KEYWORDS = {
+    job:          ['iş', 'kariyer', 'mülakat', 'terfi', 'teklif', 'çalış', 'pozisyon', 'başvur'],
+    money:        ['para', 'finans', 'yatırım', 'alım', 'satım', 'borsa', 'kredi', 'maaş'],
+    relationship: ['ilişki', 'sevgili', 'evlilik', 'ayrılık', 'uzlaş', 'konuşma', 'partner', 'tanış'],
+    start:        ['başla', 'girişim', 'proje', 'taşın', 'aç', 'kur', 'yeni'],
+    signature:    ['imza', 'sözleşme', 'anlaşma', 'kontrat', 'bağlayıcı', 'noter']
+  };
+
+  function inferActionType(text) {
+    var lower = text.toLowerCase();
+    var scores = {};
+    for (var action in ACTION_KEYWORDS) {
+      scores[action] = 0;
+      ACTION_KEYWORDS[action].forEach(function(kw) {
+        if (lower.indexOf(kw) !== -1) scores[action]++;
+      });
+    }
+    var best = null, bestScore = 0;
+    for (var a in scores) {
+      if (scores[a] > bestScore) { best = a; bestScore = scores[a]; }
+    }
+    return bestScore > 0 ? best : null;
+  }
+
   async function sendAelMessage() {
     if (isLoading) return;
     var input = document.getElementById('ael-input');
@@ -677,6 +707,27 @@
     isLoading = true;
 
     addUserMessage(text);
+
+    // Auto-detect action type from natural language query
+    var inferred = inferActionType(text);
+    if (inferred && personalPeriod.day && window.DecisionTiming && !currentResult) {
+      // Auto-trigger decision timing for inferred action
+      currentAction = inferred;
+      currentResult = window.DecisionTiming.decide({
+        action_type: inferred,
+        personal_day: personalPeriod.day,
+        personal_month: personalPeriod.month,
+        personal_year: personalPeriod.year
+      });
+      renderResult(currentResult);
+      document.getElementById('ael-orb').classList.add('has-result');
+
+      // Highlight matching action button
+      actionBtns.forEach(function(b) {
+        b.classList.toggle('selected', b.dataset.action === inferred);
+      });
+    }
+
     showTyping();
 
     try {

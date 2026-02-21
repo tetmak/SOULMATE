@@ -22,10 +22,10 @@
     4:  { core: ['discipline', 'structure', 'reliability'],        tension: ['rigidity', 'overwork'],         element: 'earth' },
     5:  { core: ['freedom', 'adventure', 'change'],                tension: ['restlessness', 'excess'],       element: 'air' },
     6:  { core: ['responsibility', 'nurturing', 'harmony'],        tension: ['control', 'self_sacrifice'],    element: 'earth' },
-    7:  { core: ['analysis', 'intuition', 'spirituality'],         tension: ['withdrawal', 'overthinking'],   element: 'water' },
+    7:  { core: ['analysis', 'intuition', 'introspection'],         tension: ['withdrawal', 'overthinking'],   element: 'water' },
     8:  { core: ['power', 'ambition', 'material_mastery'],         tension: ['domination', 'workaholism'],    element: 'earth' },
-    9:  { core: ['compassion', 'wisdom', 'universal_love'],        tension: ['martyrdom', 'aloofness'],       element: 'fire' },
-    11: { core: ['intuition', 'illumination', 'spiritual_bridge'], tension: ['anxiety', 'nervous_energy'],    element: 'ether' },
+    9:  { core: ['compassion', 'wisdom', 'completion'],             tension: ['martyrdom', 'aloofness'],       element: 'fire' },
+    11: { core: ['intuition', 'illumination', 'analytical_bridge'], tension: ['anxiety', 'nervous_energy'],    element: 'ether' },
     22: { core: ['master_building', 'vision', 'large_scale'],      tension: ['overwhelm', 'impracticality'],  element: 'ether' },
     33: { core: ['master_teaching', 'pure_love', 'guidance'],      tension: ['emotional_burden', 'martyrdom'],element: 'ether' }
   };
@@ -36,7 +36,7 @@
   var KARMIC_OVERLAYS = {
     13: { themes: ['discipline', 'persistence', 'hard_work'],      pressure: ['laziness', 'shortcuts'],            weight: 0.3 },
     14: { themes: ['moderation', 'self_control', 'balance'],       pressure: ['addiction', 'excess', 'instability'], weight: 0.3 },
-    16: { themes: ['humility', 'spiritual_growth', 'surrender'],   pressure: ['ego', 'arrogance', 'fall_from_grace'], weight: 0.3 },
+    16: { themes: ['humility', 'personal_growth', 'surrender'],    pressure: ['ego', 'arrogance', 'fall_from_grace'], weight: 0.3 },
     19: { themes: ['shared_leadership', 'asking_help', 'service'], pressure: ['power_abuse', 'isolation', 'tyranny'], weight: 0.3 }
   };
 

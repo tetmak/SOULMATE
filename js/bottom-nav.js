@@ -40,13 +40,13 @@
 
     // ─── BUBBLE MENU İTEMLERİ ───────────────────────────────
     var bubbleItems = [
-        { icon: 'auto_awesome', label: 'Cosmic Match', href: 'cosmic_match.html',              color: '#c084fc', bg: 'rgba(139,92,246,0.25)', border: 'rgba(139,92,246,0.5)' },
-        { icon: 'favorite',      label: 'Ruh Eşi',        href: 'compatibility_input_form.html', color: '#fb7185', bg: 'rgba(225,29,72,0.25)', border: 'rgba(225,29,72,0.5)' },
+        { icon: 'auto_awesome', label: 'Eşleşme',       href: 'cosmic_match.html',              color: '#c084fc', bg: 'rgba(139,92,246,0.25)', border: 'rgba(139,92,246,0.5)' },
+        { icon: 'favorite',      label: 'Uyum Analizi',   href: 'compatibility_input_form.html', color: '#fb7185', bg: 'rgba(225,29,72,0.25)', border: 'rgba(225,29,72,0.5)' },
         { icon: 'calculate',     label: 'Yeni Analiz',     href: 'data-ready_birth_form.html?newperson=1',    color: '#fac638', bg: 'rgba(250,198,56,0.2)',  border: 'rgba(250,198,56,0.5)' },
         { icon: 'self_improvement', label: 'Günlük Rehber', href: 'daily_spiritual_guide.html',   color: '#a78bfa', bg: 'rgba(139,92,246,0.2)',  border: 'rgba(139,92,246,0.5)' },
         { icon: 'nights_stay',   label: 'Ay Fazı',         href: 'lunar_phase_energy_tracker.html',color: '#93c5fd', bg: 'rgba(59,130,246,0.2)',  border: 'rgba(59,130,246,0.5)' },
-        { icon: 'casino',        label: 'Kader Çarkı',     href: 'wheel_of_destiny.html',         color: '#fb923c', bg: 'rgba(251,146,60,0.2)',  border: 'rgba(251,146,60,0.5)' },
-        { icon: 'calendar_month',label: 'Kozmik Takvim',   href: 'cosmic_energy_calendar_2.html', color: '#60a5fa', bg: 'rgba(96,165,250,0.2)',  border: 'rgba(96,165,250,0.5)' }
+        { icon: 'casino',        label: 'Karar Çarkı',     href: 'wheel_of_destiny.html',         color: '#fb923c', bg: 'rgba(251,146,60,0.2)',  border: 'rgba(251,146,60,0.5)' },
+        { icon: 'calendar_month',label: 'Karar Takvimi',   href: 'cosmic_energy_calendar_2.html', color: '#60a5fa', bg: 'rgba(96,165,250,0.2)',  border: 'rgba(96,165,250,0.5)' }
     ];
 
     // ─── CSS ─────────────────────────────────────────────────

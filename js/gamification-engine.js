@@ -1,6 +1,6 @@
 /**
  * KADER — Gamification Engine v1.1
- * XP, Rütbe, Günlük Görev, Ödül, Kozmik Görünürlük
+ * XP, Rütbe, Günlük Görev, Ödül, Sayısal Görünürlük
  *
  * Kullanım:
  *   gamification.addXP('daily_reading', 10)
@@ -18,10 +18,10 @@
         { id: 'novice',     name: 'Çaylak Kaşif',      minNBP: 0,    color: '#9ca3af', icon: 'explore',        visibility: 1, radarSize: 6,  premiumDays: 0, frame: null },
         { id: 'student',    name: 'Yıldız Öğrencisi',  minNBP: 100,  color: '#22c55e', icon: 'school',         visibility: 2, radarSize: 8,  premiumDays: 0, frame: 'glow-green' },
         { id: 'warrior',    name: 'Sayı Savaşçısı',    minNBP: 300,  color: '#3b82f6', icon: 'shield',         visibility: 3, radarSize: 10, premiumDays: 0, frame: 'glow-blue' },
-        { id: 'guide',      name: 'Kozmik Rehber',      minNBP: 600,  color: '#a855f7', icon: 'assistant_navigation', visibility: 4, radarSize: 12, premiumDays: 0, frame: 'glow-purple' },
+        { id: 'guide',      name: 'Sayısal Rehber',      minNBP: 600,  color: '#a855f7', icon: 'assistant_navigation', visibility: 4, radarSize: 12, premiumDays: 0, frame: 'glow-purple' },
         { id: 'master',     name: 'Usta Numerolog',     minNBP: 1000, color: '#f59e0b', icon: 'auto_awesome',   visibility: 5, radarSize: 14, premiumDays: 1, frame: 'glow-gold' },
         { id: 'sage',       name: 'Yıldız Bilgesi',    minNBP: 2000, color: '#e2e8f0', icon: 'diamond',        visibility: 7, radarSize: 16, premiumDays: 1, frame: 'glow-platinum' },
-        { id: 'oracle',     name: 'Kozmik Kahin',       minNBP: 3500, color: '#ec4899', icon: 'blur_on',        visibility: 10, radarSize: 20, premiumDays: 3, frame: 'glow-galaxy' }
+        { id: 'oracle',     name: 'Sayısal Kahin',       minNBP: 3500, color: '#ec4899', icon: 'blur_on',        visibility: 10, radarSize: 20, premiumDays: 3, frame: 'glow-galaxy' }
     ];
 
     // ═══════════════════════════════════════════════════════════
@@ -53,9 +53,9 @@
         { id: 'streak_fire',    name: 'Streak Ateşi',        desc: '7 gün üst üste giriş',         icon: 'local_fire_department', condition: function(s) { return s.max_streak >= 7; } },
         { id: 'streak_blaze',   name: 'Söndürülmez Alev',    desc: '30 gün streak',                 icon: 'whatshot',         condition: function(s) { return s.max_streak >= 30; } },
         { id: 'streak_eternal', name: 'Sonsuz Ateş',         desc: '100 gün streak',                icon: 'emergency_heat',         condition: function(s) { return s.max_streak >= 100; } },
-        { id: 'soul_hunter',    name: 'Ruh İkizi Avcısı',   desc: '10 Cosmic Match reveal',        icon: 'favorite',         condition: function(s) { return s.reveals >= 10; } },
+        { id: 'soul_hunter',    name: 'Uyum Avcısı',   desc: '10 Eşleşme reveal',        icon: 'favorite',         condition: function(s) { return s.reveals >= 10; } },
         { id: 'all_quests_7',   name: 'Görev Avcısı',        desc: '7 gün üst üste tüm görevleri tamamla', icon: 'task_alt', condition: function(s) { return s.all_quests_streak >= 7; } },
-        { id: 'oracle_rank',    name: 'Kozmik Uyanış',       desc: 'Kozmik Kahin rütbesine ulaş',  icon: 'blur_on',          condition: function(s) { return s.nbp >= 3500; } }
+        { id: 'oracle_rank',    name: 'Sayısal Uyanış',       desc: 'Sayısal Kahin rütbesine ulaş',  icon: 'blur_on',          condition: function(s) { return s.nbp >= 3500; } }
     ];
 
     // ═══════════════════════════════════════════════════════════
@@ -63,13 +63,13 @@
     // ═══════════════════════════════════════════════════════════
     var QUEST_TEMPLATES = [
         { id: 'read_daily',      name: 'Günlük Titreşimini Oku',  icon: 'auto_stories',  xp: 10, action: 'daily_reading' },
-        { id: 'view_match',      name: 'Cosmic Match\'ine Bak',   icon: 'favorite',       xp: 10, action: 'cosmic_match_view' },
+        { id: 'view_match',      name: 'Eşleşmene Bak',   icon: 'favorite',       xp: 10, action: 'cosmic_match_view' },
         { id: 'check_compat',    name: 'Uyumluluk Analizi Yap',   icon: 'compare_arrows', xp: 20, action: 'compatibility' },
         { id: 'set_manifest',    name: 'Bir Niyet Belirle',       icon: 'self_improvement',xp: 10, action: 'manifest_set' },
-        { id: 'share_card',      name: 'Kozmik Kartını Paylaş',   icon: 'share',          xp: 20, action: 'share_card' },
+        { id: 'share_card',      name: 'Analiz Kartını Paylaş',   icon: 'share',          xp: 20, action: 'share_card' },
         { id: 'spin_wheel',      name: 'Kader Çarkını Çevir',     icon: 'casino',         xp: 10, action: 'wheel_spin' },
         { id: 'add_friend',      name: 'Yeni Arkadaş Ekle',       icon: 'person_add',     xp: 25, action: 'add_connection' },
-        { id: 'visit_calendar',  name: 'Kozmik Takvimi Ziyaret Et', icon: 'calendar_month', xp: 10, action: 'calendar_visit' }
+        { id: 'visit_calendar',  name: 'Karar Takvimini Ziyaret Et', icon: 'calendar_month', xp: 10, action: 'calendar_visit' }
     ];
 
     // ═══════════════════════════════════════════════════════════
@@ -371,7 +371,7 @@
             s.nbp += Math.round(bonus * 0.7);
             s.all_quests_streak++;
 
-            // Kozmik Sandık ödülü
+            // Bonus Sandık ödülü
             var chest = generateChestReward(s);
             s.pending_rewards.push(chest);
         }
@@ -424,7 +424,7 @@
             var cardNum = Math.floor(Math.random() * 12) + 1; // 1-12
             if (cardNum > 9 && cardNum <= 11) cardNum = 11;
             if (cardNum > 11) cardNum = 22;
-            return { type: 'chest', rarity: 'common', reward: 'card', label: cardNum + ' Kozmik Kartı', icon: 'style', color: '#ec4899', cardNumber: cardNum };
+            return { type: 'chest', rarity: 'common', reward: 'card', label: cardNum + ' Analiz Kartı', icon: 'style', color: '#ec4899', cardNumber: cardNum };
         }
     }
 
@@ -472,7 +472,7 @@
         var title = '';
         var subtitle = '';
         if (reward.type === 'chest') {
-            title = '🎁 Kozmik Sandık!';
+            title = '🎁 Bonus Sandık!';
             subtitle = reward.label;
         } else if (reward.type === 'rank_up') {
             title = '⭐ Rütbe Yükseldi!';

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Cosmic Energy Calendar</title>
+    <title>Decision Calendar</title>
     <script src="js/api-base.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap"
@@ -89,7 +89,7 @@
         id="sidebar">
         <div class="flex flex-col h-full p-6">
             <div class="flex items-center justify-between mb-10">
-                <h2 class="text-xl font-bold text-white">Cosmic Menu</h2>
+                <h2 class="text-xl font-bold text-white">Menu</h2>
                 <label class="text-white/60 cursor-pointer" for="menu-toggle">
                     <span class="material-symbols-outlined"
                         onclick="window.location.href='mystic_numerology_home_1.html'"
@@ -106,7 +106,7 @@
                     class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">explore</span>
-                    <span>Manifest</span>
+                    <span>Planner</span>
                 </a>
                 <a class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium"
                     href="#">
@@ -135,8 +135,8 @@
             </nav>
             <div class="mt-auto">
                 <div class="bg-primary/10 rounded-xl p-4 border border-primary/20">
-                    <p class="text-xs text-cosmic-gold font-bold uppercase mb-2">Daily Affirmation</p>
-                    <p class="text-sm text-white/80 italic">"I am aligned with the universe's flow."</p>
+                    <p class="text-xs text-cosmic-gold font-bold uppercase mb-2">Daily Status</p>
+                    <p class="text-sm text-white/80 italic">"Numerical analysis active."</p>
                 </div>
             </div>
         </div>
@@ -147,7 +147,7 @@
                 style="cursor:pointer;width:44px;height:44px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0">
                 <span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">arrow_back_ios</span>
             </button>
-            <h2 class="text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Cosmic Calendar
+            <h2 class="text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Decision Calendar
             </h2>
             <div class="text-white flex size-12 shrink-0 items-center justify-end">
                 <span class="material-symbols-outlined">account_circle</span>
@@ -180,105 +180,49 @@
             </div>
         </section>
         <div class="flex items-center justify-between px-2">
-            <h2 class="text-white text-2xl font-bold tracking-tight">Daily Energy</h2>
+            <h2 class="text-white text-2xl font-bold tracking-tight">Daily Analysis</h2>
             <div class="flex items-center gap-1 bg-primary/20 px-3 py-1 rounded-full">
                 <span class="material-symbols-outlined text-cosmic-gold text-sm"
-                    style="font-variation-settings: 'FILL' 1">auto_awesome</span>
-                <span class="text-xs font-bold text-cosmic-gold" id="alignment-label">High Alignment</span>
+                    style="font-variation-settings: 'FILL' 1">analytics</span>
+                <span class="text-xs font-bold text-cosmic-gold" id="alignment-label">Active Cycle</span>
             </div>
         </div>
         <div class="glass-card rounded-xl overflow-hidden shadow-2xl">
-            <div class="h-48 w-full bg-center bg-cover relative"
-                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA9yKMQLDozaQk7aqCqp3u4iKdsBf1NAM8FVw_XGzqSkU959d5D2oiJ2BisHQropHej4lIBuvn13tGkR2Z6LdPNLtHQlZVUdBcStHd061XbNtziB64ZD-CVPf4kxRocOoG931jvcTPJ4teWPjchOn3N1yIk3XjppKu3ULcLyMMolAxvhfy5xIQnOGO_ETlSkrc6aTTxGaDMZ-RXHvQazfIB1gIOMJ__l3j4rakMVOVOdHTQsSLuOQOziNQXZ__CCWe5BucTw_bT3Sp_");'>
-                <div class="absolute inset-0 bg-gradient-to-t from-[#211c27] to-transparent"></div>
-                <div class="absolute bottom-4 left-4 right-4">
-                    <p class="text-cosmic-gold text-xs font-bold uppercase tracking-[0.2em] mb-1"
+            <div class="p-6 space-y-5">
+                <div>
+                    <p class="text-cosmic-gold text-xs font-bold uppercase tracking-[0.2em] mb-2"
                         id="selected-date-label">Today's Vibration</p>
-                    <h3 class="text-2xl font-bold text-white leading-tight" id="vibration-title">—</h3>
-                </div>
-            </div>
-            <div class="p-6 space-y-6">
-                <div class="space-y-2">
-                    <p id="day-description" class="text-[#ab9db9] text-base leading-relaxed">
-                        Embrace the unexpected today. The stars suggest a focus on communication. Speak your truth but
-                        listen with your heart. The number 5 brings freedom and movement.
-                    </p>
+                    <h3 class="text-2xl font-bold text-white leading-tight mb-3" id="vibration-title">—</h3>
+                    <p id="day-description" class="text-[#ab9db9] text-base leading-relaxed"></p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-primary/10 rounded-lg p-3 border border-primary/20">
                         <div class="flex items-center gap-2 mb-2">
-                            <span class="material-symbols-outlined text-primary text-sm">key</span>
-                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Lucky Numbers</span>
+                            <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
+                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Supported</span>
                         </div>
-                        <div id="lucky-numbers" class="flex gap-2">
-                            <span class="text-lg font-bold text-white">5</span>
-                            <span class="text-lg font-bold text-white">14</span>
-                            <span class="text-lg font-bold text-white">23</span>
-                        </div>
+                        <div id="supported-actions" class="space-y-1"></div>
                     </div>
                     <div class="bg-primary/10 rounded-lg p-3 border border-primary/20">
                         <div class="flex items-center gap-2 mb-2">
-                            <span class="material-symbols-outlined text-primary text-sm">schedule</span>
-                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Power Hours</span>
+                            <span class="material-symbols-outlined text-primary text-sm">warning</span>
+                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Challenging</span>
                         </div>
-                        <div id="power-hours" class="space-y-0.5">
-                            <p class="text-sm font-medium text-white">11:11 AM</p>
-                            <p class="text-sm font-medium text-white">5:05 PM</p>
-                        </div>
+                        <div id="challenging-actions" class="space-y-1"></div>
                     </div>
                 </div>
-                <div class="bg-[#191022] rounded-lg p-4 border-l-4 border-primary">
-                    <div class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-primary mt-1">lightbulb</span>
-                        <div class="flex-1">
-                            <p class="text-white text-sm font-bold mb-1">Spiritual Insight</p>
-                            <p class="text-[#ab9db9] text-sm leading-normal" id="spiritual-insight">Mercury aligns with
-                                your core vibration. It's a powerful day for signing contracts or starting new
-                                conversations. Avoid stagnation.</p>
-                        </div>
-                    </div>
-                </div>
-                <button onclick="window.location.href='daily_number_deep_dive.html'"
+                <button id="decision-timing-cta"
                     class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg transition-transform active:scale-[0.98]"
                     style="position:relative;z-index:10;cursor:pointer;">
-                    View Full Forecast
+                    View Decision Timing for This Day
                 </button>
-            </div>
-        </div>
-        <div class="glass-card rounded-xl p-4 mb-4">
-            <h3 class="text-white font-bold text-lg mb-4">Harmony Elements</h3>
-            <div class="flex justify-between items-center px-2">
-                <div class="flex flex-col items-center gap-2">
-                    <div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                        <span class="material-symbols-outlined">diamond</span>
-                    </div>
-                    <span class="text-[10px] text-[#ab9db9] font-medium">Amethyst</span>
-                </div>
-                <div class="flex flex-col items-center gap-2">
-                    <div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                        <span class="material-symbols-outlined">palette</span>
-                    </div>
-                    <span class="text-[10px] text-[#ab9db9] font-medium">Indigo</span>
-                </div>
-                <div class="flex flex-col items-center gap-2">
-                    <div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                        <span class="material-symbols-outlined">eco</span>
-                    </div>
-                    <span class="text-[10px] text-[#ab9db9] font-medium">Sage</span>
-                </div>
-                <div class="flex flex-col items-center gap-2">
-                    <div class="size-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                        <span class="material-symbols-outlined">music_note</span>
-                    </div>
-                    <span class="text-[10px] text-[#ab9db9] font-medium">432Hz</span>
-                </div>
             </div>
         </div>
     </main>
 
 
     <script>
-        // ===== COSMIC CALENDAR DYNAMIC ENGINE =====
+        // ===== DECISION CALENDAR ENGINE =====
         var TODAY = new Date();
         TODAY.setHours(0, 0, 0, 0);
 
@@ -303,19 +247,85 @@
             return sum;
         }
 
-        // Günlük içerik verisi
+        // Günlük içerik verisi — fixed vibration map
         var VIBRATION_DATA = {
-            1: { title: 'Vibration 1: New Beginnings', desc: 'A powerful day for starting fresh. Leadership energy is strong. Take initiative and trust your instincts — the universe supports bold moves today.', lucky: [1, 10, 19], hours: ['8:00 AM', '1:00 PM'], insight: 'The sun aligns with your life path. Excellent for new projects, job applications, or declaring your intentions to the universe.', alignment: 'High Alignment' },
-            2: { title: 'Vibration 2: Harmony & Balance', desc: 'Diplomacy and cooperation are your strengths today. Seek harmony in relationships. Avoid conflict — patience will bring the results you desire.', lucky: [2, 11, 20], hours: ['9:00 AM', '6:00 PM'], insight: 'The Moon governs your energy. Perfect for partnerships, healing old wounds, and quiet reflection. Trust your intuition.', alignment: 'Balanced Energy' },
-            3: { title: 'Vibration 3: Creative Expression', desc: 'Your creative energy is at its peak. Express yourself freely — through art, words, or connection. Joy and communication flow effortlessly today.', lucky: [3, 12, 21], hours: ['10:00 AM', '3:00 PM'], insight: 'Jupiter amplifies your voice. A great day for presentations, social media, writing, or creative collaboration.', alignment: 'High Alignment' },
-            4: { title: 'Vibration 4: Foundation & Structure', desc: 'Focus on building solid foundations. Work, discipline, and organization are favored. Avoid shortcuts — steady effort yields lasting results.', lucky: [4, 13, 22], hours: ['7:00 AM', '2:00 PM'], insight: 'Saturn grounds your energy. Ideal for tackling complex tasks, organizing finances, or planning long-term goals.', alignment: 'Steady Flow' },
-            5: { title: 'Vibration 5: The Energy of Change', desc: 'Embrace the unexpected today. The stars suggest a focus on communication. Speak your truth but listen with your heart. The number 5 brings freedom and movement.', lucky: [5, 14, 23], hours: ['11:11 AM', '5:05 PM'], insight: 'Mercury aligns with your core vibration. A powerful day for signing contracts or starting new conversations. Avoid stagnation.', alignment: 'High Alignment' },
-            6: { title: 'Vibration 6: Love & Nurturing', desc: 'Heart-centered energy surrounds you. Focus on family, loved ones, and acts of service. Beauty and harmony are magnified today.', lucky: [6, 15, 24], hours: ['12:00 PM', '7:00 PM'], insight: 'Venus blesses your relationships. A wonderful day for romantic gestures, healing family bonds, or beautifying your space.', alignment: 'Heart Alignment' },
-            7: { title: 'Vibration 7: Spiritual Insight', desc: 'Turn inward today. Reflection, meditation, and research are your allies. Seek deeper truths beneath the surface of everyday life.', lucky: [7, 16, 25], hours: ['5:00 AM', '9:00 PM'], insight: 'Neptune opens the veil between worlds. Ideal for meditation, journaling, spiritual study, or connecting with your higher self.', alignment: 'Spiritual Peak' },
-            8: { title: 'Vibration 8: Power & Abundance', desc: 'A day of manifestation and material energy. Your actions carry extra weight — make bold decisions and claim what is rightfully yours.', lucky: [8, 17, 26], hours: ['8:08 AM', '4:00 PM'], insight: 'Saturn and Jupiter converge on your path. Focus on business matters, financial decisions, or asserting your authority.', alignment: 'Power Surge' },
-            9: { title: 'Vibration 9: Completion & Wisdom', desc: 'A cycle is closing. Release what no longer serves you and embrace the wisdom of your journey. Compassion and generosity open new doors.', lucky: [9, 18, 27], hours: ['9:00 AM', '9:00 PM'], insight: 'The universe calls for completion. Let go of grudges, finish unfinished projects, and prepare for a new beginning ahead.', alignment: 'Completion Energy' },
-            11: { title: 'Vibration 11: Master Intuition', desc: 'A Master Number day of heightened spiritual awareness. Your intuition is razor sharp — trust the visions and signs you receive today.', lucky: [11, 22, 33], hours: ['11:11 AM', '11:11 PM'], insight: 'A rare gateway of cosmic alignment. Stay present, meditate, and be open to receiving profound insights or spiritual downloads.', alignment: 'Master Gateway' },
-            22: { title: 'Vibration 22: Master Builder', desc: 'A day of extraordinary potential. Your dreams can become reality with focused effort. Think big and act with purpose — the universe amplifies your work.', lucky: [22, 4, 8], hours: ['4:44 AM', '4:44 PM'], insight: 'The Master Builder energy is active. Exceptional for launching major projects, making life-changing decisions, or laying foundations for your legacy.', alignment: 'Master Alignment' }
+            1: {
+                title: 'Vibration 1 — Initiation & Action',
+                desc: 'Numerical dominance favors starting actions and direct decisions. Momentum is supported. Delay reduces efficiency.',
+                supported: ['Starting tasks', 'Taking initiative', 'Direct communication'],
+                challenging: ['Waiting for confirmation', 'Passive behavior'],
+                alignment: 'Active Cycle'
+            },
+            2: {
+                title: 'Vibration 2 — Evaluation & Coordination',
+                desc: 'Energy supports balance, negotiation, and dual-sided evaluation. Independent force is less effective.',
+                supported: ['Negotiation', 'Relationship management', 'Listening'],
+                challenging: ['Solo decisions', 'Aggressive action'],
+                alignment: 'Balanced Cycle'
+            },
+            3: {
+                title: 'Vibration 3 — Expression & Output',
+                desc: 'Expression and idea transmission are favored. Structure and discipline are secondary today.',
+                supported: ['Communication', 'Marketing', 'Creative output'],
+                challenging: ['Detail-heavy planning', 'Long-term commitments'],
+                alignment: 'Output Cycle'
+            },
+            4: {
+                title: 'Vibration 4 — Structure & Execution',
+                desc: 'Systematic work and disciplined execution are supported. Flexibility is reduced.',
+                supported: ['Operations', 'Planning', 'Process building'],
+                challenging: ['Improvisation', 'Emotional decisions'],
+                alignment: 'Steady Cycle'
+            },
+            5: {
+                title: 'Vibration 5 — Change & Movement',
+                desc: 'Adaptability and fast response are favored. Fixed plans may break.',
+                supported: ['Adjustments', 'Short-term decisions', 'Movement'],
+                challenging: ['Long-term planning', 'Rigid structure'],
+                alignment: 'Dynamic Cycle'
+            },
+            6: {
+                title: 'Vibration 6 — Responsibility & Stability',
+                desc: 'Commitment, responsibility, and maintenance actions are supported. Risk-taking is less efficient.',
+                supported: ['Relationship care', 'Maintenance', 'Responsibility handling'],
+                challenging: ['High-risk decisions', 'Abrupt change'],
+                alignment: 'Stable Cycle'
+            },
+            7: {
+                title: 'Vibration 7 — Analysis & Internal Focus',
+                desc: 'Observation, analysis, and internal evaluation are supported. External pressure actions are weakened.',
+                supported: ['Analysis', 'Research', 'Planning'],
+                challenging: ['Forced execution', 'Confrontation'],
+                alignment: 'High Numerical Intensity'
+            },
+            8: {
+                title: 'Vibration 8 — Control & Material Focus',
+                desc: 'Authority, financial matters, and control-based actions are supported. Emotional sensitivity is reduced.',
+                supported: ['Financial decisions', 'Management', 'Authority actions'],
+                challenging: ['Emotional discussions', 'Passive waiting'],
+                alignment: 'Power Cycle'
+            },
+            9: {
+                title: 'Vibration 9 — Closure & Completion',
+                desc: 'Finalization and closure actions are supported. New beginnings lack backing.',
+                supported: ['Completion', 'Ending processes', 'Review'],
+                challenging: ['Starting new projects', 'Long-term initiation'],
+                alignment: 'Completion Cycle'
+            },
+            11: {
+                title: 'Vibration 11 — High Numerical Intensity',
+                desc: 'Master number amplifies all numerical influences. Analytical depth is heightened. Decision weight increases.',
+                supported: ['Analysis', 'Research', 'Strategic planning'],
+                challenging: ['Rushed decisions', 'Superficial actions'],
+                alignment: 'High Numerical Intensity'
+            },
+            22: {
+                title: 'Vibration 22 — Master Execution',
+                desc: 'Master number supports large-scale execution and structural decisions. Scope of impact is amplified.',
+                supported: ['Large projects', 'Structural decisions', 'Long-term planning'],
+                challenging: ['Minor tasks', 'Indecision'],
+                alignment: 'High Numerical Intensity'
+            }
         };
 
         function getDayData(date) {
@@ -402,140 +412,25 @@
             var data = getDayData(date);
             var isToday = date.getTime() === TODAY.getTime();
 
-            console.log('[Calendar] Updating daily info for:', formatDate(date));
-            console.log('[Calendar] Elements check:', {
-                title: !!document.getElementById('vibration-title'),
-                description: !!document.getElementById('day-description'),
-                insight: !!document.getElementById('spiritual-insight'),
-                luckyNumbers: !!document.getElementById('lucky-numbers'),
-                powerHours: !!document.getElementById('power-hours')
-            });
-
             document.getElementById('vibration-title').textContent = data.title;
             document.getElementById('selected-date-label').textContent = isToday ? "Today's Vibration" : formatDate(date);
-
-            // Lucky numbers
-            var ln = document.getElementById('lucky-numbers');
-            ln.innerHTML = data.lucky.map(function (n) {
-                return '<span class="text-lg font-bold text-white">' + n + '</span>';
-            }).join(' ');
-
-            // Power hours
-            var ph = document.getElementById('power-hours');
-            ph.innerHTML = data.hours.map(function (h) {
-                return '<p class="text-sm font-medium text-white">' + h + '</p>';
-            }).join('');
-            
-            // Alignment label
+            document.getElementById('day-description').textContent = data.desc;
             document.getElementById('alignment-label').textContent = data.alignment;
-            
-            // ─── AI-GENERATED DAILY GUIDANCE ───────────────────────
-            generateDailyGuidance(date, data);
-        }
-        
-        function generateDailyGuidance(date, vibData) {
-            var descEl = document.getElementById('day-description');
-            var insightEl = document.getElementById('spiritual-insight');
-            
-            console.log('[AI] Generating guidance for:', formatDate(date));
-            
-            // Loading state
-            descEl.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.4)"><span class="material-symbols-outlined" style="font-size:16px;animation:spin 1s linear infinite">progress_activity</span><span style="font-size:13px">Cosmic energies aligning...</span></div>';
-            insightEl.innerHTML = '<div style="display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.4)"><span class="material-symbols-outlined" style="font-size:16px;animation:spin 1s linear infinite">progress_activity</span><span style="font-size:13px">Channeling insights...</span></div>';
-            
-            // Cache key
-            var cacheKey = 'kader_cosmic_calendar_' + date.toISOString().split('T')[0];
-            var cached = localStorage.getItem(cacheKey);
-            
-            if (cached) {
-                console.log('[AI] Using cached guidance');
-                var parsedCache = JSON.parse(cached);
-                descEl.textContent = parsedCache.desc;
-                insightEl.textContent = parsedCache.insight;
-                return;
-            }
-            
-            console.log('[AI] No cache, calling API...');
-            
-            // Kullanıcı verisi
-            var ud = null;
-            try { ud = JSON.parse(localStorage.getItem('kader_user_data') || 'null'); } catch(e) {}
-            
-            var userName = ud && ud.name ? ud.name.split(' ')[0] : 'seeker';
-            var birthDate = ud && ud.birthDate ? ud.birthDate : null;
-            var lifePath = birthDate ? window.profile.calculateLifePathNumber(birthDate) : null;
-            
-            // API key /api/openai proxy'si tarafından server-side ekleniyor
-            
-            var dateStr = formatDate(date);
-            var vibNum = calcVibration(date);
-            
-            var prompt = 'You are a mystical numerology guide. Today is ' + dateStr + ' with Vibration ' + vibNum + ' (' + vibData.title + ').\n\n';
-            
-            if (lifePath) {
-                prompt += 'The seeker ' + userName + ' has Life Path ' + lifePath + '.\n\n';
-            }
-            
-            prompt += 'Generate TWO personalized messages in Turkish:\n\n';
-            prompt += '1. DAILY GUIDANCE (2-3 sentences): Practical advice for this specific day\'s energy. Be specific to Vibration ' + vibNum + '.\n\n';
-            prompt += '2. SPIRITUAL INSIGHT (1-2 sentences): A deeper mystical message about what the universe is revealing today.\n\n';
-            prompt += 'Format:\n[GUIDANCE]\n...\n[INSIGHT]\n...\n\n';
-            prompt += 'Be poetic but practical. Use Turkish. No headings, no bullets, just flowing text.';
-            
-            fetch((window.__KADER_API_BASE||'') + '/api/openai', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    model: 'gpt-4o-mini',
-                    messages: [{ role: 'user', content: prompt }],
-                    temperature: 0.85,
-                    max_tokens: 200
-                })
-            })
-            .then(function(r) { 
-                if (!r.ok) throw new Error('API Error');
-                return r.json(); 
-            })
-            .then(function(data) {
-                console.log('[AI] API response received');
-                var text = data.choices && data.choices[0] ? data.choices[0].message.content : null;
-                
-                if (text) {
-                    console.log('[AI] Generated text length:', text.length);
-                    // Parse response
-                    var parts = text.split('[INSIGHT]');
-                    var guidance = parts[0].replace('[GUIDANCE]', '').trim();
-                    var insight = parts[1] ? parts[1].trim() : vibData.insight;
-                    
-                    console.log('[AI] Guidance:', guidance.substring(0, 50) + '...');
-                    console.log('[AI] Insight:', insight.substring(0, 50) + '...');
-                    
-                    descEl.textContent = guidance || vibData.desc;
-                    insightEl.textContent = insight || vibData.insight;
-                    
-                    // Cache result
-                    try {
-                        localStorage.setItem(cacheKey, JSON.stringify({
-                            desc: guidance || vibData.desc,
-                            insight: insight || vibData.insight
-                        }));
-                        console.log('[AI] Cached successfully');
-                    } catch(e) {
-                        console.error('[AI] Cache failed:', e);
-                    }
-                } else {
-                    console.warn('[AI] No text in response, using fallback');
-                    // Fallback
-                    descEl.textContent = vibData.desc;
-                    insightEl.textContent = vibData.insight;
-                }
-            })
-            .catch(function(err) {
-                console.error('[AI] API call failed:', err);
-                // Fallback to static content
-                descEl.textContent = vibData.desc;
-                insightEl.textContent = vibData.insight;
-            });
+
+            // Supported actions
+            var sa = document.getElementById('supported-actions');
+            sa.innerHTML = (data.supported || []).map(function(s) {
+                return '<p class="text-sm font-medium text-white">' + s + '</p>';
+            }).join('');
+
+            // Challenging actions
+            var ca = document.getElementById('challenging-actions');
+            ca.innerHTML = (data.challenging || []).map(function(c) {
+                return '<p class="text-sm font-medium text-white/60">' + c + '</p>';
+            }).join('');
+
+            // Decision Timing CTA — pass selected date
+            window._calendarSelectedDate = date;
         }
 
         function changeMonth(dir) {
@@ -551,6 +446,13 @@
             currentYear = newYear;
             renderCalendar();
         }
+
+        // Decision Timing CTA click handler
+        document.getElementById('decision-timing-cta').addEventListener('click', function() {
+            if (window.aelOpen) {
+                window.aelOpen();
+            }
+        });
 
         // Başlangıç
         renderCalendar();
@@ -569,7 +471,7 @@
         <button onclick="window.location.href='cosmic_manifest_portal.html'"
             class="flex flex-col items-center gap-1 text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">explore</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Manifest</span>
+            <span class="text-[9px] font-bold uppercase tracking-tight">Planner</span>
         </button>
         <div class="relative -top-4">
             <button
@@ -586,7 +488,7 @@
         <button onclick="window.location.href='wheel_of_destiny.html'"
             class="flex flex-col items-center gap-1 text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">casino</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Destiny</span>
+            <span class="text-[9px] font-bold uppercase tracking-tight">Profile</span>
         </button>
     </nav>
     <script src="js/numerology-context-engine.js"></script>
