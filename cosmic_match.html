@@ -411,9 +411,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         var topMatches = await window.discovery.getTopMatches(userId, userProfile, 8);
         renderRadar(topMatches);
 
-        // Geçmiş
+        // Geçmiş — radar verileriyle birleştir
         var history = await window.discovery.getMatchHistory(userId, 10);
-        renderHistory(history);
+        renderHistory(history, topMatches);
     }
 
     // ─── STREAK RENDER ───────────────────────────────────────
@@ -569,18 +569,43 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // ─── GEÇMİŞ EŞLEŞMELER RENDER ──────────────────────────
-    function renderHistory(matches) {
+    function renderHistory(matches, radarMatches) {
         var listEl = document.getElementById('history-list');
         var emptyEl = document.getElementById('history-empty');
 
-        if (!matches || !matches.length) {
+        // Geçmiş eşleşmelerdeki user_id'leri topla
+        var historyIds = {};
+        (matches || []).forEach(function(m) {
+            if (m.matched_user_id) historyIds[m.matched_user_id] = true;
+        });
+
+        // Radar'daki ama geçmişte olmayan kişileri ekle
+        var radarExtras = [];
+        if (radarMatches && radarMatches.length) {
+            radarMatches.forEach(function(item) {
+                var p = item.profile;
+                if (p && p.user_id && !historyIds[p.user_id]) {
+                    radarExtras.push({
+                        matched: p,
+                        match_score: item.score,
+                        match_date: '',
+                        revealed: false,
+                        matched_user_id: p.user_id
+                    });
+                }
+            });
+        }
+
+        var allMatches = (matches || []).concat(radarExtras);
+
+        if (!allMatches.length) {
             emptyEl.style.display = 'block';
             return;
         }
 
         emptyEl.style.display = 'none';
 
-        matches.forEach(function(match) {
+        allMatches.forEach(function(match) {
             var m = match.matched || { full_name: 'Bilinmeyen', life_path: null };
             var revealed = match.revealed;
             var displayName = revealed ? (m.full_name||'Bilinmeyen') : maskName(m.full_name||'Bilinmeyen');
