@@ -267,7 +267,7 @@
     }
 
     // ─── REVEAL (Eşleşme açma) ──────────────────────────────
-    var FREE_DAILY_REVEALS = 3;
+    var PREMIUM_DAILY_REVEALS = 5;
 
     async function getDailyRevealCount(userId) {
         var today = todayStr();
@@ -285,13 +285,15 @@
     async function revealMatch(userId, matchDate, isPremium) {
         var sb = window.supabaseClient;
 
-        // Premium: sınırsız reveal
+        // Non-premium kullanıcılar hiç reveal yapamaz
         if (!isPremium) {
-            // Non-premium: günde 3 ücretsiz reveal kontrolü
-            var todayReveals = await getDailyRevealCount(userId);
-            if (todayReveals >= FREE_DAILY_REVEALS) {
-                return { success: false, reason: 'daily_limit', remaining: 0 };
-            }
+            return { success: false, reason: 'not_premium', remaining: 0 };
+        }
+
+        // Premium: günde 5 reveal limiti
+        var todayReveals = await getDailyRevealCount(userId);
+        if (todayReveals >= PREMIUM_DAILY_REVEALS) {
+            return { success: false, reason: 'daily_limit', remaining: 0 };
         }
 
         // Reveal yap
@@ -310,7 +312,7 @@
                 }
             } catch(e) {}
 
-            var remaining = isPremium ? 999 : (FREE_DAILY_REVEALS - (await getDailyRevealCount(userId)));
+            var remaining = PREMIUM_DAILY_REVEALS - (await getDailyRevealCount(userId));
             return { success: true, remaining: Math.max(0, remaining) };
         } catch(e) {
             return { success: false, reason: 'error' };
@@ -423,7 +425,7 @@
         findDailyMatch: findDailyMatch,
         revealMatch: revealMatch,
         getDailyRevealCount: getDailyRevealCount,
-        FREE_DAILY_REVEALS: FREE_DAILY_REVEALS,
+        PREMIUM_DAILY_REVEALS: PREMIUM_DAILY_REVEALS,
         getTopMatches: getTopMatches,
         getMatchHistory: getMatchHistory,
         fetchDiscoverableProfiles: fetchDiscoverableProfiles

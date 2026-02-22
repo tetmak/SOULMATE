@@ -222,10 +222,20 @@
                             <p class="text-white/30 text-xs">✦ Bugünkü eşleşme açıldı</p>
                         </div>
 
-                        <!-- No credits message -->
+                        <!-- No credits message (daily limit reached) -->
                         <div id="no-credits-msg" style="display:none" class="w-full glass rounded-xl p-3 text-center">
                             <p class="text-white/40 text-xs">🔒 Bugünkü reveal hakkın doldu</p>
-                            <p class="text-white/25 text-[10px] mt-1">Yarın 3 yeni hak gelecek · Premium ile sınırsız!</p>
+                            <p class="text-white/25 text-[10px] mt-1">Yarın 5 yeni hak gelecek</p>
+                        </div>
+
+                        <!-- Non-premium paywall -->
+                        <div id="premium-paywall" style="display:none" class="w-full text-center">
+                            <button onclick="window.location.href='premium_crystal_store.html'"
+                                class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-3.5 rounded-full font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg">
+                                <span class="material-symbols-outlined text-lg">workspace_premium</span>
+                                Premium ile Profilleri Aç
+                            </button>
+                            <p class="text-white/25 text-[10px] mt-2">Premium ile günde 5 profil açabilirsin</p>
                         </div>
                     </div>
                 </div>
@@ -468,11 +478,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Günlük reveal hakkını hesapla
         var todayReveals = await window.discovery.getDailyRevealCount(userId);
-        var remaining = isPrem ? 999 : (window.discovery.FREE_DAILY_REVEALS - todayReveals);
+        var remaining = isPrem ? (window.discovery.PREMIUM_DAILY_REVEALS - todayReveals) : 0;
 
         // Credits bar güncelle
-        document.getElementById('credits-count').textContent = isPrem ? '∞' : Math.max(0, remaining);
-        document.getElementById('credits-label').textContent = isPrem ? 'Sınırsız' : 'Bugün';
+        document.getElementById('credits-count').textContent = isPrem ? Math.max(0, remaining) : '🔒';
+        document.getElementById('credits-label').textContent = isPrem ? 'Bugün' : 'Premium';
 
         document.getElementById('match-content').style.display = 'block';
 
@@ -502,13 +512,22 @@ document.addEventListener('DOMContentLoaded', async function() {
             document.getElementById('match-card').classList.add('match-card-blur');
             document.getElementById('match-card').classList.remove('match-card-revealed');
 
-            if (isPrem || remaining > 0) {
+            if (!isPrem) {
+                // Non-premium: paywall göster
+                document.getElementById('btn-reveal').style.display = 'none';
+                document.getElementById('no-credits-msg').style.display = 'none';
+                document.getElementById('premium-paywall').style.display = 'block';
+            } else if (remaining > 0) {
+                // Premium ve hakkı var
                 document.getElementById('btn-reveal').style.display = 'flex';
                 document.getElementById('no-credits-msg').style.display = 'none';
-                document.getElementById('reveal-label').textContent = isPrem ? 'Profili Aç' : 'Profili Aç (' + remaining + ' hak kaldı)';
+                document.getElementById('premium-paywall').style.display = 'none';
+                document.getElementById('reveal-label').textContent = 'Profili Aç (' + remaining + ' hak kaldı)';
             } else {
+                // Premium ama günlük limit doldu
                 document.getElementById('btn-reveal').style.display = 'none';
                 document.getElementById('no-credits-msg').style.display = 'block';
+                document.getElementById('premium-paywall').style.display = 'none';
             }
         }
 
@@ -520,13 +539,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             var result = await window.discovery.revealMatch(userId, match.match_date, isPrem);
             if (result.success) {
                 showRevealed(m);
-                var newRemaining = isPrem ? 999 : result.remaining;
-                document.getElementById('credits-count').textContent = isPrem ? '∞' : Math.max(0, newRemaining);
+                document.getElementById('credits-count').textContent = Math.max(0, result.remaining);
             } else if (result.reason === 'daily_limit') {
                 this.disabled = false;
                 this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç</span>';
                 document.getElementById('btn-reveal').style.display = 'none';
                 document.getElementById('no-credits-msg').style.display = 'block';
+                document.getElementById('credits-count').textContent = '0';
+            } else if (result.reason === 'not_premium') {
+                this.disabled = false;
+                this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç</span>';
+                document.getElementById('btn-reveal').style.display = 'none';
+                document.getElementById('premium-paywall').style.display = 'block';
             } else {
                 this.disabled = false;
                 this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç</span>';
