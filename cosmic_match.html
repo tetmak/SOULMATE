@@ -471,9 +471,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         var remaining = isPrem ? 999 : (window.discovery.FREE_DAILY_REVEALS - todayReveals);
 
         // Credits bar güncelle
-        dbg('renderDailyMatch isPrem', isPrem, isPrem ? '#10b981' : '#ef4444');
-        dbg('todayReveals', todayReveals, '#818cf8');
-        dbg('remaining', remaining, '#818cf8');
         document.getElementById('credits-count').textContent = isPrem ? '∞' : Math.max(0, remaining);
         document.getElementById('credits-label').textContent = isPrem ? 'Sınırsız' : 'Bugün';
 
