@@ -402,7 +402,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Premium durumunu async kontrol et (RevenueCat + Supabase dahil)
         var isPrem = false;
         if (window.premium) {
-            isPrem = await window.premium.checkPremiumStatus();
+            isPrem = await window.premium.checkStatus();
         }
         var streak = null;
         if (!isPrem) {
