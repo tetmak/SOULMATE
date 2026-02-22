@@ -83,13 +83,27 @@
                     </div>
                 </label>
             </div>
-            <!-- TextField: Date of Birth -->
+            <!-- TextField: Date of Birth (Gün / Ay / Yıl) -->
             <div class="flex flex-col gap-4 px-4 py-3">
                 <label class="flex flex-col min-w-40 flex-1">
-                    <p class="text-white text-sm font-medium leading-normal pb-2">Date of Birth</p>
-                    <div class="flex w-full flex-1 items-stretch rounded-lg">
-                        <input id="input-dob" type="date"
-                            class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-white focus:outline-0 focus:ring-0 border border-[#544f3b] bg-[#27251c] focus:border-primary h-14 placeholder:text-[#b9b49d] p-[15px] pr-2 text-base font-normal leading-normal" />
+                    <p class="text-white text-sm font-medium leading-normal pb-2">Doğum Tarihi</p>
+                    <div class="flex w-full gap-2">
+                        <select id="input-dob-day"
+                            class="form-input flex-1 min-w-0 rounded-lg text-white focus:outline-0 focus:ring-0 border border-[#544f3b] bg-[#27251c] focus:border-primary h-14 px-3 text-base font-normal leading-normal">
+                            <option value="" disabled selected>Gün</option>
+                        </select>
+                        <select id="input-dob-month"
+                            class="form-input flex-[1.3] min-w-0 rounded-lg text-white focus:outline-0 focus:ring-0 border border-[#544f3b] bg-[#27251c] focus:border-primary h-14 px-3 text-base font-normal leading-normal">
+                            <option value="" disabled selected>Ay</option>
+                            <option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option>
+                            <option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option>
+                            <option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option>
+                            <option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
+                        </select>
+                        <select id="input-dob-year"
+                            class="form-input flex-1 min-w-0 rounded-lg text-white focus:outline-0 focus:ring-0 border border-[#544f3b] bg-[#27251c] focus:border-primary h-14 px-3 text-base font-normal leading-normal">
+                            <option value="" disabled selected>Yıl</option>
+                        </select>
                     </div>
                 </label>
             </div>
@@ -167,6 +181,43 @@
     </div>
 
     <script>
+        // ─── Gün/Ay/Yıl dropdown'larını doldur ─────────────────────
+        (function() {
+            var dayEl = document.getElementById('input-dob-day');
+            var yearEl = document.getElementById('input-dob-year');
+            for (var d = 1; d <= 31; d++) {
+                var opt = document.createElement('option');
+                opt.value = d < 10 ? '0' + d : '' + d;
+                opt.textContent = d;
+                dayEl.appendChild(opt);
+            }
+            var currentYear = new Date().getFullYear();
+            for (var y = currentYear - 10; y >= 1920; y--) {
+                var opt = document.createElement('option');
+                opt.value = '' + y;
+                opt.textContent = y;
+                yearEl.appendChild(opt);
+            }
+        })();
+
+        // Helper: Gün/Ay/Yıl'dan YYYY-MM-DD formatı oluştur
+        function getDobValue() {
+            var d = document.getElementById('input-dob-day').value;
+            var m = document.getElementById('input-dob-month').value;
+            var y = document.getElementById('input-dob-year').value;
+            if (!d || !m || !y) return '';
+            return y + '-' + m + '-' + d;
+        }
+        // Helper: YYYY-MM-DD'yi dropdown'lara ayır
+        function setDobValue(dateStr) {
+            if (!dateStr) return;
+            var parts = dateStr.split('-');
+            if (parts.length !== 3) return;
+            document.getElementById('input-dob-year').value = parts[0];
+            document.getElementById('input-dob-month').value = parts[1];
+            document.getElementById('input-dob-day').value = parts[2];
+        }
+
             // NUMERAEL APP - Navigation Helper
             (function () {
                 // Auto navigation için
@@ -249,12 +300,11 @@
                     if (!profErr && prof && (prof.full_name || prof.name) && prof.birth_date) {
                         // Supabase'de veri var — formu doldur
                         var nameInput = document.getElementById('input-name');
-                        var dobInput = document.getElementById('input-dob');
                         var tobInput = document.getElementById('input-tob');
                         var pobInput = document.getElementById('input-pob');
                         var profName = prof.full_name || prof.name;
                         if (nameInput && !nameInput.value) nameInput.value = profName;
-                        if (dobInput && !dobInput.value) dobInput.value = prof.birth_date;
+                        if (!getDobValue() && prof.birth_date) setDobValue(prof.birth_date);
                         if (tobInput && !tobInput.value && prof.birth_time) tobInput.value = prof.birth_time;
                         if (pobInput && !pobInput.value && prof.birth_place) pobInput.value = prof.birth_place;
                         if (prof.gender) {
@@ -297,7 +347,7 @@
             if (btnCalc) {
                 btnCalc.addEventListener('click', async function () {
                     const name = document.getElementById('input-name').value;
-                    const dob = document.getElementById('input-dob').value;
+                    const dob = getDobValue();
                     const tob = document.getElementById('input-tob').value;
                     const pob = document.getElementById('input-pob').value;
                     const genderEl = document.querySelector('input[name="gender"]:checked');

@@ -87,14 +87,26 @@
 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-primary/40 text-lg pointer-events-none">lock</span>
 </div>
 </div>
-<!-- Date (readonly) -->
+<!-- Date (readonly - Gün / Ay / Yıl) -->
 <div class="flex flex-col w-full">
-<p class="text-slate-700 dark:text-white/60 text-sm font-medium leading-normal pb-2 ml-1">Your Birthdate</p>
-<div class="relative">
-<input id="p1-date" type="date" readonly
-  class="form-input flex w-full rounded-2xl text-slate-900 dark:text-white/70 border border-primary/20 bg-primary/5 dark:bg-primary/5 h-14 px-4 text-base font-bold leading-normal cursor-not-allowed"
-  max="2010-12-31" min="1920-01-01"/>
-<span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-primary/40 text-lg pointer-events-none">lock</span>
+<p class="text-slate-700 dark:text-white/60 text-sm font-medium leading-normal pb-2 ml-1">Doğum Tarihiniz</p>
+<div class="flex w-full gap-2">
+  <select id="p1-date-day" disabled
+    class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white/70 border border-primary/20 bg-primary/5 dark:bg-primary/5 h-14 px-3 text-base font-bold leading-normal cursor-not-allowed">
+    <option value="" disabled selected>Gün</option>
+  </select>
+  <select id="p1-date-month" disabled
+    class="form-input flex-[1.3] min-w-0 rounded-2xl text-slate-900 dark:text-white/70 border border-primary/20 bg-primary/5 dark:bg-primary/5 h-14 px-3 text-base font-bold leading-normal cursor-not-allowed">
+    <option value="" disabled selected>Ay</option>
+    <option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option>
+    <option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option>
+    <option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option>
+    <option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
+  </select>
+  <select id="p1-date-year" disabled
+    class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white/70 border border-primary/20 bg-primary/5 dark:bg-primary/5 h-14 px-3 text-base font-bold leading-normal cursor-not-allowed">
+    <option value="" disabled selected>Yıl</option>
+  </select>
 </div>
 </div>
 </div>
@@ -119,13 +131,26 @@
 <p class="text-slate-700 dark:text-white text-sm font-medium leading-normal pb-2 ml-1">Partner's Name</p>
 <input id="p2-name" class="form-input flex w-full rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 placeholder:text-slate-400 dark:placeholder:text-[#b09db9] px-4 text-base font-normal leading-normal" placeholder="Enter their full name"/>
 </div>
-<!-- TextField Date -->
+<!-- TextField Date (Gün / Ay / Yıl) -->
 <div class="flex flex-col w-full">
-<p class="text-slate-700 dark:text-white text-sm font-medium leading-normal pb-2 ml-1">Partner's Birthdate</p>
-<div class="relative">
-<input id="p2-date" type="date"
-  class="form-input flex w-full rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 px-4 text-base font-normal leading-normal"
-  max="2010-12-31" min="1920-01-01"/>
+<p class="text-slate-700 dark:text-white text-sm font-medium leading-normal pb-2 ml-1">Partnerin Doğum Tarihi</p>
+<div class="flex w-full gap-2">
+  <select id="p2-date-day"
+    class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 px-3 text-base font-normal leading-normal">
+    <option value="" disabled selected>Gün</option>
+  </select>
+  <select id="p2-date-month"
+    class="form-input flex-[1.3] min-w-0 rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 px-3 text-base font-normal leading-normal">
+    <option value="" disabled selected>Ay</option>
+    <option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option>
+    <option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option>
+    <option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option>
+    <option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
+  </select>
+  <select id="p2-date-year"
+    class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 px-3 text-base font-normal leading-normal">
+    <option value="" disabled selected>Yıl</option>
+  </select>
 </div>
 </div>
 </div>
@@ -149,6 +174,48 @@
 </div>
 
 <script>
+// ─── Gün/Yıl dropdown'larını doldur ─────────────────────────
+(function() {
+  var dayEls = [document.getElementById('p1-date-day'), document.getElementById('p2-date-day')];
+  var yearEls = [document.getElementById('p1-date-year'), document.getElementById('p2-date-year')];
+  dayEls.forEach(function(el) {
+    if (!el) return;
+    for (var d = 1; d <= 31; d++) {
+      var opt = document.createElement('option');
+      opt.value = d < 10 ? '0' + d : '' + d;
+      opt.textContent = d;
+      el.appendChild(opt);
+    }
+  });
+  var currentYear = new Date().getFullYear();
+  yearEls.forEach(function(el) {
+    if (!el) return;
+    for (var y = currentYear - 10; y >= 1920; y--) {
+      var opt = document.createElement('option');
+      opt.value = '' + y;
+      opt.textContent = y;
+      el.appendChild(opt);
+    }
+  });
+})();
+// Helper: prefix-day/month/year → YYYY-MM-DD
+function getDateValue(prefix) {
+  var d = document.getElementById(prefix + '-day').value;
+  var m = document.getElementById(prefix + '-month').value;
+  var y = document.getElementById(prefix + '-year').value;
+  if (!d || !m || !y) return '';
+  return y + '-' + m + '-' + d;
+}
+// Helper: YYYY-MM-DD → prefix-day/month/year
+function setDateValue(prefix, dateStr) {
+  if (!dateStr) return;
+  var parts = dateStr.split('-');
+  if (parts.length !== 3) return;
+  document.getElementById(prefix + '-year').value = parts[0];
+  document.getElementById(prefix + '-month').value = parts[1];
+  document.getElementById(prefix + '-day').value = parts[2];
+}
+
 // ─── Form: Ön doldurma + kayıt ───────────────────────────────
 (async function() {
   var p1Name = '', p1BirthDate = '';
@@ -206,9 +273,8 @@
   
   // Form alanlarını doldur - SADECE ANA KULLANICI
   var p1n = document.getElementById('p1-name');
-  var p1d = document.getElementById('p1-date');
   if (p1n && p1Name) p1n.value = p1Name;
-  if (p1d && p1BirthDate) p1d.value = p1BirthDate;
+  if (p1BirthDate) setDateValue('p1-date', p1BirthDate);
 
   // *** PARTNER ALANLARI HER ZAMAN BOŞ - ön doldurma yok ***
 
@@ -219,9 +285,9 @@
     if (!txt.includes('Check Compatibility') && !txt.includes('Calculate')) return;
 
     var p1Name = (document.getElementById('p1-name') || {}).value || '';
-    var p1Date = (document.getElementById('p1-date') || {}).value || '';
+    var p1Date = getDateValue('p1-date');
     var p2Name = (document.getElementById('p2-name') || {}).value || '';
-    var p2Date = (document.getElementById('p2-date') || {}).value || '';
+    var p2Date = getDateValue('p2-date');
 
     // Validasyon
     if (!p1Name.trim() || !p2Name.trim() || !p1Date || !p2Date) {
