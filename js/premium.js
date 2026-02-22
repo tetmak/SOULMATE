@@ -151,17 +151,24 @@
     async function checkPremiumStatus() {
         if (isPremium()) return true;
 
+        // platformInit bitmesini bekle (RC veya Paddle hazır olsun)
+        try { await platformReady; } catch(e) {}
+
         // Native platform → RevenueCat'ten kontrol et
         if (window.revenuecat && window.revenuecat.isNative() && window.revenuecat.isReady()) {
-            var rcPremium = await window.revenuecat.checkEntitlements();
-            if (rcPremium) return true;
+            try {
+                var rcPremium = await window.revenuecat.checkEntitlements();
+                if (rcPremium) return true;
+            } catch(e) {
+                console.warn('[Premium] RC entitlement check hatası:', e);
+            }
         }
 
         // Supabase'den kontrol et (tüm platformlar)
         try {
             var session = await window.auth.getSession();
             if (!session || !session.user) return false;
-            var res = await window.supabaseClient.from('subscriptions').select('*').eq('user_id', session.user.id).in('status', ['active', 'cancelled']).single();
+            var res = await window.supabaseClient.from('subscriptions').select('*').eq('user_id', session.user.id).in('status', ['active', 'cancelled']).maybeSingle();
             if (res.data) {
                 var isActive = res.data.status === 'active' || (res.data.expires_at && new Date(res.data.expires_at) > new Date());
                 if (isActive) {
@@ -467,18 +474,23 @@
 
     // ─── INIT ────────────────────────────────────────────────
     // Platform bazlı init: native → RevenueCat, web → Paddle
-    (async function platformInit() {
+    // platformReady diğer modüller tarafından await edilebilir
+    var platformReady = (async function platformInit() {
         var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
 
         if (isNative && window.revenuecat) {
             console.log('[Premium] Native platform — RevenueCat başlatılıyor');
-            var rcOk = await window.revenuecat.init();
-            if (rcOk) {
-                // Mevcut entitlement'ları kontrol et
-                await window.revenuecat.checkEntitlements();
-                console.log('[Premium] RevenueCat hazır');
-            } else {
-                console.warn('[Premium] RevenueCat başlatılamadı — Paddle fallback');
+            try {
+                var rcOk = await window.revenuecat.init();
+                if (rcOk) {
+                    await window.revenuecat.checkEntitlements();
+                    console.log('[Premium] RevenueCat hazır');
+                } else {
+                    console.warn('[Premium] RevenueCat başlatılamadı — Paddle fallback');
+                    await initPaddle();
+                }
+            } catch(e) {
+                console.error('[Premium] platformInit hatası:', e);
                 await initPaddle();
             }
         } else {
@@ -512,6 +524,7 @@
             if (window.revenuecat && window.revenuecat.isNative()) return window.revenuecat.isReady();
             return paddleReady;
         },
+        waitReady: function() { return platformReady; },
         isNative: function() { return window.revenuecat && window.revenuecat.isNative(); },
         PRICE: PREMIUM_PRICE, FREE_LIMITS: FREE_LIMITS,
         simulate: simulatePremium, clear: clearPremium
