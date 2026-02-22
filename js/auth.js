@@ -121,17 +121,28 @@ window.auth = auth;
 document.addEventListener('DOMContentLoaded', function() {
     // onAuthStateChange INITIAL_SESSION event'ini bekle — Supabase'in
     // session'ı localStorage'dan recover etmesini garanti eder.
-    // Doğrudan getSession() çağırmak race condition yaratıyordu:
-    // session henüz recover olmadan null dönüp sayfayı yanlış yere yönlendiriyordu.
+    // KRITIK: Sadece INITIAL_SESSION'da checkSession() çağır.
+    // SIGNED_IN/SIGNED_OUT event'lerinde çağırma! Çünkü:
+    // - Kullanıcı sign_up sayfasında sign up yapınca SIGNED_IN event'i fırlatılır
+    // - checkSession() "session var + auth sayfası" görüp HOME'a yönlendirir
+    // - Sign up sayfasının kendi yönlendirmesi (→ birth form) hiç çalışamaz
+    // - Bu race condition yüzünden yeni kullanıcılar birth form'u hiç görmüyordu
     if (window.supabaseClient && window.supabaseClient.auth) {
         var done = false;
         var sub = window.supabaseClient.auth.onAuthStateChange(function(event) {
             if (done) return;
-            if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+            if (event === 'INITIAL_SESSION') {
+                // Sayfa ilk yüklendiğinde session recover oldu — yönlendirme yap
                 done = true;
                 try { sub.data.subscription.unsubscribe(); } catch(e) {}
                 _authResolve();
                 auth.checkSession();
+            } else if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+                // Aktif login/signup — sayfanın kendi kodu yönlendirmeyi yapacak
+                done = true;
+                try { sub.data.subscription.unsubscribe(); } catch(e) {}
+                _authResolve();
+                // checkSession() ÇAĞIRMA — race condition'ı önle
             }
         });
         // Fallback: 3 saniye içinde event gelmezse yine de kontrol et
