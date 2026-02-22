@@ -274,9 +274,11 @@
         // Calculate Button Logic
         setTimeout(async function () {
 
-            // URL'de ?newperson parametresi yoksa ve localStorage'da profil varsa → ana sayfaya yönlendir
+            // URL'de ?newperson parametresi VEYA localStorage flag'i varsa → yeni kişi modu
             var urlParams = new URLSearchParams(window.location.search);
-            var isNewPerson = urlParams.has('newperson');
+            var isNewPerson = urlParams.has('newperson') || localStorage.getItem('numerael_newperson') === '1';
+            // Flag'i temizle — bir kez kullanılsın
+            localStorage.removeItem('numerael_newperson');
             if (!isNewPerson) {
                 try {
                     var localCheck = JSON.parse(localStorage.getItem('numerael_user_data'));
@@ -288,7 +290,7 @@
                 } catch(e) {}
             }
 
-            // Supabase'den profil verisi çek ve formu doldur
+            // Supabase'den profil verisi çek
             try {
                 var sess = await window.auth.getSession();
                 if (sess && sess.user && window.supabaseClient) {
@@ -298,21 +300,8 @@
                         .eq('id', sess.user.id)
                         .single();
                     if (!profErr && prof && (prof.full_name || prof.name) && prof.birth_date) {
-                        // Supabase'de veri var — formu doldur
-                        var nameInput = document.getElementById('input-name');
-                        var tobInput = document.getElementById('input-tob');
-                        var pobInput = document.getElementById('input-pob');
                         var profName = prof.full_name || prof.name;
-                        if (nameInput && !nameInput.value) nameInput.value = profName;
-                        if (!getDobValue() && prof.birth_date) setDobValue(prof.birth_date);
-                        if (tobInput && !tobInput.value && prof.birth_time) tobInput.value = prof.birth_time;
-                        if (pobInput && !pobInput.value && prof.birth_place) pobInput.value = prof.birth_place;
-                        if (prof.gender) {
-                            var genderRadio = document.querySelector('input[name="gender"][value="' + prof.gender + '"]');
-                            if (genderRadio) genderRadio.checked = true;
-                        }
-                        // localStorage'ı da güncelle
-                        // Supabase'de profil var ama localStorage'da yok — kaydet ve ana sayfaya yönlendir
+                        // localStorage'ı güncelle
                         localStorage.setItem('numerael_user_data', JSON.stringify({
                             name: profName,
                             birthDate: prof.birth_date,
@@ -320,11 +309,25 @@
                             birthPlace: prof.birth_place || '',
                             gender: prof.gender || 'male'
                         }));
-                        console.log('[Form] Supabase profili bulundu, ana sayfaya yönlendiriliyor');
                         if (!isNewPerson) {
+                            // İlk kayıt → formu doldur ve ana sayfaya yönlendir
+                            var nameInput = document.getElementById('input-name');
+                            var tobInput = document.getElementById('input-tob');
+                            var pobInput = document.getElementById('input-pob');
+                            if (nameInput && !nameInput.value) nameInput.value = profName;
+                            if (!getDobValue() && prof.birth_date) setDobValue(prof.birth_date);
+                            if (tobInput && !tobInput.value && prof.birth_time) tobInput.value = prof.birth_time;
+                            if (pobInput && !pobInput.value && prof.birth_place) pobInput.value = prof.birth_place;
+                            if (prof.gender) {
+                                var genderRadio = document.querySelector('input[name="gender"][value="' + prof.gender + '"]');
+                                if (genderRadio) genderRadio.checked = true;
+                            }
+                            console.log('[Form] Supabase profili bulundu, ana sayfaya yönlendiriliyor');
                             window.location.href = 'mystic_numerology_home_1.html';
                             return;
                         }
+                        // isNewPerson → formu boş bırak, yeni kişi girişi
+                        console.log('[Form] Yeni kişi modu — form boş');
                     }
                 }
             } catch(supErr) { console.warn('[Form] Supabase auto-fill hatası:', supErr); }
