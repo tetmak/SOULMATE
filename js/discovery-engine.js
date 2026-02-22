@@ -267,27 +267,51 @@
     }
 
     // ─── REVEAL (Eşleşme açma) ──────────────────────────────
-    async function revealMatch(userId, matchDate) {
-        var sb = window.supabaseClient;
-        // Kredi kontrolü
-        var streak = null;
-        try {
-            var res = await sb.from('user_streaks').select('*').eq('user_id', userId).single();
-            streak = res.data;
-        } catch(e) {}
+    var FREE_DAILY_REVEALS = 3;
 
-        if (!streak || streak.reveal_credits < 1) return { success: false, reason: 'no_credits' };
+    async function getDailyRevealCount(userId) {
+        var today = todayStr();
+        try {
+            var res = await window.supabaseClient
+                .from('daily_matches')
+                .select('id', { count: 'exact' })
+                .eq('user_id', userId)
+                .eq('match_date', today)
+                .eq('revealed', true);
+            return (res.count || 0);
+        } catch(e) { return 0; }
+    }
+
+    async function revealMatch(userId, matchDate, isPremium) {
+        var sb = window.supabaseClient;
+
+        // Premium: sınırsız reveal
+        if (!isPremium) {
+            // Non-premium: günde 3 ücretsiz reveal kontrolü
+            var todayReveals = await getDailyRevealCount(userId);
+            if (todayReveals >= FREE_DAILY_REVEALS) {
+                return { success: false, reason: 'daily_limit', remaining: 0 };
+            }
+        }
 
         // Reveal yap
         try {
             await sb.from('daily_matches').update({ revealed: true })
                 .eq('user_id', userId).eq('match_date', matchDate || todayStr());
-            await sb.from('user_streaks').update({
-                reveal_credits: streak.reveal_credits - 1,
-                total_reveals: (streak.total_reveals || 0) + 1,
-                updated_at: new Date().toISOString()
-            }).eq('user_id', userId);
-            return { success: true, credits_remaining: streak.reveal_credits - 1 };
+
+            // total_reveals güncelle
+            try {
+                var streakRes = await sb.from('user_streaks').select('*').eq('user_id', userId).single();
+                if (streakRes.data) {
+                    await sb.from('user_streaks').update({
+                        total_reveals: (streakRes.data.total_reveals || 0) + 1,
+                        updated_at: new Date().toISOString()
+                    }).eq('user_id', userId);
+                }
+            } catch(e) {}
+
+            var remaining = isPremium ? 999 : (FREE_DAILY_REVEALS - (await getDailyRevealCount(userId)));
+            return { success: true, remaining: Math.max(0, remaining) };
         } catch(e) {
             return { success: false, reason: 'error' };
         }
@@ -398,6 +422,8 @@
         // Eşleşme
         findDailyMatch: findDailyMatch,
         revealMatch: revealMatch,
+        getDailyRevealCount: getDailyRevealCount,
+        FREE_DAILY_REVEALS: FREE_DAILY_REVEALS,
         getTopMatches: getTopMatches,
         getMatchHistory: getMatchHistory,
         fetchDiscoverableProfiles: fetchDiscoverableProfiles

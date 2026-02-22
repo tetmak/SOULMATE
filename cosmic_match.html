@@ -155,8 +155,8 @@
                         <span class="material-symbols-outlined text-cosmic-violet text-xl">visibility</span>
                     </div>
                     <div>
-                        <p id="credits-count" class="text-white text-sm font-black">0</p>
-                        <p class="text-white/35 text-[10px]">Reveal</p>
+                        <p id="credits-count" class="text-white text-sm font-black">3</p>
+                        <p id="credits-label" class="text-white/35 text-[10px]">Bugün</p>
                     </div>
                 </div>
             </div>
@@ -223,8 +223,8 @@
 
                         <!-- No credits message -->
                         <div id="no-credits-msg" style="display:none" class="w-full glass rounded-xl p-3 text-center">
-                            <p class="text-white/40 text-xs">🔒 Reveal hakkın yok</p>
-                            <p class="text-white/25 text-[10px] mt-1">Her 3 günlük streak = 1 reveal hakkı</p>
+                            <p class="text-white/40 text-xs">🔒 Bugünkü reveal hakkın doldu</p>
+                            <p class="text-white/25 text-[10px] mt-1">Yarın 3 yeni hak gelecek · Premium ile sınırsız!</p>
                         </div>
                     </div>
                 </div>
@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Günlük eşleşme
         var match = await window.discovery.findDailyMatch(userId, userProfile);
-        renderDailyMatch(match, streak);
+        await renderDailyMatch(match, streak);
 
         // Radar
         var topMatches = await window.discovery.getTopMatches(userId, userProfile, 8);
@@ -409,18 +409,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!s) return;
         document.getElementById('streak-count').textContent = s.current_streak;
         document.getElementById('streak-label').textContent = s.current_streak + ' Gün Streak';
-        document.getElementById('credits-count').textContent = s.reveal_credits || 0;
 
-        var nextReward = 3 - (s.current_streak % 3);
-        if (nextReward === 3 && s.current_streak > 0 && s.current_streak % 3 === 0) {
-            document.getElementById('streak-next').textContent = '🎉 Bugün reveal kazandın!';
+        if (s.current_streak >= 7) {
+            document.getElementById('streak-next').textContent = '🔥 Harika gidiyorsun!';
+        } else if (s.current_streak >= 3) {
+            document.getElementById('streak-next').textContent = '✨ Streak\'ini sürdür!';
         } else {
-            document.getElementById('streak-next').textContent = 'Sonraki ödül: ' + nextReward + ' günde';
+            document.getElementById('streak-next').textContent = 'Her gün gir, streak\'ini büyüt!';
         }
     }
 
     // ─── GÜNLÜK EŞLEŞME RENDER ──────────────────────────────
-    function renderDailyMatch(match, streak) {
+    async function renderDailyMatch(match, streak) {
         document.getElementById('match-loading').style.display = 'none';
 
         if (!match || !match.matched) {
@@ -431,7 +431,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         var m = match.matched;
         var score = match.match_score || 0;
         var revealed = match.revealed;
-        var credits = streak ? (streak.reveal_credits || 0) : 0;
+        var isPrem = window.premium && window.premium.isPremium();
+
+        // Günlük reveal hakkını hesapla
+        var todayReveals = await window.discovery.getDailyRevealCount(userId);
+        var remaining = isPrem ? 999 : (window.discovery.FREE_DAILY_REVEALS - todayReveals);
+
+        // Credits bar güncelle
+        document.getElementById('credits-count').textContent = isPrem ? '∞' : Math.max(0, remaining);
+        document.getElementById('credits-label').textContent = isPrem ? 'Sınırsız' : 'Bugün';
 
         document.getElementById('match-content').style.display = 'block';
 
@@ -461,9 +469,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             document.getElementById('match-card').classList.add('match-card-blur');
             document.getElementById('match-card').classList.remove('match-card-revealed');
 
-            if (credits > 0) {
+            if (isPrem || remaining > 0) {
                 document.getElementById('btn-reveal').style.display = 'flex';
                 document.getElementById('no-credits-msg').style.display = 'none';
+                document.getElementById('reveal-label').textContent = isPrem ? 'Profili Aç' : 'Profili Aç (' + remaining + ' hak kaldı)';
             } else {
                 document.getElementById('btn-reveal').style.display = 'none';
                 document.getElementById('no-credits-msg').style.display = 'block';
@@ -472,21 +481,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Reveal butonu
         document.getElementById('btn-reveal').addEventListener('click', async function() {
-            // Premium gate — reveal sadece premium
-            if (window.premium && !window.premium.isPremium()) {
-                window.premium.showPaywall('Eşleşme açma (Reveal) Premium özelliğidir. Premium ile sınırsız reveal!', 'cosmic_match_reveal');
-                return;
-            }
             this.disabled = true;
             this.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
 
-            var result = await window.discovery.revealMatch(userId, match.match_date);
+            var result = await window.discovery.revealMatch(userId, match.match_date, isPrem);
             if (result.success) {
                 showRevealed(m);
-                document.getElementById('credits-count').textContent = result.credits_remaining;
+                var newRemaining = isPrem ? 999 : result.remaining;
+                document.getElementById('credits-count').textContent = isPrem ? '∞' : Math.max(0, newRemaining);
+            } else if (result.reason === 'daily_limit') {
+                this.disabled = false;
+                this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç</span>';
+                document.getElementById('btn-reveal').style.display = 'none';
+                document.getElementById('no-credits-msg').style.display = 'block';
             } else {
                 this.disabled = false;
-                this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç (1 Reveal)</span>';
+                this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç</span>';
             }
         });
     }
