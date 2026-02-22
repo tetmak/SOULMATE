@@ -444,6 +444,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // ─── ANA İÇERİK YÜKLEME ─────────────────────────────────
     async function initMain() {
+      try {
         // Mevcut kullanıcının profilini doğru değerlerle güncelle
         await window.discovery.refreshOwnProfile(userId);
 
@@ -453,6 +454,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (window.premium) {
             isPrem = await window.premium.checkStatus();
             dbg('checkStatus() result', isPrem, isPrem ? '#10b981' : '#ef4444');
+            dbg('RC.isReady() after wait', window.revenuecat ? window.revenuecat.isReady() : 'N/A', '#a78bfa');
             dbg('isPremium() after check', window.premium.isPremium(), isPrem ? '#10b981' : '#ef4444');
         } else {
             dbg('window.premium', 'NOT AVAILABLE!', '#ef4444');
@@ -478,6 +480,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Geçmiş — radar verileriyle birleştir
         var history = await window.discovery.getMatchHistory(userId, 10);
         renderHistory(history, topMatches);
+      } catch(e) {
+        console.error('[CosmicMatch] initMain hatası:', e);
+        dbg('initMain ERROR', e.message || String(e), '#ef4444');
+      }
     }
 
     // ─── STREAK RENDER ───────────────────────────────────────
