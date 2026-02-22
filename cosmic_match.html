@@ -399,8 +399,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Mevcut kullanıcının profilini doğru değerlerle güncelle
         await window.discovery.refreshOwnProfile(userId);
 
-        // Streak güncelle (premium kullanıcılarda streak gerekli değil)
-        var isPrem = window.premium && window.premium.isPremium();
+        // Premium durumunu async kontrol et (RevenueCat + Supabase dahil)
+        var isPrem = false;
+        if (window.premium) {
+            isPrem = await window.premium.checkPremiumStatus();
+        }
         var streak = null;
         if (!isPrem) {
             streak = await window.discovery.updateStreak(userId);
