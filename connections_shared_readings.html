@@ -14,9 +14,11 @@
     <script src="js/premium.js"></script>
     <script src="js/gamification-engine.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/discovery-engine.js"></script>
+    <script src="js/connection-engine.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode: "class", theme: { extend: {
-            colors: { primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628" },
+            colors: { primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899" },
             fontFamily: { display:["Space Grotesk","sans-serif"] },
             borderRadius: { DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" }
         }}}
@@ -24,6 +26,7 @@
     <style>
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
         .glow-border{box-shadow:0 0 12px rgba(242,204,13,0.35)}
+        .cosmic-glow-border{box-shadow:0 0 12px rgba(139,92,246,0.35)}
         body{min-height:max(884px,100dvh);font-family:'Space Grotesk',sans-serif}
         .hide-scrollbar::-webkit-scrollbar{display:none}
         .hide-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
@@ -65,6 +68,15 @@
                 <span class="text-white/40 text-xs font-medium">Ekle</span>
             </div>
         </div>
+    </div>
+
+    <!-- Match-based Connections -->
+    <div id="match-connections-section" style="display:none" class="px-4 pb-2">
+        <div class="flex items-center justify-between py-4">
+            <h3 class="text-white text-base font-bold tracking-tight">Match Connections</h3>
+            <span id="match-conn-count" class="text-white/30 text-xs"></span>
+        </div>
+        <div id="match-connections-list" class="flex flex-col gap-3"></div>
     </div>
 
     <!-- Recent Analyses Liste -->
@@ -109,12 +121,92 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function isFemale(conn) {
         if (conn.gender === 'female') return true;
-        var low = (conn.fullName||'').toLowerCase();
+        var low = (conn.fullName||conn.full_name||'').toLowerCase();
         return FEMALE_NAMES.some(function(fn){return low.startsWith(fn);});
+    }
+    function getPhoto(name, gender) {
+        if (gender === 'female') return FEMALE_PHOTO;
+        if (gender === 'male') return MALE_PHOTO;
+        var low = (name||'').toLowerCase();
+        return FEMALE_NAMES.some(function(fn){return low.startsWith(fn);}) ? FEMALE_PHOTO : MALE_PHOTO;
     }
     function shortDate(s){try{return new Date(s).toLocaleDateString('tr-TR',{day:'numeric',month:'short'});}catch(e){return '';}}
 
-    // ─── Bağlantıları yükle + deduplicate ────────────────────
+    // ─── Session ────────────────────────────────────────────
+    var session = null;
+    var currentUserId = null;
+    try {
+        session = await window.auth.getSession();
+        if (session && session.user) currentUserId = session.user.id;
+    } catch(e) {}
+
+    // ─── Match-based connections (from Supabase) ────────────
+    if (currentUserId && window.connectionEngine) {
+        var matchConns = await window.connectionEngine.getConnections(currentUserId);
+        if (matchConns.length > 0) {
+            var mcSection = document.getElementById('match-connections-section');
+            var mcList = document.getElementById('match-connections-list');
+            var mcCount = document.getElementById('match-conn-count');
+            var rowEl = document.getElementById('connections-row');
+
+            mcSection.style.display = 'block';
+            mcCount.textContent = matchConns.length + ' connected';
+
+            matchConns.forEach(function(mc, idx) {
+                var p = mc.profile;
+                if (!p) return;
+                var name = p.full_name || 'Unknown';
+                var lp = p.life_path || calcLP(p.birth_date) || '?';
+                var photo = getPhoto(name, p.gender);
+                var firstName = name.split(' ')[0];
+                var arch = ARCH[lp] || 'Soul';
+                var exp = p.expression_num || calcExp(name);
+
+                // Add to horizontal scroll row
+                var avatarDiv = document.createElement('div');
+                avatarDiv.className = 'flex flex-col items-center gap-2 shrink-0 cursor-pointer fade-in';
+                avatarDiv.style.animationDelay = (idx * 0.05) + 's';
+                avatarDiv.innerHTML =
+                    '<div class="relative">' +
+                        '<div class="size-16 rounded-full border-2 border-cosmic-violet/60 cosmic-glow-border overflow-hidden bg-surface-dark">' +
+                            '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">' +
+                        '</div>' +
+                        '<div class="absolute -bottom-1 -right-1 bg-cosmic-violet text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]">' + lp + '</div>' +
+                    '</div>' +
+                    '<span class="text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
+                avatarDiv.addEventListener('click', function() {
+                    window.location.href = 'messaging.html?uid=' + encodeURIComponent(mc.user_id);
+                });
+                rowEl.insertBefore(avatarDiv, rowEl.lastElementChild);
+
+                // Add to match connections list
+                var card = document.createElement('div');
+                card.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-cosmic-violet/15 cursor-pointer fade-in';
+                card.style.animationDelay = (0.05 + idx * 0.07) + 's';
+                card.innerHTML =
+                    '<div class="relative shrink-0">' +
+                        '<div class="size-14 rounded-full overflow-hidden border-2 border-cosmic-violet/30">' +
+                            '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">' +
+                        '</div>' +
+                        '<div class="absolute -bottom-1 -right-1 bg-cosmic-violet text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]">' + lp + '</div>' +
+                    '</div>' +
+                    '<div class="flex-1 min-w-0">' +
+                        '<p class="text-white font-bold truncate">' + name + '</p>' +
+                        '<p class="text-white/40 text-xs mt-0.5">' + arch + ' · Exp: ' + exp + '</p>' +
+                        '<p class="text-white/25 text-xs">' + shortDate(mc.created_at) + '</p>' +
+                    '</div>' +
+                    '<span class="material-symbols-outlined text-cosmic-violet/40 shrink-0">chat</span>' +
+                    '<span class="material-symbols-outlined text-white/20 shrink-0">chevron_right</span>';
+
+                card.addEventListener('click', function() {
+                    window.location.href = 'messaging.html?uid=' + encodeURIComponent(mc.user_id);
+                });
+                mcList.appendChild(card);
+            });
+        }
+    }
+
+    // ─── Local connections (existing localStorage) ──────────
     var rawConns = [];
     try { rawConns = await window.profile.getConnections(); } catch(e) {}
 
@@ -127,7 +219,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
     var connections = Object.values(seen);
-    // En yeniden eskiye sırala
     connections.sort(function(a,b){return new Date(b.createdAt)-new Date(a.createdAt);});
 
     var rowEl = document.getElementById('connections-row');
@@ -136,13 +227,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     var countEl = document.getElementById('connections-count');
     var aCountEl = document.getElementById('analyses-count');
 
-    if (connections.length === 0) {
+    // Update total count (local + match-based)
+    var matchConnCount = 0;
+    try { if (currentUserId && window.connectionEngine) { var mc = await window.connectionEngine.getConnections(currentUserId); matchConnCount = mc.length; } } catch(e){}
+    var totalCount = connections.length + matchConnCount;
+    countEl.textContent = totalCount + ' kişi';
+
+    if (connections.length === 0 && matchConnCount === 0) {
         emptyEl.style.display = 'block';
         return;
     }
 
-    countEl.textContent = connections.length + ' kişi';
-    aCountEl.textContent = connections.length + ' analiz';
+    if (connections.length > 0) {
+        aCountEl.textContent = connections.length + ' analiz';
+    }
 
     connections.forEach(function(conn, idx) {
         var lp = conn.lifePath || calcLP(conn.birthDate) || '?';
@@ -167,7 +265,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         avatarDiv.addEventListener('click', function() {
             window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
         });
-        // Ekle butonundan önce ekle
         rowEl.insertBefore(avatarDiv, rowEl.lastElementChild);
 
         // ── Analiz kartı ───────────────────────────────────────
@@ -190,38 +287,33 @@ document.addEventListener('DOMContentLoaded', async function() {
                 '<span class="material-symbols-outlined text-white/30 group-hover:text-red-500 transition-colors">delete</span>' +
             '</button>' +
             '<span class="material-symbols-outlined text-white/20 shrink-0 cursor-pointer" data-action="view">chevron_right</span>';
-        
-        // Event delegation - click handler
+
         card.addEventListener('click', function(e) {
             var target = e.target.closest('[data-action]');
             if (!target) return;
-            
+
             var action = target.getAttribute('data-action');
-            
+
             if (action === 'view') {
                 window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
             } else if (action === 'delete') {
                 e.stopPropagation();
                 var name = target.getAttribute('data-name');
-                
-                // Confirm dialog
-                if (confirm('⚠️ "' + name + '" profilini silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz.')) {
+                if (confirm('"' + name + '" profilini silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz.')) {
                     deleteConnection(name);
                 }
             }
         });
-        
+
         listEl.appendChild(card);
     });
-    
+
     // ─── Silme fonksiyonu ──────────────────────────────────
     async function deleteConnection(fullName) {
         try {
-            // profile.js'deki deleteConnection fonksiyonunu çağır
             if (window.profile && window.profile.deleteConnection) {
                 await window.profile.deleteConnection(fullName);
             } else {
-                // Fallback: localStorage'dan sil
                 var userData = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
                 var userId = userData.userId || 'default';
                 var key = 'numerael_connections_' + userId;
@@ -231,12 +323,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 });
                 localStorage.setItem(key, JSON.stringify(conns));
             }
-            
-            // Başarılı - sayfayı yenile
             window.location.reload();
         } catch (error) {
             console.error('Delete error:', error);
-            alert('❌ Silme işlemi başarısız oldu.');
         }
     }
 });

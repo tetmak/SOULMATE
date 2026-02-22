@@ -13,6 +13,7 @@
     <script src="js/auth.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/discovery-engine.js"></script>
+    <script src="js/connection-engine.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -142,6 +143,19 @@
                 class="text-center py-8 text-white/25 text-sm italic rounded-2xl border border-white/5 bg-card-dark">
                 Henüz uyumluluk analizi yok.<br/>
                 <span class="mt-3 text-white/35 text-xs block">Alttaki <span class="text-primary font-bold">+</span> menüsünden "Ruh Eşi" ile başlayabilirsin.</span>
+            </div>
+        </div>
+
+        <!-- Connection Requests Inbox -->
+        <div class="fade-in" style="animation-delay:0.22s">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Connection Requests</p>
+                <span id="req-count-badge" style="display:none" class="text-xs font-bold text-white bg-cosmic-violet/80 px-2 py-0.5 rounded-full"></span>
+            </div>
+            <div id="conn-requests-list" class="space-y-3"></div>
+            <div id="conn-requests-empty" style="display:none"
+                class="text-center py-6 text-white/25 text-sm italic rounded-2xl border border-white/5 bg-card-dark">
+                No pending requests
             </div>
         </div>
 
@@ -375,6 +389,102 @@
         window.location.href = 'mystic_splash_screen.html';
     });
 
+})();
+
+// ─── CONNECTION REQUESTS INBOX ─────────────────────────────
+(async function() {
+    var session = null;
+    try { session = await window.auth.getSession(); } catch(e) {}
+    var uid = session && session.user ? session.user.id : null;
+    if (!uid || !window.connectionEngine) return;
+
+    var FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar'];
+    var MALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuCuOsAz49QL47Y42kzevX6C-TTqnQcn-fKw9bm9U03OA6_buy44Ic8bt_wBUtcV1MJ5sSb6R8X_DJ-8lXNkSzsIERq3NcoxgBJpX1j8AHhsCx98dsslHkQKdYdaF2cK9NTMVQ_OIb_O9MJ9U-ow3guDO7mGY7CZqxCnsEYsQtxoblSjPmW1y00tP0EZpQ-aEvg3xi3jiQQYomz46nlrrOFmED0f3iCzkJ1soKbGh7PjJ9Gt3wTvCduVO9zVt_o3gQ0nIpmOLHD736c";
+    var FEMALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuAwVIwPfxW7vQTdT6_K5paisRbNWYqgoOiwgoxaVjFXEkx2Hocf55LzYmz1rXyDXknrbMiB8X59nhq-ptzZsewBCHh9Bi4547zbTT3ZGBQPNn6awMcDKio5VTuc-gUc0V9YR2bAFRCjLTR5wqzwERZcGYXOLcXEN3lp4szkNmpf1Pd1-9lj37_4nq74Sfu5spZUv6QDfvpVwS7fZTl7cHKYVI8htJIgEwQ7EgFwZuHn8KfRUOgWtjHWZ3pu_qj4AgsK0fYYsgjY2_g";
+
+    function isFemaleByName(name, gender) {
+        if (gender === 'female') return true;
+        var low = (name||'').toLowerCase();
+        return FEMALE_NAMES.some(function(fn){ return low.startsWith(fn); });
+    }
+    function getPhoto(name, gender) { return isFemaleByName(name, gender) ? FEMALE_PHOTO : MALE_PHOTO; }
+
+    var requests = await window.connectionEngine.getIncomingRequests(uid);
+    var listEl = document.getElementById('conn-requests-list');
+    var emptyEl = document.getElementById('conn-requests-empty');
+    var badgeEl = document.getElementById('req-count-badge');
+
+    if (!requests.length) {
+        emptyEl.style.display = 'block';
+        return;
+    }
+
+    badgeEl.textContent = requests.length;
+    badgeEl.style.display = 'inline';
+
+    requests.forEach(function(req) {
+        var sp = req.sender_profile || {};
+        var senderName = sp.full_name || 'Unknown';
+        var photo = getPhoto(senderName, sp.gender);
+        var lp = sp.life_path || '?';
+
+        var card = document.createElement('div');
+        card.className = 'flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-white/5 fade-in';
+        card.innerHTML =
+            '<div class="relative shrink-0">' +
+                '<div class="size-12 rounded-full overflow-hidden border-2 border-cosmic-violet/30 bg-surface-dark">' +
+                    '<img src="' + photo + '" class="w-full h-full object-cover" alt="">' +
+                '</div>' +
+                '<div class="absolute -bottom-1 -right-1 bg-cosmic-violet text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]">' + lp + '</div>' +
+            '</div>' +
+            '<div class="flex-1 min-w-0">' +
+                '<p class="text-white font-bold text-sm truncate">' + senderName + '</p>' +
+                '<p class="text-white/35 text-[10px]">LP ' + lp + '</p>' +
+            '</div>' +
+            '<div class="flex gap-2 shrink-0">' +
+                '<button class="conn-accept-btn size-10 rounded-full bg-green-500/15 flex items-center justify-center" data-reqid="' + req.id + '">' +
+                    '<span class="material-symbols-outlined text-green-400 text-lg">check</span>' +
+                '</button>' +
+                '<button class="conn-reject-btn size-10 rounded-full bg-red-500/15 flex items-center justify-center" data-reqid="' + req.id + '">' +
+                    '<span class="material-symbols-outlined text-red-400 text-lg">close</span>' +
+                '</button>' +
+            '</div>';
+
+        // Accept handler
+        card.querySelector('.conn-accept-btn').addEventListener('click', async function() {
+            var reqId = this.getAttribute('data-reqid');
+            this.disabled = true;
+            this.innerHTML = '<span class="material-symbols-outlined text-green-400 text-lg animate-spin">progress_activity</span>';
+            var result = await window.connectionEngine.acceptRequest(reqId, uid);
+            if (result.success) {
+                card.innerHTML = '<div class="flex-1 text-center py-2"><p class="text-green-400 text-sm font-bold">Accepted</p></div>';
+                setTimeout(function() { card.remove(); updateBadge(); }, 1500);
+            }
+        });
+
+        // Reject handler
+        card.querySelector('.conn-reject-btn').addEventListener('click', async function() {
+            var reqId = this.getAttribute('data-reqid');
+            this.disabled = true;
+            var result = await window.connectionEngine.rejectRequest(reqId, uid);
+            if (result.success) {
+                card.innerHTML = '<div class="flex-1 text-center py-2"><p class="text-red-400/60 text-sm">Rejected</p></div>';
+                setTimeout(function() { card.remove(); updateBadge(); }, 1000);
+            }
+        });
+
+        listEl.appendChild(card);
+    });
+
+    function updateBadge() {
+        var remaining = listEl.querySelectorAll('.conn-accept-btn').length;
+        if (remaining === 0) {
+            badgeEl.style.display = 'none';
+            emptyEl.style.display = 'block';
+        } else {
+            badgeEl.textContent = remaining;
+        }
+    }
 })();
 </script>
 <script src="js/bottom-nav.js"></script>

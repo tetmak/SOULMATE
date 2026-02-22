@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <title>Messages</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/discovery-engine.js"></script>
+    <script src="js/connection-engine.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = { darkMode:"class", theme:{ extend:{
+            colors:{ primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899","cosmic-blue":"#6366f1" },
+            fontFamily:{ display:["Space Grotesk","sans-serif"] },
+            borderRadius:{ DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" }
+        }}}
+    </script>
+    <style>
+        .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+        body{font-family:'Space Grotesk',sans-serif}
+        @keyframes fade-in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+        .fade-in{animation:fade-in 0.25s ease forwards}
+        .msg-bubble-sent{background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.15);border-radius:1rem 1rem 0.25rem 1rem}
+        .msg-bubble-recv{background:rgba(57,54,40,0.5);border:1px solid rgba(255,255,255,0.05);border-radius:1rem 1rem 1rem 0.25rem}
+    </style>
+</head>
+<body class="bg-background-dark text-white h-screen flex flex-col">
+<div class="relative flex flex-col h-full w-full max-w-[480px] mx-auto">
+
+    <!-- Header -->
+    <header class="flex items-center p-4 pb-3 gap-3 sticky top-0 z-50 bg-background-dark/95 backdrop-blur-md border-b border-white/5 shrink-0">
+        <div onclick="window.location.href='connections_shared_readings.html'"
+            class="flex size-10 shrink-0 items-center justify-center cursor-pointer text-white rounded-full hover:bg-white/10 transition-colors">
+            <span class="material-symbols-outlined">arrow_back_ios</span>
+        </div>
+        <div id="header-avatar" class="size-10 shrink-0 rounded-full overflow-hidden border-2 border-cosmic-violet/30 bg-surface-dark flex items-center justify-center">
+            <span class="material-symbols-outlined text-white/20">person</span>
+        </div>
+        <div class="flex-1 min-w-0">
+            <p id="header-name" class="text-white text-sm font-bold truncate">...</p>
+            <p id="header-info" class="text-white/35 text-[10px]"></p>
+        </div>
+    </header>
+
+    <!-- Not connected warning -->
+    <div id="not-connected" style="display:none" class="flex-1 flex flex-col items-center justify-center px-6 text-center">
+        <span class="material-symbols-outlined text-white/15 text-5xl mb-4">lock</span>
+        <p class="text-white/40 text-sm">You must be connected to send messages.</p>
+        <button onclick="window.location.href='connections_shared_readings.html'"
+            class="mt-4 text-cosmic-violet font-bold text-sm">Back to Connections</button>
+    </div>
+
+    <!-- Messages Area -->
+    <div id="messages-area" class="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+        <div id="messages-empty" class="flex flex-col items-center justify-center h-full text-center">
+            <span class="material-symbols-outlined text-white/10 text-4xl mb-3">chat_bubble</span>
+            <p class="text-white/25 text-sm">No messages yet</p>
+        </div>
+    </div>
+
+    <!-- Input Area -->
+    <div id="input-area" style="display:none" class="shrink-0 p-4 pt-3 border-t border-white/5 bg-background-dark/95 backdrop-blur-md">
+        <div class="flex items-end gap-3">
+            <div class="flex-1 relative">
+                <textarea id="msg-input" rows="1" maxlength="1000"
+                    class="w-full bg-card-dark border border-white/10 rounded-2xl px-4 py-3 text-white text-sm placeholder-white/25 resize-none focus:outline-none focus:border-cosmic-violet/40 transition-colors"
+                    placeholder="Type a message..."></textarea>
+            </div>
+            <button id="btn-send" class="size-11 shrink-0 rounded-full bg-cosmic-violet flex items-center justify-center active:scale-90 transition-transform disabled:opacity-30">
+                <span class="material-symbols-outlined text-white text-lg">send</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async function() {
+
+    var FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar'];
+    var MALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuCuOsAz49QL47Y42kzevX6C-TTqnQcn-fKw9bm9U03OA6_buy44Ic8bt_wBUtcV1MJ5sSb6R8X_DJ-8lXNkSzsIERq3NcoxgBJpX1j8AHhsCx98dsslHkQKdYdaF2cK9NTMVQ_OIb_O9MJ9U-ow3guDO7mGY7CZqxCnsEYsQtxoblSjPmW1y00tP0EZpQ-aEvg3xi3jiQQYomz46nlrrOFmED0f3iCzkJ1soKbGh7PjJ9Gt3wTvCduVO9zVt_o3gQ0nIpmOLHD736c";
+    var FEMALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuAwVIwPfxW7vQTdT6_K5paisRbNWYqgoOiwgoxaVjFXEkx2Hocf55LzYmz1rXyDXknrbMiB8X59nhq-ptzZsewBCHh9Bi4547zbTT3ZGBQPNn6awMcDKio5VTuc-gUc0V9YR2bAFRCjLTR5wqzwERZcGYXOLcXEN3lp4szkNmpf1Pd1-9lj37_4nq74Sfu5spZUv6QDfvpVwS7fZTl7cHKYVI8htJIgEwQ7EgFwZuHn8KfRUOgWtjHWZ3pu_qj4AgsK0fYYsgjY2_g";
+
+    function getPhoto(name, gender) {
+        if (gender === 'female') return FEMALE_PHOTO;
+        if (gender === 'male') return MALE_PHOTO;
+        var low = (name||'').toLowerCase();
+        return FEMALE_NAMES.some(function(fn){return low.startsWith(fn);}) ? FEMALE_PHOTO : MALE_PHOTO;
+    }
+    function formatTime(ts) {
+        try {
+            var d = new Date(ts);
+            var now = new Date();
+            var time = d.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'});
+            if (d.toDateString() === now.toDateString()) return time;
+            return d.toLocaleDateString('tr-TR', {day:'numeric', month:'short'}) + ' ' + time;
+        } catch(e) { return ''; }
+    }
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    // ─── Session ───────────────────────────────────────────
+    var session = null;
+    var userId = null;
+    try {
+        session = await window.auth.getSession();
+        if (session && session.user) userId = session.user.id;
+    } catch(e) {}
+
+    if (!userId) { window.location.href = 'mystic_sign_up_screen.html'; return; }
+
+    // ─── Target user from URL ──────────────────────────────
+    var params = new URLSearchParams(window.location.search);
+    var otherUserId = params.get('uid');
+    if (!otherUserId) { window.location.href = 'connections_shared_readings.html'; return; }
+
+    // ─── Check connection ──────────────────────────────────
+    var isConnected = await window.connectionEngine.areConnected(userId, otherUserId);
+    if (!isConnected) {
+        document.getElementById('not-connected').style.display = 'flex';
+        document.getElementById('messages-area').style.display = 'none';
+        return;
+    }
+
+    // ─── Load other user profile ───────────────────────────
+    var otherProfile = null;
+    try {
+        var res = await window.supabaseClient.from('discovery_profiles')
+            .select('user_id, full_name, gender, life_path, birth_date')
+            .eq('user_id', otherUserId)
+            .maybeSingle();
+        otherProfile = res.data;
+    } catch(e) {}
+
+    var otherName = otherProfile ? otherProfile.full_name : 'User';
+    var otherPhoto = otherProfile ? getPhoto(otherProfile.full_name, otherProfile.gender) : MALE_PHOTO;
+    var otherLP = otherProfile ? (otherProfile.life_path || window.discovery.calcLP(otherProfile.birth_date)) : '?';
+
+    // Set header
+    document.getElementById('header-name').textContent = otherName;
+    document.getElementById('header-info').textContent = 'LP ' + otherLP;
+    document.getElementById('header-avatar').innerHTML = '<img src="' + otherPhoto + '" class="w-full h-full object-cover" alt="">';
+
+    // Show input
+    document.getElementById('input-area').style.display = 'block';
+
+    // ─── Load messages ─────────────────────────────────────
+    var messagesArea = document.getElementById('messages-area');
+    var emptyEl = document.getElementById('messages-empty');
+
+    var messages = await window.connectionEngine.getConversation(userId, otherUserId, 100);
+
+    function renderMessage(msg) {
+        var isMine = msg.sender_id === userId;
+        var bubble = document.createElement('div');
+        bubble.className = 'flex ' + (isMine ? 'justify-end' : 'justify-start') + ' fade-in';
+        bubble.innerHTML =
+            '<div class="max-w-[75%] ' + (isMine ? 'msg-bubble-sent' : 'msg-bubble-recv') + ' px-4 py-2.5">' +
+                '<p class="text-white text-sm break-words">' + escapeHtml(msg.content) + '</p>' +
+                '<p class="text-white/25 text-[9px] mt-1 ' + (isMine ? 'text-right' : '') + '">' + formatTime(msg.created_at) + '</p>' +
+            '</div>';
+        return bubble;
+    }
+
+    if (messages.length > 0) {
+        emptyEl.style.display = 'none';
+        messages.forEach(function(msg) {
+            messagesArea.appendChild(renderMessage(msg));
+        });
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    }
+
+    // ─── Real-time subscription ────────────────────────────
+    window.connectionEngine.subscribeToMessages(userId, otherUserId, function(msg) {
+        emptyEl.style.display = 'none';
+        messagesArea.appendChild(renderMessage(msg));
+        messagesArea.scrollTop = messagesArea.scrollHeight;
+    });
+
+    // ─── Send message ──────────────────────────────────────
+    var inputEl = document.getElementById('msg-input');
+    var sendBtn = document.getElementById('btn-send');
+
+    // Auto-resize textarea
+    inputEl.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    async function handleSend() {
+        var content = inputEl.value.trim();
+        if (!content) return;
+
+        sendBtn.disabled = true;
+        inputEl.value = '';
+        inputEl.style.height = 'auto';
+
+        var result = await window.connectionEngine.sendMessage(userId, otherUserId, content);
+        if (result.success && result.data) {
+            emptyEl.style.display = 'none';
+            messagesArea.appendChild(renderMessage(result.data));
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
+
+        sendBtn.disabled = false;
+        inputEl.focus();
+    }
+
+    sendBtn.addEventListener('click', handleSend);
+
+    inputEl.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+        }
+    });
+
+    // Focus input
+    inputEl.focus();
+});
+</script>
+</body>
+</html>

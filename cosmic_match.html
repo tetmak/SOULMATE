@@ -15,6 +15,7 @@
     <script src="js/gamification-engine.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/discovery-engine.js"></script>
+    <script src="js/connection-engine.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode:"class", theme:{ extend:{
             colors:{ primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899","cosmic-blue":"#6366f1" },
@@ -287,6 +288,17 @@
         </div>
 
         <div class="h-6"></div>
+    </div>
+
+    <!-- Add Connection Popup -->
+    <div id="conn-popup-overlay" style="display:none" class="fixed inset-0 bg-black/50 z-[100]"></div>
+    <div id="conn-popup" style="display:none" class="fixed z-[101] bg-surface-dark border border-cosmic-violet/20 rounded-2xl p-4 shadow-xl max-w-[260px]">
+        <p id="conn-popup-name" class="text-white text-sm font-bold mb-3 truncate"></p>
+        <button id="conn-popup-btn" class="w-full py-2.5 rounded-full text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-95 cosmic-gradient text-white">
+            <span class="material-symbols-outlined text-base">person_add</span>
+            <span id="conn-popup-btn-label">Add Connection</span>
+        </button>
+        <p id="conn-popup-status" style="display:none" class="text-white/40 text-xs text-center mt-2"></p>
     </div>
 
 </div>
@@ -585,7 +597,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                         : '<span class="text-cosmic-violet text-sm font-black">' + initial(m.full_name) + '</span>') +
                 '</div>' +
                 '<div class="flex-1 min-w-0">' +
-                    '<p class="text-white text-sm font-bold truncate">' + displayName + '</p>' +
+                    '<p class="text-white text-sm font-bold truncate' + (revealed ? ' cursor-pointer conn-name-click' : '') + '"' +
+                        (revealed && m.user_id ? ' data-uid="' + m.user_id + '" data-name="' + (m.full_name||'') + '"' : '') +
+                    '>' + displayName + '</p>' +
                     '<p class="text-white/35 text-[10px]">LP ' + (m.life_path||'?') + (arch ? ' · '+arch : '') + '</p>' +
                 '</div>' +
                 '<div class="text-right shrink-0">' +
@@ -597,6 +611,81 @@ document.addEventListener('DOMContentLoaded', async function() {
             listEl.appendChild(card);
         });
     }
+
+    // ─── ADD CONNECTION POPUP ─────────────────────────────
+    var popupOverlay = document.getElementById('conn-popup-overlay');
+    var popupEl = document.getElementById('conn-popup');
+    var popupName = document.getElementById('conn-popup-name');
+    var popupBtn = document.getElementById('conn-popup-btn');
+    var popupBtnLabel = document.getElementById('conn-popup-btn-label');
+    var popupStatus = document.getElementById('conn-popup-status');
+    var activePopupUid = null;
+
+    function closePopup() {
+        popupEl.style.display = 'none';
+        popupOverlay.style.display = 'none';
+        activePopupUid = null;
+    }
+
+    popupOverlay.addEventListener('click', closePopup);
+
+    document.addEventListener('click', async function(e) {
+        var nameEl = e.target.closest('.conn-name-click');
+        if (!nameEl) return;
+
+        e.stopPropagation();
+        var targetUid = nameEl.getAttribute('data-uid');
+        var targetName = nameEl.getAttribute('data-name');
+        if (!targetUid || !targetName) return;
+
+        activePopupUid = targetUid;
+        popupName.textContent = targetName;
+        popupStatus.style.display = 'none';
+        popupBtn.disabled = false;
+        popupBtnLabel.textContent = 'Add Connection';
+        popupBtn.className = 'w-full py-2.5 rounded-full text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-95 cosmic-gradient text-white';
+
+        // Check connection status
+        var connected = await window.connectionEngine.areConnected(userId, targetUid);
+        if (connected) {
+            popupBtn.style.display = 'none';
+            popupStatus.textContent = 'Already connected';
+            popupStatus.style.display = 'block';
+        } else {
+            var existingReq = await window.connectionEngine.hasActiveRequest(userId, targetUid);
+            if (existingReq) {
+                popupBtn.style.display = 'none';
+                popupStatus.textContent = existingReq.status === 'pending' ? 'Request pending' : 'Already connected';
+                popupStatus.style.display = 'block';
+            } else {
+                popupBtn.style.display = 'flex';
+            }
+        }
+
+        // Position popup near the clicked name
+        var rect = nameEl.getBoundingClientRect();
+        popupEl.style.left = Math.min(rect.left, window.innerWidth - 270) + 'px';
+        popupEl.style.top = (rect.bottom + 8) + 'px';
+        popupEl.style.display = 'block';
+        popupOverlay.style.display = 'block';
+    });
+
+    popupBtn.addEventListener('click', async function() {
+        if (!activePopupUid) return;
+        popupBtn.disabled = true;
+        popupBtnLabel.textContent = '...';
+
+        var result = await window.connectionEngine.sendConnectionRequest(userId, activePopupUid);
+        if (result.success) {
+            popupBtn.style.display = 'none';
+            popupStatus.textContent = 'Request sent';
+            popupStatus.style.display = 'block';
+            setTimeout(closePopup, 1500);
+        } else {
+            popupBtnLabel.textContent = result.error === 'already_connected' ? 'Already connected' : (result.error === 'request_exists' ? 'Request exists' : 'Error');
+            popupBtn.disabled = true;
+        }
+    });
 
     function formatDate(d) {
         if (!d) return '';
