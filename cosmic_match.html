@@ -399,9 +399,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Mevcut kullanıcının profilini doğru değerlerle güncelle
         await window.discovery.refreshOwnProfile(userId);
 
-        // Streak güncelle
-        var streak = await window.discovery.updateStreak(userId);
-        renderStreak(streak);
+        // Streak güncelle (premium kullanıcılarda streak gerekli değil)
+        var isPrem = window.premium && window.premium.isPremium();
+        var streak = null;
+        if (!isPrem) {
+            streak = await window.discovery.updateStreak(userId);
+            renderStreak(streak);
+        } else {
+            // Premium: streak bar ve badge gizle
+            document.querySelector('.px-5.pt-5.pb-2').style.display = 'none';
+            document.getElementById('streak-badge').style.display = 'none';
+        }
 
         // Günlük eşleşme
         var match = await window.discovery.findDailyMatch(userId, userProfile);
