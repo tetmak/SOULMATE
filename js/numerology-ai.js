@@ -226,6 +226,16 @@
       border-radius: 8px; font-size: 12px; color: rgba(239,68,68,0.85);
       line-height: 1.5; font-family: 'Space Grotesk', sans-serif;
     }
+    #ael-rationale {
+      display: none;
+      margin-top: 14px; padding: 12px 14px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      font-size: 12.5px; color: rgba(255,255,255,0.55);
+      line-height: 1.7;
+      font-family: 'Space Grotesk', sans-serif;
+    }
     #ael-risk-badge {
       display: inline-block; padding: 3px 8px; border-radius: 6px;
       font-size: 10px; font-weight: 800; text-transform: uppercase;
@@ -390,6 +400,7 @@
             <div id="ael-reason"></div>
             <div id="ael-directive"></div>
             <div id="ael-warning"></div>
+            <div id="ael-rationale"></div>
           </div>
         </div>
         <div id="ael-chat"></div>
@@ -612,6 +623,15 @@
     } else {
       warnEl.style.display = 'none';
     }
+
+    // Decision Rationale
+    var ratEl = document.getElementById('ael-rationale');
+    if (r.decision_rationale) {
+      ratEl.textContent = r.decision_rationale;
+      ratEl.style.display = 'block';
+    } else {
+      ratEl.style.display = 'none';
+    }
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -664,9 +684,11 @@
       '- "Evren", "ruhsal", "kozmik", "kader", "manifestasyon", "enerji" (metafiziksel) gibi ifadeler YASAK.\n' +
       '- Bunların yerine "sayısal etki", "olasılık eğilimi", "karar zamanlaması", "analitik eğilim" kullan.\n' +
       '- Açıklamaları SAYISAL nedenlere dayandır (ör: "Kişisel Gün 8 olduğu için...").\n' +
-      '- Kısa ve nötr tonda cevap ver. 1-2 cümle yeterli.\n' +
       '- Türkçe yaz.\n' +
       '- Motivasyonel dil KULLANMA. Sadece analitik açıklama yap.\n' +
+      '- Metafor, spiritüel çerçeveleme, gelecek vaadi YASAK.\n' +
+      '- Zamanlama mantığı dışında tavsiye verme.\n' +
+      '- Kullanıcı soru sorarsa Decision Rationale bölümünü referans alarak açıkla.\n' +
       '- Kullanıcı farklı bir karar türü sorarsa, mevcut sonucu referans al ama yeni motor çağrısı yapmadığını belirt.\n' +
       '- Asla kehanet, astroloji, tarot dili veya spiritüel çerçeveleme kullanma.\n';
 
@@ -676,8 +698,10 @@
         '- Skor: ' + currentResult.score + '/100\n' +
         '- Etiket: ' + currentResult.label + '\n' +
         '- Risk: ' + currentResult.risk_level + '\n' +
+        '- Direktif: ' + currentResult.action_directive + '\n' +
         '- Sebep: ' + currentResult.main_reason + '\n' +
         (currentResult.warning ? '- Uyarı: ' + currentResult.warning + '\n' : '') +
+        '- Decision Rationale: ' + currentResult.decision_rationale + '\n' +
         '- Kişisel Gün: ' + personalPeriod.day + '\n' +
         '- Kişisel Ay: ' + personalPeriod.month + '\n' +
         '- Kişisel Yıl: ' + personalPeriod.year + '\n';

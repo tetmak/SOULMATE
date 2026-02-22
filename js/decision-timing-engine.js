@@ -145,12 +145,14 @@
     // --- Skor hesabı ---
     var score = 50; // Base
     var reasons = [];
+    var dayMod = 0;
+    var yearMod = 0;
 
     // 1. Kişisel Gün etkisi (birincil faktör)
     var dayKey = (day === 11 || day === 22) ? day : day;
     var dayRule = DAY_RULES[dayKey];
     if (dayRule) {
-      var dayMod = dayRule[action] || 0;
+      dayMod = dayRule[action] || 0;
       score += dayMod;
 
       if (dayMod > 5) {
@@ -165,7 +167,7 @@
     // 2. Kişisel Yıl etkisi (bağlam modifiyeri)
     var yearRule = YEAR_RULES[year];
     if (yearRule) {
-      var yearMod = yearRule[action] || 0;
+      yearMod = yearRule[action] || 0;
       score += yearMod;
 
       if (yearMod > 3) {
@@ -237,14 +239,167 @@
     // --- Ana sebep ---
     var main_reason = reasons.join('');
 
+    // --- Decision Rationale (5-6 cümle) ---
+    var rationale = buildRationale(day, month, year, action, score, dayMod, yearMod);
+
     return {
       score: score,
       label: label,
       risk_level: risk_level,
       action_directive: action_directive,
       main_reason: main_reason,
-      warning: warning
+      warning: warning,
+      decision_rationale: rationale
     };
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // DECISION RATIONALE — 5-6 CÜMLE, ANALİTİK, DETERMİNİSTİK
+  // ═══════════════════════════════════════════════════════════
+
+  // Aksiyon bazlı hata riski açıklamaları (Cümle 4)
+  var MISTAKE_TEMPLATES = {
+    job: 'Pozisyon veya koşullar tam netleşmeden karar verilme olasılığı artıyor.',
+    money: 'Finansal detaylar gözden kaçabilir veya koşullar kısa sürede değişebilir.',
+    relationship: 'Duygusal netlik sağlanmadan verilen kararlar geri dönüş gerektirebilir.',
+    start: 'Zamanlama uyumsuzluğu nedeniyle başlangıç ivmesi zayıf kalabilir.',
+    signature: 'Detaylar gözden kaçabilir veya şartlar taahhütten kısa süre sonra değişebilir.'
+  };
+
+  // Aksiyon bazlı güvenli ilerleme koşulları (Cümle 5)
+  var SAFETY_TEMPLATES = {
+    job: {
+      low:  'Tüm koşullar ve alternatifler önceden değerlendirilmişse ilerleme daha güvenli olur.',
+      mid:  'Tüm koşullar zaten doğrulanmışsa ilerlemek daha güvenlidir.',
+      high: 'Mevcut koşullar destekleyici; standart değerlendirmeyle ilerlenebilir.'
+    },
+    money: {
+      low:  'Tüm finansal değişkenler teyit edilmiş ve risk analizi yapılmışsa ilerleme daha güvenli olur.',
+      mid:  'Finansal veriler zaten doğrulanmışsa ilerlemek daha güvenlidir.',
+      high: 'Finansal koşullar uygun; standart dikkatle ilerlenebilir.'
+    },
+    relationship: {
+      low:  'Karşılıklı beklentiler netleştirilmiş ve duygusal hazırlık tamamlanmışsa ilerleme daha güvenli olur.',
+      mid:  'Karşılıklı beklentiler zaten netleşmişse ilerlemek daha güvenlidir.',
+      high: 'İlişkisel koşullar destekleyici; açık iletişimle ilerlenebilir.'
+    },
+    start: {
+      low:  'Tüm ön hazırlıklar tamamlanmış ve kaynaklar güvence altındaysa ilerleme daha güvenli olur.',
+      mid:  'Ön hazırlıklar zaten tamamlanmışsa ilerlemek daha güvenlidir.',
+      high: 'Başlangıç koşulları uygun; planlanan adımlarla ilerlenebilir.'
+    },
+    signature: {
+      low:  'Tüm maddeler doğrulanmış ve hukuki değerlendirme yapılmışsa ilerleme daha güvenli olur.',
+      mid:  'Tüm değişkenler zaten doğrulanmışsa ilerlemek daha güvenlidir.',
+      high: 'Bağlayıcı karar koşulları uygun; standart dikkatle ilerlenebilir.'
+    }
+  };
+
+  /**
+   * buildRationale — 5-6 cümlelik Decision Rationale üretir.
+   * Kurallar:
+   *   Cümle 1: Sayısal bağlamı yeniden belirt (Gün/Ay/Yıl uyumu)
+   *   Cümle 2: Bu uyumun seçilen aksiyon kategorisini nasıl etkilediği
+   *   Cümle 3: Bugün için baskın kısıtlama veya destek faktörü
+   *   Cümle 4: Bugün aksiyon alınırsa hangi tür hata daha olası
+   *   Cümle 5: Hangi koşul ilerlemeyi daha güvenli kılar
+   *   Cümle 6 (opsiyonel, sadece skor 45-65): Dikkatli ve kontrollü ilerleme vurgusu
+   */
+  function buildRationale(day, month, year, action, score, dayMod, yearMod) {
+    var actionLabel = ACTION_LABELS[action];
+    var sentences = [];
+
+    // Cümle 1: Sayısal bağlam
+    var alignDesc;
+    if (score >= 70) alignDesc = 'güçlü bir uyum gösteriyor';
+    else if (score >= 55) alignDesc = 'kısmi bir uyum gösteriyor';
+    else if (score >= 45) alignDesc = 'belirgin bir uyum göstermiyor';
+    else alignDesc = 'zayıf bir kombinasyon oluşturuyor';
+
+    sentences.push(
+      'Kişisel Gün ' + day + ', Kişisel Ay ' + month + ' ve Kişisel Yıl ' + year +
+      ' kombinasyonu ' + alignDesc + '.'
+    );
+
+    // Cümle 2: Uyumun aksiyon kategorisine etkisi
+    if (score >= 65) {
+      sentences.push(
+        ACTION_LABELS[action].charAt(0).toUpperCase() + ACTION_LABELS[action].slice(1) +
+        ' için bu kombinasyon destekleyici bir zamanlama oluşturuyor.'
+      );
+    } else if (score >= 45) {
+      sentences.push(
+        ACTION_LABELS[action].charAt(0).toUpperCase() + ACTION_LABELS[action].slice(1) +
+        ' için bu kombinasyon nötr bir zamanlama oluşturuyor, belirgin bir destek sağlamıyor.'
+      );
+    } else {
+      sentences.push(
+        ACTION_LABELS[action].charAt(0).toUpperCase() + ACTION_LABELS[action].slice(1) +
+        ' için bu kombinasyon kısıtlayıcı bir zamanlama oluşturuyor.'
+      );
+    }
+
+    // Cümle 3: Baskın faktör (kısıtlama veya destek)
+    var absDayMod = Math.abs(dayMod);
+    var absYearMod = Math.abs(yearMod);
+    var monthSync = (month === day);
+    var monthConflict = isConflicting(month, day);
+
+    if (absDayMod >= absYearMod && absDayMod > 3) {
+      if (dayMod > 0) {
+        sentences.push(
+          'Kişisel Gün ' + day + ' bu aksiyon türü için bugünün baskın destek faktörünü oluşturuyor.'
+        );
+      } else {
+        sentences.push(
+          'Kişisel Gün ' + day + ' bu aksiyon türü için bugünün baskın kısıtlama faktörünü oluşturuyor.'
+        );
+      }
+    } else if (absYearMod > absDayMod && absYearMod > 3) {
+      if (yearMod > 0) {
+        sentences.push(
+          'Kişisel Yıl ' + year + ' dönemsel olarak bu alanda ek destek sağlıyor ve bugünün baskın faktörünü oluşturuyor.'
+        );
+      } else {
+        sentences.push(
+          'Kişisel Yıl ' + year + ' dönemsel olarak bu alanda direnç oluşturuyor ve bugünün baskın kısıtlama faktörü.'
+        );
+      }
+    } else if (monthSync) {
+      sentences.push(
+        'Ay ve Gün senkronizasyonu (' + month + ') bugünün sayısal etkisini güçlendiren baskın faktör.'
+      );
+    } else if (monthConflict) {
+      sentences.push(
+        'Ay (' + month + ') ve Gün (' + day + ') arasındaki çatışma bugün karışık sinyaller oluşturuyor.'
+      );
+    } else {
+      sentences.push(
+        'Bugün için belirgin bir baskın faktör bulunmuyor; etkiler dengeli dağılıyor.'
+      );
+    }
+
+    // Cümle 4: Hata riski
+    if (score < 70) {
+      sentences.push(MISTAKE_TEMPLATES[action]);
+    } else {
+      sentences.push(
+        'Bu zamanlama aksiyonu engellemez; standart dikkat yeterli.'
+      );
+    }
+
+    // Cümle 5: Güvenli ilerleme koşulu
+    var safetyLevel = (score < 45) ? 'low' : (score <= 65) ? 'mid' : 'high';
+    sentences.push(SAFETY_TEMPLATES[action][safetyLevel]);
+
+    // Cümle 6 (opsiyonel): Sadece skor 45-65 arasında
+    if (score >= 45 && score <= 65) {
+      sentences.push(
+        'Bu skor aralığında kontrollü ve adım adım ilerleme, toplu karar almaktan daha düşük risk taşır.'
+      );
+    }
+
+    return sentences.join(' ');
   }
 
   // ═══════════════════════════════════════════════════════════
