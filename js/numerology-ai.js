@@ -160,7 +160,7 @@
 
     /* ─── ACTION PICKER ─── */
     #ael-actions {
-      padding: 16px;
+      padding: 12px 16px;
     }
     #ael-actions-label {
       font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.3);
@@ -170,6 +170,30 @@
     #ael-actions-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
     }
+    #ael-actions.collapsed #ael-actions-label { display: none; }
+    #ael-actions.collapsed #ael-actions-grid { display: none; }
+    #ael-selected-bar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+    }
+    #ael-actions.collapsed #ael-selected-bar { display: flex; }
+    #ael-selected-bar .ael-action-icon { font-size: 16px; color: rgba(255,255,255,0.5); }
+    #ael-selected-label {
+      flex: 1; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    #ael-change-action {
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 4px 10px; cursor: pointer;
+      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4);
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    #ael-change-action:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
     .ael-action-btn {
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.08);
@@ -340,7 +364,7 @@
     /* ─── PERIOD INFO ─── */
     #ael-period {
       padding: 8px 16px;
-      display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap;
+      display: flex; gap: 8px; flex-wrap: wrap;
     }
     .ael-period-tag {
       display: flex; align-items: center; gap: 4px;
@@ -380,9 +404,14 @@
           </div>
           <button id="ael-close">&#10005;</button>
         </div>
-        <div id="ael-period"></div>
         <div id="ael-content">
+        <div id="ael-period"></div>
         <div id="ael-actions">
+          <div id="ael-selected-bar">
+            <span class="material-symbols-outlined ael-action-icon" id="ael-selected-icon"></span>
+            <span id="ael-selected-label"></span>
+            <button id="ael-change-action">Değiştir</button>
+          </div>
           <div id="ael-actions-label">Ne hakkında karar veriyorsun?</div>
           <div id="ael-actions-grid">
             ${ACTIONS.map(function(a) {
@@ -561,6 +590,15 @@
 
       renderResult(currentResult);
 
+      // Collapse actions → compact bar
+      var actionsEl = document.getElementById('ael-actions');
+      var actionMeta = ACTIONS.filter(function(a) { return a.type === action; })[0];
+      if (actionMeta) {
+        document.getElementById('ael-selected-icon').textContent = actionMeta.icon;
+        document.getElementById('ael-selected-label').textContent = actionMeta.label;
+      }
+      actionsEl.classList.add('collapsed');
+
       // Orb'a sonuç işareti
       document.getElementById('ael-orb').classList.add('has-result');
 
@@ -572,6 +610,12 @@
         '→ ' + currentResult.action_directive
       );
     });
+  });
+
+  // Değiştir butonu → expand actions grid
+  document.getElementById('ael-change-action').addEventListener('click', function() {
+    var actionsEl = document.getElementById('ael-actions');
+    actionsEl.classList.remove('collapsed');
   });
 
   // ═══════════════════════════════════════════════════════════
@@ -782,6 +826,14 @@
       actionBtns.forEach(function(b) {
         b.classList.toggle('selected', b.dataset.action === inferred);
       });
+
+      // Collapse actions → compact bar
+      var actionMeta = ACTIONS.filter(function(a) { return a.type === inferred; })[0];
+      if (actionMeta) {
+        document.getElementById('ael-selected-icon').textContent = actionMeta.icon;
+        document.getElementById('ael-selected-label').textContent = actionMeta.label;
+      }
+      document.getElementById('ael-actions').classList.add('collapsed');
     }
 
     showTyping();
