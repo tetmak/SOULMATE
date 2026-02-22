@@ -80,15 +80,6 @@
 <body class="bg-background-dark text-white min-h-screen">
 <div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden pb-10">
 
-    <!-- DEBUG PANEL — Sorunu bulduktan sonra silinecek -->
-    <div id="debug-panel" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(0,0,0,0.95);border-bottom:2px solid #f59e0b;padding:8px 12px;font-size:11px;font-family:monospace;color:#fbbf24;max-height:40vh;overflow-y:auto;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-            <span style="font-weight:bold;color:#f59e0b">🔧 DEBUG PANEL</span>
-            <span id="debug-close" style="color:#ef4444;cursor:pointer;font-size:14px" onclick="document.getElementById('debug-panel').style.display='none'">✕</span>
-        </div>
-        <div id="debug-log" style="line-height:1.6"></div>
-    </div>
-
     <!-- Header -->
     <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-dark/90 backdrop-blur-md border-b border-white/5" style="margin-top:0">
         <div onclick="window.location.href='mystic_numerology_home_1.html'"
@@ -315,45 +306,6 @@
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
 
-    // ─── DEBUG HELPER ──────────────────────────────────
-    var debugEl = document.getElementById('debug-log');
-    function dbg(label, value, color) {
-        if (!debugEl) return;
-        var c = color || '#fbbf24';
-        var line = document.createElement('div');
-        line.innerHTML = '<span style="color:#888">' + new Date().toLocaleTimeString() + '</span> <span style="color:' + c + '">' + label + ':</span> <span style="color:#fff">' + value + '</span>';
-        debugEl.appendChild(line);
-    }
-
-    dbg('Platform', (window.Capacitor && window.Capacitor.getPlatform ? window.Capacitor.getPlatform() : 'web (no Capacitor)'), '#22d3ee');
-    dbg('Capacitor.isNative', (window.Capacitor && window.Capacitor.isNativePlatform ? window.Capacitor.isNativePlatform() : 'N/A'), '#22d3ee');
-    dbg('window.revenuecat', window.revenuecat ? 'EXISTS' : 'MISSING', window.revenuecat ? '#10b981' : '#ef4444');
-    dbg('window.premium', window.premium ? 'EXISTS' : 'MISSING', window.premium ? '#10b981' : '#ef4444');
-
-    if (window.revenuecat) {
-        dbg('RC.isNative()', window.revenuecat.isNative(), '#a78bfa');
-        dbg('RC.isReady()', window.revenuecat.isReady(), '#a78bfa');
-    }
-    if (window.premium) {
-        dbg('premium.isPremium()', window.premium.isPremium(), '#ec4899');
-        dbg('premium.isNative()', window.premium.isNative(), '#ec4899');
-    }
-
-    // localStorage premium cache
-    try {
-        var premCache = localStorage.getItem('numerael_premium');
-        dbg('localStorage premium', premCache || 'NULL', premCache ? '#10b981' : '#ef4444');
-    } catch(e) { dbg('localStorage error', e.message, '#ef4444'); }
-
-    // Capacitor Plugins
-    if (window.Capacitor && window.Capacitor.Plugins) {
-        var pluginNames = Object.keys(window.Capacitor.Plugins).join(', ');
-        dbg('Capacitor Plugins', pluginNames || 'none', '#818cf8');
-        dbg('Purchases plugin', window.Capacitor.Plugins.Purchases ? 'EXISTS' : 'MISSING', window.Capacitor.Plugins.Purchases ? '#10b981' : '#ef4444');
-    } else {
-        dbg('Capacitor.Plugins', 'NOT AVAILABLE', '#ef4444');
-    }
-
     var FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar'];
     var MALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuCuOsAz49QL47Y42kzevX6C-TTqnQcn-fKw9bm9U03OA6_buy44Ic8bt_wBUtcV1MJ5sSb6R8X_DJ-8lXNkSzsIERq3NcoxgBJpX1j8AHhsCx98dsslHkQKdYdaF2cK9NTMVQ_OIb_O9MJ9U-ow3guDO7mGY7CZqxCnsEYsQtxoblSjPmW1y00tP0EZpQ-aEvg3xi3jiQQYomz46nlrrOFmED0f3iCzkJ1soKbGh7PjJ9Gt3wTvCduVO9zVt_o3gQ0nIpmOLHD736c";
     var FEMALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuAwVIwPfxW7vQTdT6_K5paisRbNWYqgoOiwgoxaVjFXEkx2Hocf55LzYmz1rXyDXknrbMiB8X59nhq-ptzZsewBCHh9Bi4547zbTT3ZGBQPNn6awMcDKio5VTuc-gUc0V9YR2bAFRCjLTR5wqzwERZcGYXOLcXEN3lp4szkNmpf1Pd1-9lj37_4nq74Sfu5spZUv6QDfvpVwS7fZTl7cHKYVI8htJIgEwQ7EgFwZuHn8KfRUOgWtjHWZ3pu_qj4AgsK0fYYsgjY2_g";
@@ -450,14 +402,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Premium durumunu async kontrol et (RevenueCat + Supabase dahil)
         var isPrem = false;
-        dbg('--- initMain ---', 'checking premium...', '#f59e0b');
         if (window.premium) {
             isPrem = await window.premium.checkStatus();
-            dbg('checkStatus() result', isPrem, isPrem ? '#10b981' : '#ef4444');
-            dbg('RC.isReady() after wait', window.revenuecat ? window.revenuecat.isReady() : 'N/A', '#a78bfa');
-            dbg('isPremium() after check', window.premium.isPremium(), isPrem ? '#10b981' : '#ef4444');
-        } else {
-            dbg('window.premium', 'NOT AVAILABLE!', '#ef4444');
         }
         var streak = null;
         if (!isPrem) {
@@ -482,7 +428,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderHistory(history, topMatches);
       } catch(e) {
         console.error('[CosmicMatch] initMain hatası:', e);
-        dbg('initMain ERROR', e.message || String(e), '#ef4444');
       }
     }
 

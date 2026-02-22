@@ -486,12 +486,10 @@
                     await window.revenuecat.checkEntitlements();
                     console.log('[Premium] RevenueCat hazır');
                 } else {
-                    console.warn('[Premium] RevenueCat başlatılamadı — Paddle fallback');
-                    await initPaddle();
+                    console.warn('[Premium] RevenueCat başlatılamadı — native ortamda Paddle kullanılamaz');
                 }
             } catch(e) {
                 console.error('[Premium] platformInit hatası:', e);
-                await initPaddle();
             }
         } else {
             console.log('[Premium] Web platform — Paddle başlatılıyor');

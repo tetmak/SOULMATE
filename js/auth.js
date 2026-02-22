@@ -113,5 +113,29 @@ var auth = {
 window.auth = auth;
 
 document.addEventListener('DOMContentLoaded', function() {
-    auth.checkSession();
+    // onAuthStateChange INITIAL_SESSION event'ini bekle — Supabase'in
+    // session'ı localStorage'dan recover etmesini garanti eder.
+    // Doğrudan getSession() çağırmak race condition yaratıyordu:
+    // session henüz recover olmadan null dönüp sayfayı yanlış yere yönlendiriyordu.
+    if (window.supabaseClient && window.supabaseClient.auth) {
+        var done = false;
+        var sub = window.supabaseClient.auth.onAuthStateChange(function(event) {
+            if (done) return;
+            if (event === 'INITIAL_SESSION' || event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
+                done = true;
+                try { sub.data.subscription.unsubscribe(); } catch(e) {}
+                auth.checkSession();
+            }
+        });
+        // Fallback: 3 saniye içinde event gelmezse yine de kontrol et
+        setTimeout(function() {
+            if (!done) {
+                done = true;
+                try { sub.data.subscription.unsubscribe(); } catch(e) {}
+                auth.checkSession();
+            }
+        }, 3000);
+    } else {
+        auth.checkSession();
+    }
 });
