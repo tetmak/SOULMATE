@@ -100,11 +100,27 @@
 
   // ─── BAĞLANTI ETİKETLERİ ─────────────────────────────────────
   function bondLabel(score) {
-    if (score >= 95) return 'Twin Flame Union';
-    if (score >= 88) return 'Divine Soulmate Connection';
-    if (score >= 80) return 'Celestial Partnership';
-    if (score >= 70) return 'Karmic Bond';
-    return 'Growth Catalyst Union';
+    if (score >= 95) return 'Kozmik Ruh İkizi';
+    if (score >= 88) return 'İlahi Ruh Eşi';
+    if (score >= 80) return 'Göksel Birliktelik';
+    if (score >= 70) return 'Karmik Bağ';
+    return 'Büyüme Katalizörü';
+  }
+
+  function bondSubLabel(score) {
+    if (score >= 95) return 'Sonsuz Bağ · Kader · Aşk';
+    if (score >= 88) return 'Ruh Eşi · Kader · Uyum';
+    if (score >= 80) return 'Göksel Eşleşme · Uyum';
+    if (score >= 70) return 'Karmik Ders · Dönüşüm';
+    return 'Keşif · Potansiyel · Gelişim';
+  }
+
+  function starCount(score) {
+    if (score >= 95) return 5;
+    if (score >= 85) return 4;
+    if (score >= 75) return 3;
+    if (score >= 65) return 2;
+    return 1;
   }
 
   // ─── AI PROMPT SİSTEMİ ───────────────────────────────────────
@@ -334,24 +350,75 @@ YAZI KURALLARI:
     injectStyles();
     var ctx = getCompatData();
 
-    // İsim güncelle
-    document.querySelectorAll('p.text-white.text-base.font-semibold').forEach(function(el, i){
-      if (i === 0) el.textContent = ctx.p1.name;
-      if (i === 1) el.textContent = ctx.p2.name;
-    });
+    // İsimler
+    var name1El = document.getElementById('compat-name-1');
+    var name2El = document.getElementById('compat-name-2');
+    if (name1El) name1El.textContent = ctx.p1.name;
+    if (name2El) name2El.textContent = ctx.p2.name;
 
-    // Skor güncelle
-    var scoreEl = document.querySelector('.text-3xl.font-bold.text-primary');
+    // Genel skor
+    var scoreEl = document.getElementById('compat-overall-score');
     if (scoreEl) scoreEl.textContent = ctx.overall + '%';
 
-    // Bar skorları güncelle
-    var barLabels = document.querySelectorAll('.space-y-6 .text-sm.font-bold.text-primary');
-    var bars = document.querySelectorAll('.space-y-6 .bg-primary.h-full');
-    var scores = [ctx.lpScore, Math.round((ctx.lpScore+ctx.soulScore)/2), ctx.soulScore];
-    scores.forEach(function(s, i){
-      if (barLabels[i]) barLabels[i].textContent = s + '%';
-      if (bars[i]) bars[i].style.width = s + '%';
+    // Bond etiketi
+    var bondEl = document.getElementById('compat-bond-label');
+    if (bondEl) bondEl.textContent = ctx.bond;
+    var bondSubEl = document.getElementById('compat-bond-sub');
+    if (bondSubEl) bondSubEl.textContent = bondSubLabel(ctx.overall);
+
+    // Yıldızlar
+    var starsEl = document.getElementById('compat-stars');
+    if (starsEl) {
+      var sc = starCount(ctx.overall);
+      var starsHTML = '';
+      for (var si = 0; si < 5; si++) {
+        var filled = si < sc;
+        starsHTML += '<span class="material-symbols-outlined text-' + (filled ? 'yellow-400' : 'white/20') + ' text-[16px]" style="font-variation-settings:\'FILL\' ' + (filled ? '1' : '0') + '">star</span>';
+      }
+      starsEl.innerHTML = starsHTML;
+    }
+
+    // Uyum barları — ID ile hedefle
+    var barData = [
+      { scoreId: 'compat-bar-lp-score',   fillId: 'compat-bar-lp-fill',   value: ctx.lpScore },
+      { scoreId: 'compat-bar-soul-score', fillId: 'compat-bar-soul-fill', value: ctx.soulScore },
+      { scoreId: 'compat-bar-pers-score', fillId: 'compat-bar-pers-fill', value: ctx.persScore },
+      { scoreId: 'compat-bar-exp-score',  fillId: 'compat-bar-exp-fill',  value: ctx.expScore }
+    ];
+    barData.forEach(function(bar, idx) {
+      var sEl = document.getElementById(bar.scoreId);
+      var fEl = document.getElementById(bar.fillId);
+      if (sEl) sEl.textContent = bar.value + '%';
+      if (fEl) {
+        // Animasyonlu açılma
+        setTimeout(function() { fEl.style.width = bar.value + '%'; }, 200 + idx * 150);
+      }
     });
+
+    // Numeroloji detay bilgisi — barların altına ekle
+    var barsContainer = document.querySelector('.px-6.space-y-5.mb-8');
+    if (barsContainer) {
+      var detailDiv = document.createElement('div');
+      detailDiv.className = 'mt-4 grid grid-cols-2 gap-3';
+      detailDiv.innerHTML =
+        '<div class="bg-white/5 rounded-xl p-3 text-center border border-white/5">' +
+          '<p class="text-pink-300/60 text-[10px] uppercase tracking-widest mb-1">Kader Yolu</p>' +
+          '<p class="text-white font-black text-lg">' + ctx.p1.lifePath + ' <span class="text-pink-500/50">&</span> ' + ctx.p2.lifePath + '</p>' +
+        '</div>' +
+        '<div class="bg-white/5 rounded-xl p-3 text-center border border-white/5">' +
+          '<p class="text-pink-300/60 text-[10px] uppercase tracking-widest mb-1">Ruh Dürtüsü</p>' +
+          '<p class="text-white font-black text-lg">' + ctx.p1.soulUrge + ' <span class="text-pink-500/50">&</span> ' + ctx.p2.soulUrge + '</p>' +
+        '</div>' +
+        '<div class="bg-white/5 rounded-xl p-3 text-center border border-white/5">' +
+          '<p class="text-pink-300/60 text-[10px] uppercase tracking-widest mb-1">Kişilik</p>' +
+          '<p class="text-white font-black text-lg">' + ctx.p1.personality + ' <span class="text-pink-500/50">&</span> ' + ctx.p2.personality + '</p>' +
+        '</div>' +
+        '<div class="bg-white/5 rounded-xl p-3 text-center border border-white/5">' +
+          '<p class="text-pink-300/60 text-[10px] uppercase tracking-widest mb-1">İfade</p>' +
+          '<p class="text-white font-black text-lg">' + ctx.p1.expression + ' <span class="text-pink-500/50">&</span> ' + ctx.p2.expression + '</p>' +
+        '</div>';
+      barsContainer.appendChild(detailDiv);
+    }
 
     // Soulmate share kartı isim & skor
     var smNames = document.getElementById('sm-names');
@@ -364,23 +431,20 @@ YAZI KURALLARI:
     // "Cosmic Connection" AI içerik
     var insightCard = document.querySelector('.bg-white\\/5.backdrop-blur-md.rounded-xl.p-6');
     if (insightCard) {
-      var contentArea = insightCard.querySelector('p, .ai-compat-text');
-      if (contentArea) {
-        var _cosmicCached = getCachedAnalysis('cosmic', ctx);
-        insightCard.innerHTML = '<div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary">auto_awesome</span><h3 class="text-lg font-bold">Cosmic Connection</h3></div>' +
-          '<div id="cosmic-ai-content">' +
-            (_cosmicCached
-              ? '<div style="animation:compat-in 0.5s ease;color:rgba(186,181,156,0.9);">' + renderText(_cosmicCached) + '</div>'
-              : loadingHTML('Kozmik bağ hesaplanıyor...'))
-          + '</div>';
-        if (!_cosmicCached) {
-          fetchCompatAnalysis('cosmic', ctx).then(function(text){
-            var el = document.getElementById('cosmic-ai-content');
-            if (!el) return;
-            if (text) el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:rgba(186,181,156,0.9);">' + renderText(text) + '</div>';
-            else el.innerHTML = '<p style="color:#ef4444;font-size:13px;">Analiz yüklenemedi.</p>';
-          });
-        }
+      var _cosmicCached = getCachedAnalysis('cosmic', ctx);
+      insightCard.innerHTML = '<div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary">auto_awesome</span><h3 class="text-lg font-bold">Kozmik Bağ</h3></div>' +
+        '<div id="cosmic-ai-content">' +
+          (_cosmicCached
+            ? '<div style="animation:compat-in 0.5s ease;color:rgba(186,181,156,0.9);">' + renderText(_cosmicCached) + '</div>'
+            : loadingHTML('Kozmik bağ hesaplanıyor...'))
+        + '</div>';
+      if (!_cosmicCached) {
+        fetchCompatAnalysis('cosmic', ctx).then(function(text){
+          var el = document.getElementById('cosmic-ai-content');
+          if (!el) return;
+          if (text) el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:rgba(186,181,156,0.9);">' + renderText(text) + '</div>';
+          else el.innerHTML = '<p style="color:#ef4444;font-size:13px;">Analiz yüklenemedi.</p>';
+        });
       }
     }
   }
