@@ -153,13 +153,29 @@
     }
 
     // ─── KEŞFEDİLEBİLİR PROFİLLERİ ÇEK ─────────────────────
-    async function fetchDiscoverableProfiles(excludeUserId) {
+    // Karşı cinsiyet filtreleme: erkek → kadın, kadın → erkek
+    function getOppositeGender(gender) {
+        if (gender === 'male' || gender === 'erkek') return 'female';
+        if (gender === 'female' || gender === 'kadın' || gender === 'kadin') return 'male';
+        return null; // unknown → filtre yok
+    }
+
+    async function fetchDiscoverableProfiles(excludeUserId, userGender) {
         try {
-            var res = await window.supabaseClient
+            var query = window.supabaseClient
                 .from('discovery_profiles')
                 .select('*')
                 .eq('discoverable', true)
                 .neq('user_id', excludeUserId);
+
+            // Cinsiyet filtresi: karşı cinsiyeti göster
+            var opposite = getOppositeGender(userGender);
+            if (opposite) {
+                query = query.eq('gender', opposite);
+                console.log('[Discovery] Cinsiyet filtresi:', userGender, '→ sadece', opposite, 'gösterilecek');
+            }
+
+            var res = await query;
             return res.data || [];
         } catch(e) {
             console.error('[Discovery] Fetch error:', e);
@@ -197,7 +213,8 @@
         } catch(e) { console.warn('[Match] Existing check error:', e); }
 
         // Yoksa yeni eşleşme hesapla
-        var profiles = await fetchDiscoverableProfiles(userId);
+        var userGender = userProfile ? (userProfile.gender || 'unknown') : 'unknown';
+        var profiles = await fetchDiscoverableProfiles(userId, userGender);
         if (!profiles.length) return null;
 
         // Recalculate life_path from birth_date
@@ -321,7 +338,8 @@
 
     // ─── TOP MATCHES (Radar) ─────────────────────────────────
     async function getTopMatches(userId, userProfile, limit) {
-        var profiles = await fetchDiscoverableProfiles(userId);
+        var userGender = userProfile ? (userProfile.gender || 'unknown') : 'unknown';
+        var profiles = await fetchDiscoverableProfiles(userId, userGender);
         if (!profiles.length) return [];
 
         // Recalculate life_path from birth_date for profiles with missing/wrong data

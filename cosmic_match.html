@@ -344,6 +344,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     var userProfile = {
         user_id: userId,
         full_name: ud.name,
+        gender: ud.gender || 'unknown',
         life_path: window.discovery.calcLP(ud.birthDate),
         expression_num: window.discovery.calcExp(ud.name),
         soul_urge: window.discovery.calcSoul(ud.name),
