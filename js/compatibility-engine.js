@@ -637,8 +637,11 @@ YAZI KURALLARI:
 
   // ─── AUTO-INIT ────────────────────────────────────────────────
   function init() {
-    var path = window.location.pathname + window.location.href;
-    if (path.includes('relationship_compatibility_analysis')) {
+    var path = (window.location.pathname || '') + (window.location.href || '') + (document.title || '');
+    // Sayfa tespiti: URL + DOM element varlığı kontrolü
+    var hasCompatUI = document.getElementById('compat-overall-score');
+    if (path.includes('relationship_compatibility_analysis') || hasCompatUI) {
+      console.log('[Compat Engine] initCompatAnalysis çalışıyor');
       initCompatAnalysis();
     } else if (path.includes('name_numerology_breakdown_3')) {
       initBreakdown3();
@@ -656,7 +659,10 @@ YAZI KURALLARI:
   // Global export
   window.CompatEngine = {
     getCompatData: getCompatData,
-    fetchCompatAnalysis: fetchCompatAnalysis
+    fetchCompatAnalysis: fetchCompatAnalysis,
+    initCompatAnalysis: initCompatAnalysis,
+    initBreakdown3: initBreakdown3,
+    initBreakdown2: initBreakdown2
   };
 
   // openSoulmateShare alias (bazı sayfalarda smOpen var, bu wrapper her ikisini de destekler)

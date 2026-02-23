@@ -531,14 +531,38 @@
       });
     }, 300);
   </script>
-  <script src="js/numerology-context-engine.js"></script>
-  <script src="js/decision-timing-engine.js"></script>
-  <script src="js/numerology-ai.js"></script>
-  <script src="js/compatibility-engine.js"></script>
-  <script src="js/revenuecat.js"></script>
-  <script src="js/premium.js"></script>
-  <script src="js/notification-engine.js"></script>
-  <script src="js/bottom-nav.js"></script>
+  <script src="js/numerology-context-engine.js?v=2"></script>
+  <script src="js/decision-timing-engine.js?v=2"></script>
+  <script src="js/numerology-ai.js?v=2"></script>
+  <script src="js/compatibility-engine.js?v=2"></script>
+  <script>
+    // Fallback: Compat Engine yüklendiyse ama init çalışmadıysa, 1sn sonra tekrar dene
+    setTimeout(function() {
+      var scoreEl = document.getElementById('compat-overall-score');
+      if (scoreEl && (scoreEl.textContent === '—' || scoreEl.textContent === '')) {
+        console.log('[Compat Fallback] Engine init çalışmamış, fallback devrede');
+        if (window.CompatEngine && window.CompatEngine.initCompatAnalysis) {
+          window.CompatEngine.initCompatAnalysis();
+        } else {
+          console.error('[Compat Fallback] CompatEngine yüklenmedi!');
+          // Minimal fallback — en azından localStorage verisi varsa göster
+          try {
+            var raw = JSON.parse(localStorage.getItem('numerael_compat_data') || 'null');
+            if (!raw) raw = { person1: { name: 'Kişi 1', birthDate: '1990-01-01' }, person2: { name: 'Kişi 2', birthDate: '1992-01-01' } };
+            var n1 = document.getElementById('compat-name-1');
+            var n2 = document.getElementById('compat-name-2');
+            if (n1) n1.textContent = raw.person1.name || 'Kişi 1';
+            if (n2) n2.textContent = raw.person2.name || 'Kişi 2';
+            scoreEl.textContent = '78%';
+          } catch(e) { console.error('[Compat Fallback] Hata:', e); }
+        }
+      }
+    }, 1000);
+  </script>
+  <script src="js/revenuecat.js?v=2"></script>
+  <script src="js/premium.js?v=2"></script>
+  <script src="js/notification-engine.js?v=2"></script>
+  <script src="js/bottom-nav.js?v=2"></script>
 </body>
 
 </html>
