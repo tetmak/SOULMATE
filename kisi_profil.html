@@ -184,6 +184,31 @@ document.addEventListener('DOMContentLoaded', async function() {
         } catch(e) { console.warn('[KisiProfil] Supabase fallback error:', e); }
     }
 
+    // Avatar URL'i Supabase'den zenginleştir (localStorage'da avatar olmaz)
+    if (kisi && !kisi.avatar_url && window.supabaseClient) {
+        try {
+            var nameToSearch = kisi.fullName || kisiName;
+            var dpRes = await window.supabaseClient.from('discovery_profiles')
+                .select('avatar_url, user_id')
+                .ilike('full_name', nameToSearch)
+                .limit(1)
+                .maybeSingle();
+            if (dpRes.data && dpRes.data.avatar_url) {
+                kisi.avatar_url = dpRes.data.avatar_url;
+            }
+            // profiles tablosundan da kontrol et
+            if (!kisi.avatar_url && dpRes.data && dpRes.data.user_id) {
+                var profRes = await window.supabaseClient.from('profiles')
+                    .select('avatar_url')
+                    .eq('id', dpRes.data.user_id)
+                    .maybeSingle();
+                if (profRes.data && profRes.data.avatar_url) {
+                    kisi.avatar_url = profRes.data.avatar_url;
+                }
+            }
+        } catch(e) { console.warn('[KisiProfil] Avatar enrich error:', e); }
+    }
+
     if (!kisi) {
         document.getElementById('kisi-isim').textContent = decodeURIComponent(kisiName);
         document.getElementById('header-title').textContent = decodeURIComponent(kisiName).split(' ')[0];
@@ -224,7 +249,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         try {
             localStorage.setItem('numerael_kisi_temp', JSON.stringify({
                 name: name,
+                fullName: name,
                 birthDate: bd,
+                gender: kisi.gender || null,
+                avatar_url: kisi.avatar_url || null,
                 isTemp: true  // Ana kullanıcı değil
             }));
         } catch(e) {}
@@ -237,6 +265,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             localStorage.setItem('numerael_kisi_temp', JSON.stringify({
                 fullName: name,
                 birthDate: bd,
+                gender: kisi.gender || null,
+                avatar_url: kisi.avatar_url || null,
                 isTemp: true
             }));
         } catch(e) {}

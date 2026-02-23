@@ -459,6 +459,30 @@ document.addEventListener('DOMContentLoaded', async function() {
     var friendName = friend ? (friend.fullName || kisiName) : decodeURIComponent(kisiName);
     var friendBD = friend ? (friend.birthDate || '') : '';
 
+    // Arkadaşın avatar_url'ini Supabase'den zenginleştir
+    if ((!friend || !friend.avatar_url) && window.supabaseClient) {
+        try {
+            var dpRes = await window.supabaseClient.from('discovery_profiles')
+                .select('avatar_url, user_id, gender')
+                .ilike('full_name', friendName)
+                .limit(1)
+                .maybeSingle();
+            if (dpRes.data) {
+                if (!friend) friend = {};
+                if (dpRes.data.avatar_url) friend.avatar_url = dpRes.data.avatar_url;
+                if (dpRes.data.gender && !friend.gender) friend.gender = dpRes.data.gender;
+                // profiles tablosundan da kontrol
+                if (!friend.avatar_url && dpRes.data.user_id) {
+                    var profRes = await window.supabaseClient.from('profiles')
+                        .select('avatar_url')
+                        .eq('id', dpRes.data.user_id)
+                        .maybeSingle();
+                    if (profRes.data && profRes.data.avatar_url) friend.avatar_url = profRes.data.avatar_url;
+                }
+            }
+        } catch(e) { console.warn('[FD] Avatar enrich error:', e); }
+    }
+
     // 2. Ana kullanıcı verisi
     var mainUser = null;
     try {
