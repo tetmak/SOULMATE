@@ -515,7 +515,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('friend-lp').textContent = fri.lifePath;
 
     // Avatars
-    var userAvatarUrl = (mainUser && mainUser.avatarUrl) ? mainUser.avatarUrl : (ud && ud.avatarUrl ? ud.avatarUrl : null);
+    var userAvatarUrl = (mainUser && (mainUser.avatar_url || mainUser.avatarUrl)) || null;
+    if (!userAvatarUrl) {
+        try { var _ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); if (_ud) userAvatarUrl = _ud.avatarUrl || null; } catch(e) {}
+    }
     var friendAvatarUrl = (friend && friend.avatar_url) ? friend.avatar_url : null;
     window.avatarUtil.setAvatar(document.getElementById('user-avatar'), { avatarUrl: userAvatarUrl, name: userName, gender: mainUser ? mainUser.gender : null });
     window.avatarUtil.setAvatar(document.getElementById('friend-avatar'), { avatarUrl: friendAvatarUrl, name: friendName, gender: friend ? friend.gender : null });
