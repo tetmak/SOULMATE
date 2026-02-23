@@ -430,6 +430,67 @@ YAZI KURALLARI:
       barsContainer.appendChild(detailDiv);
     }
 
+    // Avatarlar — Supabase'den gerçek profil fotoğrafları
+    (async function loadCompatAvatars() {
+      try {
+        var av1El = document.getElementById('compat-avatar-1');
+        var av2El = document.getElementById('compat-avatar-2');
+        if (!av1El && !av2El) return;
+
+        // 1. Ana kullanıcı (person1) avatarı — localStorage'dan
+        var p1AvatarUrl = null;
+        try {
+          var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
+          if (ud && ud.avatarUrl) p1AvatarUrl = ud.avatarUrl;
+        } catch(e) {}
+        // Supabase'den de kontrol et
+        if (!p1AvatarUrl && window.supabaseClient) {
+          try {
+            var session = null;
+            if (window.auth && window.auth.getSession) session = await window.auth.getSession();
+            if (session && session.user) {
+              var profRes = await window.supabaseClient.from('profiles')
+                .select('avatar_url')
+                .eq('id', session.user.id)
+                .maybeSingle();
+              if (profRes.data && profRes.data.avatar_url) p1AvatarUrl = profRes.data.avatar_url;
+            }
+          } catch(e) {}
+        }
+
+        // 2. Partner (person2) avatarı — Supabase'den
+        var p2AvatarUrl = null;
+        if (window.supabaseClient) {
+          try {
+            var dpRes = await window.supabaseClient.from('discovery_profiles')
+              .select('avatar_url, user_id, gender')
+              .ilike('full_name', ctx.p2.name)
+              .limit(1)
+              .maybeSingle();
+            if (dpRes.data && dpRes.data.avatar_url) {
+              p2AvatarUrl = dpRes.data.avatar_url;
+            } else if (dpRes.data && dpRes.data.user_id) {
+              var profRes2 = await window.supabaseClient.from('profiles')
+                .select('avatar_url')
+                .eq('id', dpRes.data.user_id)
+                .maybeSingle();
+              if (profRes2.data && profRes2.data.avatar_url) p2AvatarUrl = profRes2.data.avatar_url;
+            }
+          } catch(e) {}
+        }
+
+        // avatarUtil fallback
+        if (window.avatarUtil) {
+          if (!p1AvatarUrl) p1AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p1.name });
+          if (!p2AvatarUrl) p2AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p2.name });
+        }
+
+        // Avatarları güncelle
+        if (av1El && p1AvatarUrl) av1El.style.backgroundImage = 'url("' + p1AvatarUrl + '")';
+        if (av2El && p2AvatarUrl) av2El.style.backgroundImage = 'url("' + p2AvatarUrl + '")';
+      } catch(e) { console.warn('[Compat] Avatar load error:', e); }
+    })();
+
     // Soulmate share kartı isim & skor
     var smNames = document.getElementById('sm-names');
     if (smNames) smNames.textContent = ctx.p1.name + ' & ' + ctx.p2.name;
