@@ -4,22 +4,32 @@
  *
  * GET /api/update-test-avatars
  */
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
 
-module.exports = async function handler(req, res) {
-    // Sadece GET kabul et
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://cxkyyifqxbwidseofbgk.supabase.co';
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+// Türkçe kadın isim listesi (cinsiyet tespiti için)
+const FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar','havva','hatice','emine','hülya','sultan','yasemin','melek','cemre','defne','ilayda','irem','cansu','dilara','gamze','gizem','tuğba','ebru','aslı','özge','damla','beyza','aysun','sevgi','sibel','mine','deniz','ceren','duygu','didem','burcu','seda','başak','simge','gülay','sevim','yıldız','nihal','eda'];
+
+function detectGender(name, dbGender) {
+    if (dbGender === 'female' || dbGender === 'kadın') return 'female';
+    if (dbGender === 'male' || dbGender === 'erkek') return 'male';
+    const low = (name || '').toLowerCase().replace(/\s+/g, '');
+    const isFem = FEMALE_NAMES.some(fn => low.startsWith(fn));
+    return isFem ? 'female' : 'male';
+}
+
+export default async function handler(req, res) {
     if (req.method !== 'GET') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const supabaseUrl = process.env.SUPABASE_URL;
-    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !serviceKey) {
-        return res.status(500).json({ error: 'Missing env vars' });
+    if (!SUPABASE_SERVICE_KEY) {
+        return res.status(500).json({ error: 'Missing SUPABASE_SERVICE_ROLE_KEY' });
     }
 
-    const supabase = createClient(supabaseUrl, serviceKey);
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
 
     // Kadın ve erkek fotoğraf havuzu (randomuser.me - kalıcı URL'ler)
     const femalePhotos = [];
@@ -27,17 +37,6 @@ module.exports = async function handler(req, res) {
     for (let i = 0; i < 50; i++) {
         femalePhotos.push('https://randomuser.me/api/portraits/women/' + i + '.jpg');
         malePhotos.push('https://randomuser.me/api/portraits/men/' + i + '.jpg');
-    }
-
-    // Türkçe kadın isim listesi (cinsiyet tespiti için)
-    const FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar','havva','hatice','emine','hülya','sultan','yasemin','melek','cemre','defne','ilayda','irem','cansu','dilara','gamze','gizem','tuğba','ebru','aslı','özge','damla','beyza','aysun','sevgi','sibel','mine','deniz','ceren','duygu','didem','burcu','seda','başak','simge','gülay','sevim','yıldız','nihal','eda'];
-
-    function detectGender(name, dbGender) {
-        if (dbGender === 'female' || dbGender === 'kadın') return 'female';
-        if (dbGender === 'male' || dbGender === 'erkek') return 'male';
-        const low = (name || '').toLowerCase().replace(/\s+/g, '');
-        const isFem = FEMALE_NAMES.some(fn => low.startsWith(fn));
-        return isFem ? 'female' : 'male';
     }
 
     try {
@@ -89,7 +88,7 @@ module.exports = async function handler(req, res) {
 
         for (const uid of Object.keys(allUsers)) {
             const u = allUsers[uid];
-            // Zaten custom avatar varsa atla (Supabase Storage URL ise)
+            // Zaten custom Supabase Storage avatar varsa atla
             const existingAvatar = u.dp_avatar || u.prof_avatar;
             if (existingAvatar && existingAvatar.includes('supabase.co/storage')) {
                 results.push({ name: u.name, skipped: true, reason: 'has_custom_avatar' });
@@ -136,4 +135,4 @@ module.exports = async function handler(req, res) {
     } catch (err) {
         return res.status(500).json({ error: err.message || String(err) });
     }
-};
+}
