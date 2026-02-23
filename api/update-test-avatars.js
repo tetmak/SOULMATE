@@ -6,8 +6,11 @@
  * GET /api/update-test-avatars
  */
 
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://cxkyyifqxbwidseofbgk.supabase.co';
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+const SUPABASE_URL = 'https://cxkyyifqxbwidseofbgk.supabase.co';
+// Service role key veya anon key — hangisi mevcutsa
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_SERVICE_KEY ||
+    'sb_publishable_zjI0OggICM4s7wz0xpq2WA_Q_6JAHbN';
 
 const FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar','havva','hatice','emine','hülya','sultan','yasemin','melek','cemre','defne','ilayda','irem','cansu','dilara','gamze','gizem','tuğba','ebru','aslı','özge','damla','beyza','aysun','sevgi','sibel','mine','deniz','ceren','duygu','didem','burcu','seda','başak','simge','gülay','sevim','yıldız','nihal','eda'];
 
@@ -50,11 +53,8 @@ export default async function handler(req, res) {
     if (req.method !== 'GET') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
-    if (!SUPABASE_SERVICE_KEY) {
-        // Debug: hangi env var'lar var?
-        const envKeys = Object.keys(process.env).filter(k => k.includes('SUPABASE')).join(', ');
-        return res.status(500).json({ error: 'Missing SUPABASE_SERVICE_ROLE_KEY', available_supabase_keys: envKeys || 'none' });
-    }
+    // Anon key kullanılıyorsa RLS kısıtlamaları olacak
+    const usingAnon = !process.env.SUPABASE_SERVICE_ROLE_KEY && !process.env.SUPABASE_SERVICE_KEY;
 
     // Fotoğraf havuzu
     const femalePhotos = [];
