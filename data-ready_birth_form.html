@@ -296,7 +296,8 @@
                                 birthDate: prof.birth_date,
                                 birthTime: prof.birth_time || '',
                                 birthPlace: prof.birth_place || '',
-                                gender: prof.gender || 'male'
+                                gender: prof.gender || 'male',
+                                avatarUrl: prof.avatar_url || ''
                             }));
                             hasProfile = true;
                         }
@@ -346,6 +347,10 @@
 
                         if (isFirstTime) {
                             // İLK KAYIT — ana kullanıcı profili kalıcı olarak set edilir
+                            // Mevcut avatarUrl'i koru
+                            var _prev = null;
+                            try { _prev = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); } catch(e) {}
+                            personData.avatarUrl = (_prev && _prev.avatarUrl) ? _prev.avatarUrl : '';
                             localStorage.setItem('numerael_user_data', JSON.stringify(personData));
                             
                             // Supabase profiles tablosuna da kaydet

@@ -12,6 +12,8 @@
     <script src="js/gamification-engine.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/avatar.js"></script>
+    <script src="js/avatar-upload.js"></script>
     <script src="js/discovery-engine.js"></script>
     <script src="js/connection-engine.js"></script>
     <script id="tailwind-config">
@@ -53,8 +55,11 @@
     <!-- Profile Hero -->
     <div class="flex p-6 pt-8 flex-col items-center fade-in">
         <div class="relative">
-            <div id="profile-avatar" class="h-32 w-32 rounded-full border-4 border-primary/40 glow-border overflow-hidden bg-primary/20 flex items-center justify-center">
+            <div id="profile-avatar" class="h-32 w-32 rounded-full border-4 border-primary/40 glow-border overflow-hidden bg-primary/20 flex items-center justify-center cursor-pointer" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
                 <span id="profile-initial" class="text-primary text-5xl font-bold">?</span>
+            </div>
+            <div id="avatar-edit-badge" class="absolute bottom-0 left-0 bg-card-dark text-white h-9 w-9 rounded-full flex items-center justify-center border-2 border-[#181711] cursor-pointer shadow-lg z-10" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
+                <span class="material-symbols-outlined text-base">photo_camera</span>
             </div>
             <div class="absolute -bottom-2 -right-2 bg-primary text-[#181711] h-12 w-12 rounded-full flex flex-col items-center justify-center border-4 border-[#181711] font-bold shadow-lg">
                 <span class="text-[9px] leading-none uppercase tracking-tighter">Path</span>
@@ -253,19 +258,25 @@
     var lp=calcLP(bd), exp=calcExpression(name), soul=calcSoul(name), pers=calcPers(name);
 
     // ─── UI ───────────────────────────────────────────────────
-    var MALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuCuOsAz49QL47Y42kzevX6C-TTqnQcn-fKw9bm9U03OA6_buy44Ic8bt_wBUtcV1MJ5sSb6R8X_DJ-8lXNkSzsIERq3NcoxgBJpX1j8AHhsCx98dsslHkQKdYdaF2cK9NTMVQ_OIb_O9MJ9U-ow3guDO7mGY7CZqxCnsEYsQtxoblSjPmW1y00tP0EZpQ-aEvg3xi3jiQQYomz46nlrrOFmED0f3iCzkJ1soKbGh7PjJ9Gt3wTvCduVO9zVt_o3gQ0nIpmOLHD736c";
-    var FEMALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuAwVIwPfxW7vQTdT6_K5paisRbNWYqgoOiwgoxaVjFXEkx2Hocf55LzYmz1rXyDXknrbMiB8X59nhq-ptzZsewBCHh9Bi4547zbTT3ZGBQPNn6awMcDKio5VTuc-gUc0V9YR2bAFRCjLTR5wqzwERZcGYXOLcXEN3lp4szkNmpf1Pd1-9lj37_4nq74Sfu5spZUv6QDfvpVwS7fZTl7cHKYVI8htJIgEwQ7EgFwZuHn8KfRUOgWtjHWZ3pu_qj4AgsK0fYYsgjY2_g";
-    var FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar'];
-
-    // Gender tespiti
     var gender = ud.gender || '';
-    var low = name.toLowerCase();
-    var isFemale = gender === 'female' || FEMALE_NAMES.some(function(fn){ return low.startsWith(fn); });
-    var photo = isFemale ? FEMALE_PHOTO : MALE_PHOTO;
 
-    // Avatar fotoğrafını set et
+    // Avatar fotoğrafını set et (avatarUtil kullanır)
     var avatarEl = document.getElementById('profile-avatar');
-    avatarEl.innerHTML = '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">';
+    window.avatarUtil.setAvatar(avatarEl, { avatarUrl: ud.avatarUrl || null, name: name, gender: gender });
+
+    // Avatar yükleme handler
+    window._triggerAvatarUpload = function() {
+        if (!window.avatarUpload) return;
+        window.supabaseClient.auth.getSession().then(function(res) {
+            var session = res && res.data && res.data.session;
+            if (!session || !session.user) return;
+            window.avatarUpload.changeAvatar(session.user.id).then(function(newUrl) {
+                if (newUrl) {
+                    window.avatarUtil.setAvatar(avatarEl, { avatarUrl: newUrl, name: name, gender: gender });
+                }
+            }).catch(function(e) { console.error('[Avatar] Upload hatası:', e); });
+        });
+    };
 
     document.getElementById('profile-name').textContent = name;
     document.getElementById('profile-birthdate').textContent = formatDate(bd);
@@ -398,16 +409,9 @@
     var uid = session && session.user ? session.user.id : null;
     if (!uid || !window.connectionEngine) return;
 
-    var FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar'];
-    var MALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuCuOsAz49QL47Y42kzevX6C-TTqnQcn-fKw9bm9U03OA6_buy44Ic8bt_wBUtcV1MJ5sSb6R8X_DJ-8lXNkSzsIERq3NcoxgBJpX1j8AHhsCx98dsslHkQKdYdaF2cK9NTMVQ_OIb_O9MJ9U-ow3guDO7mGY7CZqxCnsEYsQtxoblSjPmW1y00tP0EZpQ-aEvg3xi3jiQQYomz46nlrrOFmED0f3iCzkJ1soKbGh7PjJ9Gt3wTvCduVO9zVt_o3gQ0nIpmOLHD736c";
-    var FEMALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuAwVIwPfxW7vQTdT6_K5paisRbNWYqgoOiwgoxaVjFXEkx2Hocf55LzYmz1rXyDXknrbMiB8X59nhq-ptzZsewBCHh9Bi4547zbTT3ZGBQPNn6awMcDKio5VTuc-gUc0V9YR2bAFRCjLTR5wqzwERZcGYXOLcXEN3lp4szkNmpf1Pd1-9lj37_4nq74Sfu5spZUv6QDfvpVwS7fZTl7cHKYVI8htJIgEwQ7EgFwZuHn8KfRUOgWtjHWZ3pu_qj4AgsK0fYYsgjY2_g";
-
-    function isFemaleByName(name, gender) {
-        if (gender === 'female') return true;
-        var low = (name||'').toLowerCase();
-        return FEMALE_NAMES.some(function(fn){ return low.startsWith(fn); });
+    function getPhoto(name, gender, avatarUrl) {
+        return window.avatarUtil.getAvatarUrl({ avatarUrl: avatarUrl, name: name, gender: gender });
     }
-    function getPhoto(name, gender) { return isFemaleByName(name, gender) ? FEMALE_PHOTO : MALE_PHOTO; }
 
     var requests = await window.connectionEngine.getIncomingRequests(uid);
     var listEl = document.getElementById('conn-requests-list');
@@ -425,7 +429,7 @@
     requests.forEach(function(req) {
         var sp = req.sender_profile || {};
         var senderName = sp.full_name || 'Unknown';
-        var photo = getPhoto(senderName, sp.gender);
+        var photo = getPhoto(senderName, sp.gender, sp.avatar_url);
         var lp = sp.life_path || '?';
 
         var card = document.createElement('div');

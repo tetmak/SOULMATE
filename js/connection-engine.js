@@ -85,7 +85,7 @@
             // Fetch sender profiles
             var senderIds = requests.map(function(r) { return r.sender_id; });
             var profilesRes = await sb().from('discovery_profiles')
-                .select('user_id, full_name, gender, life_path, birth_date')
+                .select('user_id, full_name, gender, life_path, birth_date, avatar_url')
                 .in('user_id', senderIds);
 
             var profileMap = {};
@@ -218,7 +218,7 @@
 
             // Fetch profiles
             var profilesRes = await sb().from('discovery_profiles')
-                .select('user_id, full_name, gender, life_path, birth_date, expression_num, soul_urge, personality_num')
+                .select('user_id, full_name, gender, life_path, birth_date, expression_num, soul_urge, personality_num, avatar_url')
                 .in('user_id', otherIds);
 
             var profileMap = {};
