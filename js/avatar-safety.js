@@ -1,22 +1,22 @@
 /**
- * NUMERAEL — Avatar Safety & Tone Filter
- * Scans and rewrites LLM output before TTS to ensure:
- * - No commands ("you must", "you should", "do this")
- * - No definitive judgments ("this will definitely", "guaranteed")
- * - No coaching liability language ("I recommend", "my advice")
- * - Guidance-only, non-authoritative tone
+ * NUMERAEL — Avatar Güvenlik ve Ton Filtresi
+ * LLM çıktısını TTS'e göndermeden önce tarar ve yeniden yazar:
+ * - Emir dili yok ("yapmalısın", "şunu yap", "you must")
+ * - Kesin hükümler yok ("kesinlikle olacak", "garanti", "guaranteed")
+ * - Koçluk sorumluluk dili yok ("tavsiyem", "bana güven", "I recommend")
+ * - Sadece rehberlik tonu, otoriter olmayan
  *
- * Exports: window.AvatarSafety
+ * Dışa aktarım: window.AvatarSafety
  */
 (function() {
   'use strict';
 
   // ═══════════════════════════════════════════════════════════
-  // COMMAND/AUTHORITY PATTERNS (Turkish + English)
+  // EMİR/OTORİTE KALIPLARİ (Türkçe + İngilizce)
   // ═══════════════════════════════════════════════════════════
 
   var COMMAND_PATTERNS = [
-    // Turkish command forms
+    // Türkçe emir kalıpları
     { pattern: /\b(yapmalısın|yapmalısınız|yapman gerekir|yapmanız gerekir|etmelisin|etmelisiniz)\b/gi,
       replacement: 'düşünebilirsin' },
     { pattern: /\b(kesinlikle yap|mutlaka yap|hemen yap)\b/gi,
@@ -26,7 +26,7 @@
     { pattern: /\b(şunu yap|bunu yap|böyle yap)\b/gi,
       replacement: 'bu yönde bir adım düşünülebilir' },
 
-    // English command forms
+    // İngilizce emir kalıpları
     { pattern: /\byou (must|have to|need to|should|ought to)\b/gi,
       replacement: 'you might consider' },
     { pattern: /\b(do this|do that|go ahead and)\b/gi,
@@ -36,7 +36,7 @@
   ];
 
   var JUDGMENT_PATTERNS = [
-    // Turkish definitive statements
+    // Türkçe kesin hüküm ifadeleri
     { pattern: /\b(kesinlikle|mutlaka|garantili|şüphesiz|kuşkusuz) (olacak|gerçekleşecek|başaracaksın|kazanacaksın)\b/gi,
       replacement: 'bu enerji bunu destekliyor olabilir' },
     { pattern: /\b(asla|hiçbir zaman) (yapma|etme|gitme)\b/gi,
@@ -44,7 +44,7 @@
     { pattern: /\b(bu kesin|bu garantili|başarı garanti)\b/gi,
       replacement: 'enerji bu yönde akıyor görünüyor' },
 
-    // English definitive statements
+    // İngilizce kesin hüküm ifadeleri
     { pattern: /\b(definitely will|guaranteed to|certainly will|absolutely will)\b/gi,
       replacement: 'the energy may support' },
     { pattern: /\b(never ever|you can never|impossible to)\b/gi,
@@ -54,7 +54,7 @@
   ];
 
   var LIABILITY_PATTERNS = [
-    // Turkish coaching/advice patterns
+    // Türkçe koçluk/tavsiye kalıpları
     { pattern: /\b(tavsiyem|önerim|benim fikrim)\b/gi,
       replacement: 'sayıların işaret ettiği' },
     { pattern: /\b(sana söylüyorum|dinle beni|bana güven)\b/gi,
@@ -62,7 +62,7 @@
     { pattern: /\b(doktor|avukat|terapist|psikolog) olarak\b/gi,
       replacement: 'kozmik rehberlik açısından' },
 
-    // English coaching patterns
+    // İngilizce koçluk kalıpları
     { pattern: /\b(my advice is|I recommend|I suggest you)\b/gi,
       replacement: 'the numbers indicate' },
     { pattern: /\b(listen to me|trust me|I'm telling you)\b/gi,
@@ -72,7 +72,7 @@
   ];
 
   // ═══════════════════════════════════════════════════════════
-  // GUIDANCE SUFFIX — appended when authoritative tone detected
+  // REHBERLİK SON EKİ — otoriter ton algılandığında eklenir
   // ═══════════════════════════════════════════════════════════
   var GUIDANCE_SUFFIXES_TR = [
     ' Son karar her zaman sana ait.',
@@ -89,11 +89,11 @@
   ];
 
   // ═══════════════════════════════════════════════════════════
-  // CORE FILTERING
+  // ANA FİLTRELEME
   // ═══════════════════════════════════════════════════════════
 
   function detectLanguage(text) {
-    // Simple heuristic: check for Turkish characters
+    // Basit sezgisel: Türkçe karakter kontrolü
     var trChars = /[çğıöşüÇĞİÖŞÜ]/;
     return trChars.test(text) ? 'tr' : 'en';
   }
@@ -107,15 +107,15 @@
         modified = true;
         result = result.replace(p.pattern, p.replacement);
       }
-      // Reset regex lastIndex (global flag)
+      // Regex lastIndex sıfırla (global flag)
       p.pattern.lastIndex = 0;
     }
     return { text: result, modified: modified };
   }
 
   /**
-   * Main filter function.
-   * Returns { text: filteredText, modified: bool, issues: string[] }
+   * Ana filtre fonksiyonu.
+   * Döndürür: { text: filtrelenmisMeyin, modified: bool, issues: string[] }
    */
   function filter(text) {
     if (!text || typeof text !== 'string') {
@@ -126,7 +126,7 @@
     var result = text;
     var wasModified = false;
 
-    // Apply command patterns
+    // Emir kalıplarını uygula
     var r1 = applyPatterns(result, COMMAND_PATTERNS);
     if (r1.modified) {
       issues.push('command_language');
@@ -134,7 +134,7 @@
     }
     result = r1.text;
 
-    // Apply judgment patterns
+    // Hüküm kalıplarını uygula
     var r2 = applyPatterns(result, JUDGMENT_PATTERNS);
     if (r2.modified) {
       issues.push('definitive_judgment');
@@ -142,7 +142,7 @@
     }
     result = r2.text;
 
-    // Apply liability patterns
+    // Sorumluluk kalıplarını uygula
     var r3 = applyPatterns(result, LIABILITY_PATTERNS);
     if (r3.modified) {
       issues.push('liability_language');
@@ -150,12 +150,12 @@
     }
     result = r3.text;
 
-    // If text was modified, append a guidance suffix
+    // Metin değiştirildiyse rehberlik son eki ekle
     if (wasModified) {
       var lang = detectLanguage(result);
       var suffixes = lang === 'tr' ? GUIDANCE_SUFFIXES_TR : GUIDANCE_SUFFIXES_EN;
       var suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-      // Only append if the text doesn't already end with a similar phrase
+      // Benzer ifadeyle zaten bitmiyorsa ekle
       if (result.indexOf('son karar') === -1 && result.indexOf('final choice') === -1) {
         result = result.trimRight();
         if (result[result.length - 1] !== '.') result += '.';
@@ -171,7 +171,7 @@
   }
 
   /**
-   * Wrap text for avatar speech — applies filter and formats for TTS
+   * Avatar konuşması için metni hazırla — filtre uygula ve TTS için biçimlendir
    */
   function prepareForSpeech(text) {
     var filtered = filter(text);
@@ -179,21 +179,21 @@
   }
 
   /**
-   * Build a safe system prompt prefix for the LLM
+   * LLM için güvenli sistem prompt öneki oluştur
    */
   function getSystemPromptGuard() {
     return [
-      'IMPORTANT TONE RULES:',
-      '- Never use commands (must, should, have to, yapmalısın, etmelisin).',
-      '- Never make definitive predictions (will definitely, guaranteed, kesinlikle olacak).',
-      '- Always frame as guidance: "the energy suggests", "one perspective is", "enerji bunu destekliyor".',
-      '- End with reminding the user that the choice is theirs.',
-      '- You are a guide, not an authority. Speak with calm wisdom, not instruction.',
-      '- Tone: warm, neutral, non-judgmental, cosmic.'
+      'ÖNEMLİ TON KURALLARI:',
+      '- Asla emir kipi kullanma (yapmalısın, etmelisin, must, should).',
+      '- Asla kesin tahminlerde bulunma (kesinlikle olacak, garanti, will definitely).',
+      '- Her zaman rehberlik olarak çerçevele: "enerji bunu destekliyor", "bir perspektif şu ki".',
+      '- Seçimin kullanıcıya ait olduğunu hatırlat.',
+      '- Sen bir rehbersin, otorite değil. Sakin bilgelikle konuş, talimatla değil.',
+      '- Ton: sıcak, nötr, yargılayıcı olmayan, kozmik.'
     ].join('\n');
   }
 
-  // ─── Export ───
+  // ─── Dışa Aktarım ───
   window.AvatarSafety = {
     filter: filter,
     prepareForSpeech: prepareForSpeech,

@@ -1,5 +1,13 @@
+/**
+ * NUMERAEL — TTS API Endpoint (Vercel Serverless)
+ * OpenAI TTS API'sine sunucu taraflı proxy.
+ * API anahtarını sunucu tarafında ekler, istemciye ses verisi döndürür.
+ *
+ * Kullanım: POST /api/tts
+ * Gövde: { model, voice, input, response_format }
+ */
 export default async function handler(req, res) {
-    // CORS headers
+    // CORS başlıkları
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -9,22 +17,22 @@ export default async function handler(req, res) {
     }
 
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).json({ error: 'Yalnızca POST metodu desteklenir' });
     }
 
     try {
         const apiKey = process.env.OPENAI_API_KEY;
         if (!apiKey) {
-            return res.status(500).json({ error: 'API key not configured' });
+            return res.status(500).json({ error: 'API anahtarı yapılandırılmamış' });
         }
 
         const { model, voice, input, response_format } = req.body;
 
         if (!input || typeof input !== 'string') {
-            return res.status(400).json({ error: 'Missing or invalid input text' });
+            return res.status(400).json({ error: 'Geçersiz veya eksik giriş metni' });
         }
 
-        // Limit input length to prevent abuse
+        // Kötüye kullanımı önlemek için giriş uzunluğunu sınırla
         const trimmedInput = input.slice(0, 4096);
 
         const response = await fetch('https://api.openai.com/v1/audio/speech', {
@@ -43,10 +51,10 @@ export default async function handler(req, res) {
 
         if (!response.ok) {
             const errorText = await response.text();
-            return res.status(response.status).json({ error: 'OpenAI TTS error: ' + errorText });
+            return res.status(response.status).json({ error: 'OpenAI TTS hatası: ' + errorText });
         }
 
-        // Stream the audio response
+        // Ses yanıtını aktar
         const contentType = response.headers.get('content-type') || 'audio/mpeg';
         res.setHeader('Content-Type', contentType);
         res.setHeader('Cache-Control', 'public, max-age=3600');

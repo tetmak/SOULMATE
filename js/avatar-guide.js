@@ -1,12 +1,12 @@
 /**
- * NUMERAEL — Avatar Guide Orchestrator
- * Connects all avatar subsystems: Renderer, TTS, LipSync, Safety, Widget.
- * Provides a single API for the rest of the app to trigger avatar speech.
+ * NUMERAEL — Avatar Rehber Orkestratörü
+ * Tüm avatar alt sistemlerini birbirine bağlar: Renderer, TTS, LipSync, Safety, Widget.
+ * Uygulamanın geri kalanı için avatar konuşmasını tetikleyecek tek API sağlar.
  *
- * Pipeline:
- *   Text → Safety Filter → TTS → LipSync → Renderer → Widget
+ * Akış:
+ *   Metin → Güvenlik Filtresi → TTS → Dudak Senkronu → Görüntü Motoru → Widget
  *
- * Exports: window.AvatarGuide
+ * Dışa aktarım: window.AvatarGuide
  */
 (function() {
   'use strict';
@@ -19,21 +19,21 @@
   var API_BASE = isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
   // ═══════════════════════════════════════════════════════════
-  // STATE
+  // DURUM DEĞİŞKENLERİ
   // ═══════════════════════════════════════════════════════════
   var _initialized = false;
   var _speaking = false;
-  var _queue = [];        // speech queue for sequential messages
+  var _queue = [];        // sıralı mesajlar için konuşma kuyruğu
   var _processing = false;
 
   // ═══════════════════════════════════════════════════════════
-  // INITIALIZATION
+  // BAŞLATMA
   // ═══════════════════════════════════════════════════════════
 
   function init() {
     if (_initialized) return;
 
-    // Wait for widget to be ready
+    // Widget'ın hazır olmasını bekle
     if (!window.AvatarWidget || !window.AvatarWidget.getFaceContainer()) {
       setTimeout(init, 200);
       return;
@@ -41,21 +41,21 @@
 
     var container = window.AvatarWidget.getFaceContainer();
     if (!container) {
-      console.warn('[AvatarGuide] No face container found');
+      console.warn('[AvatarGuide] Yüz kapsayıcısı bulunamadı');
       return;
     }
 
-    // Start the renderer
+    // Görüntü motorunu başlat
     if (window.AvatarRenderer) {
       window.AvatarRenderer.start(container);
     }
 
-    // Initialize lip sync with renderer
+    // Dudak senkronunu görüntü motoruyla başlat
     if (window.AvatarLipSync && window.AvatarRenderer) {
       window.AvatarLipSync.init(window.AvatarRenderer);
     }
 
-    // Set up TTS subtitle callback
+    // TTS altyazı geri çağırmasını ayarla
     if (window.AvatarTTS) {
       window.AvatarTTS.setSubtitleCallback(function(text, wordIndex) {
         if (window.AvatarWidget) {
@@ -65,18 +65,18 @@
     }
 
     _initialized = true;
-    console.log('[AvatarGuide] Initialized');
+    console.log('[AvatarGuide] Başlatıldı');
   }
 
   // ═══════════════════════════════════════════════════════════
-  // CORE SPEECH PIPELINE
+  // ANA KONUŞMA AKIŞI
   // ═══════════════════════════════════════════════════════════
 
   /**
-   * Speak text through the avatar.
-   * Full pipeline: Safety → TTS → LipSync → Render → Widget
+   * Avatar üzerinden metin konuştur.
+   * Tam akış: Güvenlik → TTS → DudakSenkronu → Render → Widget
    *
-   * @param {string} text - Raw text (or SSML) to speak
+   * @param {string} text - Konuşulacak ham metin (veya SSML)
    * @param {object} [options] - { immediate: bool, onComplete: fn }
    */
   function speak(text, options) {
@@ -109,14 +109,14 @@
       return;
     }
 
-    // Check mute
+    // Sessiz kontrolü
     if (window.AvatarWidget && window.AvatarWidget.isMuted()) {
-      // Still show subtitle even when muted
+      // Sessizde bile altyazıyı göster
       showSubtitleOnly(rawText, opts);
       return;
     }
 
-    // Step 1: Safety filter
+    // Adım 1: Güvenlik filtresi
     var safeText = rawText;
     if (window.AvatarSafety) {
       safeText = window.AvatarSafety.prepareForSpeech(rawText);
@@ -124,21 +124,21 @@
 
     _speaking = true;
 
-    // Step 2: Notify widget
+    // Adım 2: Widget'ı bilgilendir
     if (window.AvatarWidget) {
       window.AvatarWidget.onSpeechStart();
     }
 
-    // Step 3: Start lip sync
+    // Adım 3: Dudak senkronunu başlat
     if (window.AvatarLipSync) {
       window.AvatarLipSync.startSpeaking(safeText);
     }
 
-    // Step 4: TTS with amplitude callback for lip sync
+    // Adım 4: Dudak senkronu için genlik geri çağırmasıyla TTS
     if (window.AvatarTTS) {
       window.AvatarTTS.speak(safeText, {
         onStart: function() {
-          // Already handled above
+          // Yukarıda zaten işlendi
         },
         onAmplitude: function(amplitude) {
           if (window.AvatarLipSync) {
@@ -146,14 +146,14 @@
           }
         },
         onBoundary: function(event, wordIndex, totalWords) {
-          // Word tracking handled by TTS subtitle callback
+          // Kelime takibi TTS altyazı geri çağırmasıyla yapılıyor
         },
         onEnd: function() {
           onSpeechComplete(opts);
         }
       });
     } else {
-      // No TTS available — just show text
+      // TTS mevcut değil — sadece metni göster
       showSubtitleOnly(safeText, opts);
     }
   }
@@ -169,7 +169,7 @@
       window.AvatarWidget.showSubtitle(safeText, -1);
     }
 
-    // Auto-hide after reading time
+    // Okuma süresinden sonra otomatik gizle
     var readTime = Math.max(3000, safeText.length * 60);
     setTimeout(function() {
       onSpeechComplete(opts);
@@ -179,29 +179,29 @@
   function onSpeechComplete(opts) {
     _speaking = false;
 
-    // Stop lip sync
+    // Dudak senkronunu durdur
     if (window.AvatarLipSync) {
       window.AvatarLipSync.stopSpeaking();
     }
 
-    // Notify widget
+    // Widget'ı bilgilendir
     if (window.AvatarWidget) {
       window.AvatarWidget.onSpeechEnd();
     }
 
     _processing = false;
 
-    // Callback
+    // Geri çağırma
     if (opts && opts.onComplete) {
       opts.onComplete();
     }
 
-    // Process next in queue
+    // Kuyruktaki sonrakini işle
     processQueue();
   }
 
   // ═══════════════════════════════════════════════════════════
-  // STOP
+  // DURDUR
   // ═══════════════════════════════════════════════════════════
 
   function stopSpeaking() {
@@ -216,13 +216,13 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // HIGH-LEVEL TRIGGERS
-  // These are called by other modules when events occur.
+  // ÜST DÜZEY TETİKLEYİCİLER
+  // Olaylar gerçekleştiğinde diğer modüller tarafından çağrılır.
   // ═══════════════════════════════════════════════════════════
 
   /**
-   * Called when a numerology/decision result is returned.
-   * Generates guidance text and speaks it through the avatar.
+   * Numeroloji/karar sonucu döndüğünde çağrılır.
+   * Rehberlik metni üretir ve avatar ile konuşturur.
    */
   function onResultReady(resultData) {
     var text = buildResultNarration(resultData);
@@ -230,15 +230,15 @@
   }
 
   /**
-   * Called when AI content is generated for a page section.
-   * Avatar can optionally narrate key AI insights.
+   * Sayfa bölümü için AI içeriği üretildiğinde çağrılır.
+   * Avatar isteğe bağlı olarak önemli AI görüşlerini anlatabilir.
    */
   function onAIContentReady(content, pageContext) {
-    // Only speak for significant content, not every section
+    // Sadece önemli içerik için konuş, her bölüm için değil
     if (!pageContext || !pageContext.primary) return;
     var trimmed = content;
     if (trimmed.length > 200) {
-      // Summarize for speech — take first 2 sentences
+      // Konuşma için özetle — ilk 2 cümleyi al
       var sentences = trimmed.split(/[.!?]+/).filter(function(s) { return s.trim().length > 10; });
       trimmed = sentences.slice(0, 2).join('. ') + '.';
     }
@@ -246,8 +246,8 @@
   }
 
   /**
-   * Called when user submits a question/decision in Decision Sphere.
-   * Avatar acknowledges and then speaks the result.
+   * Kullanıcı Decision Sphere'de soru/karar gönderdiğinde çağrılır.
+   * Avatar kabul eder ve sonucu konuşur.
    */
   function onDecisionSubmit(action, result) {
     if (!result) return;
@@ -273,7 +273,7 @@
   }
 
   /**
-   * Called for compatibility analysis results.
+   * Uyumluluk analizi sonuçları için çağrılır.
    */
   function onCompatibilityResult(score, names) {
     var text = '';
@@ -292,7 +292,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // NARRATION BUILDER
+  // ANLATI OLUŞTURUCU
   // ═══════════════════════════════════════════════════════════
 
   function buildResultNarration(data) {
@@ -354,12 +354,12 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // LLM INTEGRATION — Generate avatar speech via AI
+  // LLM ENTEGRASYONU — AI ile avatar konuşması üret
   // ═══════════════════════════════════════════════════════════
 
   /**
-   * Ask the LLM to generate avatar speech for a given context.
-   * Uses safety-guarded system prompt.
+   * LLM'den verilen bağlam için avatar konuşması üretmesini iste.
+   * Güvenlik korumalı sistem prompt kullanır.
    */
   function generateAndSpeak(context, userPrompt) {
     var systemPrompt = [
@@ -391,12 +391,12 @@
       if (text) speak(text);
     })
     .catch(function(err) {
-      console.warn('[AvatarGuide] LLM generation failed:', err);
+      console.warn('[AvatarGuide] LLM üretimi başarısız:', err);
     });
   }
 
   // ═══════════════════════════════════════════════════════════
-  // LIFECYCLE
+  // YAŞAM DÖNGÜSÜ
   // ═══════════════════════════════════════════════════════════
 
   function destroy() {
@@ -416,9 +416,9 @@
     return _initialized;
   }
 
-  // Auto-init
+  // Otomatik başlatma
   function autoInit() {
-    // Wait for all dependencies
+    // Tüm bağımlılıkların hazır olmasını bekle
     if (!window.AvatarRenderer || !window.AvatarTTS || !window.AvatarLipSync || !window.AvatarWidget || !window.AvatarSafety) {
       setTimeout(autoInit, 300);
       return;
@@ -434,7 +434,7 @@
     setTimeout(autoInit, 200);
   }
 
-  // ─── Export ───
+  // ─── Dışa Aktarım ───
   window.AvatarGuide = {
     init: init,
     speak: speak,

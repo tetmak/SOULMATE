@@ -1,9 +1,9 @@
 /**
- * NUMERAEL — TTS Abstraction Layer
- * Provider-agnostic Text-to-Speech with SSML support.
- * Supports: Web Speech API (default), OpenAI TTS (via server proxy), custom providers.
+ * NUMERAEL — TTS Soyutlama Katmanı
+ * Sağlayıcıdan bağımsız Metinden Konuşmaya (TTS) servisi, SSML desteğiyle.
+ * Desteklenenler: Web Speech API (varsayılan), OpenAI TTS (sunucu proxy), özel sağlayıcılar.
  *
- * Exports: window.AvatarTTS
+ * Dışa aktarım: window.AvatarTTS
  */
 (function() {
   'use strict';
@@ -16,7 +16,7 @@
   var API_BASE = isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
   // ═══════════════════════════════════════════════════════════
-  // CONFIGURATION
+  // YAPILANDIRMA
   // ═══════════════════════════════════════════════════════════
   var CONFIG = {
     provider: 'webspeech',   // 'webspeech' | 'openai' | 'custom'
@@ -24,14 +24,14 @@
     rate: 0.92,
     pitch: 1.0,
     volume: 0.85,
-    // OpenAI TTS settings
+    // OpenAI TTS ayarları
     openaiModel: 'tts-1',
-    openaiVoice: 'nova',     // calm, warm voice
-    // Callbacks
+    openaiVoice: 'nova',     // sakin, sıcak ses
+    // Geri çağırmalar
     onStart: null,
     onEnd: null,
-    onBoundary: null,        // word boundary events
-    onAmplitude: null        // amplitude data for lip sync
+    onBoundary: null,        // kelime sınırı olayları
+    onAmplitude: null        // dudak senkronu için genlik verisi
   };
 
   var _speaking = false;
@@ -44,43 +44,43 @@
   var _subtitleCallback = null;
 
   // ═══════════════════════════════════════════════════════════
-  // SSML PROCESSING
+  // SSML İŞLEME
   // ═══════════════════════════════════════════════════════════
 
   /**
-   * Convert SSML-like markup to plain text for Web Speech API.
-   * Preserves pause intent by inserting commas/periods.
+   * SSML biçimli metni Web Speech API için düz metne çevirir.
+   * Duraklama niyetini virgül/nokta ekleyerek korur.
    */
   function ssmlToPlainText(ssml) {
     if (!ssml) return '';
     var text = ssml;
-    // Remove <speak> wrapper
+    // <speak> sarmalayıcısını kaldır
     text = text.replace(/<\/?speak>/gi, '');
-    // Convert <break> to pauses (commas)
+    // <break> etiketlerini duraklamalara çevir (virgül)
     text = text.replace(/<break[^>]*time=["'](\d+)ms["'][^>]*\/?\s*>/gi, function(_, ms) {
       return parseInt(ms) > 300 ? '. ' : ', ';
     });
     text = text.replace(/<break[^>]*\/?\s*>/gi, ', ');
-    // Convert <emphasis> — keep inner text
+    // <emphasis> — iç metni koru
     text = text.replace(/<emphasis[^>]*>([\s\S]*?)<\/emphasis>/gi, '$1');
-    // Convert <prosody> — keep inner text
+    // <prosody> — iç metni koru
     text = text.replace(/<prosody[^>]*>([\s\S]*?)<\/prosody>/gi, '$1');
-    // Remove any remaining tags
+    // Kalan etiketleri kaldır
     text = text.replace(/<[^>]+>/g, '');
-    // Clean up whitespace
+    // Boşlukları temizle
     text = text.replace(/\s+/g, ' ').trim();
     return text;
   }
 
   /**
-   * Build SSML string from text with options
+   * Metinden seçeneklerle SSML dizesi oluşturur
    */
   function buildSSML(text, options) {
     var ssml = '<speak>';
     if (options && options.soft) {
       ssml += '<prosody rate="slow" pitch="-2st" volume="soft">';
     }
-    // Add pauses after sentences
+    // Cümlelerden sonra duraklama ekle
     var sentences = text.split(/(?<=[.!?])\s+/);
     for (var i = 0; i < sentences.length; i++) {
       ssml += sentences[i];
@@ -96,17 +96,17 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // WEB SPEECH API PROVIDER
+  // WEB SPEECH API SAĞLAYICISI
   // ═══════════════════════════════════════════════════════════
 
   function speakWebSpeech(text, callbacks) {
     if (!window.speechSynthesis) {
-      console.warn('[AvatarTTS] Web Speech API not available');
+      console.warn('[AvatarTTS] Web Speech API kullanılamıyor');
       if (callbacks.onEnd) callbacks.onEnd();
       return;
     }
 
-    // Cancel any ongoing speech
+    // Devam eden konuşmayı iptal et
     window.speechSynthesis.cancel();
 
     var plainText = ssmlToPlainText(text);
@@ -116,7 +116,7 @@
     _utterance.pitch = CONFIG.pitch;
     _utterance.volume = CONFIG.volume;
 
-    // Try to find a Turkish voice
+    // Türkçe ses bulmaya çalış
     var voices = window.speechSynthesis.getVoices();
     var trVoice = null;
     for (var i = 0; i < voices.length; i++) {
@@ -127,7 +127,7 @@
     }
     if (trVoice) _utterance.voice = trVoice;
 
-    // Word tracking for subtitles
+    // Altyazı için kelime takibi
     var words = plainText.split(/\s+/);
     var wordIndex = 0;
 
@@ -135,7 +135,7 @@
       _speaking = true;
       if (callbacks.onStart) callbacks.onStart();
       if (_subtitleCallback) _subtitleCallback(plainText, 0);
-      // Start amplitude simulation for Web Speech (no actual audio analysis)
+      // Web Speech için genlik simülasyonu başlat (gerçek ses analizi yok)
       startAmplitudeSimulation(callbacks.onAmplitude);
     };
 
@@ -154,7 +154,7 @@
     };
 
     _utterance.onerror = function(e) {
-      console.warn('[AvatarTTS] Speech error:', e.error);
+      console.warn('[AvatarTTS] Konuşma hatası:', e.error);
       _speaking = false;
       stopAmplitudeSimulation();
       if (callbacks.onEnd) callbacks.onEnd();
@@ -164,7 +164,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // OPENAI TTS PROVIDER (via server proxy)
+  // OPENAI TTS SAĞLAYICISI (sunucu proxy üzerinden)
   // ═══════════════════════════════════════════════════════════
 
   function speakOpenAI(text, callbacks) {
@@ -181,14 +181,14 @@
       })
     })
     .then(function(res) {
-      if (!res.ok) throw new Error('TTS API error: ' + res.status);
+      if (!res.ok) throw new Error('TTS API hatası: ' + res.status);
       return res.arrayBuffer();
     })
     .then(function(buffer) {
       playAudioBuffer(buffer, plainText, callbacks);
     })
     .catch(function(err) {
-      console.warn('[AvatarTTS] OpenAI TTS failed, falling back to Web Speech:', err);
+      console.warn('[AvatarTTS] OpenAI TTS başarısız, Web Speech\'e geri dönülüyor:', err);
       speakWebSpeech(text, callbacks);
     });
   }
@@ -199,11 +199,11 @@
     }
 
     _audioCtx.decodeAudioData(buffer.slice(0), function(audioBuffer) {
-      // Create source
+      // Kaynak oluştur
       _audioSource = _audioCtx.createBufferSource();
       _audioSource.buffer = audioBuffer;
 
-      // Create analyser for amplitude
+      // Genlik için analizör oluştur
       _analyser = _audioCtx.createAnalyser();
       _analyser.fftSize = 256;
       _analyser.smoothingTimeConstant = 0.7;
@@ -223,19 +223,19 @@
 
       _audioSource.start(0);
 
-      // Start real amplitude analysis
+      // Gerçek genlik analizi başlat
       startAmplitudeAnalysis(callbacks.onAmplitude);
 
-      // Simulate word boundaries based on duration
+      // Süreye göre kelime sınırlarını simüle et
       simulateWordBoundaries(text, audioBuffer.duration, callbacks.onBoundary);
     }, function(err) {
-      console.warn('[AvatarTTS] Audio decode error:', err);
+      console.warn('[AvatarTTS] Ses çözme hatası:', err);
       if (callbacks.onEnd) callbacks.onEnd();
     });
   }
 
   // ═══════════════════════════════════════════════════════════
-  // AMPLITUDE ANALYSIS
+  // GENLİK ANALİZİ
   // ═══════════════════════════════════════════════════════════
 
   function startAmplitudeAnalysis(onAmplitude) {
@@ -245,12 +245,12 @@
     function tick() {
       if (!_speaking) return;
       _analyser.getByteFrequencyData(dataArray);
-      // Calculate average amplitude
+      // Ortalama genliği hesapla
       var sum = 0;
       for (var i = 0; i < dataArray.length; i++) {
         sum += dataArray[i];
       }
-      var avg = sum / dataArray.length / 255; // 0-1 normalized
+      var avg = sum / dataArray.length / 255; // 0-1 normalize
       onAmplitude(avg);
       _amplitudeInterval = requestAnimationFrame(tick);
     }
@@ -265,7 +265,7 @@
   }
 
   /**
-   * Simulate amplitude for Web Speech API (no direct audio access)
+   * Web Speech API için genlik simülasyonu (doğrudan ses erişimi yok)
    */
   function startAmplitudeSimulation(onAmplitude) {
     if (!onAmplitude) return;
@@ -276,7 +276,7 @@
         return;
       }
       phase += 0.15;
-      // Generate naturalistic amplitude variation
+      // Doğal genlik varyasyonu üret
       var amp = 0.3 + Math.sin(phase) * 0.15 +
                 Math.sin(phase * 2.7) * 0.1 +
                 Math.sin(phase * 0.5) * 0.1 +
@@ -289,11 +289,11 @@
   }
 
   function stopAmplitudeSimulation() {
-    stopAmplitudeAnalysis(); // same cleanup
+    stopAmplitudeAnalysis(); // aynı temizlik
   }
 
   /**
-   * Simulate word boundaries based on audio duration
+   * Ses süresine göre kelime sınırlarını simüle et
    */
   function simulateWordBoundaries(text, duration, onBoundary) {
     var words = text.split(/\s+/);
@@ -311,7 +311,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // PUBLIC API
+  // GENEL API
   // ═══════════════════════════════════════════════════════════
 
   function speak(text, options) {
@@ -343,7 +343,7 @@
       window.speechSynthesis.cancel();
     }
 
-    // Audio source
+    // Ses kaynağı
     if (_audioSource) {
       try { _audioSource.stop(); } catch(e) {}
       _audioSource = null;
@@ -380,7 +380,7 @@
     };
   }
 
-  // Pre-load voices for Web Speech
+  // Web Speech için sesleri ön yükle
   if (window.speechSynthesis) {
     window.speechSynthesis.getVoices();
     if (window.speechSynthesis.onvoiceschanged !== undefined) {
@@ -390,7 +390,7 @@
     }
   }
 
-  // ─── Export ───
+  // ─── Dışa Aktarım ───
   window.AvatarTTS = {
     speak: speak,
     stop: stop,

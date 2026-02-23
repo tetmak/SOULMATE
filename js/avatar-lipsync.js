@@ -1,43 +1,43 @@
 /**
- * NUMERAEL — Lip Sync & Animation Controller
- * Bridges TTS amplitude/phoneme data to avatar mouth and face animation.
- * Supports amplitude-based and phoneme-based modes.
+ * NUMERAEL — Dudak Senkronu ve Animasyon Kontrolcüsü
+ * TTS genlik/fonem verisini avatar ağız ve yüz animasyonuna bağlar.
+ * Genlik tabanlı ve fonem tabanlı modları destekler.
  *
- * Exports: window.AvatarLipSync
+ * Dışa aktarım: window.AvatarLipSync
  */
 (function() {
   'use strict';
 
   // ═══════════════════════════════════════════════════════════
-  // CONFIGURATION
+  // YAPILANDIRMA
   // ═══════════════════════════════════════════════════════════
   var CONFIG = {
-    // Amplitude-to-mouth mapping
-    amplitudeMin: 0.05,        // below this = mouth closed
-    amplitudeMax: 0.6,         // above this = fully open
-    smoothing: 0.35,           // lerp factor (0-1, higher = more responsive)
-    // Viseme timing
-    visemeDuration: 80,        // ms per viseme
-    // Idle animation
-    idleMicroMovement: true,   // subtle mouth twitches when idle
+    // Genlik-ağız eşlemesi
+    amplitudeMin: 0.05,        // bunun altında = ağız kapalı
+    amplitudeMax: 0.6,         // bunun üstünde = tamamen açık
+    smoothing: 0.35,           // geçiş faktörü (0-1, yüksek = daha duyarlı)
+    // Vizem zamanlaması
+    visemeDuration: 80,        // vizem başına ms
+    // Bekleme animasyonu
+    idleMicroMovement: true,   // beklemedeyken hafif ağız kıpırdanması
   };
 
-  // Turkish phoneme-to-viseme mapping (simplified)
-  // Viseme values: 0 = closed, 0.2 = slightly open, 0.5 = mid, 0.8 = wide, 1.0 = fully open
+  // Türkçe fonem-vizem eşlemesi (basitleştirilmiş)
+  // Vizem değerleri: 0 = kapalı, 0.2 = hafif açık, 0.5 = orta, 0.8 = geniş, 1.0 = tamamen açık
   var TURKISH_VISEMES = {
-    // Vowels
+    // Ünlüler
     'a': 0.85, 'e': 0.7, 'ı': 0.3, 'i': 0.35,
     'o': 0.75, 'ö': 0.65, 'u': 0.5, 'ü': 0.45,
-    // Consonants - grouped by mouth shape
-    'b': 0.05, 'p': 0.05, 'm': 0.05,     // bilabial (lips together)
-    'f': 0.15, 'v': 0.15,                 // labiodental
-    'd': 0.25, 't': 0.25, 'n': 0.25,     // alveolar
-    's': 0.2, 'z': 0.2, 'c': 0.2,        // sibilant
-    'ş': 0.3, 'ç': 0.3, 'j': 0.3,       // post-alveolar
-    'k': 0.2, 'g': 0.2, 'ğ': 0.15,      // velar
-    'h': 0.4, 'r': 0.3, 'l': 0.25,       // other
+    // Ünsüzler — ağız şekline göre gruplandırılmış
+    'b': 0.05, 'p': 0.05, 'm': 0.05,     // çift dudak (dudaklar birleşik)
+    'f': 0.15, 'v': 0.15,                 // dudak-diş
+    'd': 0.25, 't': 0.25, 'n': 0.25,     // diş eti
+    's': 0.2, 'z': 0.2, 'c': 0.2,        // ıslıklı
+    'ş': 0.3, 'ç': 0.3, 'j': 0.3,       // art diş eti
+    'k': 0.2, 'g': 0.2, 'ğ': 0.15,      // art damak
+    'h': 0.4, 'r': 0.3, 'l': 0.25,       // diğer
     'y': 0.3, 'w': 0.4,
-    ' ': 0.0, ',': 0.0, '.': 0.0         // silence
+    ' ': 0.0, ',': 0.0, '.': 0.0         // sessizlik
   };
 
   var state = {
@@ -47,46 +47,46 @@
     lastAmplitude: 0,
     visemeQueue: [],
     visemeTimer: null,
-    renderer: null,      // reference to AvatarRenderer
+    renderer: null,      // AvatarRenderer referansı
     mode: 'amplitude',   // 'amplitude' | 'phoneme'
     microTimer: null
   };
 
   // ═══════════════════════════════════════════════════════════
-  // AMPLITUDE-BASED LIP SYNC
+  // GENLİK TABANLI DUDAK SENKRONU
   // ═══════════════════════════════════════════════════════════
 
   /**
-   * Called by TTS onAmplitude callback with values 0-1
+   * TTS onAmplitude geri çağırması tarafından 0-1 değerlerle çağrılır
    */
   function processAmplitude(amplitude) {
     if (!state.active) return;
 
-    // Normalize amplitude to mouth range
+    // Genliği ağız aralığına normalize et
     var normalized = (amplitude - CONFIG.amplitudeMin) / (CONFIG.amplitudeMax - CONFIG.amplitudeMin);
     normalized = Math.max(0, Math.min(1, normalized));
 
-    // Add some natural variation
+    // Doğal varyasyon ekle
     normalized *= (0.85 + Math.random() * 0.3);
     normalized = Math.min(1, normalized);
 
     state.targetMouthOpen = normalized;
 
-    // Smooth interpolation
+    // Yumuşak geçiş
     state.currentMouthOpen += (state.targetMouthOpen - state.currentMouthOpen) * CONFIG.smoothing;
 
-    // Send to renderer
+    // Görüntü motoruna gönder
     if (state.renderer) {
       state.renderer.setMouthOpen(state.currentMouthOpen);
     }
   }
 
   // ═══════════════════════════════════════════════════════════
-  // PHONEME-BASED LIP SYNC
+  // FONEM TABANLI DUDAK SENKRONU
   // ═══════════════════════════════════════════════════════════
 
   /**
-   * Generate viseme sequence from text
+   * Metinden vizem dizisi üret
    */
   function textToVisemes(text) {
     var visemes = [];
@@ -97,7 +97,7 @@
       if (value !== undefined) {
         visemes.push({ char: ch, value: value, duration: CONFIG.visemeDuration });
       } else if (ch === ' ' || ch === '.' || ch === ',') {
-        // Pause
+        // Duraklama
         var pauseDuration = ch === '.' ? 200 : (ch === ',' ? 120 : 60);
         visemes.push({ char: ch, value: 0, duration: pauseDuration });
       }
@@ -106,7 +106,7 @@
   }
 
   /**
-   * Play viseme sequence
+   * Vizem dizisini oynat
    */
   function playVisemes(visemes) {
     state.visemeQueue = visemes.slice();
@@ -122,7 +122,7 @@
     var viseme = state.visemeQueue.shift();
     state.targetMouthOpen = viseme.value;
 
-    // Smooth update
+    // Yumuşak güncelleme
     state.currentMouthOpen += (state.targetMouthOpen - state.currentMouthOpen) * CONFIG.smoothing;
     if (state.renderer) {
       state.renderer.setMouthOpen(state.currentMouthOpen);
@@ -132,14 +132,14 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // IDLE MICRO-MOVEMENT
+  // BEKLEME MİKRO HAREKETİ
   // ═══════════════════════════════════════════════════════════
 
   function startIdleMicro() {
     if (!CONFIG.idleMicroMovement) return;
     function tick() {
-      if (state.active) return; // don't interfere during speech
-      // Very subtle mouth movement (breathing, micro-expressions)
+      if (state.active) return; // konuşma sırasında karışma
+      // Çok hafif ağız hareketi (nefes, mikro ifadeler)
       var micro = Math.sin(Date.now() * 0.001) * 0.02 + Math.random() * 0.01;
       if (state.renderer) {
         state.renderer.setMouthOpen(Math.max(0, micro));
@@ -157,7 +157,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // PUBLIC API
+  // GENEL API
   // ═══════════════════════════════════════════════════════════
 
   function init(renderer) {
@@ -177,7 +177,7 @@
       var visemes = textToVisemes(text);
       playVisemes(visemes);
     }
-    // In amplitude mode, processAmplitude is called externally
+    // Genlik modunda processAmplitude dışarıdan çağrılır
   }
 
   function stopSpeaking() {
@@ -200,7 +200,7 @@
   }
 
   function setMode(mode) {
-    state.mode = mode; // 'amplitude' or 'phoneme'
+    state.mode = mode; // 'amplitude' veya 'phoneme'
   }
 
   function getAmplitudeHandler() {
@@ -213,7 +213,7 @@
     state.renderer = null;
   }
 
-  // ─── Export ───
+  // ─── Dışa Aktarım ───
   window.AvatarLipSync = {
     init: init,
     startSpeaking: startSpeaking,

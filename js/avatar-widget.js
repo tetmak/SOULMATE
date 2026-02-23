@@ -1,15 +1,15 @@
 /**
  * NUMERAEL — Avatar Widget
- * Floating circular avatar that expands when speaking, contracts when idle.
- * Positioned to not conflict with Decision Sphere orb or bottom nav.
+ * Konuşurken genişleyen, beklemedeyken küçülen yüzen dairesel avatar.
+ * Decision Sphere küreciği ve alt navigasyonla çakışmayacak konumda.
  *
- * Exports: window.AvatarWidget
+ * Dışa aktarım: window.AvatarWidget
  */
 (function() {
   'use strict';
 
   // ═══════════════════════════════════════════════════════════
-  // EXCLUDED PAGES (auth, splash, onboarding)
+  // HARİÇ TUTULAN SAYFALAR (giriş, splash, onboarding)
   // ═══════════════════════════════════════════════════════════
   var currentPage = window.location.pathname.split('/').pop() || 'index.html';
   var EXCLUDED = [
@@ -51,7 +51,7 @@
     '  bottom: 140px;',
     '}',
     '',
-    '/* ─── AVATAR CONTAINER (circular when minimized) ─── */',
+    '/* ─── AVATAR KAPSAYICI (küçültülmüşken dairesel) ─── */',
     '#avatar-face-container {',
     '  width: 52px;',
     '  height: 52px;',
@@ -72,7 +72,7 @@
     '  margin: 0 auto;',
     '}',
     '',
-    '/* ─── PULSE RING (idle) ─── */',
+    '/* ─── NABIZ HALKASİ (bekleme) ─── */',
     '#avatar-pulse-ring {',
     '  position: absolute;',
     '  inset: -4px;',
@@ -95,7 +95,7 @@
     '  50% { transform: scale(1.12); opacity: 0.3; }',
     '}',
     '',
-    '/* ─── SUBTITLE BAR ─── */',
+    '/* ─── ALTYAZI ÇUBUĞU ─── */',
     '#avatar-subtitle-bar {',
     '  display: none;',
     '  margin-top: 8px;',
@@ -132,7 +132,7 @@
     '  font-weight: 600;',
     '}',
     '',
-    '/* ─── MUTE BUTTON ─── */',
+    '/* ─── SESSİZ BUTONU ─── */',
     '#avatar-mute-btn {',
     '  display: none;',
     '  position: absolute;',
@@ -158,21 +158,21 @@
     '  left: calc(50% - 60px - 4px);',
     '}',
     '',
-    '/* ─── FADE TRANSITIONS ─── */',
+    '/* ─── GEÇİŞ ANİMASYONLARI ─── */',
     '#avatar-widget { opacity: 0; animation: avatar-fade-in 0.6s ease 0.5s forwards; }',
     '@keyframes avatar-fade-in {',
     '  from { opacity: 0; transform: translateY(10px); }',
     '  to { opacity: 1; transform: translateY(0); }',
     '}',
     '',
-    '/* Scrollbar for subtitle */',
+    '/* Altyazı kaydırma çubuğu */',
     '#avatar-subtitle-bar::-webkit-scrollbar { width: 2px; }',
     '#avatar-subtitle-bar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }'
   ].join('\n');
   document.head.appendChild(style);
 
   // ═══════════════════════════════════════════════════════════
-  // DOM CREATION
+  // DOM OLUŞTURMA
   // ═══════════════════════════════════════════════════════════
   var widget = null;
   var faceContainer = null;
@@ -184,12 +184,12 @@
   var collapseTimer = null;
 
   function createDOM() {
-    // Main widget container
+    // Ana widget kapsayıcı
     widget = document.createElement('div');
     widget.id = 'avatar-widget';
     widget.className = 'minimized';
 
-    // Face container (Canvas goes here)
+    // Yüz kapsayıcı (Canvas buraya gelir)
     var faceWrap = document.createElement('div');
     faceWrap.style.position = 'relative';
     faceWrap.style.display = 'inline-block';
@@ -197,12 +197,12 @@
     faceContainer = document.createElement('div');
     faceContainer.id = 'avatar-face-container';
 
-    // Pulse ring
+    // Nabız halkası
     var pulseRing = document.createElement('div');
     pulseRing.id = 'avatar-pulse-ring';
     faceContainer.appendChild(pulseRing);
 
-    // Mute button
+    // Sessiz butonu
     muteBtn = document.createElement('button');
     muteBtn.id = 'avatar-mute-btn';
     muteBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;">volume_up</span>';
@@ -215,7 +215,7 @@
     faceWrap.appendChild(faceContainer);
     widget.appendChild(faceWrap);
 
-    // Subtitle bar
+    // Altyazı çubuğu
     subtitleBar = document.createElement('div');
     subtitleBar.id = 'avatar-subtitle-bar';
     subtitleText = document.createElement('div');
@@ -223,7 +223,7 @@
     subtitleBar.appendChild(subtitleText);
     widget.appendChild(subtitleBar);
 
-    // Click handler — minimize on tap when expanded
+    // Tıklama — genişlemiş durumdayken küçült
     widget.addEventListener('click', function() {
       if (isExpanded) {
         collapse();
@@ -234,7 +234,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // EXPAND / COLLAPSE
+  // GENİŞLET / KÜÇÜLT
   // ═══════════════════════════════════════════════════════════
 
   function expand() {
@@ -264,7 +264,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // SPEAKING STATE
+  // KONUŞMA DURUMU
   // ═══════════════════════════════════════════════════════════
 
   function onSpeechStart() {
@@ -278,7 +278,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // SUBTITLE
+  // ALTYAZI
   // ═══════════════════════════════════════════════════════════
 
   function showSubtitle(text, highlightIndex) {
@@ -296,7 +296,7 @@
     }
     subtitleText.innerHTML = html;
 
-    // Auto-scroll
+    // Otomatik kaydır
     subtitleBar.scrollTop = subtitleBar.scrollHeight;
   }
 
@@ -313,7 +313,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // MUTE
+  // SESSİZ
   // ═══════════════════════════════════════════════════════════
 
   function toggleMute() {
@@ -328,11 +328,11 @@
   }
 
   // ═══════════════════════════════════════════════════════════
-  // INITIALIZATION
+  // BAŞLATMA
   // ═══════════════════════════════════════════════════════════
 
   function init() {
-    if (widget) return; // already initialized
+    if (widget) return; // zaten başlatılmış
     createDOM();
   }
 
@@ -364,14 +364,14 @@
     isExpanded = false;
   }
 
-  // Auto-init on DOMContentLoaded
+  // DOMContentLoaded'da otomatik başlat
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
     setTimeout(init, 100);
   }
 
-  // ─── Export ───
+  // ─── Dışa Aktarım ───
   window.AvatarWidget = {
     init: init,
     expand: expand,
