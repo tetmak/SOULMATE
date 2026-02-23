@@ -231,6 +231,52 @@ document.addEventListener('DOMContentLoaded', async function() {
         aCountEl.textContent = connections.length + ' analiz';
     }
 
+    // Local connections için Supabase'den avatar_url çek
+    if (connections.length > 0 && window.supabaseClient) {
+        try {
+            var connNames = connections.map(function(c) { return c.fullName; }).filter(Boolean);
+            // discovery_profiles'dan avatar'ları çek
+            var dpRes = await window.supabaseClient.from('discovery_profiles')
+                .select('full_name, avatar_url, user_id, gender')
+                .in('full_name', connNames);
+            var avatarMap = {};
+            var missingUserIds = [];
+            if (dpRes.data) {
+                dpRes.data.forEach(function(dp) {
+                    if (dp.avatar_url) {
+                        avatarMap[dp.full_name.toLowerCase()] = { avatar_url: dp.avatar_url, gender: dp.gender };
+                    } else if (dp.user_id) {
+                        missingUserIds.push({ name: dp.full_name, user_id: dp.user_id, gender: dp.gender });
+                    }
+                });
+            }
+            // Eksik olanlar için profiles tablosundan çek
+            if (missingUserIds.length > 0) {
+                var uids = missingUserIds.map(function(m) { return m.user_id; });
+                var profRes = await window.supabaseClient.from('profiles')
+                    .select('id, avatar_url')
+                    .in('id', uids);
+                if (profRes.data) {
+                    var profMap = {};
+                    profRes.data.forEach(function(p) { if (p.avatar_url) profMap[p.id] = p.avatar_url; });
+                    missingUserIds.forEach(function(m) {
+                        if (profMap[m.user_id]) {
+                            avatarMap[m.name.toLowerCase()] = { avatar_url: profMap[m.user_id], gender: m.gender };
+                        }
+                    });
+                }
+            }
+            // connections'lara avatar_url ekle
+            connections.forEach(function(conn) {
+                var key = (conn.fullName || '').toLowerCase();
+                if (!conn.avatar_url && avatarMap[key]) {
+                    conn.avatar_url = avatarMap[key].avatar_url;
+                    if (!conn.gender) conn.gender = avatarMap[key].gender;
+                }
+            });
+        } catch(e) { console.warn('[Connections] Avatar enrich error:', e); }
+    }
+
     connections.forEach(function(conn, idx) {
         var lp = conn.lifePath || calcLP(conn.birthDate) || '?';
         var exp = calcExp(conn.fullName);
