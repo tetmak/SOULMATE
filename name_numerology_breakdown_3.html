@@ -1,659 +1,798 @@
 <!DOCTYPE html>
-
 <html class="dark" lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Soulmate Compatibility Home</title>
+  <script src="js/api-base.js"></script>
   <script src="js/tailwind.min.js"></script>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&amp;family=Be+Vietnam+Pro:wght@400;700&amp;display=swap"
-    rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
   <script src="js/supabase.min.js"></script>
   <script src="js/supabase-config.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/revenuecat.js"></script>
-    <script src="js/premium.js"></script>
-    <script src="js/gamification-engine.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/revenuecat.js"></script>
+  <script src="js/premium.js"></script>
+  <script src="js/gamification-engine.js"></script>
   <script src="js/profile.js"></script>
-  <script
-    id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#e8454d", "background-light": "#f8f6f6", "background-dark": "#211112", "card-dark": "#221f10" }, fontFamily: { display: "Be Vietnam Pro" }, borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" } } } };</script>
+  <script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#e8454d", "background-light": "#f8f6f6", "background-dark": "#211112", "card-dark": "#221f10" }, fontFamily: { display: "Be Vietnam Pro" }, borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" } } } };</script>
   <style>
-    .cosmic-glow {
-      box-shadow: 0 0 15px rgba(242, 204, 13, 0.3);
-    }
-
-    .letter-glow {
-      text-shadow: 0 0 8px rgba(242, 204, 13, 0.6);
-    }
-
-    body {
-      font-family: 'Space Grotesk', sans-serif;
-      min-height: max(884px, 100dvh);
-    }
+    .cosmic-glow { box-shadow: 0 0 15px rgba(242, 204, 13, 0.3); }
+    .letter-glow { text-shadow: 0 0 8px rgba(242, 204, 13, 0.6); }
+    body { font-family: 'Be Vietnam Pro', sans-serif; min-height: max(884px, 100dvh); }
+    @keyframes compat-pulse{0%,100%{opacity:.4}50%{opacity:.9}}
+    @keyframes compat-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes compat-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
   </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <style>
-    body {
-      min-height: max(884px, 100dvh);
-    }
-  </style>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Playfair+Display:ital,wght@1,700&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet" />
 </head>
-
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
-  <header
-    class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-50">
-    <div onclick="window.location.href='relationship_compatibility_analysis.html'"
-      class="text-slate-900 dark:text-white flex size-12 shrink-0 items-center cursor-pointer">
+  <header class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-50">
+    <div id="btn-back" class="text-slate-900 dark:text-white flex size-12 shrink-0 items-center cursor-pointer">
       <span class="material-symbols-outlined">arrow_back_ios</span>
     </div>
-    <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">
-      Compatibility Report</h2>
+    <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">İlişki Analizi</h2>
     <div class="flex w-12 items-center justify-end">
-      <button onclick="openSoulmateShare()"
-        class="flex size-12 cursor-pointer items-center justify-center rounded-xl bg-transparent text-slate-900 dark:text-white">
+      <button onclick="openSoulmateShare()" class="flex size-12 cursor-pointer items-center justify-center rounded-xl bg-transparent text-slate-900 dark:text-white">
         <span class="material-symbols-outlined" style="pointer-events:none">share</span>
       </button>
     </div>
   </header>
+
   <main class="max-w-md mx-auto pb-10">
-    <!-- Pythagorean sistemi kullanılıyor -->
+    <!-- ═══ HARF GRIDLERI ═══ -->
     <section class="mt-4 px-4">
-      <div class="flex flex-wrap justify-center gap-2 pt-4 pb-2">
-        <div class="flex flex-col items-center">
-          <span class="text-primary text-xs font-bold mb-1 letter-glow">1</span>
-          <div
-            class="w-9 h-12 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-xl font-bold">
-            A</div>
-        </div>
-        <div class="flex flex-col items-center">
-          <span class="text-primary text-xs font-bold mb-1 letter-glow">3</span>
-          <div
-            class="w-9 h-12 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-xl font-bold text-white/50">
-            L</div>
-        </div>
-        <div class="flex flex-col items-center">
-          <span class="text-primary text-xs font-bold mb-1 letter-glow">5</span>
-          <div
-            class="w-9 h-12 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-xl font-bold">
-            E</div>
-        </div>
-        <div class="flex flex-col items-center">
-          <span class="text-primary text-xs font-bold mb-1 letter-glow">6</span>
-          <div
-            class="w-9 h-12 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-xl font-bold text-white/50">
-            X</div>
-        </div>
-      </div>
-      <div class="flex flex-wrap justify-center gap-2 pb-4">
-        <div class="flex flex-col items-center">
-          <span class="text-primary text-xs font-bold mb-1 letter-glow">4</span>
-          <div
-            class="w-9 h-12 flex items-center justify-center border border-white/20 bg-white/5 rounded-lg text-xl font-bold text-white/50">
-            M</div>
-        </div>
-        <div class="flex flex-col items-center">
-          <span class="text-primary text-xs font-bold mb-1 letter-glow">1</span>
-          <div
-            class="w-9 h-12 flex items-center justify-center border border-white/20 bg-white/5 rounded-lg text-xl font-bold">
-            A</div>
-        </div>
-        <div class="flex flex-col items-center">
-          <span class="text-primary text-xs font-bold mb-1 letter-glow">7</span>
-          <div
-            class="w-9 h-12 flex items-center justify-center border border-white/20 bg-white/5 rounded-lg text-xl font-bold text-white/50">
-            Y</div>
-        </div>
-        <div class="flex flex-col items-center">
-          <span class="text-primary text-xs font-bold mb-1 letter-glow">1</span>
-          <div
-            class="w-9 h-12 flex items-center justify-center border border-white/20 bg-white/5 rounded-lg text-xl font-bold">
-            A</div>
-        </div>
-      </div>
-      <h1 class="text-slate-900 dark:text-white tracking-widest text-3xl font-extrabold leading-tight text-center mt-2">
-        ALEX <span class="text-primary font-light">&amp;</span> MAYA</h1>
+      <div id="letters-person1" class="flex flex-wrap justify-center gap-2 pt-4 pb-2"></div>
+      <div id="letters-person2" class="flex flex-wrap justify-center gap-2 pb-4"></div>
+      <h1 id="compat-title" class="text-slate-900 dark:text-white tracking-widest text-3xl font-extrabold leading-tight text-center mt-2">
+        — <span class="text-primary font-light">&amp;</span> —</h1>
     </section>
+
+    <!-- ═══ SKOR DAİRESİ ═══ -->
     <section class="flex flex-col items-center justify-center py-8 relative">
       <div class="relative size-64 flex items-center justify-center">
         <svg class="absolute inset-0 size-full -rotate-90">
-          <circle class="text-slate-200 dark:text-white/10" cx="128" cy="128" fill="transparent" r="110"
-            stroke="currentColor" stroke-width="8"></circle>
-          <circle class="drop-shadow-[0_0_15px_rgba(242,204,13,0.4)]" cx="128" cy="128" fill="transparent" r="110"
-            stroke="#f2cc0d" stroke-dasharray="691" stroke-dashoffset="83" stroke-linecap="round" stroke-width="12">
-          </circle>
+          <circle class="text-slate-200 dark:text-white/10" cx="128" cy="128" fill="transparent" r="110" stroke="currentColor" stroke-width="8"></circle>
+          <circle id="score-arc" class="drop-shadow-[0_0_15px_rgba(242,204,13,0.4)]" cx="128" cy="128" fill="transparent" r="110" stroke="#f2cc0d" stroke-dasharray="691" stroke-dashoffset="691" stroke-linecap="round" stroke-width="12"></circle>
         </svg>
         <div class="text-center z-10">
-          <p class="text-slate-500 dark:text-primary/70 text-xs font-bold tracking-[0.2em] uppercase mb-1">Cosmic
-            Resonance</p>
-          <h3 class="text-slate-900 dark:text-white text-7xl font-bold tracking-tighter">88<span
-              class="text-4xl align-top text-primary/80">%</span></h3>
-          <div
-            class="bg-primary/20 mt-2 px-3 py-1 rounded-full text-primary text-xs font-bold border border-primary/20 inline-block">
-            Exceptional Match</div>
+          <p class="text-slate-500 dark:text-primary/70 text-xs font-bold tracking-[0.2em] uppercase mb-1">Kozmik Rezonans</p>
+          <h3 id="compat-score" class="text-slate-900 dark:text-white text-7xl font-bold tracking-tighter">—</h3>
+          <div id="compat-bond" class="bg-primary/20 mt-2 px-3 py-1 rounded-full text-primary text-xs font-bold border border-primary/20 inline-block">—</div>
         </div>
       </div>
-      <p class="mt-6 text-center text-slate-500 dark:text-[#bab59c] text-sm px-8 italic">
-        "Two souls vibrating at the same frequency, destined for growth."
-      </p>
+      <p id="compat-quote" class="mt-6 text-center text-slate-500 dark:text-[#bab59c] text-sm px-8 italic"></p>
     </section>
-    <section class="px-4 space-y-3">
-      <div
-        class="flex flex-col rounded-xl border border-primary/20 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
-        <button
-          class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
+
+    <!-- ═══ ACCORDION KARTLARI ═══ -->
+    <section id="compat-cards" class="px-4 space-y-3">
+
+      <!-- 1. Ruh Dürtüsü Uyumu -->
+      <div id="card-soul-urge" class="flex flex-col rounded-xl border border-primary/20 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+        <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
           <div class="flex items-center gap-4 flex-1 min-w-0">
             <div class="p-2.5 rounded-lg bg-primary/20 text-primary flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-2xl">favorite</span>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Soul Urge Compatibility</h2>
-                <span
-                  class="px-1.5 py-0.5 rounded bg-primary text-background-dark text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Heart</span>
-                <span
-                  class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">THE
-                  MYSTICS</span>
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Ruh Dürtüsü Uyumu</h2>
+                <span class="px-1.5 py-0.5 rounded bg-primary text-background-dark text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Kalp</span>
+                <span class="archetype-display px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">—</span>
               </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">Deeply aligned emotional and
-                spiritual needs.</p>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İçsel arzularınızın ve duygusal ihtiyaçlarınızın uyumu.</p>
             </div>
           </div>
           <div class="flex items-center gap-3 ml-2 shrink-0">
-            <div class="text-primary text-2xl font-black">94%</div>
-            <span class="material-symbols-outlined text-slate-400">expand_more</span>
+            <div class="score-display text-primary text-2xl font-black">—</div>
+            <span class="expand-icon material-symbols-outlined text-slate-400">expand_more</span>
           </div>
         </button>
       </div>
-      <div class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
-        <button
-          class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
+
+      <!-- 2. Kişilik Ahengi -->
+      <div id="card-personality" class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+        <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
           <div class="flex items-center gap-4 flex-1 min-w-0">
-            <div
-              class="p-2.5 rounded-lg bg-white/10 text-slate-400 dark:text-white/60 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-2xl">groups</span>
+            <div class="p-2.5 rounded-lg bg-white/10 text-slate-400 dark:text-white/60 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-2xl">person</span>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Personality Harmony</h2>
-                <span
-                  class="px-1.5 py-0.5 rounded bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Social</span>
-                <span
-                  class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">THE
-                  SCHOLARS</span>
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Kişilik Ahengi</h2>
+                <span class="px-1.5 py-0.5 rounded bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Dış</span>
+                <span class="archetype-display px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">—</span>
               </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">A highly intellectual and
-                respectful bond.</p>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">Sosyal dinamikleriniz ve dış dünyaya yansımanız.</p>
             </div>
           </div>
           <div class="flex items-center gap-3 ml-2 shrink-0">
-            <div class="text-slate-900 dark:text-white text-2xl font-black">82%</div>
-            <span class="material-symbols-outlined text-slate-400">expand_more</span>
+            <div class="score-display text-slate-900 dark:text-white text-2xl font-black">—</div>
+            <span class="expand-icon material-symbols-outlined text-slate-400">expand_more</span>
           </div>
         </button>
       </div>
-      <div class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
-        <button
-          class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
+
+      <!-- 3. Kader Yolu Birliği -->
+      <div id="card-life-path" class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+        <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
           <div class="flex items-center gap-4 flex-1 min-w-0">
             <div class="p-2.5 rounded-lg bg-primary/10 text-primary/80 flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-2xl">route</span>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Life Path Union</h2>
-                <span
-                  class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Journey</span>
-                <span id="life-path-union-badge"
-                  class="px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">THE
-                  NOMADS</span>
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Kader Yolu Birliği</h2>
+                <span class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Kader</span>
+                <span class="archetype-display px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">—</span>
               </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">Shared thirst for freedom and
-                adventure.</p>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">Kader yollarınızın birleşim noktası ve ortak yolculuğunuz.</p>
             </div>
           </div>
           <div class="flex items-center gap-3 ml-2 shrink-0">
-            <div class="text-slate-900 dark:text-white text-2xl font-black">88%</div>
-            <span class="material-symbols-outlined text-slate-400">expand_more</span>
+            <div class="score-display text-slate-900 dark:text-white text-2xl font-black">—</div>
+            <span class="expand-icon material-symbols-outlined text-slate-400">expand_more</span>
           </div>
         </button>
       </div>
+
+      <!-- 4. İfade Uyumu -->
+      <div id="card-expression" class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+        <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="p-2.5 rounded-lg bg-primary/10 text-primary/80 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-2xl">functions</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">İfade Uyumu</h2>
+                <span class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">İfade</span>
+                <span class="archetype-display px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">—</span>
+              </div>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İsim enerjilerinizin uyumu ve birbirini tamamlama biçimi.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 ml-2 shrink-0">
+            <div class="score-display text-slate-900 dark:text-white text-2xl font-black">—</div>
+            <span class="expand-icon material-symbols-outlined text-slate-400">expand_more</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- 5. Karmik İlişki Bağı (kırmızı tema) -->
+      <div id="card-karmic" class="flex flex-col rounded-xl border border-red-500/30 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+        <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="p-2.5 rounded-lg bg-red-500/15 text-red-400 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-2xl">cycle</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Karmik İlişki Bağı</h2>
+                <span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Karma</span>
+                <span class="archetype-display px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px] font-bold leading-none uppercase tracking-tight border border-red-500/20 shrink-0">ANALİZ ET</span>
+              </div>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İki ruh arasındaki karmik bağın ve geçmiş yaşam izlerinin analizi.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 ml-2 shrink-0">
+            <div class="text-red-400 text-2xl font-black">✦</div>
+            <span class="expand-icon material-symbols-outlined text-slate-400">expand_more</span>
+          </div>
+        </button>
+        <div id="karmic-content" style="display:none;">
+          <div style="padding:0 20px 20px;">
+            <div id="karmic-ai-text" style="color:rgba(186,181,156,0.9);font-size:14px;line-height:1.75;"></div>
+            <div id="karmic-guide-btn-wrap" style="margin-top:16px;display:none;">
+              <button id="btn-relationship-guide" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#7f1313,#c0392b);color:white;border:none;border-radius:12px;padding:14px;font-size:13px;font-weight:800;letter-spacing:0.05em;cursor:pointer;text-transform:uppercase;">
+                <span class="material-symbols-outlined" style="font-size:18px;">psychology</span>
+                İlişki Rehberine Sor
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. İletişim Uyumu -->
+      <div id="card-communication" class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+        <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="p-2.5 rounded-lg bg-white/10 text-slate-400 dark:text-white/60 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-2xl">forum</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">İletişim Uyumu</h2>
+                <span class="px-1.5 py-0.5 rounded bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">İletişim</span>
+              </div>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İletişim tarzlarınız ve birbirinizi anlama biçiminiz.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 ml-2 shrink-0">
+            <div class="score-display text-slate-900 dark:text-white text-2xl font-black">—</div>
+            <span class="expand-icon material-symbols-outlined text-slate-400">expand_more</span>
+          </div>
+        </button>
+      </div>
+
     </section>
+
+    <!-- ═══ STAT KARTLARI ═══ -->
     <div class="grid grid-cols-2 gap-3 p-4">
       <div class="flex flex-col gap-2 rounded-xl bg-primary/5 border border-primary/10 p-4">
         <span class="material-symbols-outlined text-primary">auto_awesome</span>
-        <p class="text-xs font-bold text-primary tracking-widest uppercase">Connection</p>
-        <p class="text-slate-900 dark:text-white text-base font-bold">Twin Flame</p>
+        <p class="text-xs font-bold text-primary tracking-widest uppercase">Bağ Niteliği</p>
+        <p id="stat-bond" class="text-slate-900 dark:text-white text-base font-bold">—</p>
       </div>
       <div class="flex flex-col gap-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-white/5 p-4">
         <span class="material-symbols-outlined text-slate-400">psychology</span>
-        <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">Growth Area</p>
-        <p class="text-slate-900 dark:text-white text-base font-bold">Patience</p>
+        <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">Gelişim Alanı</p>
+        <p id="stat-growth" class="text-slate-900 dark:text-white text-base font-bold">—</p>
       </div>
     </div>
+
+    <!-- ═══ TAM ANALİZ BUTONU ═══ -->
     <div class="px-4 py-6">
-      <button
-        class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-background-dark py-4 rounded-xl font-bold text-lg transition-transform active:scale-95">
+      <button id="btn-full-analysis" class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-background-dark py-4 rounded-xl font-bold text-lg transition-transform active:scale-95">
         <span class="material-symbols-outlined">visibility</span>
-        View Full Analysis
+        Tam Analizi Gör
       </button>
     </div>
   </main>
+
+  <!-- Background glow -->
   <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden opacity-30 dark:opacity-20">
     <div class="absolute -top-20 -right-20 size-80 rounded-full bg-primary/20 blur-[100px]"></div>
     <div class="absolute bottom-40 -left-20 size-60 rounded-full bg-primary/10 blur-[80px]"></div>
   </div>
 
-  <script>
-    // NUMERAEL APP - Navigation Helper
-    (function () {
-      // Auto navigation için
-      var autoTarget = '';
-      var autoDelay = 2500;
-
-      if (autoTarget) {
-        setTimeout(function () {
-          window.location.href = autoTarget;
-        }, autoDelay);
-      }
-
-      // Bottom nav linkleri ekle
-      setTimeout(function () {
-        // Home button
-        var allBtns = document.querySelectorAll('button, a');
-        allBtns.forEach(function (btn) {
-          var text = btn.textContent || '';
-          var html = btn.innerHTML || '';
-
-          // Home nav
-          if ((text.includes('Home') || html.includes('>home<')) && text.trim().length < 20) {
-            btn.addEventListener('click', function (e) {
-              e.preventDefault();
-              window.location.href = 'mystic_numerology_home_1.html';
-            });
-          }
-          // Crystal Store / Journal
-          if (text.includes('Crystal Store') || text.includes('Journal')) {
-            btn.addEventListener('click', function (e) {
-              e.preventDefault();
-              window.location.href = 'premium_crystal_store.html';
-            });
-          }
-          // Profile / Settings nav
-          if ((text.includes('Profile') || html.includes('>settings<')) && text.trim().length < 20) {
-            btn.addEventListener('click', function (e) {
-              e.preventDefault();
-              window.location.href = 'profile_soul_journey.html';
-            });
-          }
-        });
-      }, 500);
-    })();
-
-    setTimeout(function () {
-
-      // View Full Analysis → name_numerology_breakdown_2.html
-      document.querySelectorAll('button, a, [class*="cursor"]').forEach(function (el) {
-        var txt = (el.textContent || '') + (el.innerHTML || '');
-        if (txt.includes('View Full Analysis')) {
-          el.style.cursor = 'pointer';
-          el.addEventListener('click', function (e) {
-            e.stopPropagation();
-            window.location.href = 'name_numerology_breakdown_2.html';
-          });
-        }
-      });
-
-      // visibility → name_numerology_breakdown_2.html
-      document.querySelectorAll('button, a, [class*="cursor"]').forEach(function (el) {
-        var txt = (el.textContent || '') + (el.innerHTML || '');
-        if (txt.includes('visibility')) {
-          el.style.cursor = 'pointer';
-          el.addEventListener('click', function (e) {
-            e.stopPropagation();
-            window.location.href = 'name_numerology_breakdown_2.html';
-          });
-        }
-      });
-      // arrow_back → relationship_compatibility_analysis.html
-      document.querySelectorAll('button, a, [class*="cursor"]').forEach(function (el) {
-        var txt = (el.textContent || '') + (el.innerHTML || '');
-        if (txt.includes('arrow_back')) {
-          el.style.cursor = 'pointer';
-          el.addEventListener('click', function (e) {
-            e.stopPropagation();
-            window.location.href = 'relationship_compatibility_analysis.html';
-          });
-        }
-      });
-
-    }, 100);
-  </script>
-
-
-
-
-  <!-- ═══ SOULMATE SHARE OVERLAY ═══ -->
-  <div id="sm-overlay"
-    style="display:none;position:fixed;inset:0;z-index:300;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);background:rgba(10,9,7,0.85)"
-    onclick="if(event.target===this)smClose()">
-    <div id="sm-sheet"
-      style="width:100%;max-width:480px;background:#0a0907;border-radius:28px 28px 0 0;padding:20px 20px 48px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.2,0.64,1);overflow-y:auto;max-height:94vh">
-
-      <!-- Handle + Header -->
-      <div style="width:40px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin:0 auto 16px"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:0 4px">
-        <h3 style="font-size:17px;font-weight:800;color:white;font-family:Manrope,sans-serif">Share Soulmate Card</h3>
-        <button onclick="smClose()"
-          style="width:32px;height:32px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
-      </div>
-
-      <!-- Soulmate Card - exact design -->
-      <div
-        style="width:100%;max-width:300px;margin:0 auto 16px;aspect-ratio:1/1;border-radius:1.5rem;position:relative;overflow:hidden;background:radial-gradient(circle at top left,#4a0404 0%,#2d0a15 50%,#0a0907 100%);box-shadow:0 20px 50px rgba(158,27,50,0.3);border:1px solid rgba(255,255,255,0.1)">
-        <!-- Grain overlay -->
-        <div
-          style="position:absolute;inset:0;background-image:url(https://lh3.googleusercontent.com/aida-public/AB6AXuCVBO61WxIlVfsd7xLQ2RFuHwIv154zBZABkPunPBXVElJ9u5tjhGMGwqSbLVHez1XTL5JyeK77zFowzN8IHug7T-j4vaxxN76KS7kJ_I_tNTt9-pq3ia4T6zs7vdNJbLcsH27_VcyfUArrpqCzOY7FRfSGKymEFC6URwYJ4uquAG4yyTDjdF_nz8EUWUqqGFhBYcZMJ8CYFqOBXEsv-h8r3KG-i1FJgyRM9Lyyh3AufFHtzyZvw6xx4U2xPcU3u8xvRBD4Zz3Ankjf);opacity:0.4;mix-blend-mode:overlay;pointer-events:none">
-        </div>
-        <!-- Glow blobs -->
-        <div
-          style="position:absolute;top:-40px;left:-40px;width:192px;height:192px;background:rgba(158,27,50,0.3);filter:blur(60px);border-radius:50%;pointer-events:none">
-        </div>
-        <div
-          style="position:absolute;bottom:-40px;right:-40px;width:192px;height:192px;background:rgba(225,48,108,0.2);filter:blur(60px);border-radius:50%;pointer-events:none">
-        </div>
-        <!-- Top badge -->
-        <div
-          style="position:absolute;top:20px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:8px">
-          <div
-            style="width:22px;height:22px;background:#cfa117;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(207,161,23,0.5)">
-            <span class="material-symbols-outlined"
-              style="font-size:12px;color:#0a0907;pointer-events:none">favorite</span>
+  <!-- ═══ İLİŞKİ REHBERİ CHAT MODAL ═══ -->
+  <div id="guide-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);flex-direction:column;">
+    <div style="display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;position:relative;">
+      <div style="background:linear-gradient(135deg,#1a0808,#2d1010);border-bottom:1px solid rgba(192,57,43,0.3);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7f1313,#c0392b);display:flex;align-items:center;justify-content:center;border:2px solid rgba(192,57,43,0.5);">
+            <span class="material-symbols-outlined" style="color:white;font-size:20px;">psychology</span>
           </div>
-          <span
-            style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:800;color:#cfa117;font-family:Manrope,sans-serif">Numerael
-            Soulmate</span>
-        </div>
-        <!-- Main content -->
-        <div
-          style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center">
-          <p
-            style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;font-family:Manrope,sans-serif">
-            Unity Card</p>
-          <h2 id="sm-names"
-            style="font-family:Playfair Display,serif;font-size:22px;font-style:italic;font-weight:700;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;padding:0 8px">
-            Alexander &amp; Sophia</h2>
-          <!-- Score circle -->
-          <div
-            style="width:112px;height:112px;border-radius:50%;border:2px solid rgba(207,161,23,0.5);box-shadow:0 0 25px rgba(207,161,23,0.4);background:rgba(10,9,7,0.4);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;position:relative">
-            <span id="sm-score"
-              style="font-size:36px;font-weight:800;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;font-family:Manrope,sans-serif">94%</span>
-            <span
-              style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(207,161,23,0.8);font-weight:700;margin-top:4px;font-family:Manrope,sans-serif">Compatibility</span>
-            <span class="material-symbols-outlined"
-              style="position:absolute;top:-6px;right:-6px;font-size:16px;color:#cfa117">colors_spark</span>
-          </div>
-          <!-- Bond label -->
-          <div
-            style="backdrop-filter:blur(12px);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:10px 20px">
-            <p id="sm-bond"
-              style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);font-family:Manrope,sans-serif">Divine
-              Eternal Connection</p>
-            <p style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;font-style:italic">Sacred Bond &middot;
-              Destiny &middot; Harmony</p>
+          <div>
+            <p style="color:white;font-weight:800;font-size:14px;letter-spacing:0.05em;">İLİŞKİ REHBERİ</p>
+            <p style="color:rgba(255,255,255,0.4);font-size:11px;">İlişki sorularınızı yanıtlıyor</p>
           </div>
         </div>
-        <!-- Footer -->
-        <div
-          style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:9px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">
-          numerael.app</div>
-      </div>
-
-      <p
-        style="text-align:center;color:rgba(255,255,255,0.35);font-size:13px;margin-bottom:20px;font-family:Manrope,sans-serif">
-        Bu kartı sevdiklerinle paylaş ❤️</p>
-
-      <!-- Share buttons -->
-      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
-        <button onclick="smAction('instagram')"
-          style="width:100%;height:52px;background:#E1306C;border:none;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:white;font-family:Manrope,sans-serif">
-          <div style="display:flex;align-items:center;gap:12px">
-            <span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">photo_camera</span>
-            <span style="font-weight:700;font-size:15px">Instagram Stories</span>
-          </div>
-          <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
-        </button>
-        <button onclick="smAction('whatsapp')"
-          style="width:100%;height:52px;background:#25D366;border:none;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:#0a0907;font-family:Manrope,sans-serif">
-          <div style="display:flex;align-items:center;gap:12px">
-            <span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">chat_bubble</span>
-            <span style="font-weight:700;font-size:15px">WhatsApp Status</span>
-          </div>
-          <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
-        </button>
-        <button onclick="smAction('save')"
-          style="width:100%;height:52px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.08);border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:white;font-family:Manrope,sans-serif">
-          <div style="display:flex;align-items:center;gap:12px">
-            <span class="material-symbols-outlined"
-              style="font-size:22px;opacity:0.7;pointer-events:none">download</span>
-            <span style="font-weight:700;font-size:15px">Save to Gallery</span>
-          </div>
-          <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
+        <button onclick="closeGuideModal()" style="background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;">
+          <span class="material-symbols-outlined" style="font-size:20px;">close</span>
         </button>
       </div>
-
-      <!-- Copy + Other -->
-      <div style="display:flex;justify-content:center;gap:40px">
-        <button onclick="smAction('copy')"
-          style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer">
-          <div
-            style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">
-            <span class="material-symbols-outlined"
-              style="font-size:20px;color:rgba(255,255,255,0.5)">content_copy</span>
-          </div>
-          <span
-            style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">Copy
-            Link</span>
-        </button>
-        <button onclick="smAction('other')"
-          style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer">
-          <div
-            style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">
-            <span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.5)">more_horiz</span>
-          </div>
-          <span
-            style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">Other</span>
+      <div id="guide-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;"></div>
+      <div style="padding:12px 16px;background:#1a1711;border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;display:flex;gap:8px;">
+        <input id="guide-input" type="text" placeholder="İlişkiniz hakkında sorun..." style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 16px;color:white;font-size:14px;outline:none;" />
+        <button id="guide-send" style="background:linear-gradient(135deg,#7f1313,#c0392b);border:none;border-radius:12px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <span class="material-symbols-outlined" style="color:white;font-size:20px;">send</span>
         </button>
       </div>
-
     </div>
   </div>
+
+  <!-- ═══ SOULMATE SHARE OVERLAY ═══ -->
+  <div id="sm-overlay" style="display:none;position:fixed;inset:0;z-index:300;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);background:rgba(10,9,7,0.85)" onclick="if(event.target===this)smClose()">
+    <div id="sm-sheet" style="width:100%;max-width:480px;background:#0a0907;border-radius:28px 28px 0 0;padding:20px 20px 48px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.2,0.64,1);overflow-y:auto;max-height:94vh">
+      <div style="width:40px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin:0 auto 16px"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:0 4px">
+        <h3 style="font-size:17px;font-weight:800;color:white;font-family:Manrope,sans-serif">Ruh Eşi Kartını Paylaş</h3>
+        <button onclick="smClose()" style="width:32px;height:32px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
+      </div>
+      <div style="width:100%;max-width:300px;margin:0 auto 16px;aspect-ratio:1/1;border-radius:1.5rem;position:relative;overflow:hidden;background:radial-gradient(circle at top left,#4a0404 0%,#2d0a15 50%,#0a0907 100%);box-shadow:0 20px 50px rgba(158,27,50,0.3);border:1px solid rgba(255,255,255,0.1)">
+        <div style="position:absolute;top:-40px;left:-40px;width:192px;height:192px;background:rgba(158,27,50,0.3);filter:blur(60px);border-radius:50%;pointer-events:none"></div>
+        <div style="position:absolute;bottom:-40px;right:-40px;width:192px;height:192px;background:rgba(225,48,108,0.2);filter:blur(60px);border-radius:50%;pointer-events:none"></div>
+        <div style="position:absolute;top:20px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:8px">
+          <div style="width:22px;height:22px;background:#cfa117;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(207,161,23,0.5)">
+            <span class="material-symbols-outlined" style="font-size:12px;color:#0a0907;pointer-events:none">favorite</span>
+          </div>
+          <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:800;color:#cfa117;font-family:Manrope,sans-serif">Numerael Soulmate</span>
+        </div>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center">
+          <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;font-family:Manrope,sans-serif">Unity Card</p>
+          <h2 id="sm-names" style="font-family:Playfair Display,serif;font-size:22px;font-style:italic;font-weight:700;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;padding:0 8px">— &amp; —</h2>
+          <div style="width:112px;height:112px;border-radius:50%;border:2px solid rgba(207,161,23,0.5);box-shadow:0 0 25px rgba(207,161,23,0.4);background:rgba(10,9,7,0.4);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;position:relative">
+            <span id="sm-score" style="font-size:36px;font-weight:800;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;font-family:Manrope,sans-serif">—</span>
+            <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(207,161,23,0.8);font-weight:700;margin-top:4px;font-family:Manrope,sans-serif">Compatibility</span>
+          </div>
+          <div style="backdrop-filter:blur(12px);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:10px 20px">
+            <p id="sm-bond" style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);font-family:Manrope,sans-serif">—</p>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:9px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">numerael.app</div>
+      </div>
+      <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:13px;margin-bottom:20px;font-family:Manrope,sans-serif">Bu kartı sevdiklerinle paylaş ❤️</p>
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+        <button onclick="smAction('instagram')" style="width:100%;height:52px;background:#E1306C;border:none;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:white;font-family:Manrope,sans-serif">
+          <div style="display:flex;align-items:center;gap:12px"><span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">photo_camera</span><span style="font-weight:700;font-size:15px">Instagram Stories</span></div>
+          <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
+        </button>
+        <button onclick="smAction('whatsapp')" style="width:100%;height:52px;background:#25D366;border:none;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:#0a0907;font-family:Manrope,sans-serif">
+          <div style="display:flex;align-items:center;gap:12px"><span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">chat_bubble</span><span style="font-weight:700;font-size:15px">WhatsApp Status</span></div>
+          <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
+        </button>
+        <button onclick="smAction('save')" style="width:100%;height:52px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.08);border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:white;font-family:Manrope,sans-serif">
+          <div style="display:flex;align-items:center;gap:12px"><span class="material-symbols-outlined" style="font-size:22px;opacity:0.7;pointer-events:none">download</span><span style="font-weight:700;font-size:15px">Galeriye Kaydet</span></div>
+          <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
+        </button>
+      </div>
+      <div style="display:flex;justify-content:center;gap:40px">
+        <button onclick="smAction('copy')" style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.5)">content_copy</span></div>
+          <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">Kopyala</span>
+        </button>
+        <button onclick="smAction('other')" style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer">
+          <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.5)">more_horiz</span></div>
+          <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">Diğer</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function smOpen(){var o=document.getElementById('sm-overlay'),s=document.getElementById('sm-sheet');o.style.display='flex';setTimeout(function(){s.style.transform='translateY(0)'},10);}
+    function smClose(){var s=document.getElementById('sm-sheet');s.style.transform='translateY(100%)';setTimeout(function(){document.getElementById('sm-overlay').style.display='none'},400);}
+    function smAction(t){
+      if(t==='copy'||t==='save'){var toast=document.createElement('div');toast.textContent=t==='copy'?'Link kopyalandı ✓':'Galeriye kaydedildi ✓';toast.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#cfa117;color:#0a0907;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:800;z-index:999;white-space:nowrap;font-family:Manrope,sans-serif';document.body.appendChild(toast);setTimeout(function(){toast.remove()},2000);}
+      if(t==='other'&&navigator.share){navigator.share({title:'Ruh Eşim',text:'Numerael ile ruh bağımızı keşfettim!',url:window.location.href});}
+    }
+    window.openSoulmateShare = function(){ smOpen(); };
+  </script>
 
   <script src="js/numerology-engine.js"></script>
   <script src="js/numerology-context-engine.js"></script>
   <script src="js/decision-timing-engine.js"></script>
   <script src="js/numerology-ai.js"></script>
+  <script src="js/compatibility-engine.js"></script>
+
+  <!-- ═══ ANA SAYFA MANTIK SCRIPTI ═══ -->
   <script>
-    // NUMERAEL APP - Navigation & Dynamic Logic
-    window.addEventListener('DOMContentLoaded', async function () {
-      // Premium gate — sayfa 3 sadece premium
+  (function() {
+    'use strict';
+
+    // Pisagor tablosu (Türkçe karakter desteği)
+    var TABLE = {
+      A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,
+      S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8,'\u015E':1,'\u00C7':3,'\u00DC':3,'\u00D6':6,'\u011E':7,'\u0130':9
+    };
+    var VOWELS = 'AEIOU\u0130I\u00D6\u00DC';
+    var ARCHETYPES = {
+      1:'Lider',2:'Bar\u0131\u015F\u00E7\u0131',3:'Yarat\u0131c\u0131',4:'\u0130n\u015Fac\u0131',5:'Ka\u015Fif',
+      6:'Bak\u0131c\u0131',7:'Mistik',8:'G\u00FC\u00E7',9:'\u0130nsansever',
+      11:'Ayd\u0131nlat\u0131c\u0131',22:'Usta \u0130n\u015Fac\u0131',33:'\u015Eifac\u0131'
+    };
+
+    function reduce(n) {
+      while (n > 9 && n !== 11 && n !== 22 && n !== 33) {
+        n = String(n).split('').reduce(function(a,d){return a+parseInt(d);},0);
+      }
+      return n;
+    }
+
+    // Breakdown fonksiyonları — hesaplama şeffaflığı için
+    function getBreakdown(name, type) {
+      var clean = name.toUpperCase().replace(/[^A-Z\u00C7\u011E\u0130I\u00D6\u015E\u00DC]/g, '');
+      var chars;
+      if (type === 'soul') {
+        chars = clean.split('').filter(function(c){return VOWELS.includes(c);});
+      } else if (type === 'personality') {
+        chars = clean.split('').filter(function(c){return !VOWELS.includes(c);});
+      } else {
+        chars = clean.split('');
+      }
+      var values = chars.map(function(c){return TABLE[c]||0;});
+      var sum = values.reduce(function(a,x){return a+x;},0);
+      var steps = [sum];
+      var current = sum;
+      while (current > 9 && current !== 11 && current !== 22 && current !== 33) {
+        current = String(current).split('').reduce(function(a,d){return a+parseInt(d);},0);
+        steps.push(current);
+      }
+      return {chars:chars, values:values, sum:sum, steps:steps, final:current};
+    }
+
+    function getLPBreakdown(dateStr) {
+      if (!dateStr) return {digits:[],sum:0,steps:[0],final:0};
+      var digits = dateStr.replace(/\D/g,'').split('').map(Number);
+      var sum = digits.reduce(function(a,x){return a+x;},0);
+      var steps = [sum];
+      var current = sum;
+      while (current > 9 && current !== 11 && current !== 22 && current !== 33) {
+        current = String(current).split('').reduce(function(a,d){return a+parseInt(d);},0);
+        steps.push(current);
+      }
+      return {digits:digits, sum:sum, steps:steps, final:current};
+    }
+
+    // Kişi bazlı hesaplama HTML'i
+    function buildPersonCalc(name, bd, color) {
+      var html = '<div style="margin-bottom:12px;">';
+      html += '<div style="color:'+color+';font-size:11px;font-weight:700;margin-bottom:6px">'+name.split(' ')[0].toUpperCase()+'</div>';
+      html += '<div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">';
+      bd.chars.forEach(function(c,idx){
+        html += '<div style="background:rgba(255,255,255,0.06);border:1px solid '+color+'30;border-radius:4px;padding:2px 6px;display:flex;gap:3px;align-items:center">';
+        html += '<span style="color:'+color+';font-weight:700;font-size:12px">'+c+'</span>';
+        html += '<span style="color:rgba(255,255,255,0.3);font-size:10px">\u2192</span>';
+        html += '<span style="color:rgba(255,255,255,0.7);font-size:11px">'+bd.values[idx]+'</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+      if (bd.steps.length > 1) {
+        html += '<div style="font-family:monospace;color:'+color+';font-size:12px;font-weight:600">'+bd.steps.join(' \u2192 ')+'</div>';
+      }
+      html += '<div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:4px">Sonu\u00E7: <strong style="color:'+color+'">'+bd.final+'</strong></div>';
+      html += '</div>';
+      return html;
+    }
+
+    // Hesaplama şeffaflık HTML'i
+    function buildCalcHTML(type, name1, name2, bd1, bd2) {
+      var html = '<div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.2)">';
+      var COLOR1 = '#e8454d';
+      var COLOR2 = '#f2cc0d';
+
+      if (type === 'expression' || type === 'soul' || type === 'personality') {
+        var calcType = type === 'soul' ? 'soul' : type === 'personality' ? 'personality' : 'expression';
+        var sourceLabel = type === 'soul' ? 'SESL\u0130 HARFLER' : type === 'personality' ? 'SESS\u0130Z HARFLER' : 'T\u00DCM HARFLER';
+        var b1 = getBreakdown(name1, calcType);
+        var b2 = getBreakdown(name2, calcType);
+        html += '<div style="color:#f2cc0d;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">\uD83D\uDCCA HESAPLAMA \u015EEFFAFLI\u011EI \u2014 '+sourceLabel+'</div>';
+        html += buildPersonCalc(name1, b1, COLOR1);
+        html += buildPersonCalc(name2, b2, COLOR2);
+      } else if (type === 'lifepath') {
+        var lp1 = getLPBreakdown(bd1);
+        var lp2 = getLPBreakdown(bd2);
+        html += '<div style="color:#f2cc0d;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px">\uD83D\uDCCA KADER YOLU HESAPLAMASI</div>';
+        // Person 1
+        html += '<div style="margin-bottom:12px;">';
+        html += '<div style="color:'+COLOR1+';font-size:11px;font-weight:700;margin-bottom:6px">'+name1.split(' ')[0].toUpperCase()+'</div>';
+        html += '<div style="font-family:monospace;background:rgba(0,0,0,0.3);border:1px solid '+COLOR1+'30;border-radius:6px;padding:8px">';
+        html += '<span style="color:rgba(255,255,255,0.9);font-size:12px">'+lp1.digits.join(' + ')+' = '+lp1.sum+'</span>';
+        if (lp1.steps.length > 1) html += ' \u2192 <span style="color:'+COLOR1+';font-weight:700">'+lp1.final+'</span>';
+        html += '</div></div>';
+        // Person 2
+        html += '<div style="margin-bottom:8px;">';
+        html += '<div style="color:'+COLOR2+';font-size:11px;font-weight:700;margin-bottom:6px">'+name2.split(' ')[0].toUpperCase()+'</div>';
+        html += '<div style="font-family:monospace;background:rgba(0,0,0,0.3);border:1px solid '+COLOR2+'30;border-radius:6px;padding:8px">';
+        html += '<span style="color:rgba(255,255,255,0.9);font-size:12px">'+lp2.digits.join(' + ')+' = '+lp2.sum+'</span>';
+        if (lp2.steps.length > 1) html += ' \u2192 <span style="color:'+COLOR2+';font-weight:700">'+lp2.final+'</span>';
+        html += '</div></div>';
+      }
+      html += '</div>';
+      return html;
+    }
+
+    // AI metin render
+    function renderText(text) {
+      return text
+        .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#f2cc0d;font-weight:800;">$1</strong>')
+        .split(/\n\n+/).filter(function(p){return p.trim();})
+        .map(function(p){
+          var lines = p.trim().split('\n');
+          var hasBullets = lines.some(function(l){var t=l.trim();return t.startsWith('-')||t.startsWith('*');});
+          if (hasBullets) {
+            var items = lines.map(function(l){
+              l=l.trim();
+              if(l.startsWith('-')||l.startsWith('*')){
+                return '<li style="margin-bottom:6px;list-style:none;padding-left:16px;position:relative;"><span style="position:absolute;left:0;color:#e8454d;">\u2726</span>'+l.slice(1).trim()+'</li>';
+              }
+              return '<p style="margin-bottom:8px;font-weight:700;">'+l+'</p>';
+            }).join('');
+            return '<ul style="margin:0 0 14px;padding:0;">'+items+'</ul>';
+          }
+          return '<p style="margin-bottom:14px;font-size:14px;line-height:1.85;">'+p.trim().replace(/\n/g,'<br>')+'</p>';
+        }).join('');
+    }
+
+    function loadingHTML(msg) {
+      return '<div style="padding:20px;text-align:center;color:rgba(232,69,77,0.6);font-style:italic;font-size:13px;animation:compat-pulse 1.5s infinite;">\u2726 '+(msg||'Analiz haz\u0131rlan\u0131yor...')+'</div>';
+    }
+
+    function compatCacheKey(type, ctx) {
+      var names = [ctx.p1.name, ctx.p2.name].map(function(n){return n.toLowerCase().trim().replace(/\s+/g,'_');}).sort();
+      return 'numerael_compat_ai_v2__'+names[0]+'__'+names[1]+'__'+type;
+    }
+
+    // === HARF GRIDI ===
+    function updateLetterGrid(containerId, name, isPrimary) {
+      var container = document.getElementById(containerId);
+      if (!container) return;
+      var clean = name.toUpperCase().replace(/[^A-Z\u00C7\u011E\u0130I\u00D6\u015E\u00DC]/g, '');
+      container.innerHTML = clean.split('').map(function(c){
+        var v = TABLE[c] || 0;
+        var isVowel = VOWELS.includes(c);
+        var borderClass = isPrimary
+          ? (isVowel ? 'border-primary bg-primary/10' : 'border-primary/30 bg-primary/5')
+          : (isVowel ? 'border-white/40 bg-white/10' : 'border-white/20 bg-white/5');
+        return '<div class="flex flex-col items-center">'+
+          '<span class="text-primary text-xs font-bold mb-1 letter-glow">'+v+'</span>'+
+          '<div class="w-9 h-12 flex items-center justify-center border '+borderClass+' rounded-lg text-xl font-bold">'+c+'</div>'+
+          '</div>';
+      }).join('');
+    }
+
+    // === SAYFA INIT ===
+    window.addEventListener('DOMContentLoaded', function() {
+      // Premium gate
       if (window.premium && !window.premium.isPremium()) {
-        window.premium.showPaywall('Bu analiz sayfası Premium özelliğidir.', 'breakdown_page_3');
+        window.premium.showPaywall('Bu analiz sayfas\u0131 Premium \u00F6zelli\u011Fidir.', 'breakdown_page_3');
         return;
       }
-      const params = new URLSearchParams(window.location.search);
-      // Partner ismini URL veya numerael_compat_data'dan al
-      let kisiName = params.get('kisi');
-      let userData = null;
-      let compatData = null;
 
-      try { userData = JSON.parse(localStorage.getItem('numerael_user_data')); } catch (e) { }
-      try { compatData = JSON.parse(localStorage.getItem('numerael_compat_data')); } catch (e) { }
+      function initPage() {
+        if (!window.CompatEngine) { setTimeout(initPage, 100); return; }
 
-      const userName = (userData && userData.name) ? userData.name : 'User';
+        var ctx = window.CompatEngine.getCompatData();
+        var name1 = ctx.p1.name;
+        var name2 = ctx.p2.name;
+        var bd1 = ctx.p1.birthDate;
+        var bd2 = ctx.p2.birthDate;
 
-      // kisiName yoksa compatibility data'dan al
-      if (!kisiName && compatData && compatData.person2 && compatData.person2.name) {
-        kisiName = compatData.person2.name;
-      }
+        // === STAT\u0130K UI G\u00DCNCELLE ===
+        var titleEl = document.getElementById('compat-title');
+        if (titleEl) titleEl.innerHTML = name1.toUpperCase()+' <span class="text-primary font-light">&amp;</span> '+name2.toUpperCase();
 
-      const partnerName = kisiName || 'Partner';
+        updateLetterGrid('letters-person1', name1, true);
+        updateLetterGrid('letters-person2', name2, false);
 
-      // Update Names in Title
-      const titleEl = document.querySelector('h1.tracking-widest.text-3xl.font-extrabold');
-      if (titleEl) {
-        titleEl.innerHTML = `${userName.toUpperCase()} <span class="text-primary font-light">&amp;</span> ${partnerName.toUpperCase()}`;
-      }
-
-      // Update Letters for both (Pythagorean sistem)
-      const table = NumerologyEngine.PYTHAGOREAN;
-
-      // Container 1: User
-      const container1 = document.querySelector('.flex.flex-wrap.justify-center.gap-2.pt-4.pb-2');
-      if (container1) {
-        const letters = NumerologyEngine.getLetterValues(userName, table);
-        container1.innerHTML = letters.map(l => `
-                <div class="flex flex-col items-center">
-                    <span class="text-primary text-xs font-bold mb-1 letter-glow">${l.val || ''}</span>
-                    <div class="w-9 h-12 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-xl font-bold ${l.val === null ? 'invisible' : ''}">${l.char}</div>
-                </div>
-            `).join('');
-      }
-
-      // Container 2: Partner
-      const container2 = document.querySelector('.flex.flex-wrap.justify-center.gap-2.pb-4');
-      if (container2) {
-        const letters = NumerologyEngine.getLetterValues(partnerName, table);
-        container2.innerHTML = letters.map(l => `
-                <div class="flex flex-col items-center">
-                    <span class="text-primary text-xs font-bold mb-1 letter-glow">${l.val || ''}</span>
-                    <div class="w-9 h-12 flex items-center justify-center border border-white/20 bg-white/5 rounded-lg text-xl font-bold ${l.val === null ? 'invisible' : ''}">${l.char}</div>
-                </div>
-            `).join('');
-      }
-
-      // Accordion & Links
-      document.querySelectorAll('button, span, a').forEach(function (el) {
-        const html = el.innerHTML || '';
-        const txt = el.textContent || '';
-
-        if (html.includes('arrow_back')) {
-          el.onclick = () => window.location.href = `kisi_profil.html?kisi=${encodeURIComponent(partnerName)}`;
+        // Skor dairesi animasyonu
+        var scoreEl = document.getElementById('compat-score');
+        if (scoreEl) scoreEl.innerHTML = ctx.overall+'<span class="text-4xl align-top text-primary/80">%</span>';
+        var arc = document.getElementById('score-arc');
+        if (arc) {
+          var pct = ctx.overall / 100;
+          var offset = 691 - (691 * pct);
+          arc.style.transition = 'stroke-dashoffset 1.5s ease';
+          setTimeout(function(){ arc.setAttribute('stroke-dashoffset', offset); }, 200);
         }
-        if (txt.includes('View Full Analysis') || txt.includes('visibility')) {
-          el.onclick = () => window.location.href = `name_numerology_breakdown_2.html?kisi=${encodeURIComponent(partnerName)}`;
+
+        var bondEl = document.getElementById('compat-bond');
+        if (bondEl) bondEl.textContent = ctx.bond;
+        var quoteEl = document.getElementById('compat-quote');
+        if (quoteEl) quoteEl.textContent = '\u201C'+name1+' ve '+name2+' \u2014 say\u0131lar\u0131n birbirine yazd\u0131\u011F\u0131 kader.\u201D';
+
+        // Share kart\u0131
+        var smNames = document.getElementById('sm-names');
+        if (smNames) smNames.textContent = name1+' & '+name2;
+        var smScore = document.getElementById('sm-score');
+        if (smScore) smScore.textContent = ctx.overall+'%';
+        var smBond = document.getElementById('sm-bond');
+        if (smBond) smBond.textContent = ctx.bond;
+
+        // === STAT KARTLARI ===
+        var statBond = document.getElementById('stat-bond');
+        if (statBond) {
+          if (ctx.overall >= 95) statBond.textContent = 'Kozmik \u0130kiz';
+          else if (ctx.overall >= 88) statBond.textContent = 'Ruh E\u015Fi';
+          else if (ctx.overall >= 80) statBond.textContent = 'G\u00F6ksel Uyum';
+          else if (ctx.overall >= 70) statBond.textContent = 'Karmik Ba\u011F';
+          else statBond.textContent = 'Ke\u015Fif';
         }
-      });
-
-      // Life Path başlıkları
-      const LP_TITLES = {
-        1: 'The Leader', 2: 'The Peacemaker', 3: 'The Creative', 4: 'The Builder',
-        5: 'The Adventurer', 6: 'The Nurturer', 7: 'The Mystic', 8: 'The Powerhouse',
-        9: 'The Humanitarian', 11: 'The Illuminator', 22: 'The Master Builder', 33: 'The Healer'
-      };
-
-      // Life Path hesapla
-      function calcLP(birthDate) {
-        if (!birthDate) return null;
-        const digits = birthDate.replace(/\D/g,'').split('').map(Number);
-        let sum = digits.reduce((a,x) => a+x, 0);
-        while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
-          sum = String(sum).split('').reduce((a,d) => a+parseInt(d), 0);
+        var statGrowth = document.getElementById('stat-growth');
+        if (statGrowth) {
+          var dims = [{s:ctx.soulScore,l:'Duygusal Derinlik'},{s:ctx.persScore,l:'Sosyal Uyum'},{s:ctx.lpScore,l:'Kader Koordinasyonu'},{s:ctx.expScore,l:'\u0130leti\u015Fim & \u0130fade'}];
+          dims.sort(function(a,b){return a.s-b.s;});
+          statGrowth.textContent = dims[0].l;
         }
-        return sum;
-      }
 
-      const userBirthDate = (compatData && compatData.person1 && compatData.person1.birthDate) || (userData && userData.birthDate) || '';
-      const partnerBirthDate = (compatData && compatData.person2 && compatData.person2.birthDate) || '';
-
-      const userLP = calcLP(userBirthDate);
-      const partnerLP = calcLP(partnerBirthDate);
-
-      const userTitle = LP_TITLES[userLP] || 'The Seeker';
-      const partnerTitle = LP_TITLES[partnerLP] || 'The Wanderer';
-
-      // Life Path Union badge'ini güncelle
-      const unionBadge = document.getElementById('life-path-union-badge');
-      if (unionBadge && userTitle && partnerTitle) {
-        const userTitleUpper = userTitle.replace('The ', '').toUpperCase();
-        const partnerTitleUpper = partnerTitle.replace('The ', '').toUpperCase();
-        unionBadge.innerHTML = `<span style="color:rgba(232,69,77,0.7)">${userTitleUpper}</span> & <span style="color:rgba(232,69,77,1)">${partnerTitleUpper}</span>`;
-      }
-
-      // Initialize Accordions (Keep existing logic but wrap it)
-      var accordionContent = [
-        '<p style="padding:16px 20px;color:rgba(255,255,255,0.7);font-size:14px;line-height:1.6;border-top:1px solid rgba(255,255,255,0.08)">Your Soul Urge numbers are deeply aligned. Both souls crave emotional depth and authentic love.</p>',
-        '<p style="padding:16px 20px;color:rgba(255,255,255,0.7);font-size:14px;line-height:1.6;border-top:1px solid rgba(255,255,255,0.08)">Personality Harmony is strong. You complement each other socially and intellectually.</p>',
-        `<div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08)">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
-            <div style="background:rgba(242,204,13,0.08);border:1px solid rgba(242,204,13,0.2);border-radius:12px;padding:12px">
-              <div style="color:#f2cc0d;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">${userName.split(' ')[0]}</div>
-              <div style="color:rgba(255,255,255,0.95);font-size:13px;font-weight:600">Life Path ${userLP || '?'}</div>
-              <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;font-style:italic">${userTitle}</div>
-            </div>
-            <div style="background:rgba(242,204,13,0.08);border:1px solid rgba(242,204,13,0.2);border-radius:12px;padding:12px">
-              <div style="color:#f2cc0d;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">${partnerName.split(' ')[0]}</div>
-              <div style="color:rgba(255,255,255,0.95);font-size:13px;font-weight:600">Life Path ${partnerLP || '?'}</div>
-              <div style="color:rgba(255,255,255,0.6);font-size:12px;margin-top:4px;font-style:italic">${partnerTitle}</div>
-            </div>
-          </div>
-          <p style="color:rgba(255,255,255,0.7);font-size:14px;line-height:1.6">${userName.split(' ')[0]} ve ${partnerName.split(' ')[0]}'in Kader Yolu, ${userLP || '?'} ve ${partnerLP || '?'} olarak birbirini tamamlayan bir dinamiğe sahip. ${userTitle} ve ${partnerTitle} enerjileri, özgürlük ve bireysellik ararken birbirlerine destek olur.</p>
-        </div>`
-      ];
-      var cards = document.querySelectorAll('section .flex.flex-col.rounded-xl');
-      cards.forEach(function (card, i) {
-        var btn = card.querySelector('button');
-        if (!btn) return;
-        var contentDiv = document.createElement('div');
-        contentDiv.style.display = 'none';
-        contentDiv.innerHTML = accordionContent[i] || '';
-        card.appendChild(contentDiv);
-        btn.style.cursor = 'pointer';
-        btn.onclick = function () {
-          var icon = btn.querySelector('.material-symbols-outlined:last-child');
-          var isHidden = contentDiv.style.display === 'none';
-          contentDiv.style.display = isHidden ? 'block' : 'none';
-          if (icon) icon.textContent = isHidden ? 'expand_less' : 'expand_more';
+        // === NAVIGASYON ===
+        document.getElementById('btn-back').onclick = function(){
+          window.location.href = 'kisi_profil.html?kisi='+encodeURIComponent(name2);
         };
-      });
+        document.getElementById('btn-full-analysis').onclick = function(){
+          window.location.href = 'name_numerology_breakdown_2.html?kisi='+encodeURIComponent(name2);
+        };
+
+        // === ACCORDION KARTLARI ===
+        var cardConfig = [
+          {id:'card-soul-urge', type:'soul_urge', calcType:'soul', score:ctx.soulScore, num1:ctx.p1.soulUrge, num2:ctx.p2.soulUrge, msg:'Ruh d\u00FCrt\u00FCs\u00FC uyumu hesaplan\u0131yor...'},
+          {id:'card-personality', type:'personality', calcType:'personality', score:ctx.persScore, num1:ctx.p1.personality, num2:ctx.p2.personality, msg:'Ki\u015Filik uyumu analiz ediliyor...'},
+          {id:'card-life-path', type:'life_path', calcType:'lifepath', score:ctx.lpScore, num1:ctx.p1.lifePath, num2:ctx.p2.lifePath, msg:'Kader yolu birli\u011Fi okunuyor...'},
+          {id:'card-expression', type:'expression', calcType:'expression', score:ctx.expScore, num1:ctx.p1.expression, num2:ctx.p2.expression, msg:'\u0130fade uyumu hesaplan\u0131yor...'},
+          {id:'card-communication', type:'communication', calcType:null, score:null, num1:null, num2:null, msg:'\u0130leti\u015Fim uyumu analiz ediliyor...'}
+        ];
+
+        cardConfig.forEach(function(cfg) {
+          var card = document.getElementById(cfg.id);
+          if (!card) return;
+          var btn = card.querySelector('button');
+          var scoreDisp = card.querySelector('.score-display');
+          var archDisp = card.querySelector('.archetype-display');
+
+          if (scoreDisp && cfg.score !== null) scoreDisp.textContent = cfg.score+'%';
+          if (archDisp && cfg.num1 !== null && cfg.num2 !== null) {
+            archDisp.innerHTML = (ARCHETYPES[cfg.num1]||'?').toUpperCase()+' & '+(ARCHETYPES[cfg.num2]||'?').toUpperCase();
+          }
+
+          var contentDiv = document.createElement('div');
+          contentDiv.style.display = 'none';
+          card.appendChild(contentDiv);
+          var loaded = false;
+
+          btn.style.cursor = 'pointer';
+          btn.addEventListener('click', function() {
+            var icon = btn.querySelector('.expand-icon');
+            var isHidden = contentDiv.style.display === 'none';
+            contentDiv.style.display = isHidden ? 'block' : 'none';
+            if (icon) icon.textContent = isHidden ? 'expand_less' : 'expand_more';
+
+            if (!loaded && isHidden) {
+              loaded = true;
+              var html = '';
+              // Hesaplama \u015Feffafl\u0131\u011F\u0131
+              if (cfg.calcType) {
+                html += buildCalcHTML(cfg.calcType, name1, name2, bd1, bd2);
+              }
+              // AI i\u00E7erik
+              html += '<div id="ai-'+cfg.type+'" style="padding:16px 20px;">';
+              var cached = null;
+              try { cached = localStorage.getItem(compatCacheKey(cfg.type, ctx)); } catch(e){}
+              if (cached) {
+                html += '<div style="animation:compat-in 0.5s ease;">'+renderText(cached)+'</div>';
+              } else {
+                html += loadingHTML(cfg.msg);
+              }
+              html += '</div>';
+              contentDiv.innerHTML = html;
+
+              if (!cached) {
+                window.CompatEngine.fetchCompatAnalysis(cfg.type, ctx).then(function(text){
+                  var el = document.getElementById('ai-'+cfg.type);
+                  if (!el) return;
+                  if (text) {
+                    el.innerHTML = '<div style="animation:compat-in 0.5s ease;">'+renderText(text)+'</div>';
+                  } else {
+                    el.innerHTML = '<p style="color:#ef4444;font-size:13px;">Analiz y\u00FCklenemedi.</p>';
+                  }
+                });
+              }
+            }
+          });
+        });
+
+        // === KARM\u0130K BA\u011E KARTI ===
+        setupKarmicCard(ctx, name1, name2);
+      }
+
+      setTimeout(initPage, 200);
     });
 
-    function smOpen() { var o = document.getElementById('sm-overlay'), s = document.getElementById('sm-sheet'); o.style.display = 'flex'; setTimeout(function () { s.style.transform = 'translateY(0)' }, 10); }
-    function smClose() { var s = document.getElementById('sm-sheet'); s.style.transform = 'translateY(100%)'; setTimeout(function () { document.getElementById('sm-overlay').style.display = 'none' }, 400); }
-    function smAction(t) {
-      if (t === 'copy' || t === 'save') {
-        var toast = document.createElement('div');
-        toast.textContent = t === 'copy' ? 'Link kopyalandi ✓' : 'Galeriye kaydedildi ✓';
-        toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#cfa117;color:#0a0907;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:800;z-index:999;white-space:nowrap;font-family:Manrope,sans-serif';
-        document.body.appendChild(toast); setTimeout(function () { toast.remove() }, 2000);
-      }
-      if (t === 'other' && navigator.share) { navigator.share({ title: 'Ruh Esinim', text: 'Numerael ile ruh bagimizi kesfettim!', url: window.location.href }); }
-    }
-  </script>
-  <script src="js/compatibility-engine.js"></script>
-<script src="js/notification-engine.js"></script>
-<script src="js/bottom-nav.js"></script>
-</body>
+    // === KARM\u0130K BA\u011E SETUP ===
+    function setupKarmicCard(ctx, name1, name2) {
+      var card = document.getElementById('card-karmic');
+      if (!card) return;
+      var btn = card.querySelector('button');
+      var content = document.getElementById('karmic-content');
+      var icon = btn.querySelector('.expand-icon');
+      var aiText = document.getElementById('karmic-ai-text');
+      var guideWrap = document.getElementById('karmic-guide-btn-wrap');
+      var loaded = false;
 
+      btn.style.cursor = 'pointer';
+      btn.addEventListener('click', function() {
+        var isOpen = content.style.display !== 'none';
+        content.style.display = isOpen ? 'none' : 'block';
+        if (icon) icon.textContent = isOpen ? 'expand_more' : 'expand_less';
+
+        if (!loaded && !isOpen) {
+          loaded = true;
+          var cached = null;
+          try { cached = localStorage.getItem(compatCacheKey('karmic', ctx)); } catch(e){}
+          if (cached) {
+            aiText.innerHTML = '<div style="animation:compat-in 0.5s ease;">'+renderText(cached)+'</div>';
+            guideWrap.style.display = 'block';
+            return;
+          }
+          aiText.innerHTML = loadingHTML('Karmik ili\u015Fki ba\u011F\u0131 okunuyor...');
+          window.CompatEngine.fetchCompatAnalysis('karmic', ctx).then(function(text){
+            if (text) {
+              aiText.innerHTML = '<div style="animation:compat-in 0.5s ease;">'+renderText(text)+'</div>';
+              guideWrap.style.display = 'block';
+            } else {
+              aiText.innerHTML = '<p style="color:#ef4444;font-size:13px;">Karmik analiz y\u00FCklenemedi.</p>';
+              loaded = false;
+            }
+          });
+        }
+      });
+
+      // \u0130li\u015Fki Rehberi butonu
+      var guideBtn = document.getElementById('btn-relationship-guide');
+      if (guideBtn) {
+        guideBtn.addEventListener('click', function() {
+          openGuideModal(ctx, name1, name2);
+        });
+      }
+    }
+
+    // === \u0130L\u0130\u015EK\u0130 REHBER\u0130 CHAT ===
+    var guideChatHistory = [];
+
+    function openGuideModal(ctx, name1, name2) {
+      guideChatHistory = [];
+      var modal = document.getElementById('guide-modal');
+      modal.style.display = 'flex';
+      var nav = document.getElementById('numerael-bottom-nav');
+      if (nav) nav.style.display = 'none';
+      var msgEl = document.getElementById('guide-messages');
+      msgEl.innerHTML = '';
+
+      var openingMsg = name1+' ve '+name2+' i\u00E7in ili\u015Fki analizi haz\u0131r\u0131m. Hangi konuyu konu\u015Fal\u0131m?\n\n\u2022 duygusal uyum\n\u2022 ileti\u015Fim\n\u2022 cinsellik & enerji\n\u2022 para & maddi konular\n\u2022 gelecek projeksiyonu\n\nYa da spesifik bir sorunuzu yaz\u0131n.';
+
+      addGuideMessage('assistant', openingMsg);
+
+      guideChatHistory.push({role:'system', content:'Sen Pisagor numerolojisi ili\u015Fki uyum uzman\u0131s\u0131n. T\u00FCrk\u00E7e yaz, net ve pratik ol.\n\nAnaliz etti\u011Fin \u00E7ift:\n- '+name1+': Kader='+ctx.p1.lifePath+', Ruh='+ctx.p1.soulUrge+', Ki\u015Filik='+ctx.p1.personality+', \u0130fade='+ctx.p1.expression+'\n- '+name2+': Kader='+ctx.p2.lifePath+', Ruh='+ctx.p2.soulUrge+', Ki\u015Filik='+ctx.p2.personality+', \u0130fade='+ctx.p2.expression+'\n- Genel uyum: '+ctx.overall+'%\n- Ba\u011F: '+ctx.bond+'\n\nKURALLAR:\n- Mistik dil yok, astroloji yok.\n- Her zaman \u00C7\u0130FT\u0130 analiz et.\n- Somut, keskin, ger\u00E7ek\u00E7i.\n- Kullan\u0131c\u0131 konu belirtirse o konuda derinlemesine analiz yap.\n- Her yan\u0131t\u0131n sonunda ba\u015Fka bir konu \u00F6ner.\n- Max 200 kelime per yan\u0131t.'});
+      guideChatHistory.push({role:'assistant', content:openingMsg});
+      document.getElementById('guide-input').focus();
+    }
+
+    window.closeGuideModal = function() {
+      document.getElementById('guide-modal').style.display = 'none';
+      var nav = document.getElementById('numerael-bottom-nav');
+      if (nav) nav.style.display = 'flex';
+    };
+
+    function addGuideMessage(role, text) {
+      var msgEl = document.getElementById('guide-messages');
+      var isUser = role === 'user';
+      var div = document.createElement('div');
+      div.style.cssText = 'display:flex;'+(isUser ? 'justify-content:flex-end;' : 'justify-content:flex-start;');
+      var bubble = document.createElement('div');
+      bubble.style.cssText = 'max-width:80%;padding:12px 16px;border-radius:'+(isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px')+';font-size:14px;line-height:1.65;white-space:pre-wrap;'+
+        (isUser ? 'background:linear-gradient(135deg,#7f1313,#c0392b);color:white;' : 'background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.88);border:1px solid rgba(255,255,255,0.1);');
+      bubble.textContent = text;
+      div.appendChild(bubble);
+      msgEl.appendChild(div);
+      msgEl.scrollTop = msgEl.scrollHeight;
+    }
+
+    function sendGuideMessage() {
+      var input = document.getElementById('guide-input');
+      var text = (input.value||'').trim();
+      if (!text) return;
+      input.value = '';
+      addGuideMessage('user', text);
+      guideChatHistory.push({role:'user', content:text});
+
+      // Loading
+      var msgEl = document.getElementById('guide-messages');
+      var loadDiv = document.createElement('div');
+      loadDiv.id = 'guide-loading';
+      loadDiv.style.cssText = 'display:flex;justify-content:flex-start;';
+      loadDiv.innerHTML = '<div style="padding:12px 16px;border-radius:16px 16px 16px 4px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:13px;">\u2726 d\u00FC\u015F\u00FCn\u00FCyor...</div>';
+      msgEl.appendChild(loadDiv);
+      msgEl.scrollTop = msgEl.scrollHeight;
+
+      fetch((window.__NUMERAEL_API_BASE||'')+'/api/openai', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({model:'gpt-4o-mini', messages:guideChatHistory, temperature:0.8, max_tokens:500})
+      }).then(function(r){return r.json();}).then(function(d){
+        var el = document.getElementById('guide-loading');
+        if (el) el.remove();
+        var reply = d.choices && d.choices[0] ? d.choices[0].message.content.trim() : 'Yan\u0131t al\u0131namad\u0131.';
+        addGuideMessage('assistant', reply);
+        guideChatHistory.push({role:'assistant', content:reply});
+      }).catch(function(){
+        var el = document.getElementById('guide-loading');
+        if (el) el.remove();
+        addGuideMessage('assistant', 'Ba\u011Flant\u0131 hatas\u0131.');
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      var sendBtn = document.getElementById('guide-send');
+      var input = document.getElementById('guide-input');
+      if (sendBtn) sendBtn.addEventListener('click', sendGuideMessage);
+      if (input) input.addEventListener('keydown', function(e){if(e.key==='Enter')sendGuideMessage();});
+    });
+
+  })();
+  </script>
+
+  <script src="js/notification-engine.js"></script>
+  <script src="js/bottom-nav.js"></script>
+</body>
 </html>

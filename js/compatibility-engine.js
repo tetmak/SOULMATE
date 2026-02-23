@@ -198,6 +198,16 @@ YAZI KURALLARI:
         'Toplam 500-600 kelime, mistik ve derin ton. Her başlık altında gerçekten sayısal enerjilere dayanan somut analiz yap. Başlıkları DEĞİŞTİRME, aynen yaz.';
     },
 
+    expression: function(ctx) {
+      return ctx.p1.name + ' ve ' + ctx.p2.name + ' için İfade Sayısı uyumu.\n\n' +
+        ctx.p1.name + ' İfade: ' + ctx.p1.expression + '\n' +
+        ctx.p2.name + ' İfade: ' + ctx.p2.expression + '\n' +
+        'Uyum skoru: ' + ctx.expScore + '%\n\n' +
+        'İki kişinin kendini ifade ediş biçimleri, yetenekleri ve dış dünyaya verdikleri mesaj birbirini nasıl tamamlıyor veya zorluyor?\n' +
+        'Sadece İfade Sayısı uyumunu yaz. Kader Yolu veya Ruh Güdüsü hakkında yazmak yasak.\n' +
+        '3 paragraf, 120-140 kelime.';
+    },
+
     communication: function(ctx) {
       return ctx.p1.name + ' ve ' + ctx.p2.name + ' için iletişim uyumu.\n\n' +
         'İfade Sayıları: ' + ctx.p1.expression + ' & ' + ctx.p2.expression + '\n' +
@@ -644,7 +654,8 @@ YAZI KURALLARI:
       console.log('[Compat Engine] initCompatAnalysis çalışıyor');
       initCompatAnalysis();
     } else if (path.includes('name_numerology_breakdown_3')) {
-      initBreakdown3();
+      // Inline script handles everything — skip auto-init
+      console.log('[Compat Engine] breakdown_3 inline script tarafından yönetiliyor');
     } else if (path.includes('name_numerology_breakdown_2')) {
       initBreakdown2();
     }
