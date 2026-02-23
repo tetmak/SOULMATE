@@ -158,6 +158,12 @@
     '  left: calc(50% - 60px - 4px);',
     '}',
     '',
+    '/* ─── GENİŞLEMİŞ DURUMDA CTA ENGELLEMESİNİ ÖNLE */',
+    '#avatar-widget.expanded { pointer-events: none; }',
+    '#avatar-widget.expanded #avatar-face-container,',
+    '#avatar-widget.expanded #avatar-mute-btn,',
+    '#avatar-widget.expanded #avatar-subtitle-bar { pointer-events: auto; }',
+    '',
     '/* ─── GEÇİŞ ANİMASYONLARI ─── */',
     '#avatar-widget { opacity: 0; animation: avatar-fade-in 0.6s ease 0.5s forwards; }',
     '@keyframes avatar-fade-in {',
@@ -274,7 +280,7 @@
 
   function onSpeechEnd() {
     widget.classList.remove('speaking');
-    scheduleCollapse(3000);
+    collapse();
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -317,7 +323,11 @@
   // ═══════════════════════════════════════════════════════════
 
   function toggleMute() {
-    isMuted = !isMuted;
+    setMutedState(!isMuted);
+  }
+
+  function setMutedState(muted) {
+    isMuted = !!muted;
     if (muteBtn) {
       muteBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:14px;">' +
         (isMuted ? 'volume_off' : 'volume_up') + '</span>';
@@ -383,6 +393,7 @@
     getFaceContainer: getFaceContainer,
     getWidget: getWidget,
     isMuted: isWidgetMuted,
+    setMuted: setMutedState,
     isExpanded: isWidgetExpanded,
     destroy: destroy
   };

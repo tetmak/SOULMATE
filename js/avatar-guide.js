@@ -3,8 +3,11 @@
  * Tüm avatar alt sistemlerini birbirine bağlar: Renderer, TTS, LipSync, Safety, Widget.
  * Uygulamanın geri kalanı için avatar konuşmasını tetikleyecek tek API sağlar.
  *
- * Akış:
- *   Metin → Güvenlik Filtresi → TTS → Dudak Senkronu → Görüntü Motoru → Widget
+ * Konuşma Politikası:
+ *   1. Decision Sphere nihai sonucu (kullanıcı açıkça kategori seçtikten sonra)
+ *   2. Uyumluluk sonucu SADECE skor >= 70 ise
+ *   3. İlk kez kullanıcı günlük rehberi (YALNIZCA BİR KEZ)
+ *   Bunlar dışında avatar konuşmaz.
  *
  * Dışa aktarım: window.AvatarGuide
  */
@@ -19,12 +22,63 @@
   var API_BASE = isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
   // ═══════════════════════════════════════════════════════════
+  // SABİTLER
+  // ═══════════════════════════════════════════════════════════
+  var COMPAT_MIN_SCORE = 70;
+  var MAX_SENTENCES = 2;
+  var MAX_SPEECH_DURATION_MS = 20000;
+  var FIRST_USE_KEY = 'numerael_avatar_first_spoken';
+  var EXPAND_DELAY_MS = 350;
+
+  // ═══════════════════════════════════════════════════════════
   // DURUM DEĞİŞKENLERİ
   // ═══════════════════════════════════════════════════════════
   var _initialized = false;
   var _speaking = false;
-  var _queue = [];        // sıralı mesajlar için konuşma kuyruğu
+  var _queue = [];
   var _processing = false;
+  var _speechTimer = null;
+
+  // ═══════════════════════════════════════════════════════════
+  // İLK KULLANIM VE SESSİZ DURUMU
+  // ═══════════════════════════════════════════════════════════
+
+  function hasSpokenBefore() {
+    try { return localStorage.getItem(FIRST_USE_KEY) === '1'; } catch(e) { return false; }
+  }
+
+  function markFirstSpoken() {
+    try { localStorage.setItem(FIRST_USE_KEY, '1'); } catch(e) {}
+  }
+
+  function isDefaultMuted() {
+    return hasSpokenBefore();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // PREMİUM KONTROL
+  // ═══════════════════════════════════════════════════════════
+
+  function isPremiumUser() {
+    return window.premium && typeof window.premium.isPremium === 'function' && window.premium.isPremium();
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // METİN KISLAMA — maks 2 cümle, premium/free farkı
+  // ═══════════════════════════════════════════════════════════
+
+  function truncateToSentences(text, maxSentences) {
+    if (!text) return '';
+    var sentences = text.split(/(?<=[.!?])\s+/).filter(function(s) { return s.trim().length > 0; });
+    if (sentences.length <= maxSentences) return text;
+    return sentences.slice(0, maxSentences).join(' ');
+  }
+
+  function prepareText(rawText) {
+    if (!rawText) return '';
+    var maxSentences = isPremiumUser() ? MAX_SENTENCES : 1;
+    return truncateToSentences(rawText, maxSentences);
+  }
 
   // ═══════════════════════════════════════════════════════════
   // BAŞLATMA
@@ -33,29 +87,22 @@
   function init() {
     if (_initialized) return;
 
-    // Widget'ın hazır olmasını bekle
     if (!window.AvatarWidget || !window.AvatarWidget.getFaceContainer()) {
       setTimeout(init, 200);
       return;
     }
 
     var container = window.AvatarWidget.getFaceContainer();
-    if (!container) {
-      console.warn('[AvatarGuide] Yüz kapsayıcısı bulunamadı');
-      return;
-    }
+    if (!container) return;
 
-    // Görüntü motorunu başlat
     if (window.AvatarRenderer) {
       window.AvatarRenderer.start(container);
     }
 
-    // Dudak senkronunu görüntü motoruyla başlat
     if (window.AvatarLipSync && window.AvatarRenderer) {
       window.AvatarLipSync.init(window.AvatarRenderer);
     }
 
-    // TTS altyazı geri çağırmasını ayarla
     if (window.AvatarTTS) {
       window.AvatarTTS.setSubtitleCallback(function(text, wordIndex) {
         if (window.AvatarWidget) {
@@ -64,32 +111,30 @@
       });
     }
 
+    if (isDefaultMuted() && window.AvatarWidget) {
+      window.AvatarWidget.setMuted(true);
+    }
+
     _initialized = true;
-    console.log('[AvatarGuide] Başlatıldı');
   }
 
   // ═══════════════════════════════════════════════════════════
   // ANA KONUŞMA AKIŞI
   // ═══════════════════════════════════════════════════════════
 
-  /**
-   * Avatar üzerinden metin konuştur.
-   * Tam akış: Güvenlik → TTS → DudakSenkronu → Render → Widget
-   *
-   * @param {string} text - Konuşulacak ham metin (veya SSML)
-   * @param {object} [options] - { immediate: bool, onComplete: fn }
-   */
   function speak(text, options) {
     if (!text || typeof text !== 'string') return;
 
     var opts = options || {};
+    var prepared = prepareText(text);
+    if (!prepared) return;
 
     if (opts.immediate) {
       stopSpeaking();
       _queue = [];
-      executeSpeech(text, opts);
+      executeSpeech(prepared, opts);
     } else {
-      _queue.push({ text: text, options: opts });
+      _queue.push({ text: prepared, options: opts });
       processQueue();
     }
   }
@@ -97,7 +142,6 @@
   function processQueue() {
     if (_processing || _queue.length === 0) return;
     _processing = true;
-
     var item = _queue.shift();
     executeSpeech(item.text, item.options);
   }
@@ -109,51 +153,62 @@
       return;
     }
 
-    // Sessiz kontrolü
     if (window.AvatarWidget && window.AvatarWidget.isMuted()) {
-      // Sessizde bile altyazıyı göster
       showSubtitleOnly(rawText, opts);
       return;
     }
 
-    // Adım 1: Güvenlik filtresi
     var safeText = rawText;
     if (window.AvatarSafety) {
       safeText = window.AvatarSafety.prepareForSpeech(rawText);
     }
 
-    _speaking = true;
-
-    // Adım 2: Widget'ı bilgilendir
-    if (window.AvatarWidget) {
-      window.AvatarWidget.onSpeechStart();
+    safeText = prepareText(safeText);
+    if (!safeText) {
+      _processing = false;
+      processQueue();
+      return;
     }
 
-    // Adım 3: Dudak senkronunu başlat
+    _speaking = true;
+
+    if (!hasSpokenBefore()) {
+      markFirstSpoken();
+    }
+
+    // Widget'ı gecikmeli genişlet
+    if (window.AvatarWidget) {
+      setTimeout(function() {
+        if (_speaking && window.AvatarWidget) {
+          window.AvatarWidget.onSpeechStart();
+        }
+      }, EXPAND_DELAY_MS);
+    }
+
     if (window.AvatarLipSync) {
       window.AvatarLipSync.startSpeaking(safeText);
     }
 
-    // Adım 4: Dudak senkronu için genlik geri çağırmasıyla TTS
+    // Maksimum süre güvenlik zamanlayıcısı
+    if (_speechTimer) clearTimeout(_speechTimer);
+    _speechTimer = setTimeout(function() {
+      if (_speaking) stopSpeaking();
+    }, MAX_SPEECH_DURATION_MS);
+
     if (window.AvatarTTS) {
       window.AvatarTTS.speak(safeText, {
-        onStart: function() {
-          // Yukarıda zaten işlendi
-        },
+        onStart: function() {},
         onAmplitude: function(amplitude) {
           if (window.AvatarLipSync) {
             window.AvatarLipSync.processAmplitude(amplitude);
           }
         },
-        onBoundary: function(event, wordIndex, totalWords) {
-          // Kelime takibi TTS altyazı geri çağırmasıyla yapılıyor
-        },
+        onBoundary: function() {},
         onEnd: function() {
           onSpeechComplete(opts);
         }
       });
     } else {
-      // TTS mevcut değil — sadece metni göster
       showSubtitleOnly(safeText, opts);
     }
   }
@@ -163,14 +218,18 @@
     if (window.AvatarSafety) {
       safeText = window.AvatarSafety.prepareForSpeech(text);
     }
+    safeText = prepareText(safeText);
 
     if (window.AvatarWidget) {
-      window.AvatarWidget.onSpeechStart();
-      window.AvatarWidget.showSubtitle(safeText, -1);
+      setTimeout(function() {
+        if (window.AvatarWidget) {
+          window.AvatarWidget.onSpeechStart();
+          window.AvatarWidget.showSubtitle(safeText, -1);
+        }
+      }, EXPAND_DELAY_MS);
     }
 
-    // Okuma süresinden sonra otomatik gizle
-    var readTime = Math.max(3000, safeText.length * 60);
+    var readTime = Math.min(Math.max(3000, safeText.length * 60), MAX_SPEECH_DURATION_MS);
     setTimeout(function() {
       onSpeechComplete(opts);
     }, readTime);
@@ -179,24 +238,25 @@
   function onSpeechComplete(opts) {
     _speaking = false;
 
-    // Dudak senkronunu durdur
+    if (_speechTimer) {
+      clearTimeout(_speechTimer);
+      _speechTimer = null;
+    }
+
     if (window.AvatarLipSync) {
       window.AvatarLipSync.stopSpeaking();
     }
 
-    // Widget'ı bilgilendir
     if (window.AvatarWidget) {
       window.AvatarWidget.onSpeechEnd();
     }
 
     _processing = false;
 
-    // Geri çağırma
     if (opts && opts.onComplete) {
       opts.onComplete();
     }
 
-    // Kuyruktaki sonrakini işle
     processQueue();
   }
 
@@ -205,6 +265,10 @@
   // ═══════════════════════════════════════════════════════════
 
   function stopSpeaking() {
+    if (_speechTimer) {
+      clearTimeout(_speechTimer);
+      _speechTimer = null;
+    }
     if (window.AvatarTTS) window.AvatarTTS.stop();
     if (window.AvatarLipSync) window.AvatarLipSync.stopSpeaking();
     if (window.AvatarWidget) {
@@ -217,155 +281,79 @@
 
   // ═══════════════════════════════════════════════════════════
   // ÜST DÜZEY TETİKLEYİCİLER
-  // Olaylar gerçekleştiğinde diğer modüller tarafından çağrılır.
+  // Sadece izin verilen 3 durum:
+  //   1. Decision Sphere nihai sonucu
+  //   2. Uyumluluk sonucu (skor >= 70)
+  //   3. İlk kez günlük rehber
   // ═══════════════════════════════════════════════════════════
 
-  /**
-   * Numeroloji/karar sonucu döndüğünde çağrılır.
-   * Rehberlik metni üretir ve avatar ile konuşturur.
-   */
-  function onResultReady(resultData) {
-    var text = buildResultNarration(resultData);
-    if (text) speak(text);
+  function onResultReady() {
+    // Pasif içerik render'ı — avatar konuşmaz
+  }
+
+  function onAIContentReady() {
+    // Pasif içerik — avatar konuşmaz
   }
 
   /**
-   * Sayfa bölümü için AI içeriği üretildiğinde çağrılır.
-   * Avatar isteğe bağlı olarak önemli AI görüşlerini anlatabilir.
-   */
-  function onAIContentReady(content, pageContext) {
-    // Sadece önemli içerik için konuş, her bölüm için değil
-    if (!pageContext || !pageContext.primary) return;
-    var trimmed = content;
-    if (trimmed.length > 200) {
-      // Konuşma için özetle — ilk 2 cümleyi al
-      var sentences = trimmed.split(/[.!?]+/).filter(function(s) { return s.trim().length > 10; });
-      trimmed = sentences.slice(0, 2).join('. ') + '.';
-    }
-    speak(trimmed);
-  }
-
-  /**
-   * Kullanıcı Decision Sphere'de soru/karar gönderdiğinde çağrılır.
-   * Avatar kabul eder ve sonucu konuşur.
+   * Decision Sphere nihai sonucu — avatar konuşabilir
    */
   function onDecisionSubmit(action, result) {
     if (!result) return;
 
-    var text = '';
     var score = result.score || 0;
+    var text = '';
 
     if (score >= 70) {
-      text = 'Bugünün enerjisi bu adımı destekliyor görünüyor. Skor: yüzde ' + score + '. ';
+      text = 'Bugünün enerjisi bu adımı destekliyor görünüyor.';
     } else if (score >= 40) {
-      text = 'Bu konuda karışık sinyaller var. Skor yüzde ' + score + ' civarında. ';
+      text = 'Bu konuda karışık sinyaller var, dikkatli ilerlemek uyumlu görünüyor.';
     } else {
-      text = 'Bugün bu konuda dikkatli olmak faydalı olabilir. Skor: yüzde ' + score + '. ';
-    }
-
-    if (result.rationale) {
-      text += result.rationale;
+      text = 'Bugün bu konuda dikkatli olmak faydalı olabilir.';
     }
 
     text += ' Nihai karar her zaman sana ait.';
-
     speak(text);
   }
 
   /**
-   * Uyumluluk analizi sonuçları için çağrılır.
+   * Uyumluluk sonucu — SADECE skor >= 70 ise konuş
    */
   function onCompatibilityResult(score, names) {
-    var text = '';
+    if (score < COMPAT_MIN_SCORE) return;
+
     var n = names || 'iki ruh';
+    var text = '';
 
     if (score >= 80) {
-      text = n + ' arasında güçlü bir kozmik bağ görünüyor. Uyum skoru yüzde ' + score + '. Bu birliktelik zengin bir enerji taşıyor.';
-    } else if (score >= 50) {
-      text = n + ' arasındaki uyum yüzde ' + score + '. Hem uyum hem de büyüme alanları mevcut.';
+      text = n + ' arasında güçlü bir kozmik bağ öne çıkıyor. Bu birliktelik zengin bir enerji taşıyor olabilir.';
     } else {
-      text = n + ' arasındaki uyum yüzde ' + score + '. Farklı enerjiler bir arada. Bu bir fırsat da olabilir, bir uyarı da.';
+      text = n + ' arasındaki uyum destekleyici görünüyor. Hem uyum hem de büyüme alanları mevcut.';
     }
 
-    text += ' Bu sadece sayıların perspektifi.';
     speak(text);
   }
 
-  // ═══════════════════════════════════════════════════════════
-  // ANLATI OLUŞTURUCU
-  // ═══════════════════════════════════════════════════════════
-
-  function buildResultNarration(data) {
-    if (!data) return null;
-
-    if (data.type === 'decision' && data.score !== undefined) {
-      return onDecisionSubmitText(data.action, data);
-    }
-
-    if (data.type === 'compatibility' && data.score !== undefined) {
-      return buildCompatNarration(data.score, data.names);
-    }
-
-    if (data.type === 'daily' && data.message) {
-      return data.message;
-    }
-
-    if (data.text) {
-      return data.text;
-    }
-
-    return null;
-  }
-
-  function onDecisionSubmitText(action, result) {
-    var score = result.score || 0;
-    var text = '';
-
-    if (score >= 70) {
-      text = 'Bugünün enerjisi bu adımı destekliyor görünüyor. ';
-    } else if (score >= 40) {
-      text = 'Bu konuda karışık sinyaller var. ';
-    } else {
-      text = 'Bugün bu konuda dikkatli olmak faydalı olabilir. ';
-    }
-
-    if (result.rationale) {
-      text += result.rationale + ' ';
-    }
-
-    text += 'Nihai karar her zaman sana ait.';
-    return text;
-  }
-
-  function buildCompatNarration(score, names) {
-    var n = names || 'İki ruh';
-    var text = n + ' arasındaki uyum yüzde ' + score + '. ';
-
-    if (score >= 80) {
-      text += 'Güçlü bir kozmik bağ görünüyor.';
-    } else if (score >= 50) {
-      text += 'Hem uyum hem de büyüme alanları mevcut.';
-    } else {
-      text += 'Farklı enerjiler bir arada. Bu bir fırsat da olabilir.';
-    }
-
-    text += ' Bu sadece sayıların perspektifi.';
-    return text;
-  }
-
-  // ═══════════════════════════════════════════════════════════
-  // LLM ENTEGRASYONU — AI ile avatar konuşması üret
-  // ═══════════════════════════════════════════════════════════
-
   /**
-   * LLM'den verilen bağlam için avatar konuşması üretmesini iste.
-   * Güvenlik korumalı sistem prompt kullanır.
+   * İlk kez günlük rehber — SADECE ilk kullanımda, BİR KEZ
    */
+  function onDailyGuideFirstTime(insightText) {
+    if (hasSpokenBefore()) return;
+    if (!insightText) return;
+    speak(insightText);
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // LLM ENTEGRASYONU
+  // ═══════════════════════════════════════════════════════════
+
   function generateAndSpeak(context, userPrompt) {
     var systemPrompt = [
       'Sen Numerael uygulamasının kozmik rehberisin.',
       'Sakin, bilge ve yargılayıcı olmayan bir tonda konuş.',
-      'Kısa ve öz tut — 2-3 cümle yeterli.',
+      'Maksimum 2 kısa cümle söyle.',
+      'Olasılık dili kullan: "destekleyici olabilir", "öne çıkıyor", "uyumlu görünüyor".',
+      'Asla emir verme, asla kesinlik belirtme.',
       'Türkçe konuş.',
       window.AvatarSafety ? window.AvatarSafety.getSystemPromptGuard() : ''
     ].join('\n');
@@ -381,7 +369,7 @@
           { role: 'system', content: systemPrompt },
           { role: 'user', content: prompt }
         ],
-        max_tokens: 150,
+        max_tokens: 100,
         temperature: 0.7
       })
     })
@@ -390,9 +378,7 @@
       var text = data.choices && data.choices[0] ? data.choices[0].message.content : null;
       if (text) speak(text);
     })
-    .catch(function(err) {
-      console.warn('[AvatarGuide] LLM üretimi başarısız:', err);
-    });
+    .catch(function() {});
   }
 
   // ═══════════════════════════════════════════════════════════
@@ -416,9 +402,7 @@
     return _initialized;
   }
 
-  // Otomatik başlatma
   function autoInit() {
-    // Tüm bağımlılıkların hazır olmasını bekle
     if (!window.AvatarRenderer || !window.AvatarTTS || !window.AvatarLipSync || !window.AvatarWidget || !window.AvatarSafety) {
       setTimeout(autoInit, 300);
       return;
@@ -445,6 +429,7 @@
     onAIContentReady: onAIContentReady,
     onDecisionSubmit: onDecisionSubmit,
     onCompatibilityResult: onCompatibilityResult,
+    onDailyGuideFirstTime: onDailyGuideFirstTime,
     generateAndSpeak: generateAndSpeak,
     destroy: destroy
   };

@@ -150,10 +150,9 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
          2-3 cümle, mistik ve ilham verici tonda.`
       );
       skeletonFill(insightEl, insightPromise);
-      // Avatar speaks the daily insight
       insightPromise.then(function(text) {
         if (text && window.AvatarGuide) {
-          window.AvatarGuide.speak(text);
+          window.AvatarGuide.onDailyGuideFirstTime(text);
         }
       });
     }

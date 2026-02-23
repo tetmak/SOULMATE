@@ -911,10 +911,6 @@
       if (data.choices && data.choices[0]) {
         var aiText = data.choices[0].message.content;
         addAelMessage(aiText);
-        // Avatar speaks the AI explanation
-        if (window.AvatarGuide) {
-          window.AvatarGuide.speak(aiText);
-        }
       } else {
         addAelMessage('Yanıt alınamadı. Tekrar dene.');
       }
