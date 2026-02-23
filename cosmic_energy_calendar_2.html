@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Decision Calendar</title>
+    <title>Karar Takvimi</title>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap"
@@ -89,7 +89,7 @@
         id="sidebar">
         <div class="flex flex-col h-full p-6">
             <div class="flex items-center justify-between mb-10">
-                <h2 class="text-xl font-bold text-white">Menu</h2>
+                <h2 class="text-xl font-bold text-white">Menü</h2>
                 <label class="text-white/60 cursor-pointer" for="menu-toggle">
                     <span class="material-symbols-outlined"
                         onclick="window.location.href='mystic_numerology_home_1.html'"
@@ -100,43 +100,43 @@
                 <a class="flex items-center gap-4 text-primary font-bold" href="#">
                     <span class="material-symbols-outlined"
                         style="font-variation-settings: 'FILL' 1">calendar_month</span>
-                    <span>Calendar</span>
+                    <span>Takvim</span>
                 </a>
                 <a onclick="window.location.href='cosmic_manifest_portal.html'"
                     class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">explore</span>
-                    <span>Planner</span>
+                    <span>Planlayıcı</span>
                 </a>
                 <a class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium"
                     href="#">
                     <div class="size-8 bg-primary rounded-full flex items-center justify-center">
                         <span class="material-symbols-outlined text-white text-sm">add</span>
                     </div>
-                    <span>Ritual</span>
+                    <span>Ritüel</span>
                 </a>
                 <a onclick="window.location.href='daily_spiritual_guide.html'"
                     class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">auto_graph</span>
-                    <span>Daily Advice</span>
+                    <span>Günlük Rehber</span>
                 </a>
                 <a onclick="window.location.href='wheel_of_destiny.html'"
                     class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium border-t border-white/10 pt-6 mt-2 cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">account_circle</span>
-                    <span>Profile</span>
+                    <span>Profil</span>
                 </a>
                 <a class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium"
                     href="#">
                     <span class="material-symbols-outlined">settings</span>
-                    <span>Settings</span>
+                    <span>Ayarlar</span>
                 </a>
             </nav>
             <div class="mt-auto">
                 <div class="bg-primary/10 rounded-xl p-4 border border-primary/20">
-                    <p class="text-xs text-cosmic-gold font-bold uppercase mb-2">Daily Status</p>
-                    <p class="text-sm text-white/80 italic">"Numerical analysis active."</p>
+                    <p class="text-xs text-cosmic-gold font-bold uppercase mb-2">Günlük Durum</p>
+                    <p class="text-sm text-white/80 italic">"Sayısal analiz aktif."</p>
                 </div>
             </div>
         </div>
@@ -147,7 +147,7 @@
                 style="cursor:pointer;width:44px;height:44px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0">
                 <span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">arrow_back_ios</span>
             </button>
-            <h2 class="text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Decision Calendar
+            <h2 class="text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Karar Takvimi
             </h2>
             <div class="text-white flex size-12 shrink-0 items-center justify-end">
                 <span class="material-symbols-outlined">account_circle</span>
@@ -167,31 +167,31 @@
                 </button>
             </div>
             <div class="grid grid-cols-7 text-center mb-2">
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">S</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">M</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">T</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">W</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">T</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">F</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">S</p>
+                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Pz</p>
+                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Pt</p>
+                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Sa</p>
+                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Ça</p>
+                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Pe</p>
+                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Cu</p>
+                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Ct</p>
             </div>
             <div class="grid grid-cols-7 gap-y-2" id="calendar-grid">
                 <!-- dinamik günler JS ile doldurulacak -->
             </div>
         </section>
         <div class="flex items-center justify-between px-2">
-            <h2 class="text-white text-2xl font-bold tracking-tight">Daily Analysis</h2>
+            <h2 class="text-white text-2xl font-bold tracking-tight">Günlük Analiz</h2>
             <div class="flex items-center gap-1 bg-primary/20 px-3 py-1 rounded-full">
                 <span class="material-symbols-outlined text-cosmic-gold text-sm"
                     style="font-variation-settings: 'FILL' 1">analytics</span>
-                <span class="text-xs font-bold text-cosmic-gold" id="alignment-label">Active Cycle</span>
+                <span class="text-xs font-bold text-cosmic-gold" id="alignment-label">Aktif Döngü</span>
             </div>
         </div>
         <div class="glass-card rounded-xl overflow-hidden shadow-2xl">
             <div class="p-6 space-y-5">
                 <div>
                     <p class="text-cosmic-gold text-xs font-bold uppercase tracking-[0.2em] mb-2"
-                        id="selected-date-label">Today's Vibration</p>
+                        id="selected-date-label">Bugünün Titreşimi</p>
                     <h3 class="text-2xl font-bold text-white leading-tight mb-3" id="vibration-title">—</h3>
                     <p id="day-description" class="text-[#ab9db9] text-base leading-relaxed"></p>
                 </div>
@@ -199,14 +199,14 @@
                     <div class="bg-primary/10 rounded-lg p-3 border border-primary/20">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
-                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Supported</span>
+                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Desteklenen</span>
                         </div>
                         <div id="supported-actions" class="space-y-1"></div>
                     </div>
                     <div class="bg-primary/10 rounded-lg p-3 border border-primary/20">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="material-symbols-outlined text-primary text-sm">warning</span>
-                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Challenging</span>
+                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Zorlayıcı</span>
                         </div>
                         <div id="challenging-actions" class="space-y-1"></div>
                     </div>
@@ -214,7 +214,7 @@
                 <button id="decision-timing-cta"
                     class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg transition-transform active:scale-[0.98]"
                     style="position:relative;z-index:10;cursor:pointer;">
-                    View Decision Timing for This Day
+                    Bu Günün Karar Zamanlamasını Gör
                 </button>
             </div>
         </div>
@@ -230,7 +230,7 @@
         var currentMonth = TODAY.getMonth(); // 0-11
         var selectedDate = new Date(TODAY);
 
-        var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        var MONTHS = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
 
         // Vibrasyon hesaplama (gün sayılarını topla)
         function calcVibration(date) {
@@ -250,81 +250,81 @@
         // Günlük içerik verisi — fixed vibration map
         var VIBRATION_DATA = {
             1: {
-                title: 'Vibration 1 — Initiation & Action',
-                desc: 'Numerical dominance favors starting actions and direct decisions. Momentum is supported. Delay reduces efficiency.',
-                supported: ['Starting tasks', 'Taking initiative', 'Direct communication'],
-                challenging: ['Waiting for confirmation', 'Passive behavior'],
-                alignment: 'Active Cycle'
+                title: 'Titreşim 1 — Başlangıç & Aksiyon',
+                desc: 'Sayısal baskınlık, aksiyon başlatmayı ve doğrudan kararları destekler. İvme güçlüdür. Erteleme verimliliği azaltır.',
+                supported: ['Yeni görevlere başlama', 'İnisiyatif alma', 'Doğrudan iletişim'],
+                challenging: ['Onay bekleme', 'Pasif davranış'],
+                alignment: 'Aktif Döngü'
             },
             2: {
-                title: 'Vibration 2 — Evaluation & Coordination',
-                desc: 'Energy supports balance, negotiation, and dual-sided evaluation. Independent force is less effective.',
-                supported: ['Negotiation', 'Relationship management', 'Listening'],
-                challenging: ['Solo decisions', 'Aggressive action'],
-                alignment: 'Balanced Cycle'
+                title: 'Titreşim 2 — Değerlendirme & Koordinasyon',
+                desc: 'Enerji; denge, müzakere ve iki taraflı değerlendirmeyi destekler. Bireysel güç daha az etkilidir.',
+                supported: ['Müzakere', 'İlişki yönetimi', 'Dinleme'],
+                challenging: ['Tek başına kararlar', 'Agresif eylem'],
+                alignment: 'Dengeli Döngü'
             },
             3: {
-                title: 'Vibration 3 — Expression & Output',
-                desc: 'Expression and idea transmission are favored. Structure and discipline are secondary today.',
-                supported: ['Communication', 'Marketing', 'Creative output'],
-                challenging: ['Detail-heavy planning', 'Long-term commitments'],
-                alignment: 'Output Cycle'
+                title: 'Titreşim 3 — İfade & Üretim',
+                desc: 'İfade ve fikir aktarımı desteklenir. Yapı ve disiplin bugün ikinci plandadır.',
+                supported: ['İletişim', 'Pazarlama', 'Yaratıcı üretim'],
+                challenging: ['Detay ağırlıklı planlama', 'Uzun vadeli taahhütler'],
+                alignment: 'Üretim Döngüsü'
             },
             4: {
-                title: 'Vibration 4 — Structure & Execution',
-                desc: 'Systematic work and disciplined execution are supported. Flexibility is reduced.',
-                supported: ['Operations', 'Planning', 'Process building'],
-                challenging: ['Improvisation', 'Emotional decisions'],
-                alignment: 'Steady Cycle'
+                title: 'Titreşim 4 — Yapı & Uygulama',
+                desc: 'Sistematik çalışma ve disiplinli uygulama desteklenir. Esneklik azalır.',
+                supported: ['Operasyonlar', 'Planlama', 'Süreç oluşturma'],
+                challenging: ['Doğaçlama', 'Duygusal kararlar'],
+                alignment: 'Kararlı Döngü'
             },
             5: {
-                title: 'Vibration 5 — Change & Movement',
-                desc: 'Adaptability and fast response are favored. Fixed plans may break.',
-                supported: ['Adjustments', 'Short-term decisions', 'Movement'],
-                challenging: ['Long-term planning', 'Rigid structure'],
-                alignment: 'Dynamic Cycle'
+                title: 'Titreşim 5 — Değişim & Hareket',
+                desc: 'Uyum yeteneği ve hızlı tepki desteklenir. Sabit planlar bozulabilir.',
+                supported: ['Ayarlamalar', 'Kısa vadeli kararlar', 'Hareket'],
+                challenging: ['Uzun vadeli planlama', 'Katı yapılar'],
+                alignment: 'Dinamik Döngü'
             },
             6: {
-                title: 'Vibration 6 — Responsibility & Stability',
-                desc: 'Commitment, responsibility, and maintenance actions are supported. Risk-taking is less efficient.',
-                supported: ['Relationship care', 'Maintenance', 'Responsibility handling'],
-                challenging: ['High-risk decisions', 'Abrupt change'],
-                alignment: 'Stable Cycle'
+                title: 'Titreşim 6 — Sorumluluk & Denge',
+                desc: 'Bağlılık, sorumluluk ve sürdürme eylemleri desteklenir. Risk alma daha az verimlidir.',
+                supported: ['İlişki bakımı', 'Sürdürme', 'Sorumluluk üstlenme'],
+                challenging: ['Yüksek riskli kararlar', 'Ani değişiklikler'],
+                alignment: 'Dengeli Döngü'
             },
             7: {
-                title: 'Vibration 7 — Analysis & Internal Focus',
-                desc: 'Observation, analysis, and internal evaluation are supported. External pressure actions are weakened.',
-                supported: ['Analysis', 'Research', 'Planning'],
-                challenging: ['Forced execution', 'Confrontation'],
-                alignment: 'High Numerical Intensity'
+                title: 'Titreşim 7 — Analiz & İç Odak',
+                desc: 'Gözlem, analiz ve içsel değerlendirme desteklenir. Dışsal baskı eylemleri zayıflar.',
+                supported: ['Analiz', 'Araştırma', 'Planlama'],
+                challenging: ['Zorla uygulama', 'Çatışma'],
+                alignment: 'Yüksek Sayısal Yoğunluk'
             },
             8: {
-                title: 'Vibration 8 — Control & Material Focus',
-                desc: 'Authority, financial matters, and control-based actions are supported. Emotional sensitivity is reduced.',
-                supported: ['Financial decisions', 'Management', 'Authority actions'],
-                challenging: ['Emotional discussions', 'Passive waiting'],
-                alignment: 'Power Cycle'
+                title: 'Titreşim 8 — Kontrol & Maddi Odak',
+                desc: 'Otorite, finansal konular ve kontrol bazlı eylemler desteklenir. Duygusal hassasiyet azalır.',
+                supported: ['Finansal kararlar', 'Yönetim', 'Otorite eylemleri'],
+                challenging: ['Duygusal tartışmalar', 'Pasif bekleme'],
+                alignment: 'Güç Döngüsü'
             },
             9: {
-                title: 'Vibration 9 — Closure & Completion',
-                desc: 'Finalization and closure actions are supported. New beginnings lack backing.',
-                supported: ['Completion', 'Ending processes', 'Review'],
-                challenging: ['Starting new projects', 'Long-term initiation'],
-                alignment: 'Completion Cycle'
+                title: 'Titreşim 9 — Kapanış & Tamamlanma',
+                desc: 'Sonlandırma ve kapanış eylemleri desteklenir. Yeni başlangıçlar destek bulamaz.',
+                supported: ['Tamamlama', 'Süreçleri bitirme', 'Gözden geçirme'],
+                challenging: ['Yeni projelere başlama', 'Uzun vadeli başlangıçlar'],
+                alignment: 'Tamamlanma Döngüsü'
             },
             11: {
-                title: 'Vibration 11 — High Numerical Intensity',
-                desc: 'Master number amplifies all numerical influences. Analytical depth is heightened. Decision weight increases.',
-                supported: ['Analysis', 'Research', 'Strategic planning'],
-                challenging: ['Rushed decisions', 'Superficial actions'],
-                alignment: 'High Numerical Intensity'
+                title: 'Titreşim 11 — Yüksek Sayısal Yoğunluk',
+                desc: 'Üstat sayı tüm sayısal etkileri güçlendirir. Analitik derinlik artar. Karar ağırlığı yükselir.',
+                supported: ['Analiz', 'Araştırma', 'Stratejik planlama'],
+                challenging: ['Aceleci kararlar', 'Yüzeysel eylemler'],
+                alignment: 'Yüksek Sayısal Yoğunluk'
             },
             22: {
-                title: 'Vibration 22 — Master Execution',
-                desc: 'Master number supports large-scale execution and structural decisions. Scope of impact is amplified.',
-                supported: ['Large projects', 'Structural decisions', 'Long-term planning'],
-                challenging: ['Minor tasks', 'Indecision'],
-                alignment: 'High Numerical Intensity'
+                title: 'Titreşim 22 — Üstat Uygulama',
+                desc: 'Üstat sayı büyük ölçekli uygulama ve yapısal kararları destekler. Etki kapsamı güçlenir.',
+                supported: ['Büyük projeler', 'Yapısal kararlar', 'Uzun vadeli planlama'],
+                challenging: ['Küçük görevler', 'Kararsızlık'],
+                alignment: 'Yüksek Sayısal Yoğunluk'
             }
         };
 
@@ -413,7 +413,7 @@
             var isToday = date.getTime() === TODAY.getTime();
 
             document.getElementById('vibration-title').textContent = data.title;
-            document.getElementById('selected-date-label').textContent = isToday ? "Today's Vibration" : formatDate(date);
+            document.getElementById('selected-date-label').textContent = isToday ? "Bugünün Titreşimi" : formatDate(date);
             document.getElementById('day-description').textContent = data.desc;
             document.getElementById('alignment-label').textContent = data.alignment;
 
@@ -466,29 +466,29 @@
             class="flex flex-col items-center gap-1 text-primary py-1">
             <span class="material-symbols-outlined text-lg"
                 style="font-variation-settings:'FILL' 1">calendar_month</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Calendar</span>
+            <span class="text-[9px] font-bold uppercase tracking-tight">Takvim</span>
         </button>
         <button onclick="window.location.href='cosmic_manifest_portal.html'"
             class="flex flex-col items-center gap-1 text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">explore</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Planner</span>
+            <span class="text-[9px] font-bold uppercase tracking-tight">Planlayıcı</span>
         </button>
         <div class="relative -top-4">
             <button
                 class="size-14 rounded-full bg-primary flex items-center justify-center text-white shadow-lg border-4 border-background-dark">
                 <span class="material-symbols-outlined text-2xl">add</span>
             </button>
-            <span class="text-[9px] font-bold uppercase text-white/40 block text-center mt-1">Ritual</span>
+            <span class="text-[9px] font-bold uppercase text-white/40 block text-center mt-1">Ritüel</span>
         </div>
         <button onclick="window.location.href='daily_spiritual_guide.html'"
             class="flex flex-col items-center gap-1 text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">auto_graph</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Daily Advice</span>
+            <span class="text-[9px] font-bold uppercase tracking-tight">Günlük Rehber</span>
         </button>
         <button onclick="window.location.href='wheel_of_destiny.html'"
             class="flex flex-col items-center gap-1 text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">casino</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Profile</span>
+            <span class="text-[9px] font-bold uppercase tracking-tight">Profil</span>
         </button>
     </nav>
     <script src="js/numerology-context-engine.js"></script>
