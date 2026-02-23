@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     '</div>' +
                     '<span class="text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
                 avatarDiv.addEventListener('click', function() {
-                    window.location.href = 'messaging.html?uid=' + encodeURIComponent(mc.user_id);
+                    window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
                 });
                 rowEl.insertBefore(avatarDiv, rowEl.lastElementChild);
 

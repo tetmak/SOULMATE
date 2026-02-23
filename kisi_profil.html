@@ -117,13 +117,21 @@
             </div>
         </div>
 
-        <!-- Uyumluluk notu -->
-        <div class="flex items-start gap-3 p-4 bg-white/3 border border-white/8 rounded-2xl">
-            <span class="material-symbols-outlined text-white/20 text-base mt-0.5 shrink-0">info</span>
-            <p class="text-white/30 text-xs leading-relaxed">
-                Romantik uyumluluk analizi için
-                <span onclick="window.location.href='compatibility_input_form.html'" class="text-primary/70 font-semibold cursor-pointer underline">Compatibility bölümüne git.</span>
-            </p>
+        <!-- Romantik Uyumluluk Analizi Butonu -->
+        <div id="btn-soulmate-analysis"
+            class="card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-[#f472b6]/20 cursor-pointer mb-3"
+            style="background: linear-gradient(135deg, rgba(244,114,182,0.06), rgba(236,72,153,0.04));">
+            <div class="size-12 shrink-0 rounded-full flex items-center justify-center" style="background:rgba(244,114,182,0.12);">
+                <span class="material-symbols-outlined" style="color:#f472b6;">favorite</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p id="soulmate-label" class="text-white font-bold truncate">Uyumluluk Analizi</p>
+                <p class="text-white/40 text-xs mt-0.5">Romantik uyum · Karmik bağ · Ruh eşi skoru</p>
+            </div>
+            <div class="shrink-0 flex items-center gap-2">
+                <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#f472b6;background:rgba(244,114,182,0.15);">SOUL</span>
+                <span class="material-symbols-outlined text-white/30">chevron_right</span>
+            </div>
         </div>
     </div>
 
@@ -151,9 +159,30 @@ document.addEventListener('DOMContentLoaded', async function() {
     var kisiName = params.get('kisi');
     if (!kisiName) { window.location.href='connections_shared_readings.html'; return; }
 
-    // ─── Veri çek ────────────────────────────────────────────
+    // ─── Veri çek (localStorage + Supabase fallback) ───────
     var kisi = null;
     try { kisi = await window.profile.getConnectionDetail(kisiName); } catch(e) {}
+
+    // Supabase'den de dene (Cosmic Match connection'ları)
+    if (!kisi && window.supabaseClient) {
+        try {
+            var dpRes = await window.supabaseClient.from('discovery_profiles')
+                .select('*')
+                .ilike('full_name', '%' + kisiName + '%')
+                .limit(1)
+                .maybeSingle();
+            if (dpRes.data) {
+                kisi = {
+                    fullName: dpRes.data.full_name,
+                    birthDate: dpRes.data.birth_date,
+                    gender: dpRes.data.gender,
+                    lifePath: dpRes.data.life_path,
+                    avatar_url: dpRes.data.avatar_url,
+                    user_id: dpRes.data.user_id
+                };
+            }
+        } catch(e) { console.warn('[KisiProfil] Supabase fallback error:', e); }
+    }
 
     if (!kisi) {
         document.getElementById('kisi-isim').textContent = decodeURIComponent(kisiName);
@@ -214,6 +243,37 @@ document.addEventListener('DOMContentLoaded', async function() {
         window.location.href = 'friendship_dynamics.html?kisi=' + encodeURIComponent(kisiName);
     });
     document.getElementById('friendship-label').textContent = name.split(' ')[0] + ' ile Arkadaşlık Dinamiği';
+    document.getElementById('soulmate-label').textContent = name.split(' ')[0] + ' ile Uyumluluk Analizi';
+
+    // ─── Romantik Uyumluluk Analizi butonu ─────────────────
+    document.getElementById('btn-soulmate-analysis').addEventListener('click', function() {
+        // Ana kullanıcı verisini al
+        var ud = null;
+        try { ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); } catch(e) {}
+        if (!ud || !ud.name || !ud.birthDate) {
+            alert('Kendi doğum tarihiniz tanımlı değil. Lütfen profilinizi doldurun.');
+            return;
+        }
+
+        // Uyumluluk verisini localStorage'a yaz — analiz sayfası bunu okuyacak
+        localStorage.setItem('numerael_compat_data', JSON.stringify({
+            person1: { name: ud.name, birthDate: ud.birthDate },
+            person2: { name: name, birthDate: bd }
+        }));
+
+        // Bağlantıya da kaydet (connections listesinde görünsün)
+        if (window.profile) {
+            window.profile.saveConnection({
+                fullName: name,
+                birthDate: bd,
+                relationship: 'Partner',
+                notes: 'Uyumluluk analizinden eklendi'
+            });
+        }
+
+        // Direkt analiz loading sayfasına git
+        window.location.href = 'soul_mate_loading.html';
+    });
 });
 </script>
 <script src="js/notification-engine.js"></script>
