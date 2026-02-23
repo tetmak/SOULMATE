@@ -29,6 +29,7 @@
     var _channel = null;
     var _notifications = [];
     var _panelOpen = false;
+    var _notifCallbacks = [];
 
     // ═══════════════════════════════════════════════════════
     // NOTIFICATION TEXTS & ACTIONS
@@ -371,6 +372,10 @@
                 _notifications.unshift(notif);
                 updateBadge();
                 if (_panelOpen) renderNotifications();
+                // Fire registered external callbacks
+                for (var ci = 0; ci < _notifCallbacks.length; ci++) {
+                    try { _notifCallbacks[ci](notif); } catch(cbErr) {}
+                }
             })
             .subscribe();
     }
@@ -411,7 +416,15 @@
         createNotification: createNotification,
         loadNotifications: loadNotifications,
         markAsRead: markAsRead,
-        markAllAsRead: markAllAsRead
+        markAllAsRead: markAllAsRead,
+        getUnreadMessageSenders: function() {
+            return _notifications
+                .filter(function(n) { return n.type === 'new_message' && !n.is_read && n.payload && n.payload.sender_id; })
+                .map(function(n) { return n.payload.sender_id; });
+        },
+        onNewNotification: function(cb) {
+            if (typeof cb === 'function') _notifCallbacks.push(cb);
+        }
     };
 
 })();

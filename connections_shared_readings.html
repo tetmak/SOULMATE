@@ -35,6 +35,8 @@
         .fade-in{animation:fade-in 0.35s ease forwards}
         .card-hover{transition:transform 0.15s ease}
         .card-hover:active{transform:scale(0.97)}
+        @keyframes chat-blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(1.15)}}
+        .chat-unread{animation:chat-blink 1.2s ease-in-out infinite;color:#ec4899 !important}
     </style>
 </head>
 <body class="bg-background-dark text-white min-h-screen">
@@ -116,6 +118,31 @@ document.addEventListener('DOMContentLoaded', async function() {
     function calcExp(name){var s=0,c=(name||'').toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ]/g,'');for(var i=0;i<c.length;i++)s+=(TABLE[c[i]]||0);return reduce(s);}
 
     var ARCH = {1:'The Leader',2:'The Diplomat',3:'The Creator',4:'The Builder',5:'The Adventurer',6:'The Nurturer',7:'The Seeker',8:'The Achiever',9:'The Humanitarian',11:'The Illuminator',22:'The Master Builder',33:'The Teacher'};
+
+    // ─── Kullanıcı bazlı benzersiz renkler ──────────────────
+    var COLOR_PALETTE = [
+        '#ec4899', // Neon Rose
+        '#38bdf8', // Cyan Blue
+        '#34d399', // Emerald
+        '#f59e0b', // Warm Amber
+        '#a78bfa', // Soft Purple
+        '#fb7185', // Coral
+        '#2dd4bf', // Teal
+        '#e879f9'  // Magenta
+    ];
+    function hashStr(s, len) {
+        var h = 0;
+        for (var i = 0; i < (s||'').length; i++) h = (h * 31 + s.charCodeAt(i)) & 0xFFFFFFFF;
+        return Math.abs(h) % len;
+    }
+    function hexToRgba(hex, a) {
+        var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+        return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+    }
+    function getUserColor(idOrName) {
+        var c = COLOR_PALETTE[hashStr(idOrName || 'x', COLOR_PALETTE.length)];
+        return { border: c, borderMuted: hexToRgba(c, 0.35), glow: hexToRgba(c, 0.35), badge: c };
+    }
     function getPhoto(name, gender, avatarUrl) {
         return window.avatarUtil.getAvatarUrl({ avatarUrl: avatarUrl, name: name, gender: gender });
     }
@@ -150,6 +177,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 var firstName = name.split(' ')[0];
                 var arch = ARCH[lp] || 'Soul';
                 var exp = p.expression_num || calcExp(name);
+                var uc = getUserColor(mc.user_id || name);
 
                 // Add to horizontal scroll row
                 var avatarDiv = document.createElement('div');
@@ -157,10 +185,10 @@ document.addEventListener('DOMContentLoaded', async function() {
                 avatarDiv.style.animationDelay = (idx * 0.05) + 's';
                 avatarDiv.innerHTML =
                     '<div class="relative">' +
-                        '<div class="size-16 rounded-full border-2 border-cosmic-violet/60 cosmic-glow-border overflow-hidden bg-surface-dark">' +
+                        '<div class="size-16 rounded-full border-2 overflow-hidden bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
                             '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">' +
                         '</div>' +
-                        '<div class="absolute -bottom-1 -right-1 bg-cosmic-violet text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]">' + lp + '</div>' +
+                        '<div class="absolute -bottom-1 -right-1 text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
                     '</div>' +
                     '<span class="text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
                 avatarDiv.addEventListener('click', function() {
@@ -170,21 +198,22 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 // Add to match connections list
                 var card = document.createElement('div');
-                card.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-cosmic-violet/15 cursor-pointer fade-in';
+                card.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border cursor-pointer fade-in';
+                card.style.borderColor = hexToRgba(uc.border, 0.15);
                 card.style.animationDelay = (0.05 + idx * 0.07) + 's';
                 card.innerHTML =
                     '<div class="relative shrink-0">' +
-                        '<div class="size-14 rounded-full overflow-hidden border-2 border-cosmic-violet/30">' +
+                        '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
                             '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">' +
                         '</div>' +
-                        '<div class="absolute -bottom-1 -right-1 bg-cosmic-violet text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]">' + lp + '</div>' +
+                        '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
                     '</div>' +
                     '<div class="flex-1 min-w-0">' +
                         '<p class="text-white font-bold truncate">' + name + '</p>' +
                         '<p class="text-white/40 text-xs mt-0.5">' + arch + ' · Exp: ' + exp + '</p>' +
                         '<p class="text-white/25 text-xs">' + shortDate(mc.created_at) + '</p>' +
                     '</div>' +
-                    '<span class="material-symbols-outlined text-cosmic-violet/40 shrink-0">chat</span>' +
+                    '<span class="material-symbols-outlined shrink-0" style="color:' + hexToRgba(uc.border, 0.5) + '" data-chat-uid="' + (mc.user_id || '') + '">chat</span>' +
                     '<span class="material-symbols-outlined text-white/20 shrink-0">chevron_right</span>';
 
                 card.addEventListener('click', function() {
@@ -280,6 +309,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         var photo = getPhoto(conn.fullName, conn.gender, conn.avatar_url);
         var firstName = (conn.fullName||'').split(' ')[0];
         var arch = ARCH[lp] || 'Soul';
+        var uc = getUserColor(conn.fullName);
 
         // ── Avatar satırı ──────────────────────────────────────
         var avatarDiv = document.createElement('div');
@@ -287,10 +317,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         avatarDiv.style.animationDelay = (idx * 0.05) + 's';
         avatarDiv.innerHTML =
             '<div class="relative">' +
-                '<div class="size-16 rounded-full border-2 border-primary/60 glow-border overflow-hidden bg-surface-dark">' +
+                '<div class="size-16 rounded-full border-2 overflow-hidden bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
                     '<img src="' + photo + '" alt="' + conn.fullName + '" class="w-full h-full object-cover">' +
                 '</div>' +
-                '<div class="absolute -bottom-1 -right-1 bg-primary text-[#181711] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]">' + lp + '</div>' +
+                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
             '</div>' +
             '<span class="text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
         avatarDiv.addEventListener('click', function() {
@@ -300,14 +330,15 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // ── Analiz kartı ───────────────────────────────────────
         var card = document.createElement('div');
-        card.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-white/5 fade-in';
+        card.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border fade-in';
+        card.style.borderColor = hexToRgba(uc.border, 0.08);
         card.style.animationDelay = (0.05 + idx * 0.07) + 's';
         card.innerHTML =
             '<div class="relative shrink-0 cursor-pointer" data-action="view">' +
-                '<div class="size-14 rounded-full overflow-hidden border-2 border-primary/30">' +
+                '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
                     '<img src="' + photo + '" alt="' + conn.fullName + '" class="w-full h-full object-cover">' +
                 '</div>' +
-                '<div class="absolute -bottom-1 -right-1 bg-primary text-[#181711] text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]">' + lp + '</div>' +
+                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
             '</div>' +
             '<div class="flex-1 min-w-0 cursor-pointer" data-action="view">' +
                 '<p class="text-white font-bold truncate">' + conn.fullName + '</p>' +
@@ -338,6 +369,31 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         listEl.appendChild(card);
     });
+
+    // ─── Okunmamış mesaj blink ─────────────────────────────
+    function refreshChatBlinks() {
+        if (!window.notificationEngine || !window.notificationEngine.getUnreadMessageSenders) return;
+        var senders = window.notificationEngine.getUnreadMessageSenders();
+        var chatEls = document.querySelectorAll('[data-chat-uid]');
+        for (var i = 0; i < chatEls.length; i++) {
+            var uid = chatEls[i].getAttribute('data-chat-uid');
+            if (senders.indexOf(uid) !== -1) {
+                chatEls[i].classList.add('chat-unread');
+            } else {
+                chatEls[i].classList.remove('chat-unread');
+            }
+        }
+    }
+    // İlk yükleme: bildirimler yüklendikten sonra kontrol et
+    setTimeout(refreshChatBlinks, 500);
+    // Realtime: yeni bildirim geldiğinde güncelle
+    if (window.notificationEngine && window.notificationEngine.onNewNotification) {
+        window.notificationEngine.onNewNotification(function(notif) {
+            if (notif && notif.type === 'new_message') {
+                refreshChatBlinks();
+            }
+        });
+    }
 
     // ─── Silme fonksiyonu ──────────────────────────────────
     async function deleteConnection(fullName) {
