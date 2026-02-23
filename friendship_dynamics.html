@@ -15,6 +15,7 @@
     <script src="js/revenuecat.js"></script>
     <script src="js/premium.js"></script>
     <script src="js/gamification-engine.js"></script>
+    <script src="js/avatar.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode:"class", theme:{ extend:{
             colors:{
@@ -430,16 +431,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return 'Keşfedilecek Bağ';
     }
 
-    // ─── FOTOĞRAFlar ──────────────────────────────────────────
-    var FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar'];
-    var MALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuCuOsAz49QL47Y42kzevX6C-TTqnQcn-fKw9bm9U03OA6_buy44Ic8bt_wBUtcV1MJ5sSb6R8X_DJ-8lXNkSzsIERq3NcoxgBJpX1j8AHhsCx98dsslHkQKdYdaF2cK9NTMVQ_OIb_O9MJ9U-ow3guDO7mGY7CZqxCnsEYsQtxoblSjPmW1y00tP0EZpQ-aEvg3xi3jiQQYomz46nlrrOFmED0f3iCzkJ1soKbGh7PjJ9Gt3wTvCduVO9zVt_o3gQ0nIpmOLHD736c";
-    var FEMALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuAwVIwPfxW7vQTdT6_K5paisRbNWYqgoOiwgoxaVjFXEkx2Hocf55LzYmz1rXyDXknrbMiB8X59nhq-ptzZsewBCHh9Bi4547zbTT3ZGBQPNn6awMcDKio5VTuc-gUc0V9YR2bAFRCjLTR5wqzwERZcGYXOLcXEN3lp4szkNmpf1Pd1-9lj37_4nq74Sfu5spZUv6QDfvpVwS7fZTl7cHKYVI8htJIgEwQ7EgFwZuHn8KfRUOgWtjHWZ3pu_qj4AgsK0fYYsgjY2_g";
-
-    function isFemale(name, gender) {
-        if (gender === 'female') return true;
-        var low = (name || '').toLowerCase();
-        return FEMALE_NAMES.some(function(fn) { return low.startsWith(fn); });
-    }
+    // Avatar: avatarUtil kullanılıyor (js/avatar.js)
 
     // ─── URL PARAM → Arkadaş verisi ───────────────────────────
     var params = new URLSearchParams(window.location.search);
@@ -523,10 +515,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('friend-lp').textContent = fri.lifePath;
 
     // Avatars
-    var userFemale = isFemale(userName, mainUser ? mainUser.gender : null);
-    var friendFemale = isFemale(friendName, friend ? friend.gender : null);
-    document.getElementById('user-avatar').innerHTML = '<img src="' + (userFemale ? FEMALE_PHOTO : MALE_PHOTO) + '" class="w-full h-full object-cover" alt="' + userName + '">';
-    document.getElementById('friend-avatar').innerHTML = '<img src="' + (friendFemale ? FEMALE_PHOTO : MALE_PHOTO) + '" class="w-full h-full object-cover" alt="' + friendName + '">';
+    var userAvatarUrl = (mainUser && mainUser.avatarUrl) ? mainUser.avatarUrl : (ud && ud.avatarUrl ? ud.avatarUrl : null);
+    var friendAvatarUrl = (friend && friend.avatar_url) ? friend.avatar_url : null;
+    window.avatarUtil.setAvatar(document.getElementById('user-avatar'), { avatarUrl: userAvatarUrl, name: userName, gender: mainUser ? mainUser.gender : null });
+    window.avatarUtil.setAvatar(document.getElementById('friend-avatar'), { avatarUrl: friendAvatarUrl, name: friendName, gender: friend ? friend.gender : null });
 
     // Bond
     document.getElementById('bond-label').textContent = bondText;

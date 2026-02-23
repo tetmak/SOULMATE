@@ -94,7 +94,8 @@ var auth = {
                                 birthDate: prof.birth_date,
                                 birthTime: prof.birth_time || '',
                                 birthPlace: prof.birth_place || '',
-                                gender: prof.gender || 'unknown'
+                                gender: prof.gender || 'unknown',
+                                avatarUrl: prof.avatar_url || ''
                             }));
                             console.log('[Auth] Supabase profili localStorage\'a yazıldı');
                         }

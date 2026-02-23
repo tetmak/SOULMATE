@@ -11,6 +11,7 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/avatar.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode:"class", theme:{ extend:{
             colors:{ primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628" },
@@ -143,9 +144,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     function formatDate(s){if(!s)return '';try{return new Date(s+'T00:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});}catch(e){return s;}}
 
     var ARCH = {1:'The Leader',2:'The Diplomat',3:'The Creator',4:'The Builder',5:'The Adventurer',6:'The Nurturer',7:'The Seeker',8:'The Achiever',9:'The Humanitarian',11:'The Illuminator',22:'The Master Builder',33:'The Teacher'};
-    var FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar'];
-    var MALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuCuOsAz49QL47Y42kzevX6C-TTqnQcn-fKw9bm9U03OA6_buy44Ic8bt_wBUtcV1MJ5sSb6R8X_DJ-8lXNkSzsIERq3NcoxgBJpX1j8AHhsCx98dsslHkQKdYdaF2cK9NTMVQ_OIb_O9MJ9U-ow3guDO7mGY7CZqxCnsEYsQtxoblSjPmW1y00tP0EZpQ-aEvg3xi3jiQQYomz46nlrrOFmED0f3iCzkJ1soKbGh7PjJ9Gt3wTvCduVO9zVt_o3gQ0nIpmOLHD736c";
-    var FEMALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuAwVIwPfxW7vQTdT6_K5paisRbNWYqgoOiwgoxaVjFXEkx2Hocf55LzYmz1rXyDXknrbMiB8X59nhq-ptzZsewBCHh9Bi4547zbTT3ZGBQPNn6awMcDKio5VTuc-gUc0V9YR2bAFRCjLTR5wqzwERZcGYXOLcXEN3lp4szkNmpf1Pd1-9lj37_4nq74Sfu5spZUv6QDfvpVwS7fZTl7cHKYVI8htJIgEwQ7EgFwZuHn8KfRUOgWtjHWZ3pu_qj4AgsK0fYYsgjY2_g";
+    // Avatar: avatarUtil kullanılıyor (js/avatar.js)
 
     // ─── URL Param ────────────────────────────────────────────
     var params = new URLSearchParams(window.location.search);
@@ -169,10 +168,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     var soul = calcSoul(name);
     var pers = calcPers(name);
 
-    // Cinsiyet tespiti
-    var low = name.toLowerCase();
-    var female = kisi.gender === 'female' || FEMALE_NAMES.some(function(fn){return low.startsWith(fn);});
-    var photo = female ? FEMALE_PHOTO : MALE_PHOTO;
+    // Avatar
+    var photo = window.avatarUtil.getAvatarUrl({ avatarUrl: kisi.avatar_url || null, name: name, gender: kisi.gender });
 
     // ─── UI ───────────────────────────────────────────────────
     document.getElementById('header-title').textContent = name.split(' ')[0];

@@ -16,6 +16,7 @@
     <script src="js/profile.js"></script>
     <script src="js/discovery-engine.js"></script>
     <script src="js/connection-engine.js"></script>
+    <script src="js/avatar.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode: "class", theme: { extend: {
             colors: { primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899" },
@@ -115,20 +116,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     function calcExp(name){var s=0,c=(name||'').toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ]/g,'');for(var i=0;i<c.length;i++)s+=(TABLE[c[i]]||0);return reduce(s);}
 
     var ARCH = {1:'The Leader',2:'The Diplomat',3:'The Creator',4:'The Builder',5:'The Adventurer',6:'The Nurturer',7:'The Seeker',8:'The Achiever',9:'The Humanitarian',11:'The Illuminator',22:'The Master Builder',33:'The Teacher'};
-    var MALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuCuOsAz49QL47Y42kzevX6C-TTqnQcn-fKw9bm9U03OA6_buy44Ic8bt_wBUtcV1MJ5sSb6R8X_DJ-8lXNkSzsIERq3NcoxgBJpX1j8AHhsCx98dsslHkQKdYdaF2cK9NTMVQ_OIb_O9MJ9U-ow3guDO7mGY7CZqxCnsEYsQtxoblSjPmW1y00tP0EZpQ-aEvg3xi3jiQQYomz46nlrrOFmED0f3iCzkJ1soKbGh7PjJ9Gt3wTvCduVO9zVt_o3gQ0nIpmOLHD736c";
-    var FEMALE_PHOTO = "https://lh3.googleusercontent.com/aida-public/AB6AXuAwVIwPfxW7vQTdT6_K5paisRbNWYqgoOiwgoxaVjFXEkx2Hocf55LzYmz1rXyDXknrbMiB8X59nhq-ptzZsewBCHh9Bi4547zbTT3ZGBQPNn6awMcDKio5VTuc-gUc0V9YR2bAFRCjLTR5wqzwERZcGYXOLcXEN3lp4szkNmpf1Pd1-9lj37_4nq74Sfu5spZUv6QDfvpVwS7fZTl7cHKYVI8htJIgEwQ7EgFwZuHn8KfRUOgWtjHWZ3pu_qj4AgsK0fYYsgjY2_g";
-    var FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar'];
-
-    function isFemale(conn) {
-        if (conn.gender === 'female') return true;
-        var low = (conn.fullName||conn.full_name||'').toLowerCase();
-        return FEMALE_NAMES.some(function(fn){return low.startsWith(fn);});
-    }
-    function getPhoto(name, gender) {
-        if (gender === 'female') return FEMALE_PHOTO;
-        if (gender === 'male') return MALE_PHOTO;
-        var low = (name||'').toLowerCase();
-        return FEMALE_NAMES.some(function(fn){return low.startsWith(fn);}) ? FEMALE_PHOTO : MALE_PHOTO;
+    function getPhoto(name, gender, avatarUrl) {
+        return window.avatarUtil.getAvatarUrl({ avatarUrl: avatarUrl, name: name, gender: gender });
     }
     function shortDate(s){try{return new Date(s).toLocaleDateString('tr-TR',{day:'numeric',month:'short'});}catch(e){return '';}}
 
@@ -157,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (!p) return;
                 var name = p.full_name || 'Unknown';
                 var lp = p.life_path || calcLP(p.birth_date) || '?';
-                var photo = getPhoto(name, p.gender);
+                var photo = getPhoto(name, p.gender, p.avatar_url);
                 var firstName = name.split(' ')[0];
                 var arch = ARCH[lp] || 'Soul';
                 var exp = p.expression_num || calcExp(name);
@@ -245,8 +234,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     connections.forEach(function(conn, idx) {
         var lp = conn.lifePath || calcLP(conn.birthDate) || '?';
         var exp = calcExp(conn.fullName);
-        var female = isFemale(conn);
-        var photo = female ? FEMALE_PHOTO : MALE_PHOTO;
+        var photo = getPhoto(conn.fullName, conn.gender, conn.avatar_url);
         var firstName = (conn.fullName||'').split(' ')[0];
         var arch = ARCH[lp] || 'Soul';
 
