@@ -1,81 +1,299 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Bu dosya Claude Code (claude.ai/code) için proje rehberidir.
 
-## Project Overview
+## Proje Özeti
 
-**Numerael (SOULMATE)** — A Turkish-language numerology and soulmate matching mobile app. Hybrid architecture: vanilla HTML/JS frontend served via Capacitor on iOS/Android, with Vercel for web hosting and serverless API functions, backed by Supabase.
+**Numerael (SOULMATE)** — Türkçe numeroloji, enerji rehberliği ve ruh eşi eşleştirme mobil uygulaması. Vanilla HTML/JS frontend, Capacitor ile iOS/Android native sarmalama, Vercel serverless API, Supabase backend.
 
-## Build & Development Commands
+## Build & Geliştirme Komutları
 
 ```bash
-# Build web assets to www/
-npm run build                    # runs scripts/build.sh → copies HTML, JS, assets to www/
+# Web asset'lerini www/ dizinine kopyala
+npm run build                    # scripts/build.js çalıştırır → HTML, JS, asset'leri www/'ye kopyalar
 
-# Sync to native platforms (REQUIRED after any web file change before native testing)
-npm run cap:sync                 # npx cap sync — copies www/ → android/app/src/main/assets/public/
-npm run cap:build                # build + sync in one step
+# Native platformlara sync (web dosyası değiştirdikten sonra ZORUNLU)
+npm run cap:sync                 # npx cap sync — www/ → android/app/src/main/assets/public/
+npm run cap:build                # build + sync tek adımda
 
-# Open native IDEs
+# Native IDE'leri aç
 npm run cap:open:android
 npm run cap:open:ios
 ```
 
-**Critical workflow**: Web files (HTML, JS) live at root. After editing them, you MUST run `npm run cap:sync` (or `npm run cap:build`) before the changes appear in the Android/iOS app. The `www/` directory and `android/app/src/main/assets/public/` are both in `.gitignore`.
+**Kritik workflow**: Web dosyaları (HTML, JS) proje kökünde yaşar. Düzenledikten sonra native uygulamada görünmesi için `npm run cap:sync` (veya `npm run cap:build`) çalıştırılmalıdır. `www/` dizini `.gitignore`'da.
 
-## Architecture
+## Mimari
 
-### Frontend (No framework)
-- ~36 HTML pages at project root, each self-contained with inline `<script>` blocks
-- Shared JS modules loaded via `<script src="js/...">` tags (no bundler, no imports)
-- All JS uses `var` declarations and attaches to `window` — no ES modules
-- Tailwind CSS via runtime JIT (`js/tailwind.min.js`)
-- Supabase JS SDK v2 bundled as `js/supabase.min.js`
+### Frontend (Framework yok)
+- ~36 HTML sayfası proje kökünde, her biri kendi inline `<script>` bloklarına sahip
+- Paylaşılan JS modülleri `<script src="js/...">` tag'leriyle yüklenir (bundler/import yok)
+- Tüm JS `var` kullanır ve `window` objesine bağlar — ES module yok
+- Tailwind CSS runtime JIT (`js/tailwind.min.js`)
+- Supabase JS SDK v2 bundle olarak (`js/supabase.min.js`)
 
-### Key JS Modules (`js/`)
-| Module | Role |
-|--------|------|
-| `supabase-config.js` | Creates `window.supabaseClient` — must load before everything else |
-| `auth.js` | Sign up/in/out, session recovery via `onAuthStateChange('INITIAL_SESSION')`, page redirect logic |
-| `premium.js` | Subscription management: Paddle (web) + RevenueCat (native), paywall UI, entitlement checks |
-| `revenuecat.js` | RevenueCat native bridge via `@revenuecat/purchases-capacitor` |
-| `numerology-engine.js` | Core Pythagorean numerology calculations (Turkish character support) |
-| `discovery-engine.js` | Cosmic Match: daily match algorithm, streak system, reveal gating |
-| `compatibility-engine.js` | Multi-dimensional compatibility scoring between two profiles |
-| `numerology-ai.js` / `ai-content.js` | AI-generated insights via OpenAI |
-| `gamification-engine.js` | Streaks, rewards, leaderboard |
-| `api-base.js` | Sets `window.__NUMERAEL_API_BASE` — empty string on web, Vercel URL on native |
+### JS Modülleri (`js/`)
+
+| Modül | Rol |
+|-------|-----|
+| `supabase-config.js` | `window.supabaseClient` oluşturur — her şeyden önce yüklenmeli |
+| `auth.js` | Kayıt/giriş/çıkış, session recovery (`INITIAL_SESSION`), sayfa yönlendirme |
+| `premium.js` | Abonelik yönetimi: Paddle (web) + RevenueCat (native), paywall UI, feature gate |
+| `revenuecat.js` | RevenueCat native bridge (`@revenuecat/purchases-capacitor`) |
+| `api-base.js` | `window.__NUMERAEL_API_BASE` ayarlar — web'de boş, native'de Vercel URL |
+| `numerology-engine.js` | Pisagor numeroloji hesaplamaları (Türkçe karakter desteği), AI analiz |
+| `discovery-engine.js` | Cosmic Match: günlük eşleştirme, streak sistemi, reveal gating |
+| `compatibility-engine.js` | İki kişi arası çok boyutlu uyumluluk skorlama + AI analiz |
+| `ai-content.js` | Tüm sayfalarda AI içerik üretimi (OpenAI gpt-4o-mini) |
+| `numerology-ai.js` | Decision Sphere: sayısal karar zamanlama chatbot'u |
+| `gamification-engine.js` | XP, rütbe, günlük görev, rozet, leaderboard, kozmik sandık |
+| `notification-engine.js` | Uygulama içi bildirimler (Supabase realtime) |
+| `connection-engine.js` | Kullanıcılar arası bağlantı istekleri ve mesajlaşma |
+| `decision-timing-engine.js` | Deterministik karar zamanlama motoru |
+| `numerology-context-engine.js` | Kişisel yıl/ay/gün hesaplama, bağlam zenginleştirme |
+| `profile.js` | Profil CRUD, Life Path hesaplama, connections yönetimi |
+| `bottom-nav.js` | Alt navigasyon barı |
+| `accordion-ai.js` | Accordion AI içerik yükleme |
 
 ### Backend
-- **Supabase**: Auth (email/password + Google OAuth), PostgreSQL database, session storage key `numerael-auth-token`
-- **Vercel serverless** (`api/`): `openai.js` (AI content), `paddle-webhook.js`, `revenuecat-webhook.js`
-- Webhooks update the `subscriptions` table in Supabase
+
+#### Supabase
+- **Auth**: Email/password + Google OAuth
+- **Session key**: `numerael-auth-token`
+- **URL**: `https://cxkyyifqxbwidseofbgk.supabase.co`
+
+#### Veritabanı Tabloları (PostgreSQL)
+
+| Tablo | Amaç |
+|-------|-------|
+| `profiles` | Kullanıcı profilleri (full_name, birth_date, gender) |
+| `subscriptions` | Premium abonelik durumu (plan, status, expires_at, payment_provider) |
+| `discovery_profiles` | Cosmic Match opt-in profilleri (numeroloji sayıları dahil) |
+| `daily_matches` | Günlük eşleştirmeler (user_id, matched_user_id, score, revealed) |
+| `user_streaks` | Giriş streak'leri ve reveal kredileri |
+| `user_gamification` | Gamification profili (NBP, XP, rütbe, rozet, haftalık XP) |
+| `leaderboard_history` | Haftalık leaderboard snapshot'ları |
+| `quiz_results` | Quiz sonuçları (solo/duel) |
+| `connection_requests` | Arkadaşlık istekleri (pending/accepted/rejected) |
+| `connections` | Bidirectional bağlantılar |
+| `messages` | Kullanıcılar arası mesajlar (realtime) |
+| `notifications` | Bildirimler (connection_request, new_message, limit_hit) |
+
+Tüm tablolarda RLS (Row Level Security) aktif. SQL şemaları: `supabase_cosmic_match_migration.sql`, `sql/connection_messaging_schema.sql`, `sql/notifications_schema.sql`
+
+#### Vercel Serverless API (`api/`)
+
+| Endpoint | Rol |
+|----------|-----|
+| `openai.js` | OpenAI proxy — API key server-side eklenir |
+| `paddle-webhook.js` | Paddle webhook handler — abonelik olaylarını Supabase'e yazar |
+| `revenuecat-webhook.js` | RevenueCat webhook handler — native satın alma olaylarını Supabase'e yazar |
+
+**Vercel Environment Variables**:
+- `OPENAI_API_KEY` — OpenAI API anahtarı
+- `SUPABASE_URL` — Supabase proje URL'i
+- `SUPABASE_SERVICE_ROLE_KEY` — Supabase service role key (webhook'lar için)
+- `PADDLE_WEBHOOK_SECRET` — Paddle webhook imza doğrulama
+- `REVENUECAT_WEBHOOK_SECRET` — RevenueCat webhook auth key
+
+**Vercel Production URL**: `https://soulmate-kohl.vercel.app`
 
 ### Native (Capacitor)
 - **App ID**: `com.numerael.soulmate`
-- **Android**: Gradle 8.13, compileSdk 36, Java 21, Capacitor Android v8.1.0
-- **iOS**: Xcode project in `ios/App/`
-- `capacitor.config.ts` uses `webDir: 'www'` and `androidScheme: 'https'`
+- **App Name**: `Numerael`
+- **webDir**: `www`
+- **androidScheme**: `https`
+- **Android**: Gradle, compileSdk 36, Capacitor Android v8.1.0
+- **iOS**: Xcode projesi `ios/App/` altında
+- **Splash Screen**: Arka plan `#0a0a1a`, 2s gösterim, immersive
+- **Status Bar**: Dark stil, `#0a0a1a` arka plan
 
-### Premium / Monetization (Dual Platform)
-- **Web**: Paddle overlay checkout (sandbox token in `premium.js`, price IDs `pri_01khy...`)
-- **Native**: RevenueCat (`@revenuecat/purchases-capacitor`) — API keys currently placeholder
-- Premium status check order: localStorage cache → RevenueCat entitlements (native) → Supabase `subscriptions` table (fallback)
-- Console helpers: `premium.simulate(30)`, `premium.clear()`, `premium.isPremium()`
+## Ödeme Sistemi
 
-## Auth & Session Flow
+### Dual Platform Yaklaşım
+- **Web**: Paddle.js v2 overlay checkout
+- **Native (iOS/Android)**: RevenueCat → Apple In-App Purchase / Google Play Billing
 
-Pages are classified as auth pages (sign_up, splash, onboarding) or protected pages. `auth.js` runs on every page via `DOMContentLoaded`:
-1. Waits for `onAuthStateChange('INITIAL_SESSION')` with 3s timeout
-2. If session exists on an auth page → redirect to home
-3. If no session on a protected page → redirect to sign_up
+### Paddle (Web)
+- **Ortam**: Sandbox (test modu)
+- **Client Token**: `test_1917c8739eeec42ab948b39da0d`
+- **Aylık Fiyat ID**: `pri_01khyq04yfrd52w6qn8bar13q1`
+- **Yıllık Fiyat ID**: `pri_01khyq0rwvw8cttc184xas0h5t`
+- **Webhook URL**: `https://soulmate-kohl.vercel.app/api/paddle-webhook`
+- **İşlenen olaylar**: subscription.created, subscription.updated, subscription.canceled, subscription.past_due, subscription.activated, transaction.completed
 
-Individual pages (e.g., `cosmic_match.html`) do additional checks: userId presence, user profile data existence.
+### RevenueCat (Native)
+- **Entitlement ID**: `premium`
+- **Ürünler**: `numerael_premium_monthly`, `numerael_premium_yearly`
+- **API key'ler**: Henüz placeholder (`appl_XXXX...`, `goog_XXXX...`)
+- **Webhook URL**: `https://soulmate-kohl.vercel.app/api/revenuecat-webhook`
+- **İşlenen olaylar**: INITIAL_PURCHASE, RENEWAL, CANCELLATION, UNCANCELLATION, BILLING_ISSUE, PRODUCT_CHANGE, EXPIRATION, TRANSFER
 
-## Native Platform Detection
+### Premium Durum Kontrol Sırası
+1. localStorage cache (`numerael_premium`) → hızlı, offline çalışır
+2. RevenueCat entitlements (sadece native) → gerçek zamanlı store durumu
+3. Supabase `subscriptions` tablosu → tüm platformlar için fallback
 
-`api-base.js` detects native context via protocol checks (`capacitor:`, `ionic:`, `file:`) or `Capacitor.isNativePlatform()`. When native, API calls route to `https://soulmate-kohl.vercel.app` instead of relative paths.
+### Fiyatlandırma
+- Aylık: ₺79.99/ay
+- Yıllık: ₺599.99/yıl (₺49.99/ay — %37 tasarruf)
 
-## Language
+### Free Limitler
+- 3 bağlantı (kendi profil + 2 arkadaş)
+- Ayda 2 uyumluluk analizi
+- Ayda 2 niyet (manifest portal)
+- Deep Insight sadece 1. sayfa
+- AI günlük rehber: yok
+- Cosmic Match reveal: yok
+- Friendship Dynamics: yok
 
-All user-facing strings, variable names in some modules, and documentation are in **Turkish**. Console log prefixes use English tags like `[Premium]`, `[Auth]`, `[RC]`.
+### Dev/Test Araçları
+```javascript
+premium.simulate(30)   // 30 günlük premium simüle et
+premium.clear()        // Premium durumunu temizle
+premium.isPremium()    // Durum kontrol
+```
+
+## Auth & Session Akışı
+
+Sayfalar auth (sign_up, splash, onboarding) veya korumalı olarak sınıflandırılır. `auth.js` her sayfada `DOMContentLoaded`'da çalışır:
+
+1. `onAuthStateChange('INITIAL_SESSION')` event'ini bekler (3s timeout)
+2. Session var + auth sayfasında → `mystic_numerology_home_1.html`'e yönlendir
+3. Session yok + korumalı sayfada → `mystic_sign_up_screen.html`'e yönlendir
+
+**Kritik**: Sadece `INITIAL_SESSION` event'inde `checkSession()` çağrılır. `SIGNED_IN`/`SIGNED_OUT` event'lerinde çağrılmaz (race condition'ı önlemek için — yeni kullanıcılar birth form'u göremiyordu).
+
+**Auth sayfaları**: `mystic_splash_screen.html`, `cosmic_onboarding_welcome.html`, `mystic_sign_up_screen.html`, `branded_celestial_splash_screen.html`, `index.html`
+
+**Public sayfalar**: Auth sayfaları + `data-ready_birth_form.html`
+
+**authReady promise**: `auth.whenReady()` — diğer sayfalar session kontrolünden önce bunu beklemeli.
+
+## Native Platform Algılama
+
+`api-base.js` ve çoğu engine native ortamı şu şekilde algılar:
+```javascript
+var isNative = window.location.protocol === 'capacitor:' ||
+               window.location.protocol === 'ionic:' ||
+               window.location.hostname === 'localhost' ||
+               window.location.protocol === 'file:' ||
+               (typeof window.Capacitor !== 'undefined' &&
+                window.Capacitor.isNativePlatform &&
+                window.Capacitor.isNativePlatform());
+```
+Native'de API çağrıları `https://soulmate-kohl.vercel.app` üzerinden gider.
+
+## AI Entegrasyonu
+
+- **Model**: OpenAI `gpt-4o-mini`
+- **Proxy**: Tüm AI çağrıları `/api/openai` serverless endpoint'i üzerinden yapılır (API key server-side)
+- **Kullanım alanları**:
+  - Kişisel numeroloji analizleri (soul, personality, life path, full)
+  - Uyumluluk analizleri (cosmic, soul_urge, personality, life_path, karmic, communication, full_compat)
+  - Decision Sphere chatbot (karar zamanlama açıklamaları)
+  - Sayfa bazlı dinamik içerik üretimi (ai-content.js)
+- **Cache**: localStorage (kalıcı) + sessionStorage (geçici) ile AI yanıtları cache'lenir
+
+## Gamification Sistemi
+
+### Rütbeler (NBP bazlı)
+1. Çaylak Kaşif (0 NBP) → Yıldız Öğrencisi (100) → Sayı Savaşçısı (300) → Sayısal Rehber (600) → Usta Numerolog (1000) → Yıldız Bilgesi (2000) → Sayısal Kahin (3500)
+
+### XP Kaynakları
+- Uygulama açma: 5 XP, günlük okuma: 10, uyumluluk: 20, arkadaş ekle: 25, streak günü: 15, görev tamamla: 30, tüm görevler: 100 bonus
+
+### NBP = XP × 0.7
+- Rütbe yükselmesi ödül verir (premium günleri)
+- Her gün 3 rastgele günlük görev atanır
+- Tüm görevler tamamlanınca Kozmik Sandık açılır
+
+## Numeroloji Motoru
+
+### Pisagor Sistemi (Türkçe)
+```
+1: A, J, S, Ş | 2: B, K, T | 3: C, Ç, L, U, Ü | 4: D, M, V
+5: E, N, W | 6: F, O, Ö, X | 7: G, Ğ, P, Y | 8: H, Q, Z | 9: I, İ, R
+```
+
+### Hesaplanan Sayılar
+- **Kader Yolu (Life Path)**: Doğum tarihi rakamlarının toplamı
+- **İfade (Expression)**: İsmin tüm harflerinin toplamı
+- **Ruh Güdüsü (Soul Urge)**: İsmin sesli harflerinin toplamı
+- **Kişilik (Personality)**: İsmin sessiz harflerinin toplamı
+- **Üstat Sayılar**: 11, 22, 33 — indirgenmez
+
+### Uyumluluk
+- 4 boyutlu skor: Life Path (%35) + Soul Urge (%30) + Personality (%20) + Expression (%15)
+- Önceden tanımlı uyum matrisi (1-1 ile 33-33 arası tüm çiftler)
+
+## Sayfa Yapısı
+
+### Ana Sayfalar
+| Sayfa | Amaç |
+|-------|-------|
+| `index.html` | Splash'e yönlendirme |
+| `mystic_splash_screen.html` | Giriş splash ekranı |
+| `mystic_sign_up_screen.html` | Kayıt/giriş |
+| `cosmic_onboarding_welcome.html` | Onboarding |
+| `data-ready_birth_form.html` | Doğum tarihi/isim formu |
+| `mystic_numerology_home_1.html` | Ana sayfa |
+| `daily_spiritual_guide.html` | Günlük ruhsal rehber |
+| `daily_number_deep_dive.html` | Günlük sayı derinlemesine |
+| `cosmic_match.html` | Günlük eşleştirme |
+| `cosmic_energy_calendar_2.html` | Kozmik enerji takvimi |
+| `name_numerology_breakdown_1.html` | Kişisel numeroloji analizi |
+| `name_numerology_breakdown_2.html` | Çift uyumluluk detay (karmik bağ) |
+| `name_numerology_breakdown_3.html` | Çift uyumluluk özet |
+| `relationship_compatibility_analysis.html` | İlişki uyumluluk analizi |
+| `compatibility_input_form.html` | Uyumluluk giriş formu |
+| `friendship_dynamics.html` | Arkadaşlık dinamiği analizi |
+| `cosmic_manifest_portal.html` | Niyet/manifestasyon portalı |
+| `profile_soul_journey.html` | Profil ve ruh yolculuğu |
+| `connections_shared_readings.html` | Bağlantılar ve paylaşılan okumalar |
+| `premium_checkout_summary.html` | Premium ödeme özeti |
+| `premium_crystal_store.html` | Premium kristal mağaza |
+| `app_settings_preferences.html` | Uygulama ayarları |
+| `leaderboard.html` | Leaderboard/sıralama |
+| `numerology_quiz.html` | Numeroloji quiz |
+| `wheel_of_destiny.html` | Kader çarkı |
+| `wheel_reward_success.html` | Çark ödül ekranı |
+| `lunar_phase_energy_tracker.html` | Ay fazı enerji takibi |
+| `messaging.html` | Mesajlaşma |
+| `kisi_profil.html` | Kişi profili |
+| `numerology_meaning_chart.html` | Numeroloji anlam tablosu |
+| `letter_vibration_detail.html` | Harf titreşim detayı |
+| `past_reading_archive_detail.html` | Geçmiş okuma arşivi |
+| `soul_mate_loading.html` | Eşleşme yükleniyor |
+| `cosmic_calculation_loading.html` | Hesaplama yükleniyor |
+
+## Vercel Yapılandırması
+
+`vercel.json`: Kök URL (`/`) `mystic_splash_screen.html`'e yönlendirilir.
+
+## localStorage Anahtarları
+
+| Anahtar | İçerik |
+|---------|--------|
+| `numerael-auth-token` | Supabase session |
+| `numerael_user_data` | Kullanıcı profil verisi (name, birthDate, gender) |
+| `numerael_premium` | Premium cache (active, plan, expires_at, source) |
+| `numerael_gamification` | Gamification state (NBP, XP, quests, badges) |
+| `numerael_discovery_opted_in` | Cosmic Match opt-in durumu |
+| `numerael_connections_{userId}` | Arkadaş bağlantıları |
+| `numerael_compat_data` | Uyumluluk analiz verileri |
+| `numerael_compat_ai_v2__*` | Uyumluluk AI cache |
+| `numerael_usage_{feature}_{YYYY-MM}` | Aylık feature kullanım sayacı |
+
+## Dil
+
+Tüm kullanıcı arayüzü, bazı modüllerdeki değişken isimleri ve dokümantasyon **Türkçe**. Console log prefix'leri İngilizce: `[Premium]`, `[Auth]`, `[RC]`, `[RevenueCat]`, `[Gamification]`, `[Discovery]`, `[Streak]`, `[Match]`.
+
+## Kod Kuralları
+
+- **JS stili**: `var` kullan, ES module yok, `window` objesine bağla
+- **Yeni modül eklerken**: IIFE pattern `(function() { 'use strict'; ... })()` kullan
+- **Global export**: `window.moduleName = { ... }` formatında
+- **Native API çağrıları**: Her zaman `API_BASE + '/api/...'` pattern'i kullan
+- **Türkçe karakter desteği**: `[A-ZÇĞİIÖŞÜ]` regex pattern'i kullan
+- **Supabase RLS**: Yeni tablo eklerken RLS policy'lerini unutma
