@@ -136,7 +136,11 @@
     }
 
     // ─── PREMIUM DURUMU ──────────────────────────────────────
+    // ⚠️ GEÇICI: Tüm kullanıcılar premium — Google Developer onayı sonrası false yap
+    var EVERYONE_IS_PREMIUM = true;
+
     function isPremium() {
+        if (EVERYONE_IS_PREMIUM) return true;
         try {
             var cache = JSON.parse(localStorage.getItem('numerael_premium') || 'null');
             if (cache && cache.active) {
@@ -476,6 +480,12 @@
     // Platform bazlı init: native → RevenueCat, web → Paddle
     // platformReady diğer modüller tarafından await edilebilir
     var platformReady = (async function platformInit() {
+        // ⚠️ GEÇICI: Herkes premium — ödeme platformu init atla
+        if (EVERYONE_IS_PREMIUM) {
+            console.log('[Premium] EVERYONE_IS_PREMIUM aktif — platform init atlandı');
+            return;
+        }
+
         var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
 
         if (isNative && window.revenuecat) {
