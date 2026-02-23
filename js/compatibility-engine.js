@@ -309,6 +309,9 @@ YAZI KURALLARI:
       p1: {
         name:        p1.name || 'Kişi 1',
         birthDate:   p1.birthDate || '1990-01-01',
+        userId:      p1.userId || null,
+        gender:      p1.gender || null,
+        avatarUrl:   p1.avatarUrl || null,
         lifePath:    calcLifePath(p1.birthDate || '1990-01-01'),
         expression:  calcExpression(p1.name || 'Alex'),
         soulUrge:    calcSoulUrge(p1.name || 'Alex'),
@@ -317,6 +320,9 @@ YAZI KURALLARI:
       p2: {
         name:        p2.name || 'Kişi 2',
         birthDate:   p2.birthDate || '1992-01-01',
+        userId:      p2.userId || null,
+        gender:      p2.gender || null,
+        avatarUrl:   p2.avatarUrl || null,
         lifePath:    calcLifePath(p2.birthDate || '1992-01-01'),
         expression:  calcExpression(p2.name || 'Maya'),
         soulUrge:    calcSoulUrge(p2.name || 'Maya'),
@@ -430,17 +436,18 @@ YAZI KURALLARI:
       barsContainer.appendChild(detailDiv);
     }
 
-    // Avatarlar — Supabase'den gerçek profil fotoğrafları
+    // Avatarlar — önce localStorage'daki cached data, sonra Supabase'den gerçek profil fotoğrafları
     (async function loadCompatAvatars() {
       try {
         var av1El = document.getElementById('compat-avatar-1');
         var av2El = document.getElementById('compat-avatar-2');
         if (!av1El && !av2El) return;
 
-        // 1. Ana kullanıcı (person1) avatarı — profiles tablosu öncelikli
-        var p1AvatarUrl = null;
-        // Önce Supabase profiles'dan (en güncel fotoğraf)
-        if (window.supabaseClient) {
+        // 1. Ana kullanıcı (person1) avatarı
+        // Önce compat_data'daki cached avatarUrl (kisi_profil.html'den geliyor)
+        var p1AvatarUrl = ctx.p1.avatarUrl || null;
+        // Yoksa Supabase profiles'dan (en güncel fotoğraf)
+        if (!p1AvatarUrl && window.supabaseClient) {
           try {
             var session = null;
             if (window.auth && window.auth.getSession) session = await window.auth.getSession();
@@ -453,7 +460,7 @@ YAZI KURALLARI:
             }
           } catch(e) {}
         }
-        // Supabase'de yoksa localStorage'dan
+        // Supabase'de de yoksa localStorage'dan
         if (!p1AvatarUrl) {
           try {
             var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
@@ -461,51 +468,52 @@ YAZI KURALLARI:
           } catch(e) {}
         }
 
-        // 2. Partner (person2) avatarı — Supabase'den
-        var p2AvatarUrl = null;
-        if (window.supabaseClient) {
+        // 2. Partner (person2) avatarı
+        // Önce compat_data'daki cached avatarUrl (kisi_profil.html'den userId + avatar ile geliyor)
+        var p2AvatarUrl = ctx.p2.avatarUrl || null;
+        // userId varsa doğrudan profiles tablosundan (en güncel fotoğraf — HER ZAMAN öncelikli)
+        if (ctx.p2.userId && window.supabaseClient) {
           try {
-            // discovery_profiles'dan user_id al
+            var profRes2 = await window.supabaseClient.from('profiles')
+              .select('avatar_url')
+              .eq('id', ctx.p2.userId)
+              .maybeSingle();
+            if (profRes2.data && profRes2.data.avatar_url) p2AvatarUrl = profRes2.data.avatar_url;
+          } catch(e) { console.warn('[Compat] Partner profiles lookup error:', e); }
+        }
+        // userId yoksa fallback: discovery_profiles'dan isme göre ara
+        if (!p2AvatarUrl && window.supabaseClient) {
+          try {
             var dpRes = await window.supabaseClient.from('discovery_profiles')
-              .select('avatar_url, user_id, gender')
+              .select('avatar_url, user_id')
               .ilike('full_name', '%' + ctx.p2.name + '%')
               .limit(1)
               .maybeSingle();
-            var p2UserId = dpRes.data ? dpRes.data.user_id : null;
-
-            // profiles tablosu HER ZAMAN öncelikli (en güncel fotoğraf)
-            if (p2UserId) {
-              var profRes2 = await window.supabaseClient.from('profiles')
+            // discovery_profiles'dan user_id bulunduysa profiles'a bak
+            if (dpRes.data && dpRes.data.user_id) {
+              var profRes2b = await window.supabaseClient.from('profiles')
                 .select('avatar_url')
-                .eq('id', p2UserId)
+                .eq('id', dpRes.data.user_id)
                 .maybeSingle();
-              if (profRes2.data && profRes2.data.avatar_url) p2AvatarUrl = profRes2.data.avatar_url;
+              if (profRes2b.data && profRes2b.data.avatar_url) p2AvatarUrl = profRes2b.data.avatar_url;
             }
             // profiles'dan bulunamadıysa discovery_profiles avatar kullan
             if (!p2AvatarUrl && dpRes.data && dpRes.data.avatar_url) {
               p2AvatarUrl = dpRes.data.avatar_url;
             }
-            // Hâlâ yoksa profiles tablosunu isme göre ara (discovery_profiles'da olmayan kullanıcılar)
-            if (!p2AvatarUrl) {
-              var profByName = await window.supabaseClient.from('profiles')
-                .select('avatar_url')
-                .ilike('full_name', '%' + ctx.p2.name + '%')
-                .limit(1)
-                .maybeSingle();
-              if (profByName.data && profByName.data.avatar_url) p2AvatarUrl = profByName.data.avatar_url;
-            }
-          } catch(e) { console.warn('[Compat] Partner avatar error:', e); }
+          } catch(e) { console.warn('[Compat] Partner name-based avatar error:', e); }
         }
 
-        // avatarUtil fallback
+        // avatarUtil fallback (cinsiyet bazlı default)
         if (window.avatarUtil) {
-          if (!p1AvatarUrl) p1AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p1.name });
-          if (!p2AvatarUrl) p2AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p2.name });
+          if (!p1AvatarUrl) p1AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p1.name, gender: ctx.p1.gender });
+          if (!p2AvatarUrl) p2AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p2.name, gender: ctx.p2.gender });
         }
 
         // Avatarları güncelle
         if (av1El && p1AvatarUrl) av1El.style.backgroundImage = 'url("' + p1AvatarUrl + '")';
         if (av2El && p2AvatarUrl) av2El.style.backgroundImage = 'url("' + p2AvatarUrl + '")';
+        console.log('[Compat] Avatarlar yüklendi — p1:', p1AvatarUrl ? 'OK' : 'default', ', p2:', p2AvatarUrl ? 'OK' : 'default', ', p2.userId:', ctx.p2.userId || 'yok');
       } catch(e) { console.warn('[Compat] Avatar load error:', e); }
     })();
 
