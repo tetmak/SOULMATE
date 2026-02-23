@@ -170,8 +170,6 @@
     #ael-actions-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
     }
-    #ael-actions.collapsed #ael-actions-label { display: none; }
-    #ael-actions.collapsed #ael-actions-grid { display: none; }
     #ael-selected-bar {
       display: none;
       align-items: center;
@@ -181,7 +179,6 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 10px;
     }
-    #ael-actions.collapsed #ael-selected-bar { display: flex; }
     #ael-selected-bar .ael-action-icon { font-size: 16px; color: rgba(255,255,255,0.5); }
     #ael-selected-label {
       flex: 1; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8);
@@ -591,13 +588,7 @@
       renderResult(currentResult);
 
       // Collapse actions → compact bar
-      var actionsEl = document.getElementById('ael-actions');
-      var actionMeta = ACTIONS.filter(function(a) { return a.type === action; })[0];
-      if (actionMeta) {
-        document.getElementById('ael-selected-icon').textContent = actionMeta.icon;
-        document.getElementById('ael-selected-label').textContent = actionMeta.label;
-      }
-      actionsEl.classList.add('collapsed');
+      collapseActions(action);
 
       // Orb'a sonuç işareti
       document.getElementById('ael-orb').classList.add('has-result');
@@ -612,11 +603,26 @@
     });
   });
 
+  // Collapse/expand helpers — doğrudan style manipulation
+  function collapseActions(actionType) {
+    var actionMeta = ACTIONS.filter(function(a) { return a.type === actionType; })[0];
+    if (actionMeta) {
+      document.getElementById('ael-selected-icon').textContent = actionMeta.icon;
+      document.getElementById('ael-selected-label').textContent = actionMeta.label;
+    }
+    document.getElementById('ael-actions-label').style.display = 'none';
+    document.getElementById('ael-actions-grid').style.display = 'none';
+    document.getElementById('ael-selected-bar').style.display = 'flex';
+  }
+
+  function expandActions() {
+    document.getElementById('ael-actions-label').style.display = '';
+    document.getElementById('ael-actions-grid').style.display = '';
+    document.getElementById('ael-selected-bar').style.display = 'none';
+  }
+
   // Değiştir butonu → expand actions grid
-  document.getElementById('ael-change-action').addEventListener('click', function() {
-    var actionsEl = document.getElementById('ael-actions');
-    actionsEl.classList.remove('collapsed');
-  });
+  document.getElementById('ael-change-action').addEventListener('click', expandActions);
 
   // ═══════════════════════════════════════════════════════════
   // SONUÇ RENDER
@@ -828,12 +834,7 @@
       });
 
       // Collapse actions → compact bar
-      var actionMeta = ACTIONS.filter(function(a) { return a.type === inferred; })[0];
-      if (actionMeta) {
-        document.getElementById('ael-selected-icon').textContent = actionMeta.icon;
-        document.getElementById('ael-selected-label').textContent = actionMeta.label;
-      }
-      document.getElementById('ael-actions').classList.add('collapsed');
+      collapseActions(inferred);
     }
 
     showTyping();
