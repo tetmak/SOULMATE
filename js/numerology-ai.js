@@ -460,16 +460,55 @@
   // ═══════════════════════════════════════════════════════════
   // KİŞİSEL DÖNEM HESABI
   // ═══════════════════════════════════════════════════════════
+  var _periodRetryCount = 0;
+
   function loadPeriod() {
-    if (window.NumerologyContext) {
-      var data = null;
-      try { data = JSON.parse(localStorage.getItem('numerael_user_data')); } catch(e) {}
-      if (data && data.birthDate) {
-        personalPeriod.year = window.NumerologyContext.calcPersonalYear(data.birthDate);
-        personalPeriod.month = window.NumerologyContext.calcPersonalMonth(data.birthDate);
-        personalPeriod.day = window.NumerologyContext.calcPersonalDay(data.birthDate);
-      }
+    // 1. localStorage'dan birthDate al
+    var data = null;
+    try { data = JSON.parse(localStorage.getItem('numerael_user_data')); } catch(e) {}
+
+    // 2. NumerologyContext hazırsa hesapla
+    if (window.NumerologyContext && data && data.birthDate) {
+      personalPeriod.year = window.NumerologyContext.calcPersonalYear(data.birthDate);
+      personalPeriod.month = window.NumerologyContext.calcPersonalMonth(data.birthDate);
+      personalPeriod.day = window.NumerologyContext.calcPersonalDay(data.birthDate);
+      _periodRetryCount = 0;
+      renderPeriodTags();
+      return;
     }
+
+    // 3. Data yoksa Supabase'den çek
+    if ((!data || !data.birthDate) && window.supabaseClient) {
+      window.supabaseClient.auth.getSession().then(function(res) {
+        var session = res && res.data && res.data.session;
+        if (!session || !session.user) return;
+        window.supabaseClient
+          .from('profiles')
+          .select('full_name, name, birth_date, gender')
+          .eq('id', session.user.id)
+          .single()
+          .then(function(profRes) {
+            var prof = profRes.data;
+            if (prof && prof.birth_date) {
+              localStorage.setItem('numerael_user_data', JSON.stringify({
+                name: prof.full_name || prof.name || '',
+                birthDate: prof.birth_date,
+                gender: prof.gender || 'unknown'
+              }));
+              console.log('[Decision Sphere] Supabase profil → localStorage yazıldı');
+              loadPeriod(); // tekrar dene
+            }
+          });
+      });
+    }
+
+    // 4. NumerologyContext henüz yüklenmediyse kısa retry (max 5 kez, 500ms aralık)
+    if (!window.NumerologyContext && _periodRetryCount < 5) {
+      _periodRetryCount++;
+      setTimeout(loadPeriod, 500);
+      return;
+    }
+
     renderPeriodTags();
   }
 
