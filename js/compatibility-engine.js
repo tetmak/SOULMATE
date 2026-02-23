@@ -376,6 +376,11 @@ YAZI KURALLARI:
     var scoreEl = document.getElementById('compat-overall-score');
     if (scoreEl) scoreEl.textContent = ctx.overall + '%';
 
+    // Avatar Guide — speak compatibility result
+    if (window.AvatarGuide) {
+      window.AvatarGuide.onCompatibilityResult(ctx.overall, ctx.p1.name + ' ve ' + ctx.p2.name);
+    }
+
     // Bond etiketi
     var bondEl = document.getElementById('compat-bond-label');
     if (bondEl) bondEl.textContent = ctx.bond;

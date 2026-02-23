@@ -144,11 +144,18 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
       ));
     }
     if (insightEl) {
-      skeletonFill(insightEl, askAI(
+      var insightPromise = askAI(
         `${ctx.date}, ${ctx.day} günü. Titreşim ${vibNum} için kişisel bir günlük rehberlik mesajı yaz.
          Kozmik enerji, günün fırsatları ve nelere dikkat edilmesi gerektiğinden bahset.
          2-3 cümle, mistik ve ilham verici tonda.`
-      ));
+      );
+      skeletonFill(insightEl, insightPromise);
+      // Avatar speaks the daily insight
+      insightPromise.then(function(text) {
+        if (text && window.AvatarGuide) {
+          window.AvatarGuide.speak(text);
+        }
+      });
     }
 
     // Ritüel / section başlıkları

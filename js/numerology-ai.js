@@ -626,6 +626,11 @@
 
       renderResult(currentResult);
 
+      // Avatar Guide — speak decision result
+      if (window.AvatarGuide) {
+        window.AvatarGuide.onDecisionSubmit(action, currentResult);
+      }
+
       // Collapse actions → compact bar
       collapseActions(action);
 
@@ -867,6 +872,11 @@
       renderResult(currentResult);
       document.getElementById('ael-orb').classList.add('has-result');
 
+      // Avatar Guide — speak decision result (auto-inferred)
+      if (window.AvatarGuide) {
+        window.AvatarGuide.onDecisionSubmit(inferred, currentResult);
+      }
+
       // Highlight matching action button
       actionBtns.forEach(function(b) {
         b.classList.toggle('selected', b.dataset.action === inferred);
@@ -899,7 +909,12 @@
       hideTyping();
 
       if (data.choices && data.choices[0]) {
-        addAelMessage(data.choices[0].message.content);
+        var aiText = data.choices[0].message.content;
+        addAelMessage(aiText);
+        // Avatar speaks the AI explanation
+        if (window.AvatarGuide) {
+          window.AvatarGuide.speak(aiText);
+        }
       } else {
         addAelMessage('Yanıt alınamadı. Tekrar dene.');
       }
