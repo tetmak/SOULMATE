@@ -35,8 +35,11 @@
         .fade-in{animation:fade-in 0.35s ease forwards}
         .card-hover{transition:transform 0.15s ease}
         .card-hover:active{transform:scale(0.97)}
-        @keyframes chat-blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(1.15)}}
-        .chat-unread{animation:chat-blink 1.2s ease-in-out infinite;color:#ec4899 !important}
+        @keyframes card-unread-pulse{
+            0%,100%{box-shadow:0 0 0 0 transparent;border-color:var(--glow)}
+            50%{box-shadow:0 0 22px 4px var(--glow);border-color:var(--glow-solid)}
+        }
+        .card-unread{animation:card-unread-pulse 1.8s ease-in-out infinite}
     </style>
 </head>
 <body class="bg-background-dark text-white min-h-screen">
@@ -200,6 +203,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 var card = document.createElement('div');
                 card.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border cursor-pointer fade-in';
                 card.style.borderColor = hexToRgba(uc.border, 0.15);
+                card.style.setProperty('--glow', hexToRgba(uc.border, 0.35));
+                card.style.setProperty('--glow-solid', uc.border);
+                card.setAttribute('data-chat-uid', mc.user_id || '');
                 card.style.animationDelay = (0.05 + idx * 0.07) + 's';
                 card.innerHTML =
                     '<div class="relative shrink-0">' +
@@ -213,7 +219,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         '<p class="text-white/40 text-xs mt-0.5">' + arch + ' · Exp: ' + exp + '</p>' +
                         '<p class="text-white/25 text-xs">' + shortDate(mc.created_at) + '</p>' +
                     '</div>' +
-                    '<span class="material-symbols-outlined shrink-0" style="color:' + hexToRgba(uc.border, 0.5) + '" data-chat-uid="' + (mc.user_id || '') + '">chat</span>' +
+                    '<span class="material-symbols-outlined shrink-0" style="color:' + hexToRgba(uc.border, 0.5) + '">chat</span>' +
                     '<span class="material-symbols-outlined text-white/20 shrink-0">chevron_right</span>';
 
                 card.addEventListener('click', function() {
@@ -374,13 +380,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     function refreshChatBlinks() {
         if (!window.notificationEngine || !window.notificationEngine.getUnreadMessageSenders) return;
         var senders = window.notificationEngine.getUnreadMessageSenders();
-        var chatEls = document.querySelectorAll('[data-chat-uid]');
-        for (var i = 0; i < chatEls.length; i++) {
-            var uid = chatEls[i].getAttribute('data-chat-uid');
+        var cards = document.querySelectorAll('[data-chat-uid]');
+        for (var i = 0; i < cards.length; i++) {
+            var uid = cards[i].getAttribute('data-chat-uid');
             if (senders.indexOf(uid) !== -1) {
-                chatEls[i].classList.add('chat-unread');
+                cards[i].classList.add('card-unread');
             } else {
-                chatEls[i].classList.remove('chat-unread');
+                cards[i].classList.remove('card-unread');
             }
         }
     }
