@@ -459,26 +459,38 @@ document.addEventListener('DOMContentLoaded', async function() {
     var friendName = friend ? (friend.fullName || kisiName) : decodeURIComponent(kisiName);
     var friendBD = friend ? (friend.birthDate || '') : '';
 
-    // Arkadaşın avatar_url'ini Supabase'den zenginleştir
-    if ((!friend || !friend.avatar_url) && window.supabaseClient) {
+    // Arkadaşın avatar_url'ini Supabase'den zenginleştir — profiles HER ZAMAN öncelikli
+    if (window.supabaseClient) {
         try {
+            if (!friend) friend = {};
             var dpRes = await window.supabaseClient.from('discovery_profiles')
                 .select('avatar_url, user_id, gender')
-                .ilike('full_name', friendName)
+                .ilike('full_name', '%' + friendName + '%')
                 .limit(1)
                 .maybeSingle();
-            if (dpRes.data) {
-                if (!friend) friend = {};
-                if (dpRes.data.avatar_url) friend.avatar_url = dpRes.data.avatar_url;
-                if (dpRes.data.gender && !friend.gender) friend.gender = dpRes.data.gender;
-                // profiles tablosundan da kontrol
-                if (!friend.avatar_url && dpRes.data.user_id) {
-                    var profRes = await window.supabaseClient.from('profiles')
-                        .select('avatar_url')
-                        .eq('id', dpRes.data.user_id)
-                        .maybeSingle();
-                    if (profRes.data && profRes.data.avatar_url) friend.avatar_url = profRes.data.avatar_url;
-                }
+            var friendUserId = dpRes.data ? dpRes.data.user_id : null;
+            if (dpRes.data && dpRes.data.gender && !friend.gender) friend.gender = dpRes.data.gender;
+
+            // profiles tablosu öncelikli (en güncel fotoğraf)
+            if (friendUserId) {
+                var profRes = await window.supabaseClient.from('profiles')
+                    .select('avatar_url')
+                    .eq('id', friendUserId)
+                    .maybeSingle();
+                if (profRes.data && profRes.data.avatar_url) friend.avatar_url = profRes.data.avatar_url;
+            }
+            // profiles'dan bulunamadıysa discovery_profiles kullan
+            if (!friend.avatar_url && dpRes.data && dpRes.data.avatar_url) {
+                friend.avatar_url = dpRes.data.avatar_url;
+            }
+            // Hâlâ yoksa profiles'ı isme göre dene
+            if (!friend.avatar_url) {
+                var profByName = await window.supabaseClient.from('profiles')
+                    .select('avatar_url')
+                    .ilike('full_name', '%' + friendName + '%')
+                    .limit(1)
+                    .maybeSingle();
+                if (profByName.data && profByName.data.avatar_url) friend.avatar_url = profByName.data.avatar_url;
             }
         } catch(e) { console.warn('[FD] Avatar enrich error:', e); }
     }

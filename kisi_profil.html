@@ -184,27 +184,40 @@ document.addEventListener('DOMContentLoaded', async function() {
         } catch(e) { console.warn('[KisiProfil] Supabase fallback error:', e); }
     }
 
-    // Avatar URL'i Supabase'den zenginleştir (localStorage'da avatar olmaz)
-    if (kisi && !kisi.avatar_url && window.supabaseClient) {
+    // Avatar URL'i Supabase'den zenginleştir — profiles tablosu HER ZAMAN öncelikli
+    if (kisi && window.supabaseClient) {
         try {
             var nameToSearch = kisi.fullName || kisiName;
-            var dpRes = await window.supabaseClient.from('discovery_profiles')
+            // discovery_profiles'dan user_id al
+            var dpAvatarRes = await window.supabaseClient.from('discovery_profiles')
                 .select('avatar_url, user_id')
-                .ilike('full_name', nameToSearch)
+                .ilike('full_name', '%' + nameToSearch + '%')
                 .limit(1)
                 .maybeSingle();
-            if (dpRes.data && dpRes.data.avatar_url) {
-                kisi.avatar_url = dpRes.data.avatar_url;
-            }
-            // profiles tablosundan da kontrol et
-            if (!kisi.avatar_url && dpRes.data && dpRes.data.user_id) {
+            var kisiUserId = kisi.user_id || (dpAvatarRes.data ? dpAvatarRes.data.user_id : null);
+
+            // profiles tablosu öncelikli (en güncel fotoğraf)
+            if (kisiUserId) {
                 var profRes = await window.supabaseClient.from('profiles')
                     .select('avatar_url')
-                    .eq('id', dpRes.data.user_id)
+                    .eq('id', kisiUserId)
                     .maybeSingle();
                 if (profRes.data && profRes.data.avatar_url) {
                     kisi.avatar_url = profRes.data.avatar_url;
                 }
+            }
+            // profiles'dan bulunamadıysa discovery_profiles'dan al
+            if (!kisi.avatar_url && dpAvatarRes.data && dpAvatarRes.data.avatar_url) {
+                kisi.avatar_url = dpAvatarRes.data.avatar_url;
+            }
+            // Hâlâ yoksa profiles'ı isme göre dene
+            if (!kisi.avatar_url) {
+                var profByName = await window.supabaseClient.from('profiles')
+                    .select('avatar_url')
+                    .ilike('full_name', '%' + nameToSearch + '%')
+                    .limit(1)
+                    .maybeSingle();
+                if (profByName.data && profByName.data.avatar_url) kisi.avatar_url = profByName.data.avatar_url;
             }
         } catch(e) { console.warn('[KisiProfil] Avatar enrich error:', e); }
     }
