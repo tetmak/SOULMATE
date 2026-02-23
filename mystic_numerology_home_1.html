@@ -179,6 +179,36 @@ body{min-height:max(884px,100dvh)}
                 </div>
             </div>
 
+            <div id="card-decision-sphere"
+                class="relative overflow-hidden rounded-2xl h-48 flex items-end p-6 border border-white/10 group active:scale-[0.98] transition-all cursor-pointer"
+                style="background:linear-gradient(135deg,#0c4a6e 0%,#155e75 40%,#0e7490 70%,#06b6d4 100%);position:relative;overflow:hidden">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#083344] via-transparent to-transparent opacity-80">
+                </div>
+                <div
+                    class="absolute inset-0 opacity-15 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none">
+                </div>
+                <div class="absolute top-6 right-6 opacity-10">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                        <circle cx="40" cy="40" r="35" stroke="white" stroke-width="1"/>
+                        <circle cx="40" cy="40" r="25" stroke="white" stroke-width="0.5"/>
+                        <circle cx="40" cy="40" r="15" stroke="white" stroke-width="0.5"/>
+                        <circle cx="40" cy="40" r="5" fill="white" opacity="0.5"/>
+                    </svg>
+                </div>
+                <div class="relative z-10 w-full">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="material-symbols-outlined text-cyan-200 text-sm">psychology</span>
+                        <p class="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Karar Rehberi</p>
+                    </div>
+                    <h4 class="text-white text-xl font-bold mb-1">Decision Sphere</h4>
+                    <p class="text-white/70 text-xs font-medium leading-relaxed max-w-[80%]">Sayısal karar zamanlama chatbot'u. Kararlarının en uygun zamanını öğren.</p>
+                </div>
+                <div
+                    class="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-full p-2 border border-white/20">
+                    <span class="material-symbols-outlined text-white text-sm">chevron_right</span>
+                </div>
+            </div>
+
         </div>
 
         <!-- Günlük Görevler Mini -->
@@ -215,6 +245,7 @@ body{min-height:max(884px,100dvh)}
         document.getElementById('card-lunar').onclick = function () { window.location.href = 'lunar_phase_energy_tracker.html'; };
         document.getElementById('card-soulmate').onclick = function () { window.location.href = 'compatibility_input_form.html'; };
         document.getElementById('card-cosmic-match').onclick = function () { window.location.href = 'cosmic_match.html'; };
+        document.getElementById('card-decision-sphere').onclick = function () { if (window.aelOpen) window.aelOpen(); };
         // Gamification home entegrasyonu
         if (window.gamification) {
             var badge = document.getElementById('home-rank-badge');
