@@ -100,8 +100,8 @@
 
             var profileMap = {};
             (dpRes.data || []).forEach(function(p) {
-                // profiles tablosundaki avatar_url öncelikli (kullanıcının yüklediği fotoğraf)
-                if (!p.avatar_url && profAvatarMap[p.user_id]) {
+                // profiles tablosundaki avatar_url HER ZAMAN öncelikli (en güncel fotoğraf)
+                if (profAvatarMap[p.user_id]) {
                     p.avatar_url = profAvatarMap[p.user_id];
                 }
                 profileMap[p.user_id] = p;
@@ -247,11 +247,18 @@
 
             var profileMap = {};
             (dpRes.data || []).forEach(function(p) {
-                // profiles tablosundaki avatar_url öncelikli (kullanıcının yüklediği fotoğraf)
-                if (!p.avatar_url && profAvatarMap[p.user_id]) {
+                // profiles tablosundaki avatar_url HER ZAMAN öncelikli (en güncel fotoğraf)
+                if (profAvatarMap[p.user_id]) {
                     p.avatar_url = profAvatarMap[p.user_id];
                 }
                 profileMap[p.user_id] = p;
+            });
+
+            // discovery_profiles'da olmayan ama profiles'da olan kullanıcılar için fallback
+            otherIds.forEach(function(uid) {
+                if (!profileMap[uid] && profAvatarMap[uid]) {
+                    profileMap[uid] = { user_id: uid, avatar_url: profAvatarMap[uid], full_name: null };
+                }
             });
 
             return connections.map(function(c) {

@@ -437,14 +437,10 @@ YAZI KURALLARI:
         var av2El = document.getElementById('compat-avatar-2');
         if (!av1El && !av2El) return;
 
-        // 1. Ana kullanıcı (person1) avatarı — localStorage'dan
+        // 1. Ana kullanıcı (person1) avatarı — profiles tablosu öncelikli
         var p1AvatarUrl = null;
-        try {
-          var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
-          if (ud && ud.avatarUrl) p1AvatarUrl = ud.avatarUrl;
-        } catch(e) {}
-        // Supabase'den de kontrol et
-        if (!p1AvatarUrl && window.supabaseClient) {
+        // Önce Supabase profiles'dan (en güncel fotoğraf)
+        if (window.supabaseClient) {
           try {
             var session = null;
             if (window.auth && window.auth.getSession) session = await window.auth.getSession();
@@ -457,26 +453,48 @@ YAZI KURALLARI:
             }
           } catch(e) {}
         }
+        // Supabase'de yoksa localStorage'dan
+        if (!p1AvatarUrl) {
+          try {
+            var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
+            if (ud && ud.avatarUrl) p1AvatarUrl = ud.avatarUrl;
+          } catch(e) {}
+        }
 
         // 2. Partner (person2) avatarı — Supabase'den
         var p2AvatarUrl = null;
         if (window.supabaseClient) {
           try {
+            // discovery_profiles'dan user_id al
             var dpRes = await window.supabaseClient.from('discovery_profiles')
               .select('avatar_url, user_id, gender')
-              .ilike('full_name', ctx.p2.name)
+              .ilike('full_name', '%' + ctx.p2.name + '%')
               .limit(1)
               .maybeSingle();
-            if (dpRes.data && dpRes.data.avatar_url) {
-              p2AvatarUrl = dpRes.data.avatar_url;
-            } else if (dpRes.data && dpRes.data.user_id) {
+            var p2UserId = dpRes.data ? dpRes.data.user_id : null;
+
+            // profiles tablosu HER ZAMAN öncelikli (en güncel fotoğraf)
+            if (p2UserId) {
               var profRes2 = await window.supabaseClient.from('profiles')
                 .select('avatar_url')
-                .eq('id', dpRes.data.user_id)
+                .eq('id', p2UserId)
                 .maybeSingle();
               if (profRes2.data && profRes2.data.avatar_url) p2AvatarUrl = profRes2.data.avatar_url;
             }
-          } catch(e) {}
+            // profiles'dan bulunamadıysa discovery_profiles avatar kullan
+            if (!p2AvatarUrl && dpRes.data && dpRes.data.avatar_url) {
+              p2AvatarUrl = dpRes.data.avatar_url;
+            }
+            // Hâlâ yoksa profiles tablosunu isme göre ara (discovery_profiles'da olmayan kullanıcılar)
+            if (!p2AvatarUrl) {
+              var profByName = await window.supabaseClient.from('profiles')
+                .select('avatar_url')
+                .ilike('full_name', '%' + ctx.p2.name + '%')
+                .limit(1)
+                .maybeSingle();
+              if (profByName.data && profByName.data.avatar_url) p2AvatarUrl = profByName.data.avatar_url;
+            }
+          } catch(e) { console.warn('[Compat] Partner avatar error:', e); }
         }
 
         // avatarUtil fallback
