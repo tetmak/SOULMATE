@@ -539,7 +539,10 @@ YAZI KURALLARI:
         fetchCompatAnalysis('cosmic', ctx).then(function(text){
           var el = document.getElementById('cosmic-ai-content');
           if (!el) return;
-          if (text) el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:rgba(186,181,156,0.9);">' + renderText(text) + '</div>';
+          if (text) {
+            el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:rgba(186,181,156,0.9);">' + renderText(text) + '</div>';
+            if (window.AvatarGuide) { window.AvatarGuide.onCompatibilityResult(text); }
+          }
           else el.innerHTML = '<p style="color:#ef4444;font-size:13px;">Analiz yüklenemedi.</p>';
         });
       }
