@@ -341,7 +341,7 @@
 
         <div class="px-4 py-6">
             <button id="view-detailed-reading-btn"
-                onclick="(function(){ var p = new URLSearchParams(window.location.search); var k = p.get('kisi'); var r = 'past_reading_archive_detail.html' + (k ? '?kisi=' + encodeURIComponent(k) : ''); window.location.href = 'premium_crystal_store.html?return=' + encodeURIComponent(r); })();"
+                onclick="(function(){ var p = new URLSearchParams(window.location.search); var k = p.get('kisi'); var r = 'past_reading_archive_detail.html' + (k ? '?kisi=' + encodeURIComponent(k) : ''); if (window.premium && window.premium.isPremium()) { window.location.href = r; } else { window.location.href = 'premium_crystal_store.html?return=' + encodeURIComponent(r); } })();"
                 class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-background-dark py-4 rounded-xl font-bold text-lg transition-transform active:scale-95">
                 <span class="material-symbols-outlined">menu_book</span>
                 View Detailed Reading
