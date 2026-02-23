@@ -266,6 +266,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 birthDate: bd,
                 gender: kisi.gender || null,
                 avatar_url: kisi.avatar_url || null,
+                user_id: kisi.user_id || null,
                 isTemp: true  // Ana kullanıcı değil
             }));
         } catch(e) {}
@@ -280,6 +281,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 birthDate: bd,
                 gender: kisi.gender || null,
                 avatar_url: kisi.avatar_url || null,
+                user_id: kisi.user_id || null,
                 isTemp: true
             }));
         } catch(e) {}
@@ -299,9 +301,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         // Uyumluluk verisini localStorage'a yaz — analiz sayfası bunu okuyacak
+        // user_id, gender, avatarUrl dahil — compat engine doğrudan avatar lookup yapabilsin
         localStorage.setItem('numerael_compat_data', JSON.stringify({
-            person1: { name: ud.name, birthDate: ud.birthDate },
-            person2: { name: name, birthDate: bd }
+            person1: { name: ud.name, birthDate: ud.birthDate, gender: ud.gender || null, avatarUrl: ud.avatarUrl || null },
+            person2: { name: name, birthDate: bd, userId: kisi.user_id || null, gender: kisi.gender || null, avatarUrl: kisi.avatar_url || null }
         }));
 
         // Bağlantıya da kaydet (connections listesinde görünsün)
