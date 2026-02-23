@@ -206,6 +206,13 @@
                 if (profileRes.data) {
                     var mp = profileRes.data;
                     if (mp.birth_date) mp.life_path = calcLP(mp.birth_date);
+                    // Avatar fallback: profiles tablosundan avatar_url çek
+                    if (!mp.avatar_url) {
+                        try {
+                            var avRes = await sb.from('profiles').select('avatar_url').eq('id', mp.user_id).maybeSingle();
+                            if (avRes.data && avRes.data.avatar_url) mp.avatar_url = avRes.data.avatar_url;
+                        } catch(e2) {}
+                    }
                     existing.data.matched = mp;
                     return existing.data;
                 }
@@ -381,6 +388,17 @@
                     .select('*')
                     .in('user_id', matchedIds);
 
+                // Avatar fallback: profiles tablosundan avatar_url çek
+                var profAvatarMap = {};
+                try {
+                    var profAvRes = await window.supabaseClient.from('profiles')
+                        .select('id, avatar_url')
+                        .in('id', matchedIds);
+                    (profAvRes.data || []).forEach(function(pa) {
+                        if (pa.avatar_url) profAvatarMap[pa.id] = pa.avatar_url;
+                    });
+                } catch(e3) {}
+
                 var profileMap = {};
                 (profilesRes.data || []).forEach(function(p) {
                     // Recalculate life_path from birth_date
@@ -389,6 +407,10 @@
                         if (!p.expression_num) p.expression_num = calcExp(p.full_name);
                         if (!p.soul_urge) p.soul_urge = calcSoul(p.full_name);
                         if (!p.personality_num) p.personality_num = calcPers(p.full_name);
+                    }
+                    // discovery_profiles'da avatar yoksa profiles'dan al
+                    if (!p.avatar_url && profAvatarMap[p.user_id]) {
+                        p.avatar_url = profAvatarMap[p.user_id];
                     }
                     profileMap[p.user_id] = p;
                 });

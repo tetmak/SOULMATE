@@ -555,7 +555,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('match-card').classList.remove('match-card-blur');
         document.getElementById('match-card').classList.add('match-card-revealed');
         document.getElementById('match-name').textContent = m.full_name || '???';
-        document.getElementById('match-avatar').innerHTML = '<img src="' + getPhoto(m.full_name, m.gender) + '" class="w-full h-full object-cover" alt="">';
+        document.getElementById('match-avatar').innerHTML = '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover" alt="">';
         document.getElementById('btn-reveal').style.display = 'none';
         document.getElementById('no-credits-msg').style.display = 'none';
         document.getElementById('revealed-info').style.display = 'block';
@@ -656,7 +656,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             card.innerHTML =
                 '<div class="size-11 shrink-0 rounded-full overflow-hidden border-2 border-cosmic-violet/30 flex items-center justify-center bg-surface-dark">' +
                     (revealed
-                        ? '<img src="' + getPhoto(m.full_name, m.gender) + '" class="w-full h-full object-cover" alt="">'
+                        ? '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover" alt="">'
                         : '<span class="text-cosmic-violet text-sm font-black">' + initial(m.full_name) + '</span>') +
                 '</div>' +
                 '<div class="flex-1 min-w-0">' +

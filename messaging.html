@@ -137,6 +137,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             .eq('user_id', otherUserId)
             .maybeSingle();
         otherProfile = res.data;
+        // discovery_profiles'da avatar yoksa profiles tablosundan çek
+        if (otherProfile && !otherProfile.avatar_url) {
+            var profRes = await window.supabaseClient.from('profiles')
+                .select('avatar_url')
+                .eq('id', otherUserId)
+                .maybeSingle();
+            if (profRes.data && profRes.data.avatar_url) {
+                otherProfile.avatar_url = profRes.data.avatar_url;
+            }
+        }
     } catch(e) {}
 
     var otherName = otherProfile ? otherProfile.full_name : 'User';

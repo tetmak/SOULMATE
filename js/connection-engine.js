@@ -82,14 +82,28 @@
             var requests = res.data || [];
             if (!requests.length) return [];
 
-            // Fetch sender profiles
+            // Fetch sender profiles from both tables
             var senderIds = requests.map(function(r) { return r.sender_id; });
-            var profilesRes = await sb().from('discovery_profiles')
+            var dpRes = await sb().from('discovery_profiles')
                 .select('user_id, full_name, gender, life_path, birth_date, avatar_url')
                 .in('user_id', senderIds);
 
+            // Also fetch avatar_url from profiles table (primary source)
+            var profRes = await sb().from('profiles')
+                .select('id, avatar_url')
+                .in('id', senderIds);
+
+            var profAvatarMap = {};
+            (profRes.data || []).forEach(function(p) {
+                if (p.avatar_url) profAvatarMap[p.id] = p.avatar_url;
+            });
+
             var profileMap = {};
-            (profilesRes.data || []).forEach(function(p) {
+            (dpRes.data || []).forEach(function(p) {
+                // profiles tablosundaki avatar_url öncelikli (kullanıcının yüklediği fotoğraf)
+                if (!p.avatar_url && profAvatarMap[p.user_id]) {
+                    p.avatar_url = profAvatarMap[p.user_id];
+                }
                 profileMap[p.user_id] = p;
             });
 
@@ -216,13 +230,27 @@
                 return c.user_a === userId ? c.user_b : c.user_a;
             });
 
-            // Fetch profiles
-            var profilesRes = await sb().from('discovery_profiles')
+            // Fetch profiles from both tables
+            var dpRes = await sb().from('discovery_profiles')
                 .select('user_id, full_name, gender, life_path, birth_date, expression_num, soul_urge, personality_num, avatar_url')
                 .in('user_id', otherIds);
 
+            // Also fetch avatar_url from profiles table (primary source for uploaded photos)
+            var profRes = await sb().from('profiles')
+                .select('id, avatar_url')
+                .in('id', otherIds);
+
+            var profAvatarMap = {};
+            (profRes.data || []).forEach(function(p) {
+                if (p.avatar_url) profAvatarMap[p.id] = p.avatar_url;
+            });
+
             var profileMap = {};
-            (profilesRes.data || []).forEach(function(p) {
+            (dpRes.data || []).forEach(function(p) {
+                // profiles tablosundaki avatar_url öncelikli (kullanıcının yüklediği fotoğraf)
+                if (!p.avatar_url && profAvatarMap[p.user_id]) {
+                    p.avatar_url = profAvatarMap[p.user_id];
+                }
                 profileMap[p.user_id] = p;
             });
 
