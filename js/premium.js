@@ -3,8 +3,7 @@
  *
  * Platform bazlı ödeme:
  *   - Web: Paddle.js v2 SDK ile overlay checkout
- *   - iOS: RevenueCat → Apple In-App Purchase (StoreKit)
- *   - Android: RevenueCat → Google Play Billing
+ *   - Android: Google Play Billing Library (doğrudan)
  *
  * FREE:  Temel numeroloji, 1 arkadaş, 1 uyumluluk/ay, Deep Insight sayfa 1
  * PREMIUM: Sınırsız her şey, AI analizler, Cosmic Match reveal, 3 sayfa breakdown
@@ -158,13 +157,13 @@
         // platformInit bitmesini bekle (RC veya Paddle hazır olsun)
         try { await platformReady; } catch(e) {}
 
-        // Native platform → RevenueCat'ten kontrol et
-        if (window.revenuecat && window.revenuecat.isNative() && window.revenuecat.isReady()) {
+        // Native platform → PlayBilling'ten kontrol et
+        if (window.billing && window.billing.isNative() && window.billing.isReady()) {
             try {
-                var rcPremium = await window.revenuecat.checkEntitlements();
+                var rcPremium = await window.billing.checkEntitlements();
                 if (rcPremium) return true;
             } catch(e) {
-                console.warn('[Premium] RC entitlement check hatası:', e);
+                console.warn('[Premium] Billingentitlement check hatası:', e);
             }
         }
 
@@ -220,8 +219,8 @@
     function startPurchase(plan) {
         plan = plan || 'yearly';
 
-        // Native platform → RevenueCat kullan
-        if (window.revenuecat && window.revenuecat.isNative()) {
+        // Native platform → PlayBilling kullan
+        if (window.billing && window.billing.isNative()) {
             startNativePurchase(plan);
             return;
         }
@@ -233,18 +232,18 @@
     async function startNativePurchase(plan) {
         console.log('[Premium] Native satın alma başlatılıyor:', plan);
 
-        if (!window.revenuecat || !window.revenuecat.isReady()) {
-            console.warn('[Premium] RevenueCat hazır değil, init deneniyor...');
-            if (window.revenuecat) {
-                await window.revenuecat.init();
+        if (!window.billing || !window.billing.isReady()) {
+            console.warn('[Premium] PlayBilling hazır değil, init deneniyor...');
+            if (window.billing) {
+                await window.billing.init();
             }
-            if (!window.revenuecat || !window.revenuecat.isReady()) {
+            if (!window.billing || !window.billing.isReady()) {
                 alert('Satın alma servisi başlatılamadı. Lütfen tekrar deneyin.');
                 return;
             }
         }
 
-        var result = await window.revenuecat.purchase(plan);
+        var result = await window.billing.purchase(plan);
 
         if (result.success) {
             console.log('[Premium] Native satın alma başarılı!');
@@ -381,10 +380,10 @@
             }
 
             try {
-                // Native platform → RevenueCat
-                if (window.revenuecat && window.revenuecat.isNative()) {
-                    if (!window.revenuecat.isReady()) await window.revenuecat.init();
-                    if (!window.revenuecat.isReady()) {
+                // Native platform → PlayBilling
+                if (window.billing && window.billing.isNative()) {
+                    if (!window.billing.isReady()) await window.billing.init();
+                    if (!window.billing.isReady()) {
                         showPaywallError(modal, 'Satın alma servisi başlatılamadı. İnternet bağlantınızı kontrol edin.');
                         purchasing = false;
                         pwBtn.innerHTML = originalText;
@@ -392,7 +391,7 @@
                         pwBtn.style.pointerEvents = 'auto';
                         return;
                     }
-                    var result = await window.revenuecat.purchase(sel);
+                    var result = await window.billing.purchase(sel);
                     if (result.success) {
                         pwBtn.innerHTML = '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1">check_circle</span><span style="margin-left:8px">Başarılı!</span>';
                         pwBtn.style.background = 'linear-gradient(135deg,#10b981,#059669)';
@@ -477,7 +476,7 @@
     function clearPremium() { localStorage.removeItem('numerael_premium'); console.log('[Premium] Cleared'); window.location.reload(); }
 
     // ─── INIT ────────────────────────────────────────────────
-    // Platform bazlı init: native → RevenueCat, web → Paddle
+    // Platform bazlı init: native → PlayBilling, web → Paddle
     // platformReady diğer modüller tarafından await edilebilir
     var platformReady = (async function platformInit() {
         // ⚠️ GEÇICI: Herkes premium — ödeme platformu init atla
@@ -488,15 +487,15 @@
 
         var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
 
-        if (isNative && window.revenuecat) {
-            console.log('[Premium] Native platform — RevenueCat başlatılıyor');
+        if (isNative && window.billing) {
+            console.log('[Premium] Native platform — PlayBilling başlatılıyor');
             try {
-                var rcOk = await window.revenuecat.init();
+                var rcOk = await window.billing.init();
                 if (rcOk) {
-                    await window.revenuecat.checkEntitlements();
-                    console.log('[Premium] RevenueCat hazır');
+                    await window.billing.checkEntitlements();
+                    console.log('[Premium] PlayBilling hazır');
                 } else {
-                    console.warn('[Premium] RevenueCat başlatılamadı — native ortamda Paddle kullanılamaz');
+                    console.warn('[Premium] PlayBilling başlatılamadı — native ortamda Paddle kullanılamaz');
                 }
             } catch(e) {
                 console.error('[Premium] platformInit hatası:', e);
@@ -509,8 +508,8 @@
 
     // ─── RESTORE (native) ────────────────────────────────────
     async function restorePurchases() {
-        if (window.revenuecat && window.revenuecat.isNative()) {
-            var result = await window.revenuecat.restore();
+        if (window.billing && window.billing.isNative()) {
+            var result = await window.billing.restore();
             if (result.success && result.premium) {
                 window.location.reload();
                 return true;
@@ -529,11 +528,11 @@
         restorePurchases: restorePurchases,
         incrementUsage: incrementUsage, getUsageCount: getUsageCount,
         isReady: function() {
-            if (window.revenuecat && window.revenuecat.isNative()) return window.revenuecat.isReady();
+            if (window.billing && window.billing.isNative()) return window.billing.isReady();
             return paddleReady;
         },
         waitReady: function() { return platformReady; },
-        isNative: function() { return window.revenuecat && window.revenuecat.isNative(); },
+        isNative: function() { return window.billing && window.billing.isNative(); },
         PRICE: PREMIUM_PRICE, FREE_LIMITS: FREE_LIMITS,
         simulate: simulatePremium, clear: clearPremium
     };
