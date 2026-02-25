@@ -31,10 +31,10 @@
     }
 
     var tabs = [
-        { icon: 'home', label: 'Home', href: 'mystic_numerology_home_1.html', active: isActive(['mystic_numerology_home_1', 'cosmic_energy_calendar', 'daily_spiritual_guide', 'daily_number_deep_dive', 'cosmic_manifest_portal', 'numerology_meaning_chart', 'numerael_app_ui_design_system', 'cosmic_match']) },
+        { icon: 'home', label: 'Home', href: 'mystic_numerology_home_1.html', active: isActive(['mystic_numerology_home_1', 'cosmic_energy_calendar', 'daily_spiritual_guide', 'daily_number_deep_dive', 'numerology_meaning_chart', 'numerael_app_ui_design_system', 'cosmic_match']) },
         { icon: 'diversity_3', label: 'Bağlantılar', href: 'connections_shared_readings.html', active: isActive(['connections', 'kisi_profil', 'friendship_dynamics', 'name_numerology_breakdown', 'past_reading_archive', 'letter_vibration']) },
         { icon: 'ADD_BUTTON', label: '', href: '', active: false },
-        { icon: 'workspace_premium', label: 'Premium', href: 'premium_crystal_store.html', active: isActive(['premium_crystal_store']) },
+        { icon: 'auto_awesome', label: 'Manifest', href: 'cosmic_manifest_portal.html', active: isActive(['cosmic_manifest_portal']) },
         { icon: 'account_circle', label: 'Profil', href: 'profile_soul_journey.html', active: isActive(['profile_soul_journey', 'app_settings']) }
     ];
 
