@@ -396,6 +396,25 @@
             <p class="mt-3 italic opacity-40 text-[10px] text-center tracking-widest uppercase">Kozmik titreşimlere dokunarak yeni yollar keşfet</p>
         </div>
 
+        <!-- ═══ KOZMİK ANALİZ — Titreşim Uyumu & Kaderin Bağı ═══ -->
+        <div id="insight-section" style="display:none" class="fade-up" style="animation-delay:0.2s">
+            <div class="gold-divider"></div>
+            <div class="space-y-6 mb-2">
+                <!-- Titreşim Uyumu -->
+                <div class="relative pl-6 border-l-2" style="border-color:var(--gold-deep)">
+                    <div class="absolute -left-[7px] top-0 w-3 h-3 rounded-full border-2" style="background:var(--emerald-jewel);border-color:var(--temple-grey)"></div>
+                    <h4 class="decorative-header text-sm font-black uppercase tracking-widest mb-2" style="color:var(--emerald-jewel)">Titreşim Uyumu</h4>
+                    <p id="insight-vibration" class="text-sm italic leading-relaxed opacity-90">—</p>
+                </div>
+                <!-- Kaderin Bağı -->
+                <div class="relative pl-6 border-l-2" style="border-color:var(--gold-deep)">
+                    <div class="absolute -left-[7px] top-0 w-3 h-3 rounded-full border-2" style="background:var(--sapphire-jewel);border-color:var(--temple-grey)"></div>
+                    <h4 class="decorative-header text-sm font-black uppercase tracking-widest mb-2" style="color:var(--sapphire-jewel)">Kaderin Bağı</h4>
+                    <p id="insight-destiny" class="text-sm italic leading-relaxed opacity-90">—</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Gold Divider -->
         <div class="gold-divider"></div>
 
@@ -604,6 +623,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         var arch = window.discovery.ARCHETYPES[m.life_path] || 'Ruh';
         document.getElementById('match-archetype').textContent = 'Life Path ' + (m.life_path||'?') + ' · ' + arch;
 
+        // Kozmik analiz güncelle
+        generateInsights(m, score);
+
         if (revealed) {
             showRevealed(m);
         } else {
@@ -783,6 +805,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         var arch = window.discovery.ARCHETYPES[m.life_path] || 'Ruh';
         document.getElementById('match-archetype').textContent = 'Life Path ' + (m.life_path||'?') + ' · ' + arch;
 
+        // Kozmik analiz güncelle
+        generateInsights(m, score);
+
         // Reveal / blur durumu
         var isRevealed = item.revealed || (storedIsPrem && !item.isDailyMatch);
 
@@ -827,6 +852,73 @@ document.addEventListener('DOMContentLoaded', async function() {
                 document.getElementById('premium-paywall').style.display = 'none';
             }
         }
+    }
+
+    // ─── KOZMİK ANALİZ RENDER ──────────────────────────────
+    var VIBRATION_TEXTS = {
+        high: [
+            'Kozmik frekanslarınız nadir bir uyum içinde. Arayan ve Ayna, ruhun sessiz bir dilini paylaşıyor.',
+            'Ruhsal titreşimleriniz aynı oktavda rezonans yapıyor. Bu bağ, kelimelerden daha derin bir anlayışa sahip.',
+            'İki ruhun enerji alanları birbirine sarmalanmış. Bu titreşim uyumu, yıldızlarda bile nadir görülür.',
+            'Ruhlarınız aynı kozmik melodiyi çalıyor. Bu harmonik rezonans, evrensel bir hediye.'
+        ],
+        medium: [
+            'Titreşimleriniz birbirini tamamlayan frekanslarda. Farklılıklarınız, birlikte daha güçlü bir armoni yaratıyor.',
+            'Enerji alanlarınız karşılıklı bir dans içinde. Her etkileşim, ortak titreşiminizi güçlendiriyor.',
+            'Kozmik frekanslarınız birbirini besliyor. Bu uyum, zamanla daha da derinleşecek potansiyele sahip.',
+            'Ruhsal enerjileriniz birbirini dengeliyor. Bu titreşim, birlikte büyümenin kapısını aralıyor.'
+        ],
+        low: [
+            'Farklı frekanslarda titreşen iki ruh, birbirine yeni perspektifler sunuyor. Bu karşıtlık, büyümenin anahtarı.',
+            'Titreşim farklılığınız, birbirinize öğretecek çok şey olduğunu gösteriyor. Evren sizi bir amaçla buluşturdu.',
+            'Kozmik enerjileriniz farklı yollardan akıyor, ancak her nehir sonunda denize kavuşur.'
+        ]
+    };
+    var DESTINY_TEXTS = {
+        high: [
+            'Her iki ruh da Büyük Çarkın aynı yayında ilerliyor. Bu buluşma tesadüf değil, kozmik bir zorunluluk.',
+            'Kader çizgileriniz aynı noktada kesişiyor. Bu bağlantı, yaşamların ötesinde yankılanan bir rezonans taşıyor.',
+            'Yıldız haritalarınız ortak bir kaderi işaret ediyor. Bu yol, birlikte yürünmek için çizilmiş.',
+            'Evren bu karşılaşmayı çağlar öncesinden planlamış. İki kader, tek bir yolda buluşuyor.'
+        ],
+        medium: [
+            'Kader yollarınız paralel ilerliyor ve zaman zaman kesişiyor. Her buluşma, yeni bir farkındalık getiriyor.',
+            'Yaşam yolculuklarınız birbirini tamamlayan dersler içeriyor. Evren sizi karşılıklı öğrenme için bir araya getiriyor.',
+            'Kaderin iplikleri, iki farklı ama uyumlu desen oluşturuyor. Bu bağ, seçimlere bağlı olarak güçlenebilir.',
+            'Kader çizgileriniz ortak bir amaca doğru evriliyor. Bu yolculuk, bilinçli niyetle derinleşir.'
+        ],
+        low: [
+            'Farklı kader yollarında yürüyen iki ruh, birbirinin ufkunu genişletiyor. En büyük dersler farklılıktan doğar.',
+            'Kader çizgileriniz farklı yönlere işaret etse de, evren her karşılaşmaya bir anlam yükler.',
+            'İki ayrı kader yolu, beklenmedik bir kavşakta buluştu. Bu karşılaşmanın ardında gizli bir ders yatıyor.'
+        ]
+    };
+
+    function generateInsights(matchProfile, score) {
+        var section = document.getElementById('insight-section');
+        var vibEl = document.getElementById('insight-vibration');
+        var destEl = document.getElementById('insight-destiny');
+
+        if (!matchProfile) {
+            section.style.display = 'none';
+            return;
+        }
+
+        section.style.display = 'block';
+
+        // Skor bazlı kategori
+        var cat = score >= 80 ? 'high' : (score >= 60 ? 'medium' : 'low');
+
+        // Deterministik seçim: profil adının karakter toplamı ile index belirle
+        var nameSum = 0;
+        var name = matchProfile.full_name || '';
+        for (var i = 0; i < name.length; i++) nameSum += name.charCodeAt(i);
+
+        var vibTexts = VIBRATION_TEXTS[cat];
+        var destTexts = DESTINY_TEXTS[cat];
+
+        vibEl.textContent = vibTexts[nameSum % vibTexts.length];
+        destEl.textContent = destTexts[(nameSum + 7) % destTexts.length];
     }
 
     // ─── RADAR RENDER ────────────────────────────────────────
