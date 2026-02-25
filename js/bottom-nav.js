@@ -63,7 +63,7 @@
         '#numerael-bottom-nav .nav-tab span:last-child{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em}',
         '#numerael-plus-btn{width:56px;height:56px;border-radius:50%;background:rgba(24,23,17,0.95);border:2px solid rgba(234,198,122,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;top:-22px;box-shadow:0 0 20px rgba(234,198,122,0.25);transition:transform 0.2s,box-shadow 0.2s;z-index:1002;overflow:hidden}',
         '#numerael-plus-btn:active{transform:scale(0.92)}',
-        '#numerael-plus-btn img{width:44px;height:44px;object-fit:contain;transition:transform 0.3s}',
+        '#numerael-plus-btn img{width:56px;height:56px;object-fit:cover;transition:transform 0.3s}',
         '#numerael-plus-btn.open img{transform:scale(0.85);opacity:0.5}',
         '#numerael-plus-btn .close-x{position:absolute;font-size:24px;color:#fff;opacity:0;transition:opacity 0.3s}',
         '#numerael-plus-btn.open .close-x{opacity:1}',
