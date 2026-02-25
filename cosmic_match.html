@@ -6,7 +6,7 @@
     <title>Cosmic Match</title>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet" />
     <script src="js/supabase.min.js"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
@@ -19,281 +19,398 @@
     <script src="js/avatar.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode:"class", theme:{ extend:{
-            colors:{ primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899","cosmic-blue":"#6366f1" },
-            fontFamily:{ display:["Space Grotesk","sans-serif"] },
+            colors:{ primary:"#d4af37","background-dark":"#242424","surface-dark":"#3d3935","card-dark":"#33302d","cosmic-violet":"#d4af37","cosmic-pink":"#e0115f","cosmic-blue":"#1e90ff" },
+            fontFamily:{ display:["Cinzel Decorative","serif"] },
             borderRadius:{ DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" }
         }}}
     </script>
     <style>
+        :root {
+            --temple-grey: #2C2C2C;
+            --dawn-charcoal: #383838;
+            --luminous-beige: #f5ead2;
+            --gold-bright: #ffd700;
+            --gold-rich: #d4af37;
+            --gold-deep: #996515;
+            --ruby-jewel: #e0115f;
+            --emerald-jewel: #00fa9a;
+            --sapphire-jewel: #1e90ff;
+        }
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
-        body{min-height:max(884px,100dvh);font-family:'Space Grotesk',sans-serif}
+        body {
+            min-height:max(884px,100dvh);
+            font-family:"Crimson Pro",serif;
+            color:var(--luminous-beige);
+            background-color:#242424;
+            background-image:radial-gradient(circle at 50% 50%,rgba(212,175,55,0.08) 0%,transparent 80%);
+        }
+        .decorative-header{font-family:"Cinzel Decorative",serif}
 
-        /* Cosmic gradient */
-        .cosmic-gradient{background:linear-gradient(135deg,#8b5cf6 0%,#ec4899 50%,#6366f1 100%)}
-        .cosmic-gradient-text{background:linear-gradient(135deg,#c084fc,#f472b6,#818cf8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-        .cosmic-glow{box-shadow:0 0 30px rgba(139,92,246,0.3),0 0 60px rgba(236,72,153,0.15)}
-        .cosmic-border{border:1px solid rgba(139,92,246,0.2)}
+        /* ═══ SCROLL BACKGROUND ═══ */
+        .scroll-bg {
+            background-color: var(--dawn-charcoal);
+            background-image: linear-gradient(rgba(44,44,44,0.85),rgba(56,56,56,0.95));
+            box-shadow: 0 0 70px rgba(0,0,0,0.6), inset 0 0 120px rgba(212,175,55,0.05);
+            border-left: 8px solid #544a42;
+            border-right: 8px solid #544a42;
+            position: relative;
+        }
+        .scroll-bg::before,.scroll-bg::after {
+            content:"";position:absolute;left:-12px;right:-12px;height:28px;
+            background:linear-gradient(90deg,#6d5d54,#b08d57,#ffe59e,#b08d57,#6d5d54);
+            border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,0.4);z-index:50;
+        }
+        .scroll-bg::before{top:-14px}
+        .scroll-bg::after{bottom:-14px}
 
-        /* Glass */
-        .glass{background:rgba(57,54,40,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.05)}
-        .glass-cosmic{background:rgba(139,92,246,0.06);backdrop-filter:blur(12px);border:1px solid rgba(139,92,246,0.12)}
+        /* ═══ MATCH RIBBON ═══ */
+        .match-ribbon{display:flex;overflow-x:auto;scrollbar-width:none;gap:12px;padding:10px 0 20px 0;margin-bottom:10px;border-bottom:1px solid rgba(212,175,55,0.15)}
+        .match-ribbon::-webkit-scrollbar{display:none}
+        .scroll-fragment{flex:0 0 auto;width:55px;height:75px;background:rgba(60,60,60,0.6);border:1px solid var(--gold-deep);padding:4px;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .profile-silhouette{width:28px;height:28px;background:var(--gold-rich);mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");mask-size:contain;mask-repeat:no-repeat;opacity:0.5}
 
-        /* Animations */
+        /* ═══ CONFLUENCE ORB ═══ */
+        .confluence-orb {
+            width:260px;height:260px;border-radius:50%;position:relative;
+            background:radial-gradient(circle at center,rgba(255,215,0,0.12) 0%,rgba(44,44,44,0.8) 100%);
+            border:4px solid transparent;background-clip:padding-box;
+            box-shadow:0 0 50px rgba(255,215,0,0.15),inset 0 0 80px rgba(0,0,0,0.4);
+            display:flex;align-items:center;justify-content:center;overflow:visible;
+        }
+        .confluence-orb::before {
+            content:"";position:absolute;inset:-4px;border-radius:50%;padding:4px;
+            background:linear-gradient(135deg,#d4af37,#ffd700,#996515,#fff700,#d4af37);
+            -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+            mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+            -webkit-mask-composite:xor;mask-composite:exclude;
+        }
+        .filigree-overlay {
+            position:absolute;inset:0;border-radius:50%;opacity:0.2;
+            background-image:url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 0 C70 20 80 40 80 50 C80 60 70 80 50 100 C30 80 20 60 20 50 C20 40 30 20 50 0' fill='none' stroke='%23ffd700' stroke-width='0.8'/%3E%3C/svg%3E");
+            background-size:50px;animation:rotate 80s linear infinite;
+        }
+        .soul-mote {
+            position:absolute;width:14px;height:14px;border-radius:50%;background:white;
+            filter:blur(0.5px);z-index:5;pointer-events:none;
+        }
+        .mote-1{top:25%;left:35%;background:#fffcf0;box-shadow:0 0 20px #fffcf0,0 0 40px var(--gold-bright)}
+        .mote-2{top:55%;right:20%;background:#eef7ff;box-shadow:0 0 25px #eef7ff,0 0 45px var(--sapphire-jewel)}
+        .mote-3{bottom:30%;left:25%;background:#fff1f1;box-shadow:0 0 25px #fff1f1,0 0 45px var(--ruby-jewel)}
+        .mote-4{top:40%;right:45%;background:#f2fff6;box-shadow:0 0 25px #f2fff6,0 0 45px var(--emerald-jewel)}
+
+        /* ═══ SOUL CARD ═══ */
+        .soul-card {
+            border:2px solid var(--gold-rich);padding:4px;background:#33302d;position:relative;
+            box-shadow:0 15px 35px rgba(0,0,0,0.4);transition:all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+        }
+        .soul-card-inner {
+            border:1px solid var(--gold-deep);padding:1.5rem;height:100%;
+            display:flex;flex-direction:column;align-items:center;background:#3d3935;
+        }
+
+        /* ═══ METALLIC GOLD TEXT ═══ */
+        .metallic-gold {
+            background:linear-gradient(135deg,#bf953f,#fcf6ba,#b38728,#fbf5b7,#aa771c);
+            -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+            filter:drop-shadow(0 0 5px rgba(255,215,0,0.3));
+        }
+
+        /* ═══ GOLD DIVIDER ═══ */
+        .gold-divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold-rich),transparent);margin:1.5rem 0;position:relative}
+        .gold-divider::after{content:"◈";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--dawn-charcoal);padding:0 10px;color:var(--gold-bright);font-size:14px}
+
+        /* ═══ ORACLE BUTTON ═══ */
+        .btn-oracle{background:var(--temple-grey);color:var(--gold-bright);border:1px solid var(--gold-rich);font-family:"Cinzel Decorative",serif;transition:all 0.3s ease;box-shadow:0 5px 15px rgba(0,0,0,0.3)}
+        .btn-oracle:hover{background:var(--gold-rich);color:#2c2c2c}
+
+        /* ═══ FUNCTIONAL CSS (adapted to oracle theme) ═══ */
+        .cosmic-gradient{background:linear-gradient(135deg,#bf953f 0%,#ffd700 50%,#b38728 100%)}
+        .cosmic-gradient-text{background:linear-gradient(135deg,#bf953f,#fcf6ba,#b38728);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .cosmic-glow{box-shadow:0 0 30px rgba(212,175,55,0.3),0 0 60px rgba(255,215,0,0.15)}
+        .cosmic-border{border:1px solid rgba(212,175,55,0.2)}
+
+        .glass{background:rgba(60,60,60,0.4);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.05)}
+        .glass-cosmic{background:rgba(60,60,60,0.3);backdrop-filter:blur(12px);border:1px solid rgba(212,175,55,0.12)}
+
+        /* ═══ ANIMATIONS ═══ */
         @keyframes fade-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-        @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(139,92,246,0.3)}50%{box-shadow:0 0 40px rgba(236,72,153,0.5)}}
+        @keyframes pulse-glow{0%,100%{box-shadow:0 0 20px rgba(212,175,55,0.3)}50%{box-shadow:0 0 40px rgba(255,215,0,0.5)}}
         @keyframes radar-ping{0%{transform:scale(1);opacity:0.6}100%{transform:scale(2.5);opacity:0}}
         @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-        @keyframes orbit{0%{transform:rotate(0deg) translateX(var(--orbit-r)) rotate(0deg)}100%{transform:rotate(360deg) translateX(var(--orbit-r)) rotate(-360deg)}}
         @keyframes reveal-flash{0%{opacity:0;transform:scale(0.8)}50%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
         @keyframes streak-fire{0%,100%{text-shadow:0 0 8px rgba(251,191,36,0.5)}50%{text-shadow:0 0 20px rgba(251,191,36,0.8)}}
         @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+        @keyframes rotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
         .fade-up{animation:fade-up 0.5s ease forwards;opacity:0}
         .pulse-glow{animation:pulse-glow 3s ease-in-out infinite}
         .float-anim{animation:float 3s ease-in-out infinite}
         .streak-fire{animation:streak-fire 2s ease-in-out infinite}
+        .shimmer-placeholder{background:linear-gradient(90deg,rgba(212,175,55,0.08) 25%,rgba(255,215,0,0.15) 50%,rgba(212,175,55,0.08) 75%);background-size:200% 100%;animation:shimmer 2s ease-in-out infinite}
 
-        .shimmer-placeholder{background:linear-gradient(90deg,rgba(139,92,246,0.08) 25%,rgba(236,72,153,0.15) 50%,rgba(139,92,246,0.08) 75%);background-size:200% 100%;animation:shimmer 2s ease-in-out infinite}
-
-        /* Radar */
-        .radar-container{position:relative;width:260px;height:260px}
-        .radar-ring{position:absolute;border-radius:50%;border:1px solid rgba(139,92,246,0.1);top:50%;left:50%;transform:translate(-50%,-50%)}
-        .radar-ping{position:absolute;border-radius:50%;background:rgba(139,92,246,0.15);top:50%;left:50%;transform:translate(-50%,-50%);animation:radar-ping 3s ease-out infinite}
+        /* ═══ RADAR ═══ */
+        .radar-ring{position:absolute;border-radius:50%;border:1px solid rgba(212,175,55,0.1);top:50%;left:50%;transform:translate(-50%,-50%)}
+        .radar-ping{position:absolute;border-radius:50%;background:rgba(212,175,55,0.15);top:50%;left:50%;transform:translate(-50%,-50%);animation:radar-ping 3s ease-out infinite}
         .radar-dot{position:absolute;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;cursor:pointer;transition:all 0.3s;border:2px solid}
         .radar-dot:hover{transform:scale(1.3);z-index:10}
 
-        /* Match card */
+        /* ═══ MATCH CARD BLUR/REVEAL ═══ */
         .match-card-blur .blur-layer{filter:blur(8px);-webkit-filter:blur(8px);transition:filter 0.8s ease}
         .match-card-revealed .blur-layer{filter:none;-webkit-filter:none}
 
-        /* Streak badge */
-        .streak-badge{background:linear-gradient(135deg,#f59e0b,#ef4444);box-shadow:0 0 12px rgba(245,158,11,0.4)}
+        /* ═══ STREAK BADGE ═══ */
+        .streak-badge{background:linear-gradient(135deg,#d4af37,#996515);box-shadow:0 0 12px rgba(212,175,55,0.4)}
 
-        /* Section divider */
-        .cosmic-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(139,92,246,0.2),transparent)}
+        /* ═══ DIVIDER ═══ */
+        .cosmic-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(212,175,55,0.2),transparent)}
 
-        /* Scrollbar */
+        /* ═══ SCROLLBAR ═══ */
         ::-webkit-scrollbar{width:4px}
         ::-webkit-scrollbar-track{background:transparent}
-        ::-webkit-scrollbar-thumb{background:rgba(139,92,246,0.2);border-radius:2px}
+        ::-webkit-scrollbar-thumb{background:rgba(212,175,55,0.2);border-radius:2px}
+
+        /* ═══ ENGRAVING EFFECT ═══ */
+        .engraving-effect{filter:grayscale(0.5) contrast(1.1) brightness(0.9) sepia(0.2)}
     </style>
 </head>
-<body class="bg-background-dark text-white min-h-screen">
-<div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden pb-10">
+<body class="min-h-screen py-6 flex justify-center">
+<div class="max-w-[480px] w-full mx-auto min-h-[95vh] scroll-bg px-6 pb-24 pt-6 flex flex-col">
 
-    <!-- Header -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-dark/90 backdrop-blur-md border-b border-white/5" style="margin-top:0">
-        <div onclick="window.location.href='mystic_numerology_home_1.html'"
-            class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-white">
-            <span class="material-symbols-outlined">arrow_back_ios</span>
-        </div>
-        <h2 class="cosmic-gradient-text text-lg font-black leading-tight tracking-tight flex-1 text-center">Cosmic Match</h2>
-        <div class="flex w-12 items-center justify-end">
-            <!-- Streak badge -->
+    <!-- ═══ MATCH RIBBON (decorative) ═══ -->
+    <div class="match-ribbon">
+        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
+        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
+        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
+        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
+        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
+        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
+        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
+    </div>
+
+    <!-- ═══ HEADER ═══ -->
+    <header class="text-center mb-4">
+        <div class="flex justify-between items-center mb-4 px-2">
+            <div onclick="window.location.href='mystic_numerology_home_1.html'" class="cursor-pointer">
+                <span class="material-symbols-outlined text-[var(--gold-rich)]">arrow_back_ios</span>
+            </div>
             <div id="streak-badge" class="streak-badge rounded-full px-2.5 py-1 flex items-center gap-1 cursor-default" title="Streak">
                 <span class="text-white text-xs streak-fire">🔥</span>
                 <span id="streak-count" class="text-white text-xs font-black">0</span>
             </div>
         </div>
+        <h1 class="decorative-header text-3xl font-black metallic-gold tracking-widest mb-2">The Oracle</h1>
+        <p class="italic opacity-90 text-sm drop-shadow-sm">Kozmik Eşleşme · Ruhların Buluşma Noktası</p>
     </header>
 
-    <!-- ═══ OPT-IN EKRANI (henüz katılmamışsa) ═══ -->
-    <div id="optin-screen" style="display:none" class="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
-        <div class="size-28 rounded-full cosmic-gradient flex items-center justify-center mb-8 pulse-glow">
-            <span class="material-symbols-outlined text-white text-5xl">auto_awesome</span>
+    <!-- ═══ OPT-IN EKRANI ═══ -->
+    <div id="optin-screen" style="display:none" class="flex-1 flex flex-col items-center justify-center px-2 py-12 text-center">
+        <div class="size-28 rounded-full flex items-center justify-center mb-8 pulse-glow" style="background:radial-gradient(circle,rgba(255,215,0,0.15),rgba(44,44,44,0.8));border:3px solid var(--gold-rich)">
+            <span class="material-symbols-outlined text-5xl" style="color:var(--gold-bright)">auto_awesome</span>
         </div>
-        <h2 class="text-white text-2xl font-black mb-3">Kozmik Eşleşme</h2>
-        <p class="text-white/50 text-sm leading-relaxed max-w-[300px] mb-8">
+        <h2 class="decorative-header text-2xl font-black metallic-gold mb-3">Kozmik Eşleşme</h2>
+        <p class="opacity-60 text-sm leading-relaxed max-w-[300px] mb-8 italic">
             Numerolojik profilini diğer kullanıcılarla paylaş ve evrenin senin için seçtiği ruh eşlerini keşfet.
             Her gün yeni bir eşleşme, her 3 günde bir reveal hakkı!
         </p>
-        <div class="glass-cosmic rounded-2xl p-4 mb-6 w-full max-w-[320px]">
+        <div class="glass-cosmic rounded-lg p-4 mb-6 w-full max-w-[320px]" style="border:1px solid var(--gold-deep)">
             <div class="flex items-center gap-3 mb-3">
-                <span class="material-symbols-outlined text-cosmic-violet">visibility</span>
+                <span class="material-symbols-outlined" style="color:var(--gold-bright)">visibility</span>
                 <div class="flex-1 text-left">
-                    <p class="text-white text-sm font-bold">Ne paylaşılır?</p>
-                    <p class="text-white/40 text-xs">Sadece ismin, yaşam yolu ve numerolojik sayıların</p>
+                    <p class="text-sm font-bold">Ne paylaşılır?</p>
+                    <p class="opacity-50 text-xs">Sadece ismin, yaşam yolu ve numerolojik sayıların</p>
                 </div>
             </div>
             <div class="flex items-center gap-3 mb-3">
-                <span class="material-symbols-outlined text-cosmic-pink">lock</span>
+                <span class="material-symbols-outlined" style="color:var(--ruby-jewel)">lock</span>
                 <div class="flex-1 text-left">
-                    <p class="text-white text-sm font-bold">Gizlilik</p>
-                    <p class="text-white/40 text-xs">Doğum tarihin ve kişisel verilerin paylaşılmaz</p>
+                    <p class="text-sm font-bold">Gizlilik</p>
+                    <p class="opacity-50 text-xs">Doğum tarihin ve kişisel verilerin paylaşılmaz</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <span class="material-symbols-outlined text-cosmic-blue">toggle_on</span>
+                <span class="material-symbols-outlined" style="color:var(--emerald-jewel)">toggle_on</span>
                 <div class="flex-1 text-left">
-                    <p class="text-white text-sm font-bold">İstediğin zaman kapat</p>
-                    <p class="text-white/40 text-xs">Profil ayarlarından keşfedilebilirliğini kapat</p>
+                    <p class="text-sm font-bold">İstediğin zaman kapat</p>
+                    <p class="opacity-50 text-xs">Profil ayarlarından keşfedilebilirliğini kapat</p>
                 </div>
             </div>
         </div>
-        <button id="btn-optin" class="w-full max-w-[320px] cosmic-gradient text-white py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform cosmic-glow">
+        <button id="btn-optin" class="w-full max-w-[320px] py-4 btn-oracle rounded-none shadow-xl flex items-center justify-center gap-3 uppercase tracking-[0.2em] text-sm font-bold active:scale-95 transition-transform">
             <span class="material-symbols-outlined">rocket_launch</span>
             Keşfe Katıl
         </button>
-        <p class="text-white/20 text-xs mt-4">İstediğin zaman devre dışı bırakabilirsin</p>
+        <p class="opacity-30 text-xs mt-4 italic">İstediğin zaman devre dışı bırakabilirsin</p>
     </div>
 
-    <!-- ═══ ANA İÇERİK (opt-in yapılmışsa) ═══ -->
+    <!-- ═══ ANA İÇERİK ═══ -->
     <div id="main-content" style="display:none">
 
         <!-- Streak & Reveal Credits Bar -->
         <div class="px-5 pt-5 pb-2 fade-up" style="animation-delay:0.05s">
             <div class="flex items-center gap-3">
-                <div class="flex-1 glass-cosmic rounded-2xl p-3 flex items-center gap-3">
-                    <div class="size-10 rounded-full bg-amber-500/15 flex items-center justify-center shrink-0">
+                <div class="flex-1 glass-cosmic rounded-lg p-3 flex items-center gap-3" style="border:1px solid var(--gold-deep)">
+                    <div class="size-10 rounded-full flex items-center justify-center shrink-0" style="background:rgba(212,175,55,0.15)">
                         <span class="text-xl streak-fire">🔥</span>
                     </div>
                     <div>
-                        <p id="streak-label" class="text-white text-sm font-black">0 Gün Streak</p>
-                        <p id="streak-next" class="text-white/35 text-[10px]">Sonraki ödül: 3 günde</p>
+                        <p id="streak-label" class="text-sm font-black">0 Gün Streak</p>
+                        <p id="streak-next" class="opacity-40 text-[10px]">Sonraki ödül: 3 günde</p>
                     </div>
                 </div>
-                <div class="glass-cosmic rounded-2xl p-3 flex items-center gap-3 shrink-0">
-                    <div class="size-10 rounded-full bg-cosmic-violet/15 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-cosmic-violet text-xl">visibility</span>
+                <div class="glass-cosmic rounded-lg p-3 flex items-center gap-3 shrink-0" style="border:1px solid var(--gold-deep)">
+                    <div class="size-10 rounded-full flex items-center justify-center" style="background:rgba(212,175,55,0.15)">
+                        <span class="material-symbols-outlined text-xl" style="color:var(--gold-bright)">visibility</span>
                     </div>
                     <div>
-                        <p id="credits-count" class="text-white text-sm font-black">3</p>
-                        <p id="credits-label" class="text-white/35 text-[10px]">Bugün</p>
+                        <p id="credits-count" class="text-sm font-black">3</p>
+                        <p id="credits-label" class="opacity-40 text-[10px]">Bugün</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ═══ GÜNLÜK EŞLEŞME ═══ -->
-        <div class="px-5 pt-4 pb-2 fade-up" style="animation-delay:0.1s">
-            <div class="flex items-center gap-2 mb-3">
-                <span class="material-symbols-outlined text-cosmic-pink text-base">today</span>
-                <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Bugünün Kozmik Eşleşmesi</p>
+        <!-- ═══ CONFLUENCE ORB (Uyumluluk Radarı) ═══ -->
+        <section class="mb-6 flex flex-col items-center relative fade-up" style="animation-delay:0.1s">
+            <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-base" style="color:var(--gold-bright)">radar</span>
+                <p class="opacity-50 text-[10px] font-bold uppercase tracking-widest decorative-header">Uyumluluk Radarı</p>
             </div>
 
-            <!-- Eşleşme Kartı -->
-            <div id="match-card" class="glass-cosmic rounded-3xl p-6 relative overflow-hidden match-card-blur">
-                <!-- Background pattern -->
-                <div class="absolute inset-0 opacity-5" style="background-image:url('https://www.transparenttextures.com/patterns/stardust.png')"></div>
-
-                <!-- Loading state -->
-                <div id="match-loading" class="flex flex-col items-center gap-4 py-6 relative z-10">
-                    <div class="size-20 rounded-full shimmer-placeholder"></div>
-                    <div class="h-4 w-32 rounded shimmer-placeholder"></div>
-                    <div class="h-3 w-24 rounded shimmer-placeholder"></div>
+            <div class="confluence-orb mb-4">
+                <div class="filigree-overlay"></div>
+                <!-- Decorative soul motes -->
+                <div class="soul-mote mote-1"></div>
+                <div class="soul-mote mote-2"></div>
+                <div class="soul-mote mote-3"></div>
+                <div class="soul-mote mote-4"></div>
+                <!-- Radar rings -->
+                <div class="radar-ring" style="width:200px;height:200px"></div>
+                <div class="radar-ring" style="width:140px;height:140px"></div>
+                <div class="radar-ring" style="width:80px;height:80px"></div>
+                <!-- Radar ping -->
+                <div class="radar-ping" style="width:80px;height:80px"></div>
+                <!-- Center (user) -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+                    <div id="radar-center" class="size-14 rounded-full cosmic-gradient flex items-center justify-center border-2 cosmic-glow" style="border-color:var(--dawn-charcoal)">
+                        <span id="radar-user-initial" class="text-white text-lg font-black">?</span>
+                    </div>
+                    <div id="radar-rank-label" class="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] font-bold px-2 py-0.5 rounded-full" style="background:rgba(0,0,0,0.6)">—</div>
                 </div>
+                <!-- Radar dots (JS fills) -->
+                <div id="radar-dots"></div>
+            </div>
 
-                <!-- Match content -->
-                <div id="match-content" style="display:none" class="relative z-10">
-                    <div class="flex flex-col items-center">
+            <div id="radar-empty" style="display:none" class="text-center mt-2">
+                <p class="opacity-40 text-xs italic">Radar etrafında henüz ruh yok...</p>
+            </div>
+            <div id="radar-info" style="display:none" class="text-center mt-2">
+                <p class="opacity-50 text-xs"><span id="radar-count">0</span> uyumlu ruh etrafında ✦</p>
+            </div>
+        </section>
+
+        <!-- ═══ BUGÜNÜN KOZMİK EŞLEŞMESİ — SOUL CARD ═══ -->
+        <div class="fade-up" style="animation-delay:0.15s">
+            <div class="flex items-center gap-2 mb-3 px-2">
+                <span class="material-symbols-outlined text-base" style="color:var(--ruby-jewel)">today</span>
+                <p class="opacity-50 text-[10px] font-bold uppercase tracking-widest decorative-header">Bugünün Kozmik Eşleşmesi</p>
+            </div>
+
+            <div id="match-card" class="soul-card w-full max-w-[320px] mx-auto match-card-blur">
+                <div class="soul-card-inner relative overflow-hidden">
+
+                    <!-- Loading state -->
+                    <div id="match-loading" class="flex flex-col items-center gap-4 py-8">
+                        <div class="size-24 rounded-full shimmer-placeholder"></div>
+                        <div class="h-4 w-32 rounded shimmer-placeholder"></div>
+                        <div class="h-3 w-24 rounded shimmer-placeholder"></div>
+                    </div>
+
+                    <!-- Match content -->
+                    <div id="match-content" style="display:none">
                         <!-- Avatar -->
-                        <div class="relative mb-4">
-                            <div id="match-avatar" class="blur-layer size-24 rounded-full cosmic-border overflow-hidden bg-surface-dark flex items-center justify-center cosmic-glow">
-                                <span class="text-cosmic-violet text-4xl font-black">?</span>
+                        <div class="relative mb-4 flex justify-center">
+                            <div id="match-avatar" class="blur-layer size-28 rounded-full border-double border-4 overflow-hidden flex items-center justify-center" style="border-color:var(--gold-deep);background:rgba(0,0,0,0.1)">
+                                <span style="color:var(--gold-rich)" class="text-4xl font-black">?</span>
                             </div>
-                            <div class="absolute -bottom-1 -right-1 size-8 rounded-full cosmic-gradient flex items-center justify-center border-2 border-background-dark">
+                            <div class="absolute bottom-0 right-[calc(50%-4.5rem)] size-8 rounded-full cosmic-gradient flex items-center justify-center border-2" style="border-color:var(--dawn-charcoal)">
                                 <span id="match-lp" class="text-white text-xs font-black">?</span>
                             </div>
                         </div>
 
-                        <!-- Name (blurred until revealed) -->
-                        <p id="match-name" class="blur-layer text-white text-xl font-black mb-1">???</p>
-                        <p id="match-archetype" class="text-white/40 text-xs mb-4">Life Path ?</p>
+                        <!-- Name -->
+                        <h3 id="match-name" class="blur-layer decorative-header text-2xl text-center mb-1 drop-shadow-md">???</h3>
+                        <p id="match-archetype" class="text-center text-xs font-bold uppercase tracking-widest mb-4" style="color:var(--ruby-jewel)">Life Path ?</p>
 
-                        <!-- Score -->
-                        <div class="flex items-center gap-3 mb-4">
-                            <div class="h-2 flex-1 bg-white/5 rounded-full overflow-hidden max-w-[160px]">
-                                <div id="match-bar" class="h-full rounded-full cosmic-gradient" style="width:0%;transition:width 1.5s cubic-bezier(0.34,1.56,0.64,1)"></div>
-                            </div>
-                            <span id="match-score" class="cosmic-gradient-text text-lg font-black">—%</span>
-                        </div>
+                        <div class="w-12 h-px mx-auto mb-3" style="background:var(--gold-deep)"></div>
 
                         <!-- Bond label -->
-                        <p id="match-bond" class="cosmic-gradient-text text-sm font-bold mb-5">—</p>
+                        <div class="text-center px-4 mb-4">
+                            <p id="match-bond" class="italic text-sm leading-relaxed metallic-gold">—</p>
+                        </div>
+
+                        <!-- Score -->
+                        <div class="flex justify-between items-baseline w-full px-4 mb-2">
+                            <span id="match-score" class="metallic-gold decorative-header text-3xl drop-shadow-sm">—%</span>
+                            <span class="text-[10px] uppercase opacity-60 font-bold tracking-tighter" style="color:var(--luminous-beige)">Bond Strength</span>
+                        </div>
+
+                        <!-- Score bar -->
+                        <div class="w-full h-1.5 rounded-full overflow-hidden mt-2 mb-4" style="background:rgba(255,255,255,0.05)">
+                            <div id="match-bar" class="h-full rounded-full cosmic-gradient" style="width:0%;transition:width 1.5s cubic-bezier(0.34,1.56,0.64,1)"></div>
+                        </div>
 
                         <!-- Reveal button -->
                         <button id="btn-reveal" style="display:none"
-                            class="w-full cosmic-gradient text-white py-3.5 rounded-full font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform cosmic-glow">
-                            <span class="material-symbols-outlined text-lg">visibility</span>
+                            class="w-full py-4 btn-oracle rounded-none shadow-xl flex items-center justify-center gap-3 uppercase tracking-[0.2em] text-xs font-bold active:scale-95 transition-transform">
                             <span id="reveal-label">Profili Aç (1 Reveal)</span>
+                            <span class="material-symbols-outlined text-base">fluid</span>
                         </button>
 
                         <!-- Already revealed info -->
-                        <div id="revealed-info" style="display:none" class="w-full text-center">
-                            <p class="text-white/30 text-xs">✦ Bugünkü eşleşme açıldı</p>
+                        <div id="revealed-info" style="display:none" class="w-full text-center mt-2">
+                            <p class="opacity-50 text-xs italic">✦ Bugünkü eşleşme açıldı</p>
                         </div>
 
-                        <!-- No credits message (daily limit reached) -->
-                        <div id="no-credits-msg" style="display:none" class="w-full glass rounded-xl p-3 text-center">
-                            <p class="text-white/40 text-xs">🔒 Bugünkü reveal hakkın doldu</p>
-                            <p class="text-white/25 text-[10px] mt-1">Yarın 5 yeni hak gelecek</p>
+                        <!-- No credits message -->
+                        <div id="no-credits-msg" style="display:none" class="w-full text-center p-3 glass rounded-lg mt-2">
+                            <p class="opacity-50 text-xs">🔒 Bugünkü reveal hakkın doldu</p>
+                            <p class="opacity-30 text-[10px] mt-1">Yarın 5 yeni hak gelecek</p>
                         </div>
 
-                        <!-- Non-premium paywall -->
-                        <div id="premium-paywall" style="display:none" class="w-full text-center">
+                        <!-- Premium paywall -->
+                        <div id="premium-paywall" style="display:none" class="w-full text-center mt-2">
                             <button onclick="window.location.href='premium_crystal_store.html'"
-                                class="w-full bg-gradient-to-r from-amber-500 to-amber-600 text-white py-3.5 rounded-full font-bold text-sm flex items-center justify-center gap-2 active:scale-95 transition-transform shadow-lg">
-                                <span class="material-symbols-outlined text-lg">workspace_premium</span>
+                                class="w-full py-4 btn-oracle rounded-none shadow-xl flex items-center justify-center gap-3 uppercase tracking-[0.2em] text-xs font-bold active:scale-95 transition-transform">
+                                <span class="material-symbols-outlined text-base">workspace_premium</span>
                                 Premium ile Profilleri Aç
                             </button>
-                            <p class="text-white/25 text-[10px] mt-2">Premium ile günde 5 profil açabilirsin</p>
+                            <p class="opacity-30 text-[10px] mt-2 italic">Premium ile günde 5 profil açabilirsin</p>
                         </div>
                     </div>
-                </div>
 
-                <!-- No match state -->
-                <div id="match-empty" style="display:none" class="flex flex-col items-center gap-3 py-8 relative z-10">
-                    <span class="material-symbols-outlined text-white/15 text-5xl">search_off</span>
-                    <p class="text-white/30 text-sm text-center">Henüz eşleşecek profil yok.<br/>Daha fazla kullanıcı katıldıkça eşleşmeler başlayacak!</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- ═══ UYUMLULUK RADARI ═══ -->
-        <div class="px-5 pt-6 fade-up" style="animation-delay:0.18s">
-            <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-cosmic-blue text-base">radar</span>
-                <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Uyumluluk Radarı</p>
-            </div>
-
-            <div class="glass-cosmic rounded-3xl p-5 flex flex-col items-center">
-                <div class="radar-container">
-                    <!-- Radar halkaları -->
-                    <div class="radar-ring" style="width:240px;height:240px"></div>
-                    <div class="radar-ring" style="width:170px;height:170px"></div>
-                    <div class="radar-ring" style="width:100px;height:100px"></div>
-                    <!-- Radar ping -->
-                    <div class="radar-ping" style="width:80px;height:80px"></div>
-                    <!-- Merkez (sen) -->
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                        <div id="radar-center" class="size-14 rounded-full cosmic-gradient flex items-center justify-center border-2 border-background-dark cosmic-glow">
-                            <span id="radar-user-initial" class="text-white text-lg font-black">?</span>
-                        </div>
-                        <div id="radar-rank-label" class="absolute -bottom-5 left-1/2 -translate-x-1/2 whitespace-nowrap text-[8px] font-bold px-2 py-0.5 rounded-full" style="background:rgba(0,0,0,0.6)">—</div>
+                    <!-- No match state -->
+                    <div id="match-empty" style="display:none" class="flex flex-col items-center gap-3 py-8">
+                        <span class="material-symbols-outlined opacity-20 text-5xl">search_off</span>
+                        <p class="opacity-40 text-sm text-center italic">Henüz eşleşecek profil yok.<br/>Daha fazla kullanıcı katıldıkça eşleşmeler başlayacak!</p>
                     </div>
-                    <!-- Dots (JS ile doldurulacak) -->
-                    <div id="radar-dots"></div>
-                </div>
 
-                <div id="radar-empty" style="display:none" class="text-center mt-4">
-                    <p class="text-white/25 text-xs">Radar etrafında henüz ruh yok...</p>
-                </div>
-                <div id="radar-info" style="display:none" class="text-center mt-4">
-                    <p class="text-white/35 text-xs"><span id="radar-count">0</span> uyumlu ruh etrafında ✦</p>
                 </div>
             </div>
+
+            <p class="mt-3 italic opacity-40 text-[10px] text-center tracking-widest uppercase">Kozmik titreşimlere dokunarak yeni yollar keşfet</p>
         </div>
 
-        <div class="cosmic-divider mx-6 mt-6"></div>
+        <!-- Gold Divider -->
+        <div class="gold-divider"></div>
 
         <!-- ═══ GEÇMİŞ EŞLEŞMELER ═══ -->
-        <div class="px-5 pt-6 pb-4 fade-up" style="animation-delay:0.25s">
-            <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-cosmic-violet text-base">history</span>
-                <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Geçmiş Eşleşmeler</p>
+        <div class="fade-up" style="animation-delay:0.25s">
+            <div class="flex items-center gap-2 mb-4 px-2">
+                <span class="material-symbols-outlined text-base" style="color:var(--gold-bright)">history</span>
+                <p class="opacity-50 text-[10px] font-bold uppercase tracking-widest decorative-header">Geçmiş Eşleşmeler</p>
             </div>
             <div id="history-list" class="space-y-2.5"></div>
-            <div id="history-empty" style="display:none" class="text-center py-6 text-white/20 text-xs italic">
+            <div id="history-empty" style="display:none" class="text-center py-6 opacity-30 text-xs italic">
                 Eşleşme geçmişin burada görünecek
             </div>
         </div>
@@ -303,13 +420,13 @@
 
     <!-- Add Connection Popup -->
     <div id="conn-popup-overlay" style="display:none" class="fixed inset-0 bg-black/50 z-[100]"></div>
-    <div id="conn-popup" style="display:none" class="fixed z-[101] bg-surface-dark border border-cosmic-violet/20 rounded-2xl p-4 shadow-xl max-w-[260px]">
-        <p id="conn-popup-name" class="text-white text-sm font-bold mb-3 truncate"></p>
+    <div id="conn-popup" style="display:none;background:#3d3935;border:1px solid #996515" class="fixed z-[101] rounded-lg p-4 shadow-xl max-w-[260px]">
+        <p id="conn-popup-name" class="text-sm font-bold mb-3 truncate"></p>
         <button id="conn-popup-btn" class="w-full py-2.5 rounded-full text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-95 cosmic-gradient text-white">
             <span class="material-symbols-outlined text-base">person_add</span>
             <span id="conn-popup-btn-label">Add Connection</span>
         </button>
-        <p id="conn-popup-status" style="display:none" class="text-white/40 text-xs text-center mt-2"></p>
+        <p id="conn-popup-status" style="display:none" class="opacity-50 text-xs text-center mt-2"></p>
     </div>
 
 </div>
@@ -321,8 +438,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     function initial(name) { return (name||'?').charAt(0).toUpperCase(); }
 
     // ─── SESSION & USER DATA ─────────────────────────────────
-    // Supabase session recover'ını bekle — doğrudan getSession() çağırmak
-    // race condition yaratıyordu (session null → yanlış redirect)
     if (window.auth && window.auth.whenReady) {
         await window.auth.whenReady();
     }
@@ -353,7 +468,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('radar-user-initial').textContent = initial(ud.name);
 
-    // Gamification entegrasyonu — rütbe ve görünürlük
+    // Gamification entegrasyonu
     if (window.gamification) {
         var gRank = window.gamification.getRank();
         var gVis = window.gamification.getVisibility();
@@ -362,7 +477,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             rlabel.textContent = gRank.name;
             rlabel.style.color = gRank.color;
         }
-        // Merkez boyutunu rütbeye göre ayarla
         var center = document.getElementById('radar-center');
         if (center && gRank.radarSize > 14) {
             var sz = Math.min(20, gRank.radarSize);
@@ -370,7 +484,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             center.style.height = (sz * 4) + 'px';
             center.style.boxShadow = '0 0 ' + (sz * 2) + 'px ' + gRank.color + '40';
         }
-        // XP kazan — cosmic match görüntüleme
         window.gamification.addXP('cosmic_match_view', 0);
         window.gamification.trackAction('cosmic_match_view');
     }
@@ -406,10 +519,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // ─── ANA İÇERİK YÜKLEME ─────────────────────────────────
     async function initMain() {
       try {
-        // Mevcut kullanıcının profilini doğru değerlerle güncelle
         await window.discovery.refreshOwnProfile(userId);
 
-        // Premium durumunu async kontrol et (PlayBilling + Supabase dahil)
         var isPrem = false;
         if (window.premium) {
             isPrem = await window.premium.checkStatus();
@@ -419,20 +530,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             streak = await window.discovery.updateStreak(userId);
             renderStreak(streak);
         } else {
-            // Premium: streak bar ve badge gizle
             document.querySelector('.px-5.pt-5.pb-2').style.display = 'none';
             document.getElementById('streak-badge').style.display = 'none';
         }
 
-        // Günlük eşleşme
         var match = await window.discovery.findDailyMatch(userId, userProfile);
         await renderDailyMatch(match, streak);
 
-        // Radar
         var topMatches = await window.discovery.getTopMatches(userId, userProfile, 8);
         renderRadar(topMatches);
 
-        // Geçmiş — radar verileriyle birleştir
         var history = await window.discovery.getMatchHistory(userId, 10);
         renderHistory(history, topMatches, isPrem);
       } catch(e) {
@@ -469,62 +576,50 @@ document.addEventListener('DOMContentLoaded', async function() {
         var revealed = match.revealed;
         var isPrem = window.premium && window.premium.isPremium();
 
-        // Günlük reveal hakkını hesapla
         var todayReveals = await window.discovery.getDailyRevealCount(userId);
         var remaining = isPrem ? (window.discovery.PREMIUM_DAILY_REVEALS - todayReveals) : 0;
 
-        // Credits bar güncelle
         document.getElementById('credits-count').textContent = isPrem ? Math.max(0, remaining) : '🔒';
         document.getElementById('credits-label').textContent = isPrem ? 'Bugün' : 'Premium';
 
         document.getElementById('match-content').style.display = 'block';
 
-        // LP badge
         document.getElementById('match-lp').textContent = m.life_path || '?';
 
-        // Score
         document.getElementById('match-score').textContent = score + '%';
         setTimeout(function() {
             document.getElementById('match-bar').style.width = score + '%';
         }, 300);
 
-        // Bond
         document.getElementById('match-bond').textContent = window.discovery.bondLabel(score);
 
-        // Archetype
         var arch = window.discovery.ARCHETYPES[m.life_path] || 'Ruh';
         document.getElementById('match-archetype').textContent = 'Life Path ' + (m.life_path||'?') + ' · ' + arch;
 
         if (revealed) {
-            // Açılmış eşleşme
             showRevealed(m);
         } else {
-            // Bulanık eşleşme
             document.getElementById('match-name').textContent = maskName(m.full_name);
             document.getElementById('match-avatar').innerHTML = '<span class="text-cosmic-violet text-4xl font-black">' + initial(m.full_name) + '</span>';
             document.getElementById('match-card').classList.add('match-card-blur');
             document.getElementById('match-card').classList.remove('match-card-revealed');
 
             if (!isPrem) {
-                // Non-premium: paywall göster
                 document.getElementById('btn-reveal').style.display = 'none';
                 document.getElementById('no-credits-msg').style.display = 'none';
                 document.getElementById('premium-paywall').style.display = 'block';
             } else if (remaining > 0) {
-                // Premium ve hakkı var
                 document.getElementById('btn-reveal').style.display = 'flex';
                 document.getElementById('no-credits-msg').style.display = 'none';
                 document.getElementById('premium-paywall').style.display = 'none';
                 document.getElementById('reveal-label').textContent = 'Profili Aç (' + remaining + ' hak kaldı)';
             } else {
-                // Premium ama günlük limit doldu
                 document.getElementById('btn-reveal').style.display = 'none';
                 document.getElementById('no-credits-msg').style.display = 'block';
                 document.getElementById('premium-paywall').style.display = 'none';
             }
         }
 
-        // Reveal butonu
         document.getElementById('btn-reveal').addEventListener('click', async function() {
             this.disabled = true;
             this.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
@@ -589,8 +684,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         matches.forEach(function(item, idx) {
             var p = item.profile;
             var score = item.score;
-            // Yüksek skor = merkeze yakın
-            var distance = 120 - (score - 65) * 2; // 65% → 120px, 95% → 60px
+            var distance = 120 - (score - 65) * 2;
             distance = Math.max(45, Math.min(115, distance));
             var angle = (idx / matches.length) * 2 * Math.PI - Math.PI/2;
             var x = 130 + distance * Math.cos(angle) - 18;
@@ -611,13 +705,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         var listEl = document.getElementById('history-list');
         var emptyEl = document.getElementById('history-empty');
 
-        // Geçmiş eşleşmelerdeki user_id'leri topla
         var historyIds = {};
         (matches || []).forEach(function(m) {
             if (m.matched_user_id) historyIds[m.matched_user_id] = true;
         });
 
-        // Radar'daki ama geçmişte olmayan kişileri ekle
         var radarExtras = [];
         if (radarMatches && radarMatches.length) {
             radarMatches.forEach(function(item) {
@@ -644,7 +736,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         allMatches.forEach(function(match) {
             var m = match.matched || { full_name: 'Bilinmeyen', life_path: null };
-            // Premium: tüm eşleşmeler açık, Non-premium: DB'de revealed olan veya bugünkü açık
             var revealed = isPrem || match.revealed;
             var displayName = revealed ? (m.full_name || 'Bilinmeyen') : maskName(m.full_name || 'Bilinmeyen');
             var score = match.match_score || 0;
@@ -708,7 +799,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         popupBtnLabel.textContent = 'Add Connection';
         popupBtn.className = 'w-full py-2.5 rounded-full text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-95 cosmic-gradient text-white';
 
-        // Check connection status
         var connected = await window.connectionEngine.areConnected(userId, targetUid);
         if (connected) {
             popupBtn.style.display = 'none';
@@ -725,7 +815,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
 
-        // Position popup near the clicked name
         var rect = nameEl.getBoundingClientRect();
         popupEl.style.left = Math.min(rect.left, window.innerWidth - 270) + 'px';
         popupEl.style.top = (rect.bottom + 8) + 'px';
