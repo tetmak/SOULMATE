@@ -27,7 +27,8 @@
         deep_insight_full: false,
         cosmic_match_reveal: false,
         friendship_dynamics: false,
-        manifest_portal: 2,              // ayda 2 niyet
+        manifest_per_month: 5,           // ayda 5 niyet (free)
+        manifest_per_day: 1,             // günde 1 niyet (herkes)
         breakdown_pages: 1
     };
 
@@ -185,11 +186,30 @@
 
     // ─── KULLANIM LİMİTLERİ ─────────────────────────────────
     function getUsageKey(f) { return 'numerael_usage_' + f + '_' + new Date().toISOString().slice(0, 7); }
+    function getDailyUsageKey(f) { return 'numerael_usage_' + f + '_' + new Date().toISOString().slice(0, 10); }
     function getUsageCount(f) { try { return parseInt(localStorage.getItem(getUsageKey(f)) || '0'); } catch(e) { return 0; } }
+    function getDailyUsageCount(f) { try { return parseInt(localStorage.getItem(getDailyUsageKey(f)) || '0'); } catch(e) { return 0; } }
     function incrementUsage(f) { var c = getUsageCount(f) + 1; try { localStorage.setItem(getUsageKey(f), c.toString()); } catch(e) {} return c; }
+    function incrementDailyUsage(f) { var c = getDailyUsageCount(f) + 1; try { localStorage.setItem(getDailyUsageKey(f), c.toString()); } catch(e) {} return c; }
 
     // ─── FEATURE GATE ────────────────────────────────────────
     function canUseFeature(feature) {
+        // manifest_portal özel: premium da günlük 1 limit var
+        if (feature === 'manifest_portal') {
+            var dailyUsed = getDailyUsageCount('manifest');
+            if (dailyUsed >= FREE_LIMITS.manifest_per_day) {
+                return { allowed: false, reason: 'Bugün zaten bir manifest oluşturdun. Yarın yeni bir niyet belirleyebilirsin!', daily_limit: true };
+            }
+            if (!isPremium()) {
+                var monthlyUsed = getUsageCount('manifest');
+                var monthlyLeft = FREE_LIMITS.manifest_per_month - monthlyUsed;
+                if (monthlyLeft <= 0) {
+                    return { allowed: false, reason: 'Bu ay ' + FREE_LIMITS.manifest_per_month + ' niyet hakkını kullandın. Premium ile her gün manifest oluştur!' };
+                }
+                return { allowed: true, monthlyLeft: monthlyLeft, dailyLeft: FREE_LIMITS.manifest_per_day - dailyUsed };
+            }
+            return { allowed: true, dailyLeft: FREE_LIMITS.manifest_per_day - dailyUsed };
+        }
         if (isPremium()) return { allowed: true };
         switch (feature) {
             case 'add_connection':
@@ -207,10 +227,6 @@
             case 'cosmic_match_reveal': return { allowed: false, reason: 'Eşleşme açma Premium özelliği.' };
             case 'friendship_dynamics': return { allowed: false, reason: 'Arkadaşlık Dinamiği analizi Premium özelliği.' };
             case 'breakdown_page_2': case 'breakdown_page_3': return { allowed: false, reason: 'Bu analiz sayfası Premium özelliği.' };
-            case 'manifest_portal':
-                var manUsed = getUsageCount('manifest');
-                var manLeft = FREE_LIMITS.manifest_portal - manUsed;
-                return manLeft > 0 ? { allowed: true } : { allowed: false, reason: 'Bu ay ' + FREE_LIMITS.manifest_portal + ' niyet hakkını kullandın. Premium ile sınırsız!' };
             default: return { allowed: true };
         }
     }
@@ -527,6 +543,7 @@
         startPurchase: startPurchase,
         restorePurchases: restorePurchases,
         incrementUsage: incrementUsage, getUsageCount: getUsageCount,
+        incrementDailyUsage: incrementDailyUsage, getDailyUsageCount: getDailyUsageCount,
         isReady: function() {
             if (window.billing && window.billing.isNative()) return window.billing.isReady();
             return paddleReady;

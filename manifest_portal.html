@@ -91,12 +91,34 @@
     <!-- Main Content -->
     <main class="flex-1 px-4 -mt-4 relative z-10">
 
+        <!-- Usage Info Banner -->
+        <div id="usage-banner" class="manifest-card rounded-xl p-3 mb-4 fade-up fade-up-d1" style="display:none">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings:'FILL' 1;">schedule</span>
+                    <span id="usage-text" class="text-white/60 text-xs font-medium"></span>
+                </div>
+                <span id="usage-badge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"></span>
+            </div>
+        </div>
+
+        <!-- Limit Reached Banner -->
+        <div id="limit-banner" class="rounded-xl p-4 mb-4 fade-up fade-up-d1" style="display:none; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.2);">
+            <div class="flex items-start gap-3">
+                <span class="material-symbols-outlined text-red-400 text-xl mt-0.5">block</span>
+                <div class="flex-1">
+                    <p id="limit-text" class="text-white/80 text-sm font-medium mb-2"></p>
+                    <button id="limit-premium-btn" onclick="window.location.href='premium_crystal_store.html'" class="text-xs font-bold text-violet-300 underline" style="display:none">Premium'a Geç →</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Empty State / Manifests List -->
         <div id="manifests-empty" class="manifest-card rounded-2xl p-8 text-center mb-6 fade-up fade-up-d2">
             <span class="material-symbols-outlined text-white/20 text-5xl mb-4" style="font-variation-settings:'FILL' 1;">edit_note</span>
             <h3 class="text-white font-bold text-lg mb-2">Henüz manifest yok</h3>
             <p class="text-white/40 text-sm leading-relaxed mb-6">Evren niyetlerini bekliyor. İsteklerini kelimelere dökerek yolculuğuna başla.</p>
-            <button onclick="window.location.href='cosmic_manifest_portal.html'"
+            <button id="write-btn-empty" onclick="handleWriteManifest()"
                 class="gold-btn w-full py-4 rounded-full text-sm tracking-wider flex items-center justify-center gap-2 active:scale-95 transition-transform">
                 <span class="material-symbols-outlined text-lg">auto_awesome</span>
                 Write a Manifest
@@ -108,7 +130,7 @@
 
         <!-- Write Button (shown when manifests exist) -->
         <div id="write-btn-section" class="mb-6" style="display:none">
-            <button onclick="window.location.href='cosmic_manifest_portal.html'"
+            <button id="write-btn-main" onclick="handleWriteManifest()"
                 class="gold-btn w-full py-4 rounded-full text-sm tracking-wider flex items-center justify-center gap-2 active:scale-95 transition-transform">
                 <span class="material-symbols-outlined text-lg">auto_awesome</span>
                 Write a Manifest
@@ -139,15 +161,21 @@
     <script src="js/bottom-nav.js"></script>
 
     <script>
+    var _manifestAllowed = false;
+
+    function handleWriteManifest() {
+        if (!_manifestAllowed) {
+            // Limit aşıldığında premium sayfasına yönlendir
+            if (window.premium && !window.premium.isPremium()) {
+                window.location.href = 'premium_crystal_store.html';
+            }
+            return;
+        }
+        window.location.href = 'cosmic_manifest_portal.html';
+    }
+
     (function() {
         'use strict';
-
-        var isNative = window.location.protocol === 'capacitor:' ||
-                       window.location.protocol === 'ionic:' ||
-                       window.location.hostname === 'localhost' ||
-                       window.location.protocol === 'file:' ||
-                       (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-        var API_BASE = isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
         async function init() {
             if (window.auth && window.auth.whenReady) await window.auth.whenReady();
@@ -158,8 +186,11 @@
             var isPrem = window.premium && window.premium.isPremium();
             if (isPrem) {
                 document.getElementById('premium-title').textContent = 'Premium Benefit Unlocked';
-                document.getElementById('premium-desc').textContent = 'Sınırsız manifest oluşturma hakkına sahipsin. Kozmik enerji akışını güçlendir!';
+                document.getElementById('premium-desc').textContent = 'Her gün manifest oluşturma hakkına sahipsin. Kozmik enerji akışını güçlendir!';
             }
+
+            // Limit kontrolü
+            updateUsageUI();
 
             // Manifestleri yükle (cosmic_manifest_portal sayfasındaki localStorage'dan)
             var manifests = [];
@@ -181,6 +212,60 @@
             }
         }
 
+        function updateUsageUI() {
+            if (!window.premium) return;
+
+            var check = window.premium.canUse('manifest_portal');
+            var isPrem = window.premium.isPremium();
+            var usageBanner = document.getElementById('usage-banner');
+            var limitBanner = document.getElementById('limit-banner');
+            var btnEmpty = document.getElementById('write-btn-empty');
+            var btnMain = document.getElementById('write-btn-main');
+
+            if (check.allowed) {
+                _manifestAllowed = true;
+
+                // Kalan hak bilgisi göster
+                usageBanner.style.display = 'block';
+                var usageText = document.getElementById('usage-text');
+                var usageBadge = document.getElementById('usage-badge');
+
+                if (isPrem) {
+                    usageText.textContent = 'Bugün 1 manifest hakkın var';
+                    usageBadge.textContent = 'Premium';
+                    usageBadge.style.background = 'rgba(139,92,246,0.2)';
+                    usageBadge.style.color = '#a78bfa';
+                } else {
+                    var monthlyLeft = check.monthlyLeft || 0;
+                    usageText.textContent = 'Bugün 1 hak · Bu ay ' + monthlyLeft + ' hak kaldı';
+                    usageBadge.textContent = 'Free';
+                    usageBadge.style.background = 'rgba(250,198,56,0.15)';
+                    usageBadge.style.color = '#FAC638';
+                }
+            } else {
+                _manifestAllowed = false;
+
+                // Limit aşıldı bannerı göster
+                limitBanner.style.display = 'block';
+                document.getElementById('limit-text').textContent = check.reason;
+
+                // Aylık limit aşıldıysa premium butonu göster
+                if (!check.daily_limit && !isPrem) {
+                    document.getElementById('limit-premium-btn').style.display = 'inline';
+                }
+
+                // Butonları deaktif et
+                if (btnEmpty) {
+                    btnEmpty.style.opacity = '0.4';
+                    btnEmpty.style.pointerEvents = 'none';
+                }
+                if (btnMain) {
+                    btnMain.style.opacity = '0.4';
+                    btnMain.style.pointerEvents = 'none';
+                }
+            }
+        }
+
         function renderManifests(manifests) {
             var list = document.getElementById('manifests-list');
             // Son 10 manifesti göster, en yeniden eskiye
@@ -190,7 +275,7 @@
                 var dateStr = date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
                 var text = m.text || m.intention || 'Manifest';
                 var preview = text.length > 80 ? text.substring(0, 80) + '...' : text;
-                return '<div class="manifest-card rounded-xl p-4 cursor-pointer" onclick="window.location.href=\'cosmic_manifest_portal.html\'">' +
+                return '<div class="manifest-card rounded-xl p-4">' +
                     '<div class="flex items-start gap-3">' +
                         '<span class="material-symbols-outlined text-primary/60 text-lg mt-0.5" style="font-variation-settings:\'FILL\' 1;">auto_awesome</span>' +
                         '<div class="flex-1 min-w-0">' +

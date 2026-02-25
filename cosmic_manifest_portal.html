@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Cosmic Manifestation Portal</title>
+    <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -304,7 +305,7 @@
 
     <!-- Top nav -->
     <nav class="fixed top-0 w-full px-8 py-10 flex justify-between items-center z-20">
-        <button onclick="window.location.href='cosmic_energy_calendar_2.html'"
+        <button onclick="window.location.href='manifest_portal.html'"
             class="p-2 rounded-full backdrop-blur-md text-white/80"
             style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);cursor:pointer">
             <span class="material-icons">arrow_back_ios_new</span>
@@ -558,10 +559,48 @@
 
         function sendToUniverse() {
             if (animating) return;
+
+            // Boş metin kontrolü
+            var text = document.getElementById('intention-text').value.trim();
+            if (!text) return;
+
+            // Limit kontrolü
+            if (window.premium) {
+                var check = window.premium.canUse('manifest_portal');
+                if (!check.allowed) {
+                    alert(check.reason);
+                    return;
+                }
+            }
+
             animating = true;
             var w = document.getElementById('universe-wrapper');
             var sm = document.getElementById('sent-msg');
             document.getElementById('send-btn').disabled = true;
+
+            // Kullanım sayaçlarını artır
+            if (window.premium) {
+                window.premium.incrementUsage('manifest');
+                window.premium.incrementDailyUsage('manifest');
+            }
+
+            // Manifesti localStorage'a kaydet
+            try {
+                var session = null;
+                if (window.auth && window.auth.getSession) {
+                    // sync çağrı - session zaten yüklü olmalı
+                    var authData = JSON.parse(localStorage.getItem('numerael-auth-token') || 'null');
+                    if (authData && authData.user) session = authData;
+                }
+                if (session && session.user) {
+                    var key = 'numerael_manifests_' + session.user.id;
+                    var manifests = [];
+                    try { manifests = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
+                    manifests.push({ text: text, created_at: new Date().toISOString() });
+                    localStorage.setItem(key, JSON.stringify(manifests));
+                }
+            } catch(e) { console.warn('[Manifest] Save error:', e); }
+
             // XP tracking
             if (window.gamification) { window.gamification.addXP('manifest_set', 0); window.gamification.trackAction('manifest_set'); }
 
