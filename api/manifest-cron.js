@@ -1,6 +1,7 @@
 /**
- * NUMERAEL — Daily Manifest Cron Job
- * Her gün fake kullanıcılardan yeni manifestler + beğeniler oluşturur.
+ * NUMERAEL — Daily Manifest Cron Job + Weekly Reset
+ * Her gün: 3-6 yeni fake manifest + likes
+ * Her Pazartesi: Top 3 şampiyonu arşivle → eski fakeleri sil → taze 30-35 fake ekle
  * Vercel Cron: her gün 09:00 UTC (Türkiye 12:00)
  */
 
@@ -37,6 +38,8 @@ const FAKE_USERS = [
     { id: '707c0e54-b93f-4338-8f9d-f2996a8f5734', name: 'Yusuf', lp: 33 },
     { id: '6992f7c2-29a9-4e2b-bb00-a0b49febdbbf', name: 'Oğuzhan', lp: 3 }
 ];
+
+const FAKE_IDS = new Set(FAKE_USERS.map(u => u.id));
 
 // ─── Manifest metin havuzu (kategori bazlı) ───────────
 const TEXTS = {
@@ -139,9 +142,31 @@ function randomFrom(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// Supabase REST helper
+function sbFetch(url, key, options = {}) {
+    return fetch(url, {
+        ...options,
+        headers: {
+            'Content-Type': 'application/json',
+            'apikey': key,
+            'Authorization': `Bearer ${key}`,
+            ...(options.headers || {})
+        }
+    });
+}
+
+// Geçen haftanın Pazartesi tarihini al (YYYY-MM-DD)
+function getLastMonday() {
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() - 7); // Geçen hafta
+    const day = d.getUTCDay();
+    const diff = d.getUTCDate() - day + (day === 0 ? -6 : 1); // Pazartesi
+    d.setUTCDate(diff);
+    return d.toISOString().split('T')[0];
+}
+
 // ─── Handler ──────────────────────────────────────────
 export default async function handler(req, res) {
-    // Cron secret kontrolü (opsiyonel güvenlik)
     const authHeader = req.headers.authorization;
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && process.env.CRON_SECRET) {
         return res.status(401).json({ error: 'Unauthorized' });
@@ -154,19 +179,185 @@ export default async function handler(req, res) {
         return res.status(500).json({ error: 'Missing Supabase config' });
     }
 
+    const result = {
+        daily: { manifests: 0, likes: 0 },
+        weekly: { champions_saved: 0, fakes_deleted: 0, fresh_manifests: 0 }
+    };
+
     try {
-        // Bugün kaç manifest oluşturulacak (3-6 arası)
+        const today = new Date();
+        const isMonday = today.getUTCDay() === 1;
+
+        // ════════════════════════════════════════════
+        // HAFTALIK RESET (Sadece Pazartesi)
+        // ════════════════════════════════════════════
+        if (isMonday) {
+            console.log('[ManifestCron] 🔄 Monday — weekly reset starting...');
+
+            // 1) Geçen haftanın TOP 3 manifestini bul (like sayısına göre)
+            // Önce tüm manifestleri ve like sayılarını al
+            const allManifestsRes = await sbFetch(
+                `${SUPABASE_URL}/rest/v1/manifests?select=id,user_id,text,category,display_name,life_path,created_at&order=created_at.desc&limit=200`,
+                SUPABASE_KEY
+            );
+
+            if (allManifestsRes.ok) {
+                const allManifests = await allManifestsRes.json();
+
+                // Her manifest için like sayısını al
+                if (allManifests.length > 0) {
+                    const ids = allManifests.map(m => m.id);
+                    const likesRes = await sbFetch(
+                        `${SUPABASE_URL}/rest/v1/manifest_likes?select=manifest_id&manifest_id=in.(${ids.join(',')})`,
+                        SUPABASE_KEY
+                    );
+
+                    const likeCounts = {};
+                    if (likesRes.ok) {
+                        const likes = await likesRes.json();
+                        for (const l of likes) {
+                            likeCounts[l.manifest_id] = (likeCounts[l.manifest_id] || 0) + 1;
+                        }
+                    }
+
+                    // Like sayısına göre sırala ve TOP 3 al
+                    const withLikes = allManifests.map(m => ({
+                        ...m,
+                        like_count: likeCounts[m.id] || 0,
+                        is_real_user: !FAKE_IDS.has(m.user_id)
+                    }));
+                    withLikes.sort((a, b) => b.like_count - a.like_count);
+                    const top3 = withLikes.slice(0, 3).filter(m => m.like_count > 0);
+
+                    // 2) Champions tablosuna kaydet
+                    if (top3.length > 0) {
+                        const weekStart = getLastMonday();
+                        const champions = top3.map(m => ({
+                            week_start: weekStart,
+                            original_manifest_id: m.id,
+                            user_id: m.user_id,
+                            text: m.text,
+                            category: m.category,
+                            display_name: m.display_name,
+                            life_path: m.life_path,
+                            like_count: m.like_count,
+                            is_real_user: m.is_real_user
+                        }));
+
+                        const champRes = await sbFetch(
+                            `${SUPABASE_URL}/rest/v1/manifest_weekly_champions`,
+                            SUPABASE_KEY,
+                            {
+                                method: 'POST',
+                                headers: { 'Prefer': 'return=representation' },
+                                body: JSON.stringify(champions)
+                            }
+                        );
+
+                        if (champRes.ok) {
+                            result.weekly.champions_saved = top3.length;
+                            console.log(`[ManifestCron] 🏆 Saved ${top3.length} champions for week ${weekStart}`);
+                        } else {
+                            console.error('[ManifestCron] Champion save failed:', await champRes.text());
+                        }
+                    }
+                }
+
+                // 3) Eski fake manifestleri sil (gerçek kullanıcılara DOKUNMA!)
+                const fakeIdList = FAKE_USERS.map(u => u.id).join(',');
+                const delRes = await sbFetch(
+                    `${SUPABASE_URL}/rest/v1/manifests?user_id=in.(${fakeIdList})`,
+                    SUPABASE_KEY,
+                    {
+                        method: 'DELETE',
+                        headers: { 'Prefer': 'return=representation' }
+                    }
+                );
+
+                if (delRes.ok) {
+                    const deleted = await delRes.json();
+                    result.weekly.fakes_deleted = deleted.length;
+                    console.log(`[ManifestCron] 🗑️ Deleted ${deleted.length} fake manifests`);
+                }
+            }
+
+            // 4) Taze 30-35 fake manifest + likes ekle (yeni hafta için)
+            const freshCount = 30 + Math.floor(Math.random() * 6);
+            const freshUsers = pickRandom(FAKE_USERS, Math.min(freshCount, FAKE_USERS.length));
+            const freshManifests = [];
+
+            for (const user of freshUsers) {
+                const category = randomFrom(CATEGORIES);
+                const text = randomFrom(TEXTS[category]);
+                // Rastgele tarih: son 1-6 gün arası (doğal görünsün)
+                const daysAgo = Math.floor(Math.random() * 6) + 1;
+                const createdAt = new Date();
+                createdAt.setUTCDate(createdAt.getUTCDate() - daysAgo);
+                createdAt.setUTCHours(Math.floor(Math.random() * 14) + 7); // 07:00-21:00
+
+                freshManifests.push({
+                    user_id: user.id,
+                    text: text,
+                    category: category,
+                    display_name: user.name,
+                    life_path: user.lp,
+                    created_at: createdAt.toISOString()
+                });
+            }
+
+            const freshRes = await sbFetch(
+                `${SUPABASE_URL}/rest/v1/manifests`,
+                SUPABASE_KEY,
+                {
+                    method: 'POST',
+                    headers: { 'Prefer': 'return=representation' },
+                    body: JSON.stringify(freshManifests)
+                }
+            );
+
+            if (freshRes.ok) {
+                const freshInserted = await freshRes.json();
+                result.weekly.fresh_manifests = freshInserted.length;
+
+                // Her fresh manifeste 3-12 like ekle
+                const freshLikes = [];
+                for (const m of freshInserted) {
+                    const likeCount = 3 + Math.floor(Math.random() * 10);
+                    const likers = pickRandom(
+                        FAKE_USERS.filter(u => u.id !== m.user_id),
+                        likeCount
+                    );
+                    for (const liker of likers) {
+                        freshLikes.push({ manifest_id: m.id, user_id: liker.id });
+                    }
+                }
+
+                if (freshLikes.length > 0) {
+                    await sbFetch(
+                        `${SUPABASE_URL}/rest/v1/manifest_likes`,
+                        SUPABASE_KEY,
+                        {
+                            method: 'POST',
+                            headers: { 'Prefer': 'resolution=ignore-duplicates' },
+                            body: JSON.stringify(freshLikes)
+                        }
+                    );
+                }
+
+                console.log(`[ManifestCron] ✨ Added ${freshInserted.length} fresh manifests for new week`);
+            }
+        }
+
+        // ════════════════════════════════════════════
+        // GÜNLÜK: 3-6 yeni fake manifest + likes
+        // ════════════════════════════════════════════
         const manifestCount = 3 + Math.floor(Math.random() * 4);
-
-        // Rastgele kullanıcılar seç
         const selectedUsers = pickRandom(FAKE_USERS, manifestCount);
-
         const newManifests = [];
 
         for (const user of selectedUsers) {
             const category = randomFrom(CATEGORIES);
             const text = randomFrom(TEXTS[category]);
-
             newManifests.push({
                 user_id: user.id,
                 text: text,
@@ -176,109 +367,89 @@ export default async function handler(req, res) {
             });
         }
 
-        // Manifestleri Supabase'e ekle
-        const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/manifests`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_KEY,
-                'Authorization': `Bearer ${SUPABASE_KEY}`,
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify(newManifests)
-        });
-
-        if (!insertRes.ok) {
-            const err = await insertRes.text();
-            console.error('[ManifestCron] Insert failed:', err);
-            return res.status(500).json({ error: 'Insert failed', details: err });
-        }
-
-        const inserted = await insertRes.json();
-        const insertedIds = inserted.map(m => m.id);
-
-        // Her yeni manifeste rastgele like'lar ekle (2-8 arası)
-        const allLikes = [];
-        for (const manifest of inserted) {
-            const likeCount = 2 + Math.floor(Math.random() * 7);
-            const likers = pickRandom(
-                FAKE_USERS.filter(u => u.id !== manifest.user_id),
-                likeCount
-            );
-
-            for (const liker of likers) {
-                allLikes.push({
-                    manifest_id: manifest.id,
-                    user_id: liker.id
-                });
-            }
-        }
-
-        if (allLikes.length > 0) {
-            await fetch(`${SUPABASE_URL}/rest/v1/manifest_likes`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Prefer': 'resolution=ignore-duplicates'
-                },
-                body: JSON.stringify(allLikes)
-            });
-        }
-
-        // Eski manifestlere de birkaç yeni like ekle (canlılık)
-        const oldManifestsRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/manifests?select=id,user_id&order=created_at.desc&limit=20&id=not.in.(${insertedIds.join(',')})`,
+        const insertRes = await sbFetch(
+            `${SUPABASE_URL}/rest/v1/manifests`,
+            SUPABASE_KEY,
             {
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`
-                }
+                method: 'POST',
+                headers: { 'Prefer': 'return=representation' },
+                body: JSON.stringify(newManifests)
             }
         );
 
-        if (oldManifestsRes.ok) {
-            const oldManifests = await oldManifestsRes.json();
-            const oldLikes = [];
-            // Eski manifestlerden rastgele 3-5 tanesine yeni like ekle
-            const toGetLikes = pickRandom(oldManifests, Math.min(5, oldManifests.length));
+        if (insertRes.ok) {
+            const inserted = await insertRes.json();
+            result.daily.manifests = inserted.length;
+            const insertedIds = inserted.map(m => m.id);
 
-            for (const old of toGetLikes) {
-                const likerCount = 1 + Math.floor(Math.random() * 3);
+            // Her yeni manifeste 2-8 like ekle
+            const allLikes = [];
+            for (const manifest of inserted) {
+                const likeCount = 2 + Math.floor(Math.random() * 7);
                 const likers = pickRandom(
-                    FAKE_USERS.filter(u => u.id !== old.user_id),
-                    likerCount
+                    FAKE_USERS.filter(u => u.id !== manifest.user_id),
+                    likeCount
                 );
                 for (const liker of likers) {
-                    oldLikes.push({
-                        manifest_id: old.id,
-                        user_id: liker.id
-                    });
+                    allLikes.push({ manifest_id: manifest.id, user_id: liker.id });
                 }
             }
 
-            if (oldLikes.length > 0) {
-                await fetch(`${SUPABASE_URL}/rest/v1/manifest_likes`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'apikey': SUPABASE_KEY,
-                        'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Prefer': 'resolution=ignore-duplicates'
-                    },
-                    body: JSON.stringify(oldLikes)
-                });
+            if (allLikes.length > 0) {
+                await sbFetch(
+                    `${SUPABASE_URL}/rest/v1/manifest_likes`,
+                    SUPABASE_KEY,
+                    {
+                        method: 'POST',
+                        headers: { 'Prefer': 'resolution=ignore-duplicates' },
+                        body: JSON.stringify(allLikes)
+                    }
+                );
+                result.daily.likes = allLikes.length;
+            }
+
+            // Eski manifestlere de birkaç like ekle (canlılık)
+            const oldRes = await sbFetch(
+                `${SUPABASE_URL}/rest/v1/manifests?select=id,user_id&order=created_at.desc&limit=20&id=not.in.(${insertedIds.join(',')})`,
+                SUPABASE_KEY
+            );
+
+            if (oldRes.ok) {
+                const oldManifests = await oldRes.json();
+                const oldLikes = [];
+                const toGetLikes = pickRandom(oldManifests, Math.min(5, oldManifests.length));
+
+                for (const old of toGetLikes) {
+                    const likerCount = 1 + Math.floor(Math.random() * 3);
+                    const likers = pickRandom(
+                        FAKE_USERS.filter(u => u.id !== old.user_id),
+                        likerCount
+                    );
+                    for (const liker of likers) {
+                        oldLikes.push({ manifest_id: old.id, user_id: liker.id });
+                    }
+                }
+
+                if (oldLikes.length > 0) {
+                    await sbFetch(
+                        `${SUPABASE_URL}/rest/v1/manifest_likes`,
+                        SUPABASE_KEY,
+                        {
+                            method: 'POST',
+                            headers: { 'Prefer': 'resolution=ignore-duplicates' },
+                            body: JSON.stringify(oldLikes)
+                        }
+                    );
+                }
             }
         }
 
-        console.log(`[ManifestCron] Created ${inserted.length} manifests, ${allLikes.length} likes`);
+        console.log(`[ManifestCron] Done.`, JSON.stringify(result));
 
         return res.status(200).json({
             success: true,
-            manifests_created: inserted.length,
-            likes_added: allLikes.length,
-            users: selectedUsers.map(u => u.name)
+            is_monday: isMonday,
+            ...result
         });
 
     } catch (e) {
