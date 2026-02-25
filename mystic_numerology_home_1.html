@@ -23,24 +23,88 @@
     <script src="js/gamification-engine.js"></script>
     <script src="js/profile.js"></script>
     <script id="tailwind-config">
-        tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#FAC638", gold: "#D4AF37", "background-light": "#f8f8f5", "background-dark": "#231e0f" }, fontFamily: { display: "Montserrat" }, borderRadius: { DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px" } } } };
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FAC638",
+                        gold: "#D4AF37",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#231e0f"
+                    },
+                    fontFamily: {
+                        display: "Montserrat"
+                    },
+                    borderRadius: {
+                        DEFAULT: "1rem",
+                        lg: "2rem",
+                        xl: "3rem",
+                        full: "9999px"
+                    }
+                }
+            }
+        };
     </script>
     <style type="text/tailwindcss">
-        .ethereal-glow{background:radial-gradient(circle at top right,rgba(127,19,236,0.4),transparent),radial-gradient(circle at bottom left,rgba(212,175,55,0.1),transparent)}
-.cosmic-card{background:linear-gradient(135deg,rgba(33,28,39,0.9) 0%,rgba(25,16,34,1) 100%);border:1px solid rgba(127,19,236,0.3)}
-.nebula-bg{background-image:url(https://lh3.googleusercontent.com/aida-public/AB6AXuDfVMMu0WAdPvSICBqYYV0Jbkr1VZ4QoKfSZD2ghTnAAOJ6pIKDCHCdoGhuSViP1vTd9TInb_K85TIdZbXKfsChj1m72j9V9I8kK9SRwTKjIUrBRLEkddmGEJpg5z6e2fk1dcuA7uSVRWiRJuiUwZEbKOZ78ST1LEiYLRr8a6HVS-7AJefxSbl_yG875ijCCa_pyt2W8k-7Tbq6aNVQN-Q9bgZscDM3qJDbGgyzzUzyw4Nh4MAdTCjoT7MC-vPzM8g3Ygh6PuSXzmI);background-size:cover;background-position:center}
-.ay-donumu-bg{background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#000 100%);position:relative;overflow:hidden}
-.ay-donumu-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(59,130,246,0.2),transparent 70%);mix-blend-mode:screen}
-.soul-mate-bg{background:linear-gradient(135deg,#be123c 0%,#ec4899 50%,#7f1d1d 100%);position:relative;overflow:hidden}
-.soul-mate-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,0.15),transparent 60%);mix-blend-mode:overlay}
-.material-symbols-outlined{font-variation-settings:"FILL" 0,"wght" 300,"GRAD" 0,"opsz" 24}
-body{min-height:max(884px,100dvh)}
-</style>
+        .ethereal-glow {
+            background: radial-gradient(circle at top right, rgba(127, 19, 236, 0.4), transparent),
+                        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.1), transparent);
+        }
+        .cosmic-card {
+            background: linear-gradient(135deg, rgba(33, 28, 39, 0.9) 0%, rgba(25, 16, 34, 1) 100%);
+            border: 1px solid rgba(127, 19, 236, 0.3);
+        }
+        .galaxy-gradient {
+            background: radial-gradient(circle at 30% 50%, rgba(127, 19, 236, 0.6), transparent 70%),
+                        radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.4), transparent 70%);
+        }
+        .indigo-gradient {
+            background: radial-gradient(circle at 30% 50%, rgba(49, 46, 129, 0.7), transparent 70%),
+                        radial-gradient(circle at 70% 50%, rgba(30, 58, 138, 0.5), transparent 70%),
+                        linear-gradient(135deg, rgba(15, 12, 41, 0.95) 0%, rgba(10, 10, 35, 1) 100%);
+        }
+        .silver-blue-gradient {
+            background: radial-gradient(circle at 30% 50%, rgba(148, 163, 184, 0.3), transparent 70%),
+                        radial-gradient(circle at 70% 50%, rgba(56, 189, 248, 0.2), transparent 70%),
+                        linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 1) 100%);
+        }
+        .shimmer-border {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        .shimmer-border::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            padding: 1px;
+            border-radius: inherit;
+            background: linear-gradient(135deg, transparent 20%, rgba(255,255,255,0.2) 50%, transparent 80%);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: destination-out;
+            pointer-events: none;
+        }
+        .aura-glow {
+            background: radial-gradient(circle at center, rgba(250, 198, 56, 0.2) 0%, transparent 70%);
+        }
+        .celestial-glow-intense {
+            background: radial-gradient(circle at center, rgba(250, 198, 56, 0.35) 0%, rgba(127, 19, 236, 0.1) 40%, transparent 80%);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
 </head>
 
 <body
     class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen flex flex-col pb-32">
 
+    <!-- HEADER -->
     <header
         class="sticky top-0 z-50 flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md p-4 justify-between border-b border-white/5">
         <div class="flex size-12 shrink-0 items-center">
@@ -61,151 +125,190 @@ body{min-height:max(884px,100dvh)}
     </header>
 
     <main class="flex-1 overflow-y-auto">
+
+        <!-- Greeting -->
         <div class="px-6 pt-8 pb-4">
-            <p class="text-gold text-xs font-medium tracking-widest uppercase mb-1">Decision Timing</p>
-            <h1 class="text-white tracking-tight text-3xl font-bold leading-tight">Numerical analysis ready, <span id="home-user-name">Alex</span></h1>
+            <p class="text-gold text-xs font-medium tracking-widest uppercase mb-1">Celestial Guidance</p>
+            <h1 class="text-white tracking-tight text-3xl font-bold leading-tight">The Universe is aligned, <span
+                    id="home-user-name">Alex</span></h1>
         </div>
+
+        <!-- Personal Vibration Card -->
         <div class="px-4 py-4">
             <div class="relative overflow-hidden rounded-xl ethereal-glow shadow-2xl border border-white/10">
-                <div
-                    class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none">
                 </div>
                 <div class="p-8 flex flex-col items-center text-center">
-                    <p class="text-white/60 text-xs font-bold tracking-[0.3em] uppercase mb-6">Personal Number</p>
+                    <p class="text-white/60 text-xs font-bold tracking-[0.3em] uppercase mb-6">Personal Vibration</p>
                     <div class="relative mb-6">
                         <div class="absolute inset-0 blur-3xl bg-primary/40 rounded-full scale-150"></div>
-                        <span
-                            class="relative text-white text-8xl font-black leading-none drop-shadow-[0_0_20px_rgba(127,19,236,0.8)]" id="vib-number">8</span>
+                        <span class="relative text-white text-8xl font-black leading-none drop-shadow-[0_0_20px_rgba(127,19,236,0.8)]"
+                            id="vib-number">8</span>
                     </div>
-                    <h3 class="text-gold text-2xl font-bold tracking-widest uppercase mb-2" id="vib-title">Abundance</h3>
-                    <p class="text-white/70 text-sm max-w-[240px] leading-relaxed mb-8" id="vib-desc">Today's numerical influence supports financial decisions and structured actions.</p>
+                    <h3 class="text-gold text-2xl font-bold tracking-widest uppercase mb-2" id="vib-title">Abundance
+                    </h3>
+                    <p class="text-white/70 text-sm max-w-[240px] leading-relaxed mb-8" id="vib-desc">Your energy today
+                        attracts prosperity and material balance. Focus on manifestation.</p>
                     <button id="btn-deep-insight"
                         class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-full h-12 px-8 bg-primary text-white text-sm font-bold tracking-widest uppercase shadow-lg shadow-primary/30 hover:brightness-110 active:scale-95 transition-all">
-                        Full Analysis
+                        Deep Insight
                     </button>
                 </div>
             </div>
         </div>
 
+        <!-- Section Title -->
         <div class="flex items-center justify-between px-6 pt-6 pb-4">
-            <h3 class="text-white text-lg font-bold leading-tight tracking-tight">Daily Decision Timing</h3>
-            <button id="btn-details" class="text-gold text-xs font-bold uppercase tracking-widest">Details</button>
+            <h3 class="text-white text-lg font-bold leading-tight tracking-tight">Personal Cosmic Navigator</h3>
+            <button id="btn-details" class="text-gold text-xs font-bold uppercase tracking-widest">Explore Map</button>
         </div>
 
-        <div class="px-4 space-y-4 pb-8">
-            <div id="card-celestial"
-                class="relative overflow-hidden rounded-2xl nebula-bg h-48 flex items-end p-6 border border-white/10 group active:scale-[0.98] transition-all cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#1a1625] via-[#1a1625]/60 to-transparent"></div>
-                <div class="relative z-10 w-full">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="material-symbols-outlined text-primary text-sm">energy_savings_leaf</span>
-                        <p class="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Decision Calendar
-                        </p>
-                    </div>
-                    <h4 class="text-white text-xl font-bold mb-1">Daily Numerical Analysis</h4>
-                    <p class="text-white/70 text-xs font-medium leading-relaxed max-w-[80%]">View supported and challenging action types based on today's numerical combination.</p>
-                </div>
-                <div
-                    class="absolute top-4 right-4 bg-primary/20 backdrop-blur-md rounded-full px-3 py-1 border border-primary/30">
-                    <p class="text-primary text-[10px] font-bold uppercase">Active</p>
-                </div>
-            </div>
+        <!-- Feature Cards -->
+        <div class="flex flex-col gap-6 px-4 pb-8">
 
-            <div id="card-lunar"
-                class="relative overflow-hidden rounded-2xl ay-donumu-bg h-48 flex items-end p-6 border border-white/10 group active:scale-[0.98] transition-all cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80">
-                </div>
-                <div
-                    class="absolute inset-0 opacity-30 bg-[url('https://www.transparenttextures.com/patterns/dark-matter.png')] pointer-events-none">
-                </div>
-                <div class="relative z-10 w-full">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="material-symbols-outlined text-blue-300 text-sm">nights_stay</span>
-                        <p class="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Ay Dönümü</p>
-                    </div>
-                    <h4 class="text-white text-xl font-bold mb-1">Lunar Cycle Return</h4>
-                    <p class="text-white/70 text-xs font-medium leading-relaxed max-w-[80%]">Track your emotional cycles
-                        through the lens of the lunar return cycle.</p>
-                </div>
-                <div
-                    class="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-full p-2 border border-white/20">
-                    <span class="material-symbols-outlined text-white text-sm">chevron_right</span>
-                </div>
-            </div>
-
+            <!-- Soul Mate Analysis -->
             <div id="card-soulmate"
-                class="relative overflow-hidden rounded-2xl soul-mate-bg h-48 flex items-end p-6 border border-white/10 group active:scale-[0.98] transition-all cursor-pointer">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#7f1d1d] via-transparent to-transparent opacity-80">
-                </div>
-                <div
-                    class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none">
-                </div>
-                <div class="relative z-10 w-full">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="material-symbols-outlined text-pink-200 text-sm">hub</span>
-                        <p class="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Uyum Analizi</p>
+                class="relative w-full aspect-[4/5] rounded-3xl overflow-hidden cosmic-card group cursor-pointer active:scale-[0.98] transition-all">
+                <div class="absolute inset-0 galaxy-gradient opacity-40"></div>
+                <div class="absolute inset-0 flex items-center justify-center p-8">
+                    <div class="relative w-full aspect-square flex items-center justify-center">
+                        <div class="absolute size-48 rounded-full bg-purple-600/30 blur-3xl animate-pulse"></div>
+                        <div class="absolute size-48 rounded-full bg-pink-600/20 blur-3xl animate-pulse delay-700 ml-12 mt-12">
+                        </div>
+                        <span class="material-symbols-outlined text-white/20 text-[180px] absolute">all_inclusive</span>
+                        <div class="relative z-10 flex flex-col items-center text-center">
+                            <span
+                                class="material-symbols-outlined text-primary text-6xl mb-4 drop-shadow-[0_0_10px_rgba(250,198,56,0.5)]">join_inner</span>
+                            <h4 class="text-white text-3xl font-bold tracking-tighter mb-2">Soul Mate Analysis</h4>
+                            <p class="text-white/60 text-sm mb-8 max-w-[200px]">The stars are converging in a divine
+                                union of paths.</p>
+                            <span
+                                class="bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md text-white text-xs font-bold py-4 px-8 rounded-full tracking-[0.2em] uppercase transition-all">
+                                Unveil Your Soul's Twin Flame
+                            </span>
+                        </div>
                     </div>
-                    <h4 class="text-white text-xl font-bold mb-1">Numerical Compatibility</h4>
-                    <p class="text-white/70 text-xs font-medium leading-relaxed max-w-[80%]">Analyze numerical alignment between two people based on birth data.</p>
                 </div>
-                <div
-                    class="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-full p-2 border border-white/20">
-                    <span class="material-symbols-outlined text-white text-sm">chevron_right</span>
+                <div class="absolute bottom-4 left-0 right-0 text-center">
+                    <div class="flex justify-center gap-1 opacity-30">
+                        <span class="material-symbols-outlined text-[10px]">colors_spark</span>
+                        <span class="material-symbols-outlined text-[10px]">colors_spark</span>
+                        <span class="material-symbols-outlined text-[10px]">colors_spark</span>
+                    </div>
                 </div>
             </div>
 
+            <!-- Cosmic Match -->
             <div id="card-cosmic-match"
-                class="relative overflow-hidden rounded-2xl h-48 flex items-end p-6 border border-white/10 group active:scale-[0.98] transition-all cursor-pointer"
-                style="background:linear-gradient(135deg,#4c1d95 0%,#7e22ce 40%,#a855f7 100%);position:relative;overflow:hidden">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#2e1065] via-transparent to-transparent opacity-80">
-                </div>
-                <div
-                    class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none">
-                </div>
-                <div class="relative z-10 w-full">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="material-symbols-outlined text-purple-200 text-sm">auto_awesome</span>
-                        <p class="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Eşleşme</p>
+                class="relative w-full aspect-[4/5] rounded-3xl overflow-hidden indigo-gradient shimmer-border my-2 cursor-pointer active:scale-[0.98] transition-all">
+                <div class="absolute inset-0 flex items-center justify-center p-8">
+                    <div class="relative w-full aspect-square flex items-center justify-center">
+                        <div class="absolute size-56 rounded-full bg-indigo-500/10 blur-3xl"></div>
+                        <span
+                            class="material-symbols-outlined text-indigo-400/10 text-[200px] absolute">waves</span>
+                        <div class="relative z-10 flex flex-col items-center text-center">
+                            <span
+                                class="material-symbols-outlined text-indigo-300 text-6xl mb-4 drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]">settings_ethernet</span>
+                            <h4 class="text-white text-3xl font-bold tracking-tighter mb-2">Cosmic Match</h4>
+                            <p class="text-white/60 text-sm mb-8 max-w-[220px]">An analytical deep-dive into the
+                                frequency of your celestial resonance.</p>
+                            <span
+                                class="bg-indigo-900/40 hover:bg-indigo-900/60 border border-indigo-400/30 backdrop-blur-md text-white text-xs font-bold py-4 px-8 rounded-full tracking-[0.2em] uppercase transition-all">
+                                Measure Resonance
+                            </span>
+                        </div>
                     </div>
-                    <h4 class="text-white text-xl font-bold mb-1">Uyum Eşleşmesi</h4>
-                    <p class="text-white/70 text-xs font-medium leading-relaxed max-w-[80%]">Günlük sayısal eşleşme, streak ödülleri ve uyumluluk radarı.</p>
-                </div>
-                <div
-                    class="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-full p-2 border border-white/20">
-                    <span class="material-symbols-outlined text-white text-sm">chevron_right</span>
-                </div>
-                <div class="absolute top-4 left-4 bg-purple-500/30 backdrop-blur-md rounded-full px-2.5 py-1 border border-purple-300/20">
-                    <span class="text-purple-100 text-[9px] font-black uppercase tracking-widest">Yeni</span>
                 </div>
             </div>
 
+            <!-- Decision Sphere -->
             <div id="card-decision-sphere"
-                class="relative overflow-hidden rounded-2xl h-48 flex items-end p-6 border border-white/10 group active:scale-[0.98] transition-all cursor-pointer"
-                style="background:linear-gradient(135deg,#0c4a6e 0%,#155e75 40%,#0e7490 70%,#06b6d4 100%);position:relative;overflow:hidden">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#083344] via-transparent to-transparent opacity-80">
-                </div>
-                <div
-                    class="absolute inset-0 opacity-15 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] pointer-events-none">
-                </div>
-                <div class="absolute top-6 right-6 opacity-10">
-                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
-                        <circle cx="40" cy="40" r="35" stroke="white" stroke-width="1"/>
-                        <circle cx="40" cy="40" r="25" stroke="white" stroke-width="0.5"/>
-                        <circle cx="40" cy="40" r="15" stroke="white" stroke-width="0.5"/>
-                        <circle cx="40" cy="40" r="5" fill="white" opacity="0.5"/>
-                    </svg>
-                </div>
-                <div class="relative z-10 w-full">
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="material-symbols-outlined text-cyan-200 text-sm">psychology</span>
-                        <p class="text-white/60 text-[10px] font-bold uppercase tracking-[0.2em]">Karar Rehberi</p>
+                class="relative w-full aspect-[4/5] rounded-3xl overflow-hidden silver-blue-gradient shimmer-border my-2 cursor-pointer active:scale-[0.98] transition-all">
+                <div class="absolute inset-0 flex items-center justify-center p-8">
+                    <div class="relative w-full aspect-square flex items-center justify-center">
+                        <div class="absolute size-56 rounded-full bg-blue-300/10 blur-3xl"></div>
+                        <span
+                            class="material-symbols-outlined text-slate-400/10 text-[220px] absolute">trip_origin</span>
+                        <div class="relative z-10 flex flex-col items-center text-center">
+                            <span
+                                class="material-symbols-outlined text-slate-200 text-6xl mb-4 drop-shadow-[0_0_15px_rgba(226,232,240,0.5)]">model_training</span>
+                            <h4 class="text-white text-3xl font-bold tracking-tighter mb-2">Decision Sphere</h4>
+                            <p class="text-white/60 text-sm mb-8 max-w-[220px]">Clarity for your future paths through
+                                the lens of divine probability.</p>
+                            <span
+                                class="bg-slate-800/40 hover:bg-slate-800/60 border border-slate-200/20 backdrop-blur-md text-white text-xs font-bold py-4 px-8 rounded-full tracking-[0.2em] uppercase transition-all">
+                                Cast Your Inquiry
+                            </span>
+                        </div>
                     </div>
-                    <h4 class="text-white text-xl font-bold mb-1">Decision Sphere</h4>
-                    <p class="text-white/70 text-xs font-medium leading-relaxed max-w-[80%]">Sayısal karar zamanlama chatbot'u. Kararlarının en uygun zamanını öğren.</p>
                 </div>
+            </div>
+
+            <!-- Lunar Insights + Cosmic Daily Energy -->
+            <div id="card-lunar"
+                class="relative flex flex-col items-center cursor-pointer active:scale-[0.98] transition-all">
                 <div
-                    class="absolute top-4 right-4 bg-white/10 backdrop-blur-md rounded-full p-2 border border-white/20">
-                    <span class="material-symbols-outlined text-white text-sm">chevron_right</span>
+                    class="w-full cosmic-card rounded-3xl p-8 relative overflow-hidden flex flex-col items-center text-center">
+                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                        <span class="material-symbols-outlined text-6xl">stars</span>
+                    </div>
+                    <div class="relative mb-6">
+                        <div class="size-32 rounded-full border-r-[12px] border-y-[6px] border-white/20 relative flex items-center justify-center transform -rotate-[15deg]">
+                            <div class="size-24 rounded-full bg-gradient-to-tr from-white/40 to-transparent blur-sm">
+                            </div>
+                            <span
+                                class="material-symbols-outlined text-white text-5xl absolute rotate-[15deg]">nights_stay</span>
+                        </div>
+                        <span
+                            class="material-symbols-outlined absolute -top-2 -right-4 text-gold/40 text-sm">brightness_7</span>
+                        <span
+                            class="material-symbols-outlined absolute bottom-4 -left-6 text-primary/40 text-sm">account_circle</span>
+                    </div>
+                    <h4 class="text-white text-xl font-bold mb-2">Lunar Insights</h4>
+                    <p class="text-white/60 text-xs italic max-w-[250px] leading-relaxed">The waning crescent invites
+                        introspection. Release what no longer serves your higher purpose tonight.</p>
+                </div>
+                <div class="relative -mt-8 w-[90%] z-10">
+                    <div class="aura-glow rounded-b-full p-8 flex flex-col items-center">
+                        <div class="h-px w-24 bg-gradient-to-r from-transparent via-primary/50 to-transparent mb-6">
+                        </div>
+                        <div class="text-center px-4">
+                            <span
+                                class="text-gold text-[10px] font-bold uppercase tracking-[0.3em] block mb-3">Cosmic
+                                Daily Energy</span>
+                            <div
+                                class="bg-black/20 backdrop-blur-sm border border-white/5 rounded-2xl py-6 px-4 relative">
+                                <span
+                                    class="material-symbols-outlined text-primary/40 text-4xl absolute -top-5 left-1/2 -translate-x-1/2">graphic_eq</span>
+                                <p class="text-white text-base font-medium italic">"My spirit is a beacon of light,
+                                    attracting infinite possibilities."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Celestial Forecast -->
+            <div id="card-celestial"
+                class="relative w-full rounded-3xl overflow-hidden cosmic-card cursor-pointer active:scale-[0.98] transition-all">
+                <div class="absolute inset-0 celestial-glow-intense"></div>
+                <div class="relative p-10 flex flex-col items-center text-center">
+                    <div class="mb-6 relative">
+                        <div class="absolute inset-0 blur-2xl bg-primary/30 rounded-full scale-125"></div>
+                        <span class="material-symbols-outlined relative text-primary text-5xl drop-shadow-[0_0_15px_rgba(250,198,56,0.6)]"
+                            style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                    </div>
+                    <h4 class="text-primary text-2xl font-extrabold tracking-widest uppercase mb-4">Celestial Forecast
+                    </h4>
+                    <p class="text-white/80 text-sm leading-relaxed max-w-[280px]">Align with the upcoming planetary
+                        shifts to maximize your spiritual growth and manifesting power this week.</p>
+                    <div class="mt-8 flex items-center justify-center gap-4">
+                        <div class="h-px w-8 bg-primary/30"></div>
+                        <span
+                            class="text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-primary/40 pb-1">View
+                            Trajectory</span>
+                        <div class="h-px w-8 bg-primary/30"></div>
+                    </div>
                 </div>
             </div>
 
@@ -222,12 +325,19 @@ body{min-height:max(884px,100dvh)}
             </div>
             <div id="home-quests-list" class="space-y-2"></div>
         </div>
+
+        <!-- Quote Section -->
+        <div class="px-4 pb-8">
+            <div class="rounded-2xl bg-white/5 border border-white/5 p-6 relative overflow-hidden">
                 <div class="absolute -right-8 -top-8 size-32 bg-gold/5 rounded-full blur-3xl"></div>
                 <span class="material-symbols-outlined text-gold opacity-50 mb-3">auto_awesome</span>
-                <p class="text-white/90 text-lg italic leading-relaxed font-light mb-4">"Numbers define patterns. Patterns define probability. Probability informs decisions."</p>
+                <p class="text-white/90 text-lg italic leading-relaxed font-light mb-4">
+                    "The soul speaks in the language of numbers. Today, listen to the silent vibrations of the world
+                    around you."
+                </p>
                 <div class="flex items-center gap-2">
                     <div class="h-px w-8 bg-gold/30"></div>
-                    <p class="text-gold text-[10px] font-bold uppercase tracking-[0.2em]">Decision Sphere</p>
+                    <p class="text-gold text-[10px] font-bold uppercase tracking-[0.2em]">The Oracle</p>
                 </div>
             </div>
         </div>
@@ -337,26 +447,22 @@ body{min-height:max(884px,100dvh)}
         // ─── Bugünün Cache Key'i ─────────────────────────────
         var today = new Date();
         var todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
-        
-        // ─── AGGRESSIVE CACHE BYPASS for Opera ────
+
+        // AGGRESSIVE CACHE BYPASS for Opera
         var lastVisit = localStorage.getItem('numerael_last_visit_date');
-        
-        // Eğer daha önce hiç ziyaret edilmediyse veya farklı bir günse
+
         if (!lastVisit || lastVisit !== todayStr) {
-            console.log('[AGGRESSIVE CACHE FIX] Clearing old cache...', lastVisit, '→', todayStr);
-            
-            // TÜM günlük vibration cache'lerini sil (eski tarihli olanlar dahil)
+            console.log('[AGGRESSIVE CACHE FIX] Clearing old cache...', lastVisit, '->', todayStr);
+
             Object.keys(localStorage).forEach(function(key) {
                 if (key.startsWith('numerael_daily_vib__')) {
                     console.log('[Cache Clear] Removing:', key);
                     localStorage.removeItem(key);
                 }
             });
-            
-            // Tarihi kaydet
+
             localStorage.setItem('numerael_last_visit_date', todayStr);
-            
-            // Eğer URL'de timestamp yoksa ekle ve reload yap
+
             var urlParams = new URLSearchParams(window.location.search);
             var ts = urlParams.get('_t');
             if (!ts || ts !== todayStr) {
@@ -366,12 +472,10 @@ body{min-height:max(884px,100dvh)}
                 return;
             }
         }
-        
-        // Tarihi her zaman güncel tut
+
         localStorage.setItem('numerael_last_visit_date', todayStr);
-        
-        // ─── DEBUG FUNCTION (Opera kullanıcıları için) ────────
-        // Console'da "window.clearDailyCache()" yazarak çalıştırabilirsiniz
+
+        // DEBUG FUNCTION
         window.clearDailyCache = function() {
             console.log('[Manual Cache Clear] Clearing all daily vibration cache...');
             Object.keys(localStorage).forEach(function(key) {
@@ -388,22 +492,19 @@ body{min-height:max(884px,100dvh)}
         var ud = null;
         try { ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); } catch(e) {}
 
-        // İsmi her durumda set et
-        var firstName = 'Alex'; // fallback
+        var firstName = 'Alex';
         if (ud && ud.name) firstName = ud.name.split(' ')[0];
-        
+
         var nameEl = document.getElementById('home-user-name');
         if (nameEl) nameEl.textContent = firstName;
 
-        // Veri yoksa vibrayon motorunu durdur
         if (!ud || !ud.name || !ud.birthDate) return;
 
         var lp = calcLP(ud.birthDate);
         var py = calcPersonalYear(ud.birthDate, today.getFullYear());
         var pm = calcPersonalMonth(py, today.getMonth()+1);
         var pd = calcPersonalDay(pm, today.getDate());
-        
-        // DEBUG: Tüm hesaplamaları console'a yazdır
+
         console.log('[VIBRATION DEBUG]', {
             date: todayStr,
             birthDate: ud.birthDate,
@@ -411,17 +512,16 @@ body{min-height:max(884px,100dvh)}
             personalYear: py,
             personalMonth: pm,
             personalDay: pd,
-            'Personal Day (TODAY\'S VIBRATION)': pd
+            'Personal Day (TODAYS VIBRATION)': pd
         });
 
         var theme = VIB_THEMES[pd] || VIB_THEMES[8];
         var cacheKey = 'numerael_daily_vib__' + todayStr + '__lp' + lp + '__pd' + pd;
-        
+
         console.log('[VIBRATION DEBUG] Cache key:', cacheKey);
         console.log('[VIBRATION DEBUG] Theme:', theme.title);
 
         // ─── UI: Vibrasyon sayısı ve tema ────────────────────
-
         var numEl  = document.getElementById('vib-number');
         var titEl  = document.getElementById('vib-title');
         var dscEl  = document.getElementById('vib-desc');
@@ -440,7 +540,6 @@ body{min-height:max(884px,100dvh)}
         try { cached = localStorage.getItem(cacheKey); } catch(e) {}
 
         if (cached) {
-            // Bugünkü analiz zaten var — direkt yükle
             if (dscEl) dscEl.textContent = cached;
             return;
         }
@@ -449,8 +548,6 @@ body{min-height:max(884px,100dvh)}
         if (dscEl) dscEl.textContent = VIB_DESC[pd] || VIB_DESC[8];
 
         // ─── AI ile kişiselleştirilmiş içerik ────────────────
-        // API key /api/openai proxy'si tarafından server-side ekleniyor
-
         var prompt = 'Sen Soulnum uygulamasının numeroloji yorumcususun. Türkçe yaz, 2 kısa cümle (max 25 kelime), mistik ve kişisel ton.' +
             ' Kullanıcı: ' + ud.name +
             '. Life Path: ' + lp +
@@ -474,7 +571,6 @@ body{min-height:max(884px,100dvh)}
             if (text && dscEl) {
                 dscEl.style.animation = 'fadeIn 0.6s ease';
                 dscEl.textContent = text;
-                // Cache'e kaydet — bugün boyunca değişmeyecek
                 try { localStorage.setItem(cacheKey, text); } catch(e) {}
             }
         }).catch(function(e){ console.warn('Daily vibration AI error:', e); });

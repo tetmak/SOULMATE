@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.numerael.soulmate',
-  appName: 'Numerael',
+  appName: 'Soulnum',
   webDir: 'www',
   server: {
     // Production: load from local files (default)
@@ -14,7 +14,7 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: 'automatic',
     preferredContentMode: 'mobile',
-    scheme: 'Numerael'
+    scheme: 'Soulnum'
   },
   android: {
     allowMixedContent: false,

@@ -336,7 +336,7 @@
         modal.innerHTML =
             '<div style="display:flex;justify-content:center;margin-bottom:16px"><div style="width:40px;height:4px;background:rgba(255,255,255,0.15);border-radius:2px"></div></div>' +
             '<div style="display:flex;justify-content:center;margin-bottom:20px"><div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#ec4899);display:flex;align-items:center;justify-content:center;box-shadow:0 0 30px rgba(139,92,246,0.4)"><span class="material-symbols-outlined" style="color:white;font-size:36px">workspace_premium</span></div></div>' +
-            '<h3 style="text-align:center;color:white;font-size:22px;font-weight:800;font-family:Space Grotesk,sans-serif;margin-bottom:6px">Numerael Premium</h3>' +
+            '<h3 style="text-align:center;color:white;font-size:22px;font-weight:800;font-family:Space Grotesk,sans-serif;margin-bottom:6px">Soulnum Premium</h3>' +
             '<p style="text-align:center;color:rgba(255,255,255,0.45);font-size:13px;font-family:Space Grotesk,sans-serif;margin-bottom:20px">' + (reason || 'Bu özellik Premium abonelik gerektirir.') + '</p>' +
             '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">' +
                 perkRow('all_inclusive', 'Sınırsız AI Analiz') +

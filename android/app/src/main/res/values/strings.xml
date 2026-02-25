@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Numerael</string>
-    <string name="title_activity_main">Numerael</string>
+    <string name="app_name">Soulnum</string>
+    <string name="title_activity_main">Soulnum</string>
     <string name="package_name">com.numerael.soulmate</string>
     <string name="custom_url_scheme">com.numerael.soulmate</string>
 </resources>
