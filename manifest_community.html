@@ -712,13 +712,23 @@
         // ─── Like Handler ───────────────────────────────
         window.handleLike = async function(manifestId) {
             if (!manifestId || manifestId.startsWith('f')) return; // fallback data — like desteklenmiyor
-            if (!window.manifestEngine) return;
+            if (!window.manifestEngine) {
+                console.warn('[ManifestCommunity] No manifestEngine — cannot like');
+                return;
+            }
 
-            // Optimistic UI update
+            console.log('[ManifestCommunity] handleLike called:', manifestId);
+
+            // Onceki durumu sakla (revert icin)
+            var prevLiked = null;
+            var prevLikes = null;
             for (var i = 0; i < feedData.length; i++) {
                 if (feedData[i].id === manifestId) {
+                    prevLiked = feedData[i].liked;
+                    prevLikes = feedData[i].likes || 0;
+                    // Optimistic UI update
                     feedData[i].liked = !feedData[i].liked;
-                    feedData[i].likes = (feedData[i].likes || 0) + (feedData[i].liked ? 1 : -1);
+                    feedData[i].likes = prevLikes + (feedData[i].liked ? 1 : -1);
                     if (feedData[i].likes < 0) feedData[i].likes = 0;
                     break;
                 }
@@ -727,12 +737,25 @@
 
             // Supabase'e kaydet
             var result = await window.manifestEngine.toggleLike(manifestId);
+            console.log('[ManifestCommunity] toggleLike result:', JSON.stringify(result));
+
             if (result.success) {
                 // Gercek sayiyi guncelle
                 for (var j = 0; j < feedData.length; j++) {
                     if (feedData[j].id === manifestId) {
                         feedData[j].likes = result.newCount;
                         feedData[j].liked = (result.action === 'liked');
+                        break;
+                    }
+                }
+                render();
+            } else {
+                // Basarisiz — optimistic UI'yi geri al
+                console.warn('[ManifestCommunity] Like failed, reverting UI');
+                for (var k = 0; k < feedData.length; k++) {
+                    if (feedData[k].id === manifestId) {
+                        feedData[k].liked = prevLiked;
+                        feedData[k].likes = prevLikes;
                         break;
                     }
                 }
