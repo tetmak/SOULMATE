@@ -19,19 +19,36 @@
     </script>
     <style type="text/tailwindcss">
         :root{--primary-gold:#EAC67A;--soft-glow:rgba(234,198,122,0.4)}
-.ethereal-gradient{background:radial-gradient(circle at center,#1E224F 0%,#0B0E23 70%,#050714 100%)}
-.milky-way{background-image:radial-gradient(1px 1px at 20px 30px,#fff,rgba(0,0,0,0)),radial-gradient(1.5px 1.5px at 40px 70px,#fff,rgba(0,0,0,0)),radial-gradient(1px 1px at 50px 160px,#fff,rgba(0,0,0,0)),radial-gradient(1.5px 1.5px at 90px 40px,#fff,rgba(0,0,0,0)),radial-gradient(1px 1px at 130px 80px,#fff,rgba(0,0,0,0)),radial-gradient(2px 2px at 160px 120px,rgba(234,198,122,0.5),rgba(0,0,0,0));background-repeat:repeat;background-size:250px 250px}
 .star-glow{filter:drop-shadow(0 0 12px var(--primary-gold))}
-body{min-height:max(884px,100dvh)}
+body{min-height:max(884px,100dvh);background:#04040a;position:relative}
+/* ── Horsehead Nebula Background ──── */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:
+    radial-gradient(1px 1px at 12% 15%,rgba(255,255,255,0.8),transparent),
+    radial-gradient(1px 1px at 28% 8%,rgba(180,200,255,0.7),transparent),
+    radial-gradient(1.5px 1.5px at 65% 12%,rgba(100,150,255,0.9),transparent),
+    radial-gradient(1px 1px at 82% 22%,rgba(255,255,255,0.6),transparent),
+    radial-gradient(2px 2px at 8% 42%,rgba(120,160,255,1),transparent),
+    radial-gradient(1px 1px at 45% 35%,rgba(255,255,255,0.5),transparent),
+    radial-gradient(1px 1px at 72% 48%,rgba(255,220,200,0.6),transparent),
+    radial-gradient(1.5px 1.5px at 92% 55%,rgba(200,200,255,0.7),transparent),
+    radial-gradient(1px 1px at 35% 62%,rgba(255,255,255,0.5),transparent),
+    radial-gradient(1px 1px at 55% 78%,rgba(180,180,255,0.5),transparent),
+    radial-gradient(2px 2px at 18% 85%,rgba(255,200,150,0.6),transparent),
+    radial-gradient(1px 1px at 78% 88%,rgba(255,255,255,0.4),transparent),
+    radial-gradient(ellipse 80% 60% at 60% 40%,rgba(140,20,40,0.35) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 70% 35%,rgba(180,30,50,0.25) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 50% at 45% 50%,rgba(120,15,35,0.2) 0%,transparent 55%),
+    radial-gradient(circle at 15% 18%,rgba(40,80,200,0.35) 0%,transparent 40%),
+    radial-gradient(circle at 10% 25%,rgba(30,60,160,0.2) 0%,transparent 35%),
+    radial-gradient(ellipse 30% 25% at 50% 45%,rgba(20,120,100,0.15) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 60%,rgba(100,20,30,0.2) 0%,transparent 50%),
+    radial-gradient(ellipse at 50% 50%,#0a0818 0%,#04040a 100%)}
+body>*{position:relative;z-index:1}
 </style>
 </head>
 
 <body class="bg-deep-indigo font-sans overflow-hidden">
-    <div class="relative flex h-screen w-full flex-col items-center justify-between overflow-hidden ethereal-gradient">
-        <div class="absolute inset-0 pointer-events-none opacity-30 milky-way"></div>
-        <div
-            class="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(ellipse_at_center,_rgba(234,198,122,0.1)_0%,_transparent_70%)]">
-        </div>
+    <div class="relative flex h-screen w-full flex-col items-center justify-between overflow-hidden">
         <div class="h-16 w-full"></div>
         <div class="flex flex-col items-center justify-center flex-grow z-10">
             <div class="relative flex items-center justify-center">
