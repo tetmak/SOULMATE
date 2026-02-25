@@ -4,9 +4,10 @@
 -- =====================================================
 
 -- 1) Manifests tablosu
+-- NOT: user_id FK yok — fake/bot kullanıcılar auth.users'da olmayabilir
 CREATE TABLE IF NOT EXISTS manifests (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL,
     text TEXT NOT NULL,
     category TEXT DEFAULT 'general' CHECK (category IN ('love','money','health','career','spiritual','general')),
     display_name TEXT,
@@ -16,10 +17,11 @@ CREATE TABLE IF NOT EXISTS manifests (
 );
 
 -- 2) Manifest Likes tablosu
+-- NOT: user_id FK yok — fake/bot kullanıcılar auth.users'da olmayabilir
 CREATE TABLE IF NOT EXISTS manifest_likes (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     manifest_id UUID NOT NULL REFERENCES manifests(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL,
     created_at TIMESTAMPTZ DEFAULT now(),
     UNIQUE(manifest_id, user_id)
 );
