@@ -202,9 +202,18 @@
                 });
             }
 
-            // Top rated veya weekly ise like'a gore sirala
-            if (sort === 'top_rated' || sort === 'weekly') {
-                manifests.sort(function(a, b) { return b.likes - a.likes; });
+            // Top rated: champions tablosundan all-time en iyileri getir
+            if (sort === 'top_rated') {
+                var champions = await loadChampions(category);
+                // Mevcut manifestleri de like'a gore sirala
+                manifests.sort(function(a, b) { return (b.likes || 0) - (a.likes || 0); });
+                // Champions'i basa ekle, sonra bu haftanin en iyileri
+                manifests = champions.concat(manifests);
+            }
+
+            // Weekly ise like'a gore sirala
+            if (sort === 'weekly') {
+                manifests.sort(function(a, b) { return (b.likes || 0) - (a.likes || 0); });
             }
 
             // Her manifeste isBot flag'i ekle
@@ -230,6 +239,56 @@
 
         } catch(e) {
             console.warn('[Manifest] Load exception:', e);
+            return [];
+        }
+    }
+
+    // ─── LOAD CHAMPIONS (All-Time Top Rated) ────────────
+    /**
+     * Haftalik sampiyonlari yukle (top_rated sekmesi icin)
+     * @param {string} category - 'all' veya spesifik kategori
+     * @returns {Promise<Array>}
+     */
+    async function loadChampions(category) {
+        try {
+            var query = sb().from('manifest_weekly_champions')
+                .select('*')
+                .order('like_count', { ascending: false })
+                .limit(30);
+
+            if (category && category !== 'all') {
+                query = query.eq('category', category);
+            }
+
+            var res = await query;
+
+            if (res.error) {
+                console.warn('[Manifest] Champions load error:', res.error);
+                return [];
+            }
+
+            var champions = res.data || [];
+
+            // Champions'i feed formatina cevir
+            return champions.map(function(c) {
+                return {
+                    id: c.id,
+                    user_id: c.user_id,
+                    text: c.text,
+                    category: c.category,
+                    display_name: c.display_name,
+                    life_path: c.life_path,
+                    likes: c.like_count || 0,
+                    liked: false, // Champions'a like atilamaz
+                    isBot: isFakeUser(c.user_id),
+                    isOwn: false,
+                    isChampion: true, // Ozel flag — UI'da rozet gostermek icin
+                    championWeek: c.week_start
+                };
+            });
+
+        } catch(e) {
+            console.warn('[Manifest] Champions load exception:', e);
             return [];
         }
     }
@@ -402,6 +461,7 @@
     window.manifestEngine = {
         save: save,
         loadFeed: loadFeed,
+        loadChampions: loadChampions,
         toggleLike: toggleLike,
         getMyManifests: getMyManifests,
         deleteMy: deleteMy,

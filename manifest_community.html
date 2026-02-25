@@ -330,6 +330,25 @@
             box-shadow: 0 0 12px rgba(168,85,247,0.15);
         }
 
+        /* ── Champion badge (Top Rated all-time) ──── */
+        .champion-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(245,158,11,0.2);
+            color: #f59e0b;
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+        .grid-card.champion-card {
+            border: 1.5px solid rgba(245,158,11,0.25);
+            box-shadow: 0 0 12px rgba(245,158,11,0.1);
+        }
+
         /* ── My Manifests Button ────────────────────── */
         .my-manifests-btn {
             display: flex;
@@ -688,19 +707,32 @@
                 var mName = m.display_name || 'User';
                 var likedFill = m.liked ? '1' : '0';
                 var isReal = !m.isBot;
-                var realClass = isReal ? ' real-user-card' : '';
+                var isChamp = !!m.isChampion;
+                var extraClass = isChamp ? ' champion-card' : (isReal ? ' real-user-card' : '');
 
-                html += '<div class="grid-card ' + c.grad + realClass + ' fade-up fd' + d + '">' +
+                // Champion hafta etiketi
+                var champLabel = '';
+                if (isChamp && m.championWeek) {
+                    var wd = new Date(m.championWeek);
+                    var weekNum = Math.ceil(((wd - new Date(wd.getFullYear(), 0, 1)) / 86400000 + 1) / 7);
+                    champLabel = '<span class="champion-badge">🏆 Week ' + weekNum + '</span>';
+                }
+
+                html += '<div class="grid-card ' + c.grad + extraClass + ' fade-up fd' + d + '">' +
                     '<div>' +
                         '<span class="cat-tag"><span class="dot" style="background:' + c.dot + '"></span> ' + c.label + '</span>' +
-                        (isReal ? '<span class="real-user-badge">✨ GERÇEK</span>' : '') +
+                        (isChamp ? champLabel : (isReal ? '<span class="real-user-badge">✨ GERÇEK</span>' : '')) +
                         '<p class="card-quote">"' + m.text + '"</p>' +
                     '</div>' +
                     '<div class="card-bottom">' +
                         '<span class="card-user">@' + mName + '</span>' +
-                        '<button class="card-likes" onclick="event.stopPropagation();handleLike(\'' + m.id + '\')" style="background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:8px;">' +
-                            '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' ' + likedFill + ';' + (m.liked ? 'color:rgba(220,50,50,0.7);' : '') + '">favorite</span> ' + fmtLikes(m.likes || 0) +
-                        '</button>' +
+                        (isChamp ?
+                            '<span class="card-likes" style="color:rgba(245,158,11,0.6);"><span class="material-symbols-outlined" style="font-size:13px;font-variation-settings:\'FILL\' 1;color:rgba(245,158,11,0.6);">favorite</span> ' + fmtLikes(m.likes || 0) + '</span>'
+                        :
+                            '<button class="card-likes" onclick="event.stopPropagation();handleLike(\'' + m.id + '\')" style="background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:8px;">' +
+                                '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' ' + likedFill + ';' + (m.liked ? 'color:rgba(220,50,50,0.7);' : '') + '">favorite</span> ' + fmtLikes(m.likes || 0) +
+                            '</button>'
+                        ) +
                     '</div>' +
                 '</div>';
             }
