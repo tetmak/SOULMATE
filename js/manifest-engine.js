@@ -49,11 +49,24 @@
     // ─── Helpers ───────────────────────────────────────
     function sb() { return window.supabaseClient; }
 
-    function getSession() {
+    /**
+     * Supabase client uzerinden authenticated user ID al.
+     * localStorage okumak yerine client'in kendi auth API'sini kullanir —
+     * boylece RLS auth.uid() ile her zaman eslesen dogru user_id doner.
+     * @returns {Promise<string|null>}
+     */
+    async function getCurrentUserId() {
         try {
-            var s = JSON.parse(localStorage.getItem('numerael-auth-token') || 'null');
-            return (s && s.user) ? s : null;
-        } catch(e) { return null; }
+            if (!sb()) return null;
+            var res = await sb().auth.getSession();
+            if (res.data && res.data.session && res.data.session.user) {
+                return res.data.session.user.id;
+            }
+            return null;
+        } catch(e) {
+            console.warn('[Manifest] getCurrentUserId error:', e);
+            return null;
+        }
     }
 
     function getUserData() {
@@ -70,8 +83,8 @@
      * @returns {Promise<{success:boolean, data:object|null}>}
      */
     async function save(text, category) {
-        var session = getSession();
-        if (!session || !session.user) {
+        var userId = await getCurrentUserId();
+        if (!userId) {
             console.warn('[Manifest] No session, saving to localStorage only');
             return { success: false, data: null };
         }
@@ -89,7 +102,7 @@
         // Supabase'e kaydet
         try {
             var res = await sb().from('manifests').insert({
-                user_id: session.user.id,
+                user_id: userId,
                 text: text,
                 category: category || 'general',
                 display_name: displayName,
@@ -165,13 +178,13 @@
                 }
 
                 // Kullanicinin begendiklerini bul
-                var session = getSession();
+                var userId = await getCurrentUserId();
                 var userLikes = {};
-                if (session && session.user) {
+                if (userId) {
                     var myLikesRes = await sb()
                         .from('manifest_likes')
                         .select('manifest_id')
-                        .eq('user_id', session.user.id)
+                        .eq('user_id', userId)
                         .in('manifest_id', ids);
 
                     if (myLikesRes.data) {
@@ -185,7 +198,7 @@
                 manifests.forEach(function(m) {
                     m.likes = likeCounts[m.id] || 0;
                     m.liked = !!userLikes[m.id];
-                    m.isOwn = session && session.user && m.user_id === session.user.id;
+                    m.isOwn = userId && m.user_id === userId;
                 });
             }
 
@@ -228,8 +241,9 @@
      * @returns {Promise<{success:boolean, action:string, newCount:number}>}
      */
     async function toggleLike(manifestId) {
-        var session = getSession();
-        if (!session || !session.user) {
+        var userId = await getCurrentUserId();
+        if (!userId) {
+            console.warn('[Manifest] toggleLike: No authenticated user');
             return { success: false, action: 'none', newCount: 0 };
         }
 
@@ -239,23 +253,48 @@
                 .from('manifest_likes')
                 .select('id')
                 .eq('manifest_id', manifestId)
-                .eq('user_id', session.user.id)
+                .eq('user_id', userId)
                 .maybeSingle();
+
+            if (existing.error) {
+                console.warn('[Manifest] Like check error:', existing.error);
+            }
 
             if (existing.data) {
                 // Unlike — sil
-                await sb().from('manifest_likes').delete().eq('id', existing.data.id);
-                var countRes = await sb().from('manifest_likes').select('id', { count: 'exact', head: true }).eq('manifest_id', manifestId);
+                var delRes = await sb().from('manifest_likes')
+                    .delete()
+                    .eq('manifest_id', manifestId)
+                    .eq('user_id', userId);
+
+                if (delRes.error) {
+                    console.warn('[Manifest] Unlike delete error:', delRes.error);
+                    return { success: false, action: 'error', newCount: 0 };
+                }
+
+                // Yeni like sayisini al
+                var countRes = await sb().from('manifest_likes')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('manifest_id', manifestId);
                 var newCount = countRes.count || 0;
                 console.log('[Manifest] Unliked', manifestId, '→', newCount);
                 return { success: true, action: 'unliked', newCount: newCount };
             } else {
                 // Like — ekle
-                await sb().from('manifest_likes').insert({
+                var insRes = await sb().from('manifest_likes').insert({
                     manifest_id: manifestId,
-                    user_id: session.user.id
+                    user_id: userId
                 });
-                var countRes2 = await sb().from('manifest_likes').select('id', { count: 'exact', head: true }).eq('manifest_id', manifestId);
+
+                if (insRes.error) {
+                    console.warn('[Manifest] Like insert error:', insRes.error);
+                    return { success: false, action: 'error', newCount: 0 };
+                }
+
+                // Yeni like sayisini al
+                var countRes2 = await sb().from('manifest_likes')
+                    .select('id', { count: 'exact', head: true })
+                    .eq('manifest_id', manifestId);
                 var newCount2 = countRes2.count || 0;
                 console.log('[Manifest] Liked', manifestId, '→', newCount2);
                 return { success: true, action: 'liked', newCount: newCount2 };
@@ -272,8 +311,8 @@
      * @returns {Promise<Array>}
      */
     async function getMyManifests() {
-        var session = getSession();
-        if (!session || !session.user) {
+        var userId = await getCurrentUserId();
+        if (!userId) {
             console.warn('[Manifest] No session for getMyManifests');
             return [];
         }
@@ -281,7 +320,7 @@
         try {
             var res = await sb().from('manifests')
                 .select('*')
-                .eq('user_id', session.user.id)
+                .eq('user_id', userId)
                 .order('created_at', { ascending: false });
 
             if (res.error) {
@@ -328,13 +367,13 @@
      * @returns {Promise<boolean>}
      */
     async function deleteMy(manifestId) {
-        var session = getSession();
-        if (!session || !session.user) return false;
+        var userId = await getCurrentUserId();
+        if (!userId) return false;
 
         try {
             var res = await sb().from('manifests').delete()
                 .eq('id', manifestId)
-                .eq('user_id', session.user.id);
+                .eq('user_id', userId);
 
             if (res.error) {
                 console.warn('[Manifest] Delete error:', res.error);
