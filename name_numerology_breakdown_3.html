@@ -291,7 +291,6 @@
           <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:800;color:#cfa117;font-family:Manrope,sans-serif">Soulnum</span>
         </div>
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center">
-          <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;font-family:Manrope,sans-serif">Unity Card</p>
           <h2 id="sm-names" style="font-family:Playfair Display,serif;font-size:22px;font-style:italic;font-weight:700;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;padding:0 8px">— &amp; —</h2>
           <div style="width:112px;height:112px;border-radius:50%;border:2px solid rgba(207,161,23,0.5);box-shadow:0 0 25px rgba(207,161,23,0.4);background:rgba(10,9,7,0.4);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;position:relative">
             <span id="sm-score" style="font-size:36px;font-weight:800;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;font-family:Manrope,sans-serif">—</span>
@@ -301,7 +300,6 @@
             <p id="sm-bond" style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);font-family:Manrope,sans-serif">—</p>
           </div>
         </div>
-        <div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:9px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">numerael.app</div>
       </div>
       <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:13px;margin-bottom:20px;font-family:Manrope,sans-serif">Bu kartı sevdiklerinle paylaş ❤️</p>
       <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
@@ -331,15 +329,7 @@
     </div>
   </div>
 
-  <script>
-    function smOpen(){var o=document.getElementById('sm-overlay'),s=document.getElementById('sm-sheet');o.style.display='flex';setTimeout(function(){s.style.transform='translateY(0)'},10);}
-    function smClose(){var s=document.getElementById('sm-sheet');s.style.transform='translateY(100%)';setTimeout(function(){document.getElementById('sm-overlay').style.display='none'},400);}
-    function smAction(t){
-      if(t==='copy'||t==='save'){var toast=document.createElement('div');toast.textContent=t==='copy'?'Link kopyalandı ✓':'Galeriye kaydedildi ✓';toast.style.cssText='position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#cfa117;color:#0a0907;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:800;z-index:999;white-space:nowrap;font-family:Manrope,sans-serif';document.body.appendChild(toast);setTimeout(function(){toast.remove()},2000);}
-      if(t==='other'&&navigator.share){navigator.share({title:'Ruh Eşim',text:'Soulnum ile ruh bağımızı keşfettim!',url:window.location.href});}
-    }
-    window.openSoulmateShare = function(){ smOpen(); };
-  </script>
+  <script src="js/soulmate-share.js"></script>
 
   <script src="js/numerology-engine.js"></script>
   <script src="js/numerology-context-engine.js"></script>
