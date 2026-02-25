@@ -19,11 +19,48 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Space Grotesk', sans-serif;
-            background: #08080f;
+            background: #04040a;
             color: #fff;
             min-height: 100dvh;
             padding-bottom: 140px;
+            position: relative;
         }
+        /* ── Nebula Background (Horsehead-style) ──── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            background:
+                /* Stars */
+                radial-gradient(1px 1px at 12% 15%, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 28% 8%, rgba(180,200,255,0.7), transparent),
+                radial-gradient(1.5px 1.5px at 65% 12%, rgba(100,150,255,0.9), transparent),
+                radial-gradient(1px 1px at 82% 22%, rgba(255,255,255,0.6), transparent),
+                radial-gradient(2px 2px at 8% 42%, rgba(120,160,255,1), transparent),
+                radial-gradient(1px 1px at 45% 35%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 72% 48%, rgba(255,220,200,0.6), transparent),
+                radial-gradient(1.5px 1.5px at 92% 55%, rgba(200,200,255,0.7), transparent),
+                radial-gradient(1px 1px at 35% 62%, rgba(255,255,255,0.5), transparent),
+                radial-gradient(1px 1px at 55% 78%, rgba(180,180,255,0.5), transparent),
+                radial-gradient(2px 2px at 18% 85%, rgba(255,200,150,0.6), transparent),
+                radial-gradient(1px 1px at 78% 88%, rgba(255,255,255,0.4), transparent),
+                /* Red/crimson nebula cloud — main body */
+                radial-gradient(ellipse 80% 60% at 60% 40%, rgba(140,20,40,0.35) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 40% at 70% 35%, rgba(180,30,50,0.25) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 50% at 45% 50%, rgba(120,15,35,0.2) 0%, transparent 55%),
+                /* Blue star glow top-left */
+                radial-gradient(circle at 15% 18%, rgba(40,80,200,0.35) 0%, transparent 40%),
+                radial-gradient(circle at 10% 25%, rgba(30,60,160,0.2) 0%, transparent 35%),
+                /* Teal/green wisp */
+                radial-gradient(ellipse 30% 25% at 50% 45%, rgba(20,120,100,0.15) 0%, transparent 60%),
+                /* Warm edge glow */
+                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(100,20,30,0.2) 0%, transparent 50%),
+                /* Deep space base */
+                radial-gradient(ellipse at 50% 50%, #0a0818 0%, #04040a 100%);
+        }
+        body > * { position: relative; z-index: 1; }
 
         /* ── Header title ────────────────────────────── */
         .page-title {
@@ -90,8 +127,10 @@
 
         /* ── Weekly Champion ─────────────────────────── */
         .weekly-card {
-            background: linear-gradient(160deg, #1a1030 0%, #0e0820 60%, #12082a 100%);
-            border: 1px solid rgba(124,58,237,0.2);
+            background: linear-gradient(160deg, rgba(26,16,48,0.85) 0%, rgba(14,8,32,0.9) 60%, rgba(18,8,42,0.85) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(124,58,237,0.25);
             border-radius: 20px;
             padding: 20px;
             position: relative;
