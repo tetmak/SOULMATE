@@ -34,7 +34,7 @@
         { icon: 'home', label: 'Home', href: 'mystic_numerology_home_1.html', active: isActive(['mystic_numerology_home_1', 'cosmic_energy_calendar', 'daily_spiritual_guide', 'daily_number_deep_dive', 'numerology_meaning_chart', 'numerael_app_ui_design_system', 'cosmic_match']) },
         { icon: 'diversity_3', label: 'Bağlantılar', href: 'connections_shared_readings.html', active: isActive(['connections', 'kisi_profil', 'friendship_dynamics', 'name_numerology_breakdown', 'past_reading_archive', 'letter_vibration']) },
         { icon: 'ADD_BUTTON', label: '', href: '', active: false },
-        { icon: 'auto_awesome', label: 'Manifest', href: 'cosmic_manifest_portal.html', active: isActive(['cosmic_manifest_portal']) },
+        { icon: 'auto_awesome', label: 'ManifestPortal', href: 'cosmic_manifest_portal.html', active: isActive(['cosmic_manifest_portal']) },
         { icon: 'account_circle', label: 'Profil', href: 'profile_soul_journey.html', active: isActive(['profile_soul_journey', 'app_settings']) }
     ];
 
@@ -46,7 +46,8 @@
         { icon: 'self_improvement', label: 'Günlük Rehber', href: 'daily_spiritual_guide.html',   color: '#a78bfa', bg: 'rgba(139,92,246,0.2)',  border: 'rgba(139,92,246,0.5)' },
         { icon: 'nights_stay',   label: 'Ay Fazı',         href: 'lunar_phase_energy_tracker.html',color: '#93c5fd', bg: 'rgba(59,130,246,0.2)',  border: 'rgba(59,130,246,0.5)' },
         { icon: 'casino',        label: 'Karar Çarkı',     href: 'wheel_of_destiny.html',         color: '#fb923c', bg: 'rgba(251,146,60,0.2)',  border: 'rgba(251,146,60,0.5)' },
-        { icon: 'calendar_month',label: 'Karar Takvimi',   href: 'cosmic_energy_calendar_2.html', color: '#60a5fa', bg: 'rgba(96,165,250,0.2)',  border: 'rgba(96,165,250,0.5)' }
+        { icon: 'calendar_month',label: 'Karar Takvimi',   href: 'cosmic_energy_calendar_2.html', color: '#60a5fa', bg: 'rgba(96,165,250,0.2)',  border: 'rgba(96,165,250,0.5)' },
+        { icon: 'flare',         label: 'Manifest',        href: 'cosmic_manifest_portal.html',   color: '#fbbf24', bg: 'rgba(251,191,36,0.2)',  border: 'rgba(251,191,36,0.5)' }
     ];
 
     // ─── CSS ─────────────────────────────────────────────────
