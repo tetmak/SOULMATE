@@ -356,9 +356,11 @@
         <!-- Category Chips -->
         <div class="cat-row pb-3">
             <button class="cat-chip active" data-cat="all" onclick="switchCat(this)">All</button>
-            <button class="cat-chip" data-cat="money" onclick="switchCat(this)">Money</button>
-            <button class="cat-chip" data-cat="love" onclick="switchCat(this)">Love</button>
-            <button class="cat-chip" data-cat="health" onclick="switchCat(this)">Health</button>
+            <button class="cat-chip" data-cat="love" onclick="switchCat(this)">Aşk</button>
+            <button class="cat-chip" data-cat="money" onclick="switchCat(this)">Para</button>
+            <button class="cat-chip" data-cat="health" onclick="switchCat(this)">Sağlık</button>
+            <button class="cat-chip" data-cat="career" onclick="switchCat(this)">Kariyer</button>
+            <button class="cat-chip" data-cat="spiritual" onclick="switchCat(this)">Ruh</button>
         </div>
     </div>
 
@@ -432,7 +434,7 @@
                 var stored = JSON.parse(localStorage.getItem('numerael_manifests_' + auth.user.id) || '[]');
                 var name = (ud && ud.name) ? ud.name.split(' ')[0] : 'You';
                 return stored.map(function(m, i) {
-                    return { id: 2000 + i, user: name, path: null, text: '"' + (m.text || '') + '"', likes: Math.floor(Math.random() * 40) + 5, category: 'general', isOwn: true };
+                    return { id: 2000 + i, user: name, path: null, text: '"' + (m.text || '') + '"', likes: Math.floor(Math.random() * 40) + 5, category: m.category || 'general', isOwn: true };
                 });
             } catch(e) { return []; }
         }
