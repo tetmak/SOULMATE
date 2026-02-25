@@ -267,9 +267,6 @@
         <!-- Main content -->
         <div
           style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center">
-          <p
-            style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;font-family:Manrope,sans-serif">
-            Unity Card</p>
           <h2 id="sm-names"
             style="font-family:Playfair Display,serif;font-size:22px;font-style:italic;font-weight:700;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;padding:0 8px">
             Alexander &amp; Sophia</h2>
@@ -289,14 +286,8 @@
             <p id="sm-bond"
               style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);font-family:Manrope,sans-serif">Divine
               Eternal Connection</p>
-            <p style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;font-style:italic">Sacred Bond &middot;
-              Destiny &middot; Harmony</p>
           </div>
         </div>
-        <!-- Footer -->
-        <div
-          style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:9px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">
-          numerael.app</div>
       </div>
 
       <p
@@ -359,19 +350,7 @@
     </div>
   </div>
 
-  <script>
-    function smOpen() { var o = document.getElementById('sm-overlay'), s = document.getElementById('sm-sheet'); o.style.display = 'flex'; setTimeout(function () { s.style.transform = 'translateY(0)' }, 10); }
-    function smClose() { var s = document.getElementById('sm-sheet'); s.style.transform = 'translateY(100%)'; setTimeout(function () { document.getElementById('sm-overlay').style.display = 'none' }, 400); }
-    function smAction(t) {
-      if (t === 'copy' || t === 'save') {
-        var toast = document.createElement('div');
-        toast.textContent = t === 'copy' ? 'Link kopyalandi ✓' : 'Galeriye kaydedildi ✓';
-        toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#cfa117;color:#0a0907;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:800;z-index:999;white-space:nowrap;font-family:Manrope,sans-serif';
-        document.body.appendChild(toast); setTimeout(function () { toast.remove() }, 2000);
-      }
-      if (t === 'other' && navigator.share) { navigator.share({ title: 'Ruh Esinim', text: 'Soulnum ile ruh bagimizi kesfettim!', url: window.location.href }); }
-    }
-  </script>
+  <script src="js/soulmate-share.js"></script>
 
   <script src="js/numerology-context-engine.js"></script>
   <script src="js/decision-timing-engine.js"></script>

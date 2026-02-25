@@ -376,7 +376,6 @@
         </div>
         <!-- Main content -->
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center">
-          <p style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:700;color:rgba(255,255,255,0.4);margin-bottom:8px;font-family:'Space Grotesk',sans-serif">Unity Card</p>
           <h2 id="sm-names" style="font-family:Playfair Display,serif;font-size:22px;font-style:italic;font-weight:700;background:linear-gradient(135deg,#f2cc0d,#fde68a,#f2cc0d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;padding:0 8px">Alexander &amp; Sophia</h2>
           <!-- Score circle -->
           <div style="width:112px;height:112px;border-radius:50%;border:2px solid rgba(139,92,246,0.4);box-shadow:0 0 25px rgba(139,92,246,0.3),0 0 50px rgba(236,72,153,0.15);background:rgba(24,23,17,0.6);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;position:relative">
@@ -387,10 +386,8 @@
           <!-- Bond label -->
           <div style="backdrop-filter:blur(12px);background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.15);border-radius:16px;padding:10px 20px">
             <p id="sm-bond" style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);font-family:'Space Grotesk',sans-serif">Divine Eternal Connection</p>
-            <p style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:3px;font-style:italic">Sacred Bond &middot; Destiny &middot; Harmony</p>
           </div>
         </div>
-        <div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:9px;color:rgba(255,255,255,0.2);text-transform:uppercase;letter-spacing:0.1em;font-family:'Space Grotesk',sans-serif">numerael.app</div>
       </div>
 
       <p style="text-align:center;color:rgba(255,255,255,0.3);font-size:13px;margin-bottom:20px;font-family:'Space Grotesk',sans-serif">Bu kartı sevdiklerinle paylaş ✨</p>
@@ -443,20 +440,7 @@
     </div>
   </div>
 
-  <script>
-    function openSoulmateShare() { smOpen(); }
-    function smOpen() { var o = document.getElementById('sm-overlay'), s = document.getElementById('sm-sheet'); o.style.display = 'flex'; setTimeout(function () { s.style.transform = 'translateY(0)' }, 10); }
-    function smClose() { var s = document.getElementById('sm-sheet'); s.style.transform = 'translateY(100%)'; setTimeout(function () { document.getElementById('sm-overlay').style.display = 'none' }, 400); }
-    function smAction(t) {
-      if (t === 'copy' || t === 'save') {
-        var toast = document.createElement('div');
-        toast.textContent = t === 'copy' ? 'Link kopyalandi ✓' : 'Galeriye kaydedildi ✓';
-        toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#8b5cf6,#ec4899);color:white;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:800;z-index:999;white-space:nowrap;font-family:Space Grotesk,sans-serif';
-        document.body.appendChild(toast); setTimeout(function () { toast.remove() }, 2000);
-      }
-      if (t === 'other' && navigator.share) { navigator.share({ title: 'Ruh Esinim', text: 'Soulnum ile ruh bagimizi kesfettim!', url: window.location.href }); }
-    }
-  </script>
+  <script src="js/soulmate-share.js"></script>
 
   <script>
     setTimeout(function () {
