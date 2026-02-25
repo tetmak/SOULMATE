@@ -411,8 +411,44 @@
             return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
         }
 
-        // ─── Data (sadece gerçek kullanıcı manifestleri) ──
-        var DATA = [];
+        // ─── Data (topluluk manifestleri) ─────────────────
+        var DATA = [
+            { id:1, user:'Elif', path:7, text:'"Evrenin bana gönderdiği sevgiyi açık kalplerle karşılıyorum."', likes:287, category:'love', weekly:true },
+            { id:2, user:'Burak', path:3, text:'"Bolluk ve bereket hayatımın her alanına akıyor."', likes:214, category:'money' },
+            { id:3, user:'Zeynep', path:11, text:'"Ruhum her gün daha derin bir farkındalıkla uyanıyor."', likes:195, category:'spiritual' },
+            { id:4, user:'Emre', path:5, text:'"Kariyer yolculuğumda evrenin rehberliğine güveniyorum."', likes:178, category:'career' },
+            { id:5, user:'Ayşe', path:9, text:'"Bedenim sağlıkla dolu, her hücrem ışıkla titreşiyor."', likes:162, category:'health' },
+            { id:6, user:'Kaan', path:1, text:'"Gerçek aşk beni buluyor, kalbim hazır."', likes:156, category:'love' },
+            { id:7, user:'Defne', path:22, text:'"Finansal özgürlüğüm her geçen gün büyüyor."', likes:148, category:'money' },
+            { id:8, user:'Arda', path:6, text:'"İç huzurum dış dünyama yansıyor, her şey akışında."', likes:143, category:'spiritual' },
+            { id:9, user:'Selin', path:4, text:'"Hayalimdeki işe kavuşuyorum, evren kapıları açıyor."', likes:137, category:'career' },
+            { id:10, user:'Mert', path:8, text:'"Enerjim yükseliyor, zihinim berrak ve güçlü."', likes:129, category:'health' },
+            { id:11, user:'Beren', path:2, text:'"Ruh eşimle karşılaşma anı yaklaşıyor, hissediyorum."', likes:118, category:'love' },
+            { id:12, user:'Yusuf', path:33, text:'"Maddi engeller kalkıyor, refah kapım açılıyor."', likes:112, category:'money' },
+            { id:13, user:'İrem', path:7, text:'"Meditasyonlarım derinleşiyor, evrenle bağlantım güçleniyor."', likes:108, category:'spiritual' },
+            { id:14, user:'Ceren', path:5, text:'"Yaratıcılığım sınırsız, projelerim başarıya ulaşıyor."', likes:95, category:'career' },
+            { id:15, user:'Oğuz', path:3, text:'"Bedenime sevgiyle yaklaşıyorum, kendimi iyileştiriyorum."', likes:89, category:'health' },
+            { id:16, user:'Deniz', path:9, text:'"İlişkilerimde denge ve uyum manifest ediyorum."', likes:84, category:'love' },
+            { id:17, user:'Hazal', path:11, text:'"Beklenmedik gelir kaynakları hayatıma giriyor."', likes:78, category:'money' },
+            { id:18, user:'Barış', path:1, text:'"Üçüncü gözüm açılıyor, sezgilerim güçleniyor."', likes:72, category:'spiritual' },
+            { id:19, user:'Melis', path:6, text:'"Liderlik enerjim yükseliyor, takımım bana güveniyor."', likes:67, category:'career' },
+            { id:20, user:'Tolga', path:4, text:'"Uykularım derin, sabahlarım enerjik başlıyor."', likes:63, category:'health' },
+            { id:21, user:'Nehir', path:8, text:'"Sevgi frekansında titreşiyorum, etrafımdaki herkes hissediyor."', likes:58, category:'love' },
+            { id:22, user:'Aslı', path:2, text:'"Yatırımlarım meyvesini veriyor, bereket çoğalıyor."', likes:54, category:'money' },
+            { id:23, user:'Tuna', path:7, text:'"Kozmik enerji bedenimi ve ruhumu arındırıyor."', likes:49, category:'spiritual' },
+            { id:24, user:'Eylül', path:33, text:'"Tutkulu olduğum alanda büyük başarılar elde ediyorum."', likes:45, category:'career' },
+            { id:25, user:'Doruk', path:5, text:'"Stres vücudumdan akıp gidiyor, huzurla doluyorum."', likes:42, category:'health' },
+            { id:26, user:'Nil', path:9, text:'"Kalbimin sesini dinliyorum, doğru kişi geliyor."', likes:38, category:'love' },
+            { id:27, user:'Pelin', path:3, text:'"Para enerjisiyle barışıyorum, bolluk doğal halim."', likes:35, category:'money' },
+            { id:28, user:'Koray', path:1, text:'"Her nefeste evrenle daha derin bağlanıyorum."', likes:31, category:'spiritual' },
+            { id:29, user:'Gizem', path:6, text:'"Yeni fırsatlar kapımı çalıyor, cesaretle açıyorum."', likes:28, category:'career' },
+            { id:30, user:'Alp', path:4, text:'"Sağlığım mükemmel, vücudum kendini yeniliyor."', likes:24, category:'health' },
+            { id:31, user:'Sibel', path:11, text:'"Aşk enerjim evrenle rezonansa giriyor."', likes:21, category:'love' },
+            { id:32, user:'Kerem', path:8, text:'"Hayatıma bereketle dolu insanlar çekiyorum."', likes:18, category:'money' },
+            { id:33, user:'Dila', path:22, text:'"Ruhsal yolculuğum en güzel meyvelerini veriyor."', likes:15, category:'spiritual' },
+            { id:34, user:'Onur', path:5, text:'"Kariyerimde zirveye yürüyorum, adımlarım emin."', likes:12, category:'career' },
+            { id:35, user:'Cansu', path:9, text:'"Vücudum bir tapınak, ona saygıyla davranıyorum."', likes:9, category:'health' }
+        ];
 
         // ─── User manifests from localStorage ───────────
         function userManifests() {
