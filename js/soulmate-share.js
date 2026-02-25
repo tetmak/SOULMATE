@@ -41,10 +41,12 @@
       loadHtml2Canvas().then(function() {
         return window.html2canvas(cardEl, {
           backgroundColor: '#0a0907',
-          scale: 2,
+          scale: 3,
           useCORS: true,
           allowTaint: true,
-          logging: false
+          logging: false,
+          imageTimeout: 5000,
+          removeContainer: true
         });
       }).then(function(canvas) {
         canvas.toBlob(function(blob) {
