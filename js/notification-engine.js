@@ -9,19 +9,9 @@
 
     // ─── Skip on excluded pages ────────────────────────────
     var currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    var EXCLUDED = [
-        'mystic_splash_screen.html',
-        'branded_celestial_splash_screen.html',
-        'cosmic_onboarding_welcome.html',
-        'mystic_sign_up_screen.html',
-        'cosmic_calculation_loading.html',
-        'soul_mate_loading.html',
-        'wheel_reward_success.html',
-        'premium_checkout_summary.html',
-        'data-ready_birth_form.html',
-        'messaging.html'
-    ];
-    if (EXCLUDED.indexOf(currentPage) !== -1) return;
+    // Bildirim zili SADECE ana sayfada görünsün
+    var ALLOWED = ['mystic_numerology_home_1.html'];
+    if (ALLOWED.indexOf(currentPage) === -1) return;
 
     function sb() { return window.supabaseClient; }
 
