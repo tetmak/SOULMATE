@@ -61,10 +61,12 @@
         '#numerael-bottom-nav .nav-tab .material-symbols-outlined{font-size:24px;transition:all 0.2s}',
         '#numerael-bottom-nav .nav-tab.active .material-symbols-outlined{font-variation-settings:"FILL" 1}',
         '#numerael-bottom-nav .nav-tab span:last-child{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em}',
-        '#numerael-plus-btn{width:56px;height:56px;border-radius:50%;background:#f2cc0d;border:4px solid rgba(24,23,17,0.95);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;top:-22px;box-shadow:0 0 20px rgba(242,204,13,0.35);transition:transform 0.2s,box-shadow 0.2s;z-index:1002}',
+        '#numerael-plus-btn{width:56px;height:56px;border-radius:50%;background:rgba(24,23,17,0.95);border:2px solid rgba(234,198,122,0.4);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;top:-22px;box-shadow:0 0 20px rgba(234,198,122,0.25);transition:transform 0.2s,box-shadow 0.2s;z-index:1002;overflow:hidden}',
         '#numerael-plus-btn:active{transform:scale(0.92)}',
-        '#numerael-plus-btn .material-symbols-outlined{font-size:30px;color:#181711;transition:transform 0.3s}',
-        '#numerael-plus-btn.open .material-symbols-outlined{transform:rotate(45deg)}',
+        '#numerael-plus-btn img{width:44px;height:44px;object-fit:contain;transition:transform 0.3s}',
+        '#numerael-plus-btn.open img{transform:scale(0.85);opacity:0.5}',
+        '#numerael-plus-btn .close-x{position:absolute;font-size:24px;color:#fff;opacity:0;transition:opacity 0.3s}',
+        '#numerael-plus-btn.open .close-x{opacity:1}',
         '#numerael-bubble-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:999}',
         '#numerael-bubble-menu{display:none;position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:1001;width:300px}',
         '#numerael-bubble-menu .bubble-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;justify-items:center}',
@@ -118,7 +120,7 @@
             // Plus button
             var plusBtn = document.createElement('button');
             plusBtn.id = 'numerael-plus-btn';
-            plusBtn.innerHTML = '<span class="material-symbols-outlined">add</span>';
+            plusBtn.innerHTML = '<img src="images/splash-logo.png" alt="Menu"><span class="close-x material-symbols-outlined">close</span>';
             plusBtn.addEventListener('click', toggleBubble);
             nav.appendChild(plusBtn);
         } else {
