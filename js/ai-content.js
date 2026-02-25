@@ -534,7 +534,7 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
     'daily_spiritual_guide': fillDailySpiritualGuide,
     'daily_number_deep_dive': fillDailyNumberDeepDive,
     'name_numerology_breakdown_1': fillNameNumerology1,
-    'name_numerology_breakdown_2': fillNameNumerology2,
+    // name_numerology_breakdown_2: compatibility-engine.js tarafından yönetiliyor (numeroloji verileriyle)
     'name_numerology_breakdown_3': fillNameNumerology3,
     'relationship_compatibility': fillCompatibilityAnalysis,
     'profile_soul_journey': fillProfileSoulJourney,

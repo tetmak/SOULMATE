@@ -234,12 +234,13 @@ YAZI KURALLARI:
   };
 
   // ─── API ÇAĞRISI ─────────────────────────────────────────────
-  // Cache key — iki isim (sıralı) + tip
+  // Cache key — iki isim (sıralı) + doğum tarihleri + tip
+  // Doğum tarihleri dahil: aynı isimli farklı kişiler farklı analiz alsın
   function compatCacheKey(type, ctx) {
-    var names = [ctx.p1.name, ctx.p2.name]
-      .map(function(n){ return n.toLowerCase().trim().replace(/\s+/g,'_'); })
-      .sort();
-    return 'numerael_compat_ai_v2__' + names[0] + '__' + names[1] + '__' + type;
+    var p1Key = (ctx.p1.name + '_' + (ctx.p1.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
+    var p2Key = (ctx.p2.name + '_' + (ctx.p2.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
+    var sorted = [p1Key, p2Key].sort();
+    return 'numerael_compat_ai_v2__' + sorted[0] + '__' + sorted[1] + '__' + type;
   }
 
   // Sync cache getter — loading animasyonunu atlamak için
