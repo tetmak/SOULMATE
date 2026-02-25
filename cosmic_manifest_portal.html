@@ -91,6 +91,36 @@
             box-shadow: 0 0 30px rgba(242, 54, 148, 0.2);
         }
 
+        /* ── Category Selector ──── */
+        .cat-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .cat-btn:active { transform: scale(0.95); }
+        .cat-btn.active {
+            background: rgba(255,255,255,0.12);
+            border-color: rgba(255,255,255,0.25);
+            color: #fff;
+        }
+        .cat-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
         .star {
             position: absolute;
             border-radius: 50%;
@@ -251,9 +281,28 @@
         </div>
 
         <!-- Title -->
-        <div class="mb-8 text-center">
+        <div class="mb-6 text-center">
             <h1 id="portal-title" class="text-3xl font-light tracking-[0.1em] mb-2"></h1>
             <p id="portal-sub" class="text-sm opacity-60 leading-relaxed max-w-xs mx-auto"></p>
+        </div>
+
+        <!-- Category Selector -->
+        <div id="cat-selector" class="flex flex-wrap justify-center gap-2 mb-6" style="position:relative;z-index:100;">
+            <button class="cat-btn active" data-cat="love" onclick="selectCat(this)">
+                <span class="cat-dot" style="background:#ff6b8a"></span> Aşk
+            </button>
+            <button class="cat-btn" data-cat="money" onclick="selectCat(this)">
+                <span class="cat-dot" style="background:#6ee7b7"></span> Para
+            </button>
+            <button class="cat-btn" data-cat="health" onclick="selectCat(this)">
+                <span class="cat-dot" style="background:#fbbf24"></span> Sağlık
+            </button>
+            <button class="cat-btn" data-cat="career" onclick="selectCat(this)">
+                <span class="cat-dot" style="background:#fcd34d"></span> Kariyer
+            </button>
+            <button class="cat-btn" data-cat="spiritual" onclick="selectCat(this)">
+                <span class="cat-dot" style="background:#c084fc"></span> Ruh
+            </button>
         </div>
 
         <!-- Input -->
@@ -515,6 +564,14 @@
         document.getElementById('dot-active').style.background = T.dotColor;
         document.getElementById('dot-active').style.boxShadow = '0 0 8px ' + T.dotColor;
 
+        // ── Kategori Seçimi ─────────────────────────────
+        var selectedCategory = 'love';
+        window.selectCat = function(btn) {
+            document.querySelectorAll('.cat-btn').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            selectedCategory = btn.getAttribute('data-cat');
+        };
+
         // ── Animasyon ────────────────────────────────────
         var animating = false;
 
@@ -596,7 +653,7 @@
                     var key = 'numerael_manifests_' + session.user.id;
                     var manifests = [];
                     try { manifests = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
-                    manifests.push({ text: text, created_at: new Date().toISOString() });
+                    manifests.push({ text: text, category: selectedCategory, created_at: new Date().toISOString() });
                     localStorage.setItem(key, JSON.stringify(manifests));
                 }
             } catch(e) { console.warn('[Manifest] Save error:', e); }
