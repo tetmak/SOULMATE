@@ -19,26 +19,79 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Space Grotesk', sans-serif;
-            background: #0a0a1a;
+            background: #08080f;
             color: #fff;
             min-height: 100dvh;
             padding-bottom: 140px;
         }
 
-        /* Sort Tabs */
-        .sort-tabs { display: flex; gap: 0; background: rgba(255,255,255,0.05); border-radius: 9999px; padding: 3px; }
-        .sort-tab { flex: 1; padding: 8px 4px; border-radius: 9999px; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border: none; cursor: pointer; transition: all 0.25s; text-align: center; }
-        .sort-tab.active { background: #7c3aed; color: #fff; box-shadow: 0 2px 12px rgba(124,58,237,0.4); }
-        .sort-tab:not(.active) { background: transparent; color: rgba(255,255,255,0.35); }
+        /* ── Header title ────────────────────────────── */
+        .page-title {
+            background: linear-gradient(90deg, #c084fc, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 22px;
+            font-weight: 700;
+        }
 
-        /* Category Chips */
-        .cat-chip { padding: 7px 14px; border-radius: 9999px; font-size: 11px; font-weight: 600; border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.4); }
-        .cat-chip.active { background: rgba(124,58,237,0.2); color: #c084fc; border-color: rgba(124,58,237,0.5); }
+        /* ── Sort Tabs ───────────────────────────────── */
+        .sort-tabs {
+            display: flex;
+            gap: 0;
+            background: rgba(255,255,255,0.06);
+            border-radius: 9999px;
+            padding: 3px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .sort-tab {
+            flex: 1;
+            padding: 9px 4px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            text-align: center;
+        }
+        .sort-tab.active {
+            background: rgba(124,58,237,0.85);
+            color: #fff;
+            box-shadow: 0 2px 12px rgba(124,58,237,0.35);
+        }
+        .sort-tab:not(.active) {
+            background: transparent;
+            color: rgba(255,255,255,0.3);
+        }
 
-        /* Weekly Champion Card */
+        /* ── Category Chips ──────────────────────────── */
+        .cat-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+        .cat-row::-webkit-scrollbar { display: none; }
+        .cat-chip {
+            padding: 7px 16px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.4);
+        }
+        .cat-chip.active {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        /* ── Weekly Champion ─────────────────────────── */
         .weekly-card {
-            background: linear-gradient(160deg, rgba(25,15,45,0.95) 0%, rgba(15,8,30,1) 100%);
-            border: 1px solid rgba(124,58,237,0.25);
+            background: linear-gradient(160deg, #1a1030 0%, #0e0820 60%, #12082a 100%);
+            border: 1px solid rgba(124,58,237,0.2);
             border-radius: 20px;
             padding: 20px;
             position: relative;
@@ -47,89 +100,174 @@
         .weekly-card::before {
             content: '';
             position: absolute;
-            top: -40%; right: -20%;
-            width: 60%; height: 80%;
-            background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+            top: -30%; right: -15%;
+            width: 50%; height: 70%;
+            background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
             pointer-events: none;
         }
         .weekly-badge {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #000;
-            font-size: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(245,158,11,0.15);
+            color: #f59e0b;
+            font-size: 9px;
             font-weight: 800;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            padding: 3px 8px;
-            border-radius: 5px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(245,158,11,0.25);
+        }
+        .weekly-likes {
+            color: rgba(255,255,255,0.3);
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .weekly-quote {
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+            color: #fff;
+            letter-spacing: -0.01em;
         }
         .ritual-btn {
-            background: linear-gradient(135deg, #7c3aed, #6d28d9);
-            color: #fff;
+            background: rgba(124,58,237,0.25);
+            color: #c084fc;
             font-size: 10px;
             font-weight: 800;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            padding: 6px 14px;
-            border-radius: 8px;
-            border: none;
+            padding: 7px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(124,58,237,0.35);
             cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ritual-btn:active { transform: scale(0.95); }
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .user-avatar-sm {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 700;
+            flex-shrink: 0;
         }
 
-        /* Grid Manifest Cards */
-        .manifest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        /* ── Grid ────────────────────────────────────── */
+        .manifest-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        /* ── Grid Cards ──────────────────────────────── */
         .grid-card {
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 160px;
-            position: relative;
-            overflow: hidden;
+            min-height: 170px;
             cursor: pointer;
             transition: transform 0.15s;
+            position: relative;
         }
         .grid-card:active { transform: scale(0.97); }
-        .grid-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.3) 100%);
-            pointer-events: none;
-            border-radius: 16px;
-        }
-        .grid-card > * { position: relative; z-index: 1; }
+
+        /* Category tag */
         .cat-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
             font-size: 9px;
             font-weight: 800;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
             padding: 3px 8px;
             border-radius: 6px;
-            display: inline-block;
             width: fit-content;
         }
+        .cat-tag .dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            display: inline-block;
+        }
 
-        /* Gradient presets for categories */
-        .grad-love { background: linear-gradient(145deg, #be185d, #831843, #4a0728); }
-        .grad-love .cat-tag { background: rgba(236,72,153,0.3); color: #f9a8d4; }
+        /* Warm gradient palettes matching design exactly */
+        .grad-love {
+            background: linear-gradient(145deg, #c44569 0%, #d4736c 40%, #e8a088 100%);
+        }
+        .grad-love .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
+        .grad-love .cat-tag .dot { background: #ff6b8a; }
 
-        .grad-money { background: linear-gradient(145deg, #065f46, #064e3b, #022c22); }
-        .grad-money .cat-tag { background: rgba(16,185,129,0.3); color: #6ee7b7; }
+        .grad-money {
+            background: linear-gradient(145deg, #2a7d5f 0%, #5a9e5a 35%, #c4b44a 100%);
+        }
+        .grad-money .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
+        .grad-money .cat-tag .dot { background: #6ee7b7; }
 
-        .grad-health { background: linear-gradient(145deg, #c2410c, #9a3412, #431407); }
-        .grad-health .cat-tag { background: rgba(251,146,60,0.3); color: #fdba74; }
+        .grad-health {
+            background: linear-gradient(145deg, #c87833 0%, #d4a04a 40%, #e8cc6a 100%);
+        }
+        .grad-health .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
+        .grad-health .cat-tag .dot { background: #fbbf24; }
 
-        .grad-career { background: linear-gradient(145deg, #7c2d12, #92400e, #451a03); }
-        .grad-career .cat-tag { background: rgba(245,158,11,0.3); color: #fcd34d; }
+        .grad-spiritual {
+            background: linear-gradient(145deg, #9a5a7c 0%, #c48a8a 40%, #e0b0a0 100%);
+        }
+        .grad-spiritual .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
+        .grad-spiritual .cat-tag .dot { background: #c084fc; }
 
-        .grad-spiritual { background: linear-gradient(145deg, #5b21b6, #4c1d95, #2e1065); }
-        .grad-spiritual .cat-tag { background: rgba(167,139,250,0.3); color: #c4b5fd; }
+        .grad-career {
+            background: linear-gradient(145deg, #8a6e2f 0%, #b89a4a 40%, #d4c06a 100%);
+        }
+        .grad-career .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
+        .grad-career .cat-tag .dot { background: #fcd34d; }
 
-        .grad-general { background: linear-gradient(145deg, #1e3a5f, #172554, #0c1836); }
-        .grad-general .cat-tag { background: rgba(96,165,250,0.3); color: #93c5fd; }
+        .grad-general {
+            background: linear-gradient(145deg, #4a5a8a 0%, #6a7aaa 40%, #8a9aba 100%);
+        }
+        .grad-general .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
+        .grad-general .cat-tag .dot { background: #93c5fd; }
 
-        /* FAB Button */
+        /* Card text */
+        .card-quote {
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.45;
+            color: rgba(0,0,0,0.85);
+            margin-top: 10px;
+        }
+        .card-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 10px;
+        }
+        .card-user {
+            font-size: 10px;
+            font-weight: 500;
+            color: rgba(0,0,0,0.45);
+        }
+        .card-likes {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            color: rgba(0,0,0,0.4);
+        }
+        .card-likes .material-symbols-outlined {
+            font-size: 13px;
+        }
+
+        /* ── FAB ─────────────────────────────────────── */
         .fab-btn {
             position: fixed;
             bottom: 100px;
@@ -139,7 +277,7 @@
             background: linear-gradient(135deg, #7c3aed, #a855f7);
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 24px rgba(124,58,237,0.45);
+            box-shadow: 0 4px 24px rgba(124,58,237,0.5);
             display: flex; align-items: center; justify-content: center;
             z-index: 100;
             transition: transform 0.15s;
@@ -147,14 +285,15 @@
         .fab-btn:active { transform: scale(0.9); }
         .fab-btn .material-symbols-outlined { font-size: 28px; color: #fff; }
 
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        /* ── Animations ──────────────────────────────── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
         .fade-up { animation: fadeUp 0.35s ease forwards; opacity: 0; }
-        .fd1 { animation-delay: 0.05s; }
-        .fd2 { animation-delay: 0.1s; }
-        .fd3 { animation-delay: 0.15s; }
-        .fd4 { animation-delay: 0.2s; }
-        .fd5 { animation-delay: 0.25s; }
-        .fd6 { animation-delay: 0.3s; }
+        .fd1 { animation-delay: 0.03s; }
+        .fd2 { animation-delay: 0.08s; }
+        .fd3 { animation-delay: 0.13s; }
+        .fd4 { animation-delay: 0.18s; }
+        .fd5 { animation-delay: 0.23s; }
+        .fd6 { animation-delay: 0.28s; }
     </style>
 </head>
 <body>
@@ -162,9 +301,9 @@
     <!-- Header -->
     <div class="px-5 pt-12 pb-2">
         <div class="flex items-center justify-between mb-5">
-            <h1 class="text-[22px] font-bold tracking-tight">Manifest Portal</h1>
+            <h1 class="page-title">Manifest Portal</h1>
             <button onclick="showInfoModal()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                <span class="material-symbols-outlined text-white/40 text-base">info</span>
+                <span class="material-symbols-outlined text-purple-400/60 text-base">info</span>
             </button>
         </div>
 
@@ -176,13 +315,11 @@
         </div>
 
         <!-- Category Chips -->
-        <div class="flex gap-2 overflow-x-auto pb-3" style="scrollbar-width:none;">
-            <button class="cat-chip active" data-cat="all" onclick="switchCat(this)">
-                <span class="material-symbols-outlined" style="font-size:13px;">all_inclusive</span> All
-            </button>
-            <button class="cat-chip" data-cat="money" onclick="switchCat(this)">💰 Money</button>
-            <button class="cat-chip" data-cat="love" onclick="switchCat(this)">❤️ Love</button>
-            <button class="cat-chip" data-cat="health" onclick="switchCat(this)">🌿 Health</button>
+        <div class="cat-row pb-3">
+            <button class="cat-chip active" data-cat="all" onclick="switchCat(this)">All</button>
+            <button class="cat-chip" data-cat="money" onclick="switchCat(this)">Money</button>
+            <button class="cat-chip" data-cat="love" onclick="switchCat(this)">Love</button>
+            <button class="cat-chip" data-cat="health" onclick="switchCat(this)">Health</button>
         </div>
     </div>
 
@@ -191,7 +328,7 @@
 
     <!-- Info Modal -->
     <div id="info-modal" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); align-items:center; justify-content:center;">
-        <div style="background:rgba(20,15,35,0.98); border:1px solid rgba(124,58,237,0.3); border-radius:20px; padding:28px; max-width:320px; width:90%; text-align:center;">
+        <div style="background:rgba(16,12,30,0.98); border:1px solid rgba(124,58,237,0.3); border-radius:20px; padding:28px; max-width:320px; width:90%; text-align:center;">
             <span class="material-symbols-outlined text-4xl text-purple-400 mb-3" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
             <h3 class="text-lg font-bold mb-2">Manifest Portal</h3>
             <p class="text-white/50 text-sm leading-relaxed mb-5">Topluluk manifestlerini keşfet, ilham al ve kendi niyetlerini evrene gönder. Birlikte manifest oluşturmak enerjinizi katlar!</p>
@@ -211,107 +348,105 @@
         var currentSort = 'newest';
         var currentCat = 'all';
 
-        // ─── Kategori config ────────────────────────────────
-        var CAT_CONFIG = {
-            love:      { label: 'LOVE',      grad: 'grad-love' },
-            money:     { label: 'WEALTH',    grad: 'grad-money' },
-            health:    { label: 'ENERGY',    grad: 'grad-health' },
-            career:    { label: 'CAREER',    grad: 'grad-career' },
-            spiritual: { label: 'IDEA',      grad: 'grad-spiritual' },
-            general:   { label: 'GENERAL',   grad: 'grad-general' }
+        // ─── Category Config ────────────────────────────
+        var CAT_CFG = {
+            love:      { label: 'LOVE',    grad: 'grad-love',      dot: '#ff6b8a' },
+            money:     { label: 'WEALTH',  grad: 'grad-money',     dot: '#6ee7b7' },
+            health:    { label: 'ENERGY',  grad: 'grad-health',    dot: '#fbbf24' },
+            career:    { label: 'CAREER',  grad: 'grad-career',    dot: '#fcd34d' },
+            spiritual: { label: 'SOUL',    grad: 'grad-spiritual', dot: '#c084fc' },
+            general:   { label: 'GENERAL', grad: 'grad-general',   dot: '#93c5fd' }
         };
 
-        // ─── Sample Data ────────────────────────────────────
-        var MANIFESTS = [
+        // ─── Avatar colors ──────────────────────────────
+        var AVATAR_COLS = ['#7c3aed','#a855f7','#ec4899','#f43f5e','#f59e0b','#10b981','#06b6d4','#3b82f6','#6366f1','#8b5cf6'];
+        function avatarColor(name) {
+            var h = 0;
+            for (var i = 0; i < name.length; i++) h = name.charCodeAt(i) + ((h << 5) - h);
+            return AVATAR_COLS[Math.abs(h) % AVATAR_COLS.length];
+        }
+        function initials(name) {
+            var p = name.trim().split(/[\s_]+/);
+            return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
+        }
+
+        // ─── Sample Data ────────────────────────────────
+        var DATA = [
             { id: 1, user: 'MysticSoul_88', path: 7, text: '"I am a magnet for boundless prosperity and soulful opportunities."', likes: 3200, category: 'money', weekly: true },
-            { id: 2, user: 'luna_3', path: 3, text: '"I am worthy of deep, unconditional love."', likes: 142, category: 'love', weekly: false },
-            { id: 3, user: 'iris_23', path: 5, text: '"Abundance flows to me effortlessly today."', likes: 96, category: 'money', weekly: false },
-            { id: 4, user: 'nova_8', path: 8, text: '"My body is a temple of vibrant health."', likes: 78, category: 'health', weekly: false },
-            { id: 5, user: 'zen_11', path: 11, text: '"I trust the timing of my cosmic journey."', likes: 134, category: 'spiritual', weekly: false },
-            { id: 6, user: 'aura_6', path: 6, text: '"Love surrounds me in every moment."', likes: 267, category: 'love', weekly: false },
-            { id: 7, user: 'star_1', path: 1, text: '"My career is guided by purpose and light."', likes: 189, category: 'career', weekly: false },
-            { id: 8, user: 'moon_9', path: 9, text: '"I release what no longer serves my soul."', likes: 312, category: 'spiritual', weekly: false },
-            { id: 9, user: 'sol_22', path: 22, text: '"Wealth flows through me like cosmic energy."', likes: 445, category: 'money', weekly: false },
-            { id: 10, user: 'gaia_4', path: 4, text: '"Every cell in my body radiates health."', likes: 156, category: 'health', weekly: false }
+            { id: 2, user: 'Aura_9', path: 9, text: '"I am worthy of deep, unconditional love."', likes: 142, category: 'love' },
+            { id: 3, user: 'Zen_22', path: 22, text: '"Abundance flows to me effortlessly today."', likes: 89, category: 'money' },
+            { id: 4, user: 'Vital_X', path: 5, text: '"My body is a temple of vibrant health."', likes: 215, category: 'health' },
+            { id: 5, user: 'Luna_7', path: 7, text: '"I trust the timing of my cosmic journey."', likes: 64, category: 'spiritual' },
+            { id: 6, user: 'Iris_3', path: 3, text: '"Love surrounds me in every heartbeat."', likes: 267, category: 'love' },
+            { id: 7, user: 'Nova_1', path: 1, text: '"My purpose illuminates every step I take."', likes: 189, category: 'career' },
+            { id: 8, user: 'Sol_33', path: 33, text: '"I release what no longer serves my soul."', likes: 312, category: 'spiritual' },
+            { id: 9, user: 'Star_11', path: 11, text: '"Wealth flows through me like cosmic energy."', likes: 445, category: 'money' },
+            { id: 10, user: 'Gaia_4', path: 4, text: '"Every cell in my body radiates vitality."', likes: 156, category: 'health' }
         ];
 
-        // ─── User manifests ─────────────────────────────────
-        function loadUserManifests() {
+        // ─── User manifests from localStorage ───────────
+        function userManifests() {
             try {
-                var authData = JSON.parse(localStorage.getItem('numerael-auth-token') || 'null');
-                if (!authData || !authData.user) return [];
+                var auth = JSON.parse(localStorage.getItem('numerael-auth-token') || 'null');
+                if (!auth || !auth.user) return [];
                 var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
-                var stored = JSON.parse(localStorage.getItem('numerael_manifests_' + authData.user.id) || '[]');
-                var userName = (ud && ud.name) ? ud.name.split(' ')[0] : 'You';
+                var stored = JSON.parse(localStorage.getItem('numerael_manifests_' + auth.user.id) || '[]');
+                var name = (ud && ud.name) ? ud.name.split(' ')[0] : 'You';
                 return stored.map(function(m, i) {
-                    return {
-                        id: 1000 + i,
-                        user: userName,
-                        path: null,
-                        text: '"' + (m.text || m.intention || '') + '"',
-                        likes: Math.floor(Math.random() * 50) + 5,
-                        category: 'general',
-                        weekly: false,
-                        isOwn: true
-                    };
+                    return { id: 2000 + i, user: name, path: null, text: '"' + (m.text || '') + '"', likes: Math.floor(Math.random() * 40) + 5, category: 'general', isOwn: true };
                 });
             } catch(e) { return []; }
         }
 
-        // ─── Format likes ───────────────────────────────────
-        function fmtLikes(n) {
-            if (n >= 1000) return (n / 1000).toFixed(1) + 'k';
-            return n.toString();
-        }
+        function fmtLikes(n) { return n >= 1000 ? (n/1000).toFixed(1) + 'k' : '' + n; }
 
-        // ─── Render ─────────────────────────────────────────
+        // ─── RENDER ─────────────────────────────────────
         function render() {
             var feed = document.getElementById('manifest-feed');
-            var userM = loadUserManifests().reverse();
-            var all = userM.concat(MANIFESTS);
+            var uM = userManifests().reverse();
+            var all = uM.concat(DATA);
 
             // Filter
-            var items = all;
-            if (currentCat !== 'all') {
-                items = all.filter(function(m) { return m.category === currentCat; });
-            }
+            if (currentCat !== 'all') all = all.filter(function(m) { return m.category === currentCat; });
 
             // Sort
             if (currentSort === 'top_rated') {
-                items.sort(function(a, b) { return b.likes - a.likes; });
+                all.sort(function(a, b) { return b.likes - a.likes; });
             } else if (currentSort === 'weekly') {
-                items = items.filter(function(m) { return m.weekly || m.likes > 150; });
-                items.sort(function(a, b) { return b.likes - a.likes; });
+                all = all.filter(function(m) { return m.weekly || m.likes > 150; });
+                all.sort(function(a, b) { return b.likes - a.likes; });
             }
 
-            if (items.length === 0) {
-                feed.innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined text-white/10" style="font-size:48px;font-variation-settings:\'FILL\' 1;">search_off</span><p class="text-white/25 text-sm mt-3">Bu kategoride manifest bulunamadı</p></div>';
+            if (!all.length) {
+                feed.innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined text-white/10" style="font-size:48px;font-variation-settings:\'FILL\' 1;">search_off</span><p class="text-white/20 text-sm mt-3">Bu kategoride manifest bulunamadı</p></div>';
                 return;
             }
 
             var html = '';
 
-            // Weekly Champion (only in newest + all)
-            var weeklyItem = null;
+            // ── Weekly Champion ──────────────────────────
+            var weekly = null;
             if (currentSort === 'newest' && currentCat === 'all') {
-                for (var w = 0; w < items.length; w++) {
-                    if (items[w].weekly) { weeklyItem = items[w]; items.splice(w, 1); break; }
+                for (var w = 0; w < all.length; w++) {
+                    if (all[w].weekly) { weekly = all[w]; all.splice(w, 1); break; }
                 }
             }
 
-            if (weeklyItem) {
+            if (weekly) {
+                var wc = avatarColor(weekly.user);
+                var wi = initials(weekly.user);
                 html += '<div class="weekly-card fade-up fd1 mb-4">' +
-                    '<div class="flex items-center justify-between mb-3">' +
-                        '<span class="weekly-badge">WEEKLY CHAMPION</span>' +
-                        '<span class="text-white/30 text-xs">' + fmtLikes(weeklyItem.likes) + ' <span class="material-symbols-outlined" style="font-size:12px;vertical-align:middle;">favorite</span></span>' +
+                    '<div class="flex items-center justify-between mb-4">' +
+                        '<span class="weekly-badge">⭐ WEEKLY CHAMPION</span>' +
+                        '<span class="weekly-likes">' + fmtLikes(weekly.likes) + ' Likes</span>' +
                     '</div>' +
-                    '<p class="text-white text-lg font-light leading-relaxed italic mb-4">' + weeklyItem.text + '</p>' +
+                    '<p class="weekly-quote mb-5">' + weekly.text + '</p>' +
                     '<div class="flex items-center justify-between">' +
-                        '<div class="flex items-center gap-2">' +
-                            '<div style="width:28px;height:28px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;">' + weeklyItem.user.substring(0, 2).toUpperCase() + '</div>' +
-                            '<div>' +
-                                '<span class="text-white/80 text-xs font-semibold">' + weeklyItem.user + '</span>' +
-                                (weeklyItem.path ? '<br><span class="text-white/25 text-[9px] tracking-wider">Life Path ' + weeklyItem.path + '</span>' : '') +
+                        '<div class="user-pill">' +
+                            '<div class="user-avatar-sm" style="background:' + wc + ';">' + wi + '</div>' +
+                            '<div style="line-height:1.2;">' +
+                                '<div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);">' + weekly.user + '</div>' +
+                                (weekly.path ? '<div style="font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;">Life Path ' + weekly.path + '</div>' : '') +
                             '</div>' +
                         '</div>' +
                         '<button class="ritual-btn">RITUAL</button>' +
@@ -319,20 +454,21 @@
                 '</div>';
             }
 
-            // Grid cards
+            // ── Grid Cards ──────────────────────────────
             html += '<div class="manifest-grid">';
-            for (var i = 0; i < items.length; i++) {
-                var m = items[i];
-                var cat = CAT_CONFIG[m.category] || CAT_CONFIG.general;
+            for (var i = 0; i < all.length; i++) {
+                var m = all[i];
+                var c = CAT_CFG[m.category] || CAT_CFG.general;
                 var d = Math.min(i + 2, 6);
-                html += '<div class="grid-card ' + cat.grad + ' fade-up fd' + d + '">' +
+
+                html += '<div class="grid-card ' + c.grad + ' fade-up fd' + d + '">' +
                     '<div>' +
-                        '<span class="cat-tag">' + cat.label + '</span>' +
-                        '<p class="text-white text-[13px] font-medium leading-snug mt-3">' + m.text + '</p>' +
+                        '<span class="cat-tag"><span class="dot" style="background:' + c.dot + '"></span> ' + c.label + '</span>' +
+                        '<p class="card-quote">' + m.text + '</p>' +
                     '</div>' +
-                    '<div class="flex items-center justify-between mt-3">' +
-                        '<span class="text-white/40 text-[10px]">@' + m.user + '</span>' +
-                        '<span class="text-white/30 text-[10px]">' + fmtLikes(m.likes) + ' <span class="material-symbols-outlined" style="font-size:10px;vertical-align:middle;">favorite</span></span>' +
+                    '<div class="card-bottom">' +
+                        '<span class="card-user">@' + m.user + '</span>' +
+                        '<span class="card-likes"><span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;">thumb_up</span> ' + fmtLikes(m.likes) + '</span>' +
                     '</div>' +
                 '</div>';
             }
@@ -341,38 +477,30 @@
             feed.innerHTML = html;
         }
 
-        // ─── Global handlers ────────────────────────────────
+        // ─── Global Handlers ────────────────────────────
         window.switchSort = function(btn) {
             currentSort = btn.getAttribute('data-sort');
-            var tabs = document.querySelectorAll('.sort-tab');
-            for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+            var t = document.querySelectorAll('.sort-tab');
+            for (var i = 0; i < t.length; i++) t[i].classList.remove('active');
             btn.classList.add('active');
             render();
         };
-
         window.switchCat = function(btn) {
             currentCat = btn.getAttribute('data-cat');
-            var chips = document.querySelectorAll('.cat-chip');
-            for (var i = 0; i < chips.length; i++) chips[i].classList.remove('active');
+            var c = document.querySelectorAll('.cat-chip');
+            for (var i = 0; i < c.length; i++) c[i].classList.remove('active');
             btn.classList.add('active');
             render();
         };
+        window.showInfoModal = function() { document.getElementById('info-modal').style.display = 'flex'; };
+        window.closeInfoModal = function() { document.getElementById('info-modal').style.display = 'none'; };
 
-        window.showInfoModal = function() {
-            document.getElementById('info-modal').style.display = 'flex';
-        };
-
-        window.closeInfoModal = function() {
-            document.getElementById('info-modal').style.display = 'none';
-        };
-
-        // ─── Init ───────────────────────────────────────────
+        // ─── Init ───────────────────────────────────────
         async function init() {
             if (window.auth && window.auth.whenReady) await window.auth.whenReady();
             if (window.gamification) window.gamification.trackAction('manifest_community_visit');
             render();
         }
-
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', init);
         } else {
