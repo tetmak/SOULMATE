@@ -527,7 +527,7 @@ YAZI KURALLARI:
     if (smBond) smBond.textContent = ctx.bond;
 
     // "Cosmic Connection" AI içerik
-    var insightCard = document.querySelector('.bg-white\\/5.backdrop-blur-md.rounded-xl.p-6');
+    var insightCard = document.getElementById('compat-insight-card');
     if (insightCard) {
       var _cosmicCached = getCachedAnalysis('cosmic', ctx);
       insightCard.innerHTML = '<div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary">auto_awesome</span><h3 class="text-lg font-bold">Kozmik Bağ</h3></div>' +
