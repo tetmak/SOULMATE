@@ -288,7 +288,7 @@
                 <h3
                     class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display">
                     Security &amp; Legal</h3>
-                <div
+                <div id="btn-change-password"
                     class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-14 justify-between border-b border-slate-100 dark:border-border-dark cursor-pointer">
                     <div class="flex items-center gap-4">
                         <div
@@ -301,7 +301,7 @@
                     <div class="shrink-0"><span
                             class="material-symbols-outlined text-slate-400 dark:text-white">chevron_right</span></div>
                 </div>
-                <div
+                <div id="btn-privacy-policy"
                     class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-14 justify-between border-b border-slate-100 dark:border-border-dark cursor-pointer">
                     <div class="flex items-center gap-4">
                         <div
@@ -314,7 +314,7 @@
                     <div class="shrink-0"><span
                             class="material-symbols-outlined text-slate-400 dark:text-white">chevron_right</span></div>
                 </div>
-                <div
+                <div id="btn-terms-of-service"
                     class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-14 justify-between cursor-pointer">
                     <div class="flex items-center gap-4">
                         <div
@@ -347,14 +347,6 @@
                     256-bit AES protection.</p>
                 <p class="text-slate-400 dark:text-[#b9b29d] text-xs font-normal mt-2">V 2.4.1 — Made with stardust</p>
             </div>
-        </div>
-        <!-- Bottom Tab Bar (Placeholder) -->
-        <div
-            class="h-[72px] bg-background-light dark:bg-background-dark border-t border-slate-100 dark:border-border-dark flex items-center justify-around px-6">
-            <span class="material-symbols-outlined text-slate-400">home</span>
-            <span class="material-symbols-outlined text-slate-400">auto_graph</span>
-            <span class="material-symbols-outlined text-slate-400">explore</span>
-            <span class="material-symbols-outlined text-primary">person</span>
         </div>
     </div>
 
@@ -407,7 +399,7 @@
         setTimeout(function () {
 
             // Real Log Out Logic
-            const btnLogout = document.getElementById('btn-logout');
+            var btnLogout = document.getElementById('btn-logout');
             if (btnLogout) {
                 btnLogout.addEventListener('click', async function () {
                     try {
@@ -431,6 +423,115 @@
                     });
                 }
             });
+
+            // ─── Change Password ─────────────────────────────
+            var btnChangePass = document.getElementById('btn-change-password');
+            if (btnChangePass) {
+                btnChangePass.addEventListener('click', async function() {
+                    // Şifre değiştirme modalı göster
+                    var overlay = document.createElement('div');
+                    overlay.id = 'pw-overlay';
+                    overlay.style.cssText = 'position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px)';
+                    overlay.innerHTML =
+                        '<div style="background:#221d10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;width:90%;max-width:380px">' +
+                            '<h3 style="color:white;font-size:18px;font-weight:800;margin-bottom:4px;font-family:Manrope,sans-serif">Şifre Değiştir</h3>' +
+                            '<p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:20px">E-posta adresinize şifre sıfırlama bağlantısı gönderilecek.</p>' +
+                            '<div id="pw-email-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 16px;margin-bottom:16px">' +
+                                '<span class="material-symbols-outlined" style="color:rgba(255,255,255,0.4);font-size:20px">mail</span>' +
+                                '<span id="pw-email" style="color:rgba(255,255,255,0.8);font-size:14px">Yükleniyor...</span>' +
+                            '</div>' +
+                            '<p id="pw-status" style="display:none;text-align:center;font-size:13px;margin-bottom:14px;padding:8px;border-radius:8px"></p>' +
+                            '<div style="display:flex;gap:10px">' +
+                                '<button id="pw-cancel" style="flex:1;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:white;font-weight:600;font-size:14px;cursor:pointer;font-family:Manrope,sans-serif">İptal</button>' +
+                                '<button id="pw-send" style="flex:1;height:44px;border-radius:12px;border:none;background:#ecb613;color:#181611;font-weight:700;font-size:14px;cursor:pointer;font-family:Manrope,sans-serif">Gönder</button>' +
+                            '</div>' +
+                        '</div>';
+                    document.body.appendChild(overlay);
+
+                    // Kullanıcı e-postasını göster
+                    var pwEmailEl = document.getElementById('pw-email');
+                    var userEmail = '';
+                    try {
+                        if (window.supabaseClient) {
+                            var res = await window.supabaseClient.auth.getUser();
+                            if (res.data && res.data.user && res.data.user.email) {
+                                userEmail = res.data.user.email;
+                                pwEmailEl.textContent = userEmail;
+                            } else {
+                                pwEmailEl.textContent = 'E-posta bulunamadı';
+                            }
+                        }
+                    } catch(e) { pwEmailEl.textContent = 'E-posta alınamadı'; }
+
+                    // İptal
+                    document.getElementById('pw-cancel').addEventListener('click', function() {
+                        overlay.remove();
+                    });
+                    overlay.addEventListener('click', function(e) {
+                        if (e.target === overlay) overlay.remove();
+                    });
+
+                    // Gönder
+                    document.getElementById('pw-send').addEventListener('click', async function() {
+                        var statusEl = document.getElementById('pw-status');
+                        var sendBtn = document.getElementById('pw-send');
+                        if (!userEmail) {
+                            statusEl.style.display = 'block';
+                            statusEl.style.background = 'rgba(239,68,68,0.15)';
+                            statusEl.style.color = '#ef4444';
+                            statusEl.textContent = 'E-posta adresi bulunamadı.';
+                            return;
+                        }
+                        sendBtn.textContent = 'Gönderiliyor...';
+                        sendBtn.disabled = true;
+                        try {
+                            var result = await window.supabaseClient.auth.resetPasswordForEmail(userEmail);
+                            if (result.error) throw result.error;
+                            statusEl.style.display = 'block';
+                            statusEl.style.background = 'rgba(16,185,129,0.15)';
+                            statusEl.style.color = '#10b981';
+                            statusEl.textContent = '✓ Şifre sıfırlama bağlantısı e-postanıza gönderildi!';
+                            sendBtn.textContent = 'Gönderildi';
+                            setTimeout(function() { overlay.remove(); }, 3000);
+                        } catch(err) {
+                            statusEl.style.display = 'block';
+                            statusEl.style.background = 'rgba(239,68,68,0.15)';
+                            statusEl.style.color = '#ef4444';
+                            statusEl.textContent = 'Hata: ' + (err.message || 'Bilinmeyen hata');
+                            sendBtn.textContent = 'Gönder';
+                            sendBtn.disabled = false;
+                        }
+                    });
+                });
+            }
+
+            // ─── Privacy Policy ─────────────────────────────
+            var btnPrivacy = document.getElementById('btn-privacy-policy');
+            if (btnPrivacy) {
+                btnPrivacy.addEventListener('click', function() {
+                    var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+                    var url = isNative ? 'https://soulmate-kohl.vercel.app/api/privacy-policy' : '/api/privacy-policy';
+                    if (isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+                        window.Capacitor.Plugins.Browser.open({ url: 'https://soulmate-kohl.vercel.app/api/privacy-policy' });
+                    } else {
+                        window.open(url, '_blank');
+                    }
+                });
+            }
+
+            // ─── Terms of Service ───────────────────────────
+            var btnTerms = document.getElementById('btn-terms-of-service');
+            if (btnTerms) {
+                btnTerms.addEventListener('click', function() {
+                    var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
+                    var url = isNative ? 'https://soulmate-kohl.vercel.app/api/terms-of-service' : '/api/terms-of-service';
+                    if (isNative && window.Capacitor.Plugins && window.Capacitor.Plugins.Browser) {
+                        window.Capacitor.Plugins.Browser.open({ url: 'https://soulmate-kohl.vercel.app/api/terms-of-service' });
+                    } else {
+                        window.open(url, '_blank');
+                    }
+                });
+            }
 
         }, 100);
 
