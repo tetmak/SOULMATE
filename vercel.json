@@ -3,5 +3,11 @@
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/", "destination": "/mystic_splash_screen.html" }
+  ],
+  "crons": [
+    {
+      "path": "/api/manifest-cron",
+      "schedule": "0 9 * * *"
+    }
   ]
 }
