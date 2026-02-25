@@ -411,19 +411,8 @@
             return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
         }
 
-        // ─── Sample Data ────────────────────────────────
-        var DATA = [
-            { id: 1, user: 'MysticSoul_88', path: 7, text: '"I am a magnet for boundless prosperity and soulful opportunities."', likes: 3200, category: 'money', weekly: true },
-            { id: 2, user: 'Aura_9', path: 9, text: '"I am worthy of deep, unconditional love."', likes: 142, category: 'love' },
-            { id: 3, user: 'Zen_22', path: 22, text: '"Abundance flows to me effortlessly today."', likes: 89, category: 'money' },
-            { id: 4, user: 'Vital_X', path: 5, text: '"My body is a temple of vibrant health."', likes: 215, category: 'health' },
-            { id: 5, user: 'Luna_7', path: 7, text: '"I trust the timing of my cosmic journey."', likes: 64, category: 'spiritual' },
-            { id: 6, user: 'Iris_3', path: 3, text: '"Love surrounds me in every heartbeat."', likes: 267, category: 'love' },
-            { id: 7, user: 'Nova_1', path: 1, text: '"My purpose illuminates every step I take."', likes: 189, category: 'career' },
-            { id: 8, user: 'Sol_33', path: 33, text: '"I release what no longer serves my soul."', likes: 312, category: 'spiritual' },
-            { id: 9, user: 'Star_11', path: 11, text: '"Wealth flows through me like cosmic energy."', likes: 445, category: 'money' },
-            { id: 10, user: 'Gaia_4', path: 4, text: '"Every cell in my body radiates vitality."', likes: 156, category: 'health' }
-        ];
+        // ─── Data (sadece gerçek kullanıcı manifestleri) ──
+        var DATA = [];
 
         // ─── User manifests from localStorage ───────────
         function userManifests() {
