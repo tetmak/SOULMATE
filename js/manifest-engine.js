@@ -266,6 +266,61 @@
         }
     }
 
+    // ─── GET MY MANIFESTS ──────────────────────────────
+    /**
+     * Kullanicinin kendi manifestlerini yukle (en yeni en ustte)
+     * @returns {Promise<Array>}
+     */
+    async function getMyManifests() {
+        var session = getSession();
+        if (!session || !session.user) {
+            console.warn('[Manifest] No session for getMyManifests');
+            return [];
+        }
+
+        try {
+            var res = await sb().from('manifests')
+                .select('*')
+                .eq('user_id', session.user.id)
+                .order('created_at', { ascending: false });
+
+            if (res.error) {
+                console.warn('[Manifest] getMyManifests error:', res.error);
+                return [];
+            }
+
+            var manifests = res.data || [];
+
+            // Like sayilarini al
+            if (manifests.length > 0) {
+                var ids = manifests.map(function(m) { return m.id; });
+                var likesRes = await sb()
+                    .from('manifest_likes')
+                    .select('manifest_id')
+                    .in('manifest_id', ids);
+
+                var likeCounts = {};
+                if (likesRes.data) {
+                    likesRes.data.forEach(function(l) {
+                        likeCounts[l.manifest_id] = (likeCounts[l.manifest_id] || 0) + 1;
+                    });
+                }
+
+                manifests.forEach(function(m) {
+                    m.likes = likeCounts[m.id] || 0;
+                    m.isOwn = true;
+                    m.isBot = false;
+                });
+            }
+
+            console.log('[Manifest] My manifests:', manifests.length);
+            return manifests;
+        } catch(e) {
+            console.warn('[Manifest] getMyManifests exception:', e);
+            return [];
+        }
+    }
+
     // ─── DELETE ─────────────────────────────────────────
     /**
      * Kendi manifestimi sil
@@ -298,6 +353,7 @@
         save: save,
         loadFeed: loadFeed,
         toggleLike: toggleLike,
+        getMyManifests: getMyManifests,
         deleteMy: deleteMy,
         isFakeUser: isFakeUser
     };
