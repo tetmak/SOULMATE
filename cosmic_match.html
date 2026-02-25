@@ -68,6 +68,8 @@
         .match-ribbon::-webkit-scrollbar{display:none}
         .scroll-fragment{flex:0 0 auto;width:55px;height:75px;background:rgba(60,60,60,0.6);border:1px solid var(--gold-deep);padding:4px;box-shadow:0 4px 8px rgba(0,0,0,0.3);display:flex;flex-direction:column;align-items:center;justify-content:center}
         .profile-silhouette{width:28px;height:28px;background:var(--gold-rich);mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");mask-size:contain;mask-repeat:no-repeat;opacity:0.5}
+        .scroll-fragment{transition:all 0.3s ease;cursor:pointer}
+        .scroll-fragment.ribbon-active{border-color:var(--gold-bright) !important;box-shadow:0 0 15px rgba(255,215,0,0.4);transform:scale(1.12)}
 
         /* ═══ CONFLUENCE ORB ═══ */
         .confluence-orb {
@@ -176,15 +178,9 @@
 <body class="min-h-screen py-6 flex justify-center">
 <div class="max-w-[480px] w-full mx-auto min-h-[95vh] scroll-bg px-6 pb-24 pt-6 flex flex-col">
 
-    <!-- ═══ MATCH RIBBON (decorative) ═══ -->
-    <div class="match-ribbon">
-        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
-        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
-        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
-        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
-        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
-        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
-        <div class="scroll-fragment"><div class="profile-silhouette"></div></div>
+    <!-- ═══ MATCH RIBBON (bugünün eşleşmeleri) ═══ -->
+    <div id="match-ribbon" class="match-ribbon">
+        <!-- JS ile doldurulacak -->
     </div>
 
     <!-- ═══ HEADER ═══ -->
@@ -468,6 +464,12 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     document.getElementById('radar-user-initial').textContent = initial(ud.name);
 
+    // ─── RIBBON STATE ────────────────────────────────────────
+    var ribbonMatches = [];
+    var activeRibbonIdx = 0;
+    var storedRemaining = 0;
+    var storedIsPrem = false;
+
     // Gamification entegrasyonu
     if (window.gamification) {
         var gRank = window.gamification.getRank();
@@ -534,11 +536,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             document.getElementById('streak-badge').style.display = 'none';
         }
 
+        storedIsPrem = isPrem;
+
         var match = await window.discovery.findDailyMatch(userId, userProfile);
         await renderDailyMatch(match, streak);
 
         var topMatches = await window.discovery.getTopMatches(userId, userProfile, 8);
         renderRadar(topMatches);
+
+        // Ribbon'u doldur (günlük eşleşme + radar eşleşmeleri)
+        populateRibbon(match, topMatches);
 
         var history = await window.discovery.getMatchHistory(userId, 10);
         renderHistory(history, topMatches, isPrem);
@@ -578,6 +585,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         var todayReveals = await window.discovery.getDailyRevealCount(userId);
         var remaining = isPrem ? (window.discovery.PREMIUM_DAILY_REVEALS - todayReveals) : 0;
+        storedRemaining = remaining;
 
         document.getElementById('credits-count').textContent = isPrem ? Math.max(0, remaining) : '🔒';
         document.getElementById('credits-label').textContent = isPrem ? 'Bugün' : 'Premium';
@@ -627,7 +635,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             var result = await window.discovery.revealMatch(userId, match.match_date, isPrem);
             if (result.success) {
                 showRevealed(m);
-                document.getElementById('credits-count').textContent = Math.max(0, result.remaining);
+                storedRemaining = Math.max(0, result.remaining);
+                document.getElementById('credits-count').textContent = storedRemaining;
+                // Ribbon'daki günlük eşleşmeyi de açılmış olarak güncelle
+                if (ribbonMatches.length > 0 && ribbonMatches[0].isDailyMatch) {
+                    ribbonMatches[0].revealed = true;
+                    // Ribbon avatarını güncelle
+                    var firstFrag = document.querySelector('#match-ribbon .scroll-fragment');
+                    if (firstFrag) {
+                        var avatarDiv = firstFrag.querySelector('div');
+                        if (avatarDiv) avatarDiv.innerHTML = '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" style="width:100%;height:100%;object-fit:cover">';
+                    }
+                }
             } else if (result.reason === 'daily_limit') {
                 this.disabled = false;
                 this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç</span>';
@@ -662,6 +681,152 @@ document.addEventListener('DOMContentLoaded', async function() {
         return parts.map(function(p) {
             return p.charAt(0) + '•'.repeat(Math.max(p.length - 1, 2));
         }).join(' ');
+    }
+
+    // ─── RIBBON: Bugünün eşleşmelerini üst çerçevelere koy ──
+    function populateRibbon(dailyMatch, topMatches) {
+        var ribbonEl = document.getElementById('match-ribbon');
+        ribbonEl.innerHTML = '';
+        ribbonMatches = [];
+        activeRibbonIdx = 0;
+
+        // Günlük eşleşmeyi ilk sıraya koy
+        if (dailyMatch && dailyMatch.matched) {
+            ribbonMatches.push({
+                profile: dailyMatch.matched,
+                score: dailyMatch.match_score || 0,
+                isDailyMatch: true,
+                revealed: dailyMatch.revealed,
+                matchDate: dailyMatch.match_date
+            });
+        }
+
+        // Radar eşleşmelerini ekle (günlük eşleşme hariç)
+        var dailyUid = dailyMatch && dailyMatch.matched ? dailyMatch.matched.user_id : null;
+        (topMatches || []).forEach(function(item) {
+            if (item.profile && item.profile.user_id !== dailyUid) {
+                ribbonMatches.push({
+                    profile: item.profile,
+                    score: item.score,
+                    isDailyMatch: false,
+                    revealed: false
+                });
+            }
+        });
+
+        if (!ribbonMatches.length) return;
+
+        // Ribbon item'larını oluştur
+        ribbonMatches.forEach(function(item, idx) {
+            var frag = document.createElement('div');
+            frag.className = 'scroll-fragment';
+            if (idx === 0) frag.classList.add('ribbon-active');
+
+            var p = item.profile;
+            var showFace = storedIsPrem || item.revealed;
+
+            frag.innerHTML =
+                '<div style="width:30px;height:30px;border-radius:50%;overflow:hidden;display:flex;align-items:center;justify-content:center;border:1px solid var(--gold-deep);background:rgba(0,0,0,0.2)">' +
+                    (showFace
+                        ? '<img src="' + getPhoto(p.full_name, p.gender, p.avatar_url) + '" style="width:100%;height:100%;object-fit:cover">'
+                        : '<span style="color:var(--gold-rich);font-size:12px;font-weight:800">' + initial(p.full_name) + '</span>') +
+                '</div>' +
+                '<span style="color:var(--gold-bright);font-size:8px;font-weight:800;margin-top:3px">' + (p.life_path || '?') + '</span>';
+
+            frag.addEventListener('click', function() {
+                selectRibbonItem(idx);
+            });
+
+            ribbonEl.appendChild(frag);
+        });
+    }
+
+    function selectRibbonItem(idx) {
+        if (idx === activeRibbonIdx || idx >= ribbonMatches.length) return;
+        activeRibbonIdx = idx;
+
+        // Aktif ribbon'u güncelle
+        var frags = document.querySelectorAll('#match-ribbon .scroll-fragment');
+        frags.forEach(function(f, i) {
+            if (i === idx) f.classList.add('ribbon-active');
+            else f.classList.remove('ribbon-active');
+        });
+
+        // Soul card'ı güncelle
+        var item = ribbonMatches[idx];
+        updateCardDisplay(item);
+    }
+
+    function updateCardDisplay(item) {
+        var m = item.profile;
+        var score = item.score;
+
+        // Loading/empty gizle, content göster
+        document.getElementById('match-loading').style.display = 'none';
+        document.getElementById('match-empty').style.display = 'none';
+        document.getElementById('match-content').style.display = 'block';
+
+        // LP badge
+        document.getElementById('match-lp').textContent = m.life_path || '?';
+
+        // Skor animasyonu
+        document.getElementById('match-score').textContent = score + '%';
+        document.getElementById('match-bar').style.width = '0%';
+        setTimeout(function() {
+            document.getElementById('match-bar').style.width = score + '%';
+        }, 50);
+
+        // Bond label
+        document.getElementById('match-bond').textContent = window.discovery.bondLabel(score);
+
+        // Archetype
+        var arch = window.discovery.ARCHETYPES[m.life_path] || 'Ruh';
+        document.getElementById('match-archetype').textContent = 'Life Path ' + (m.life_path||'?') + ' · ' + arch;
+
+        // Reveal / blur durumu
+        var isRevealed = item.revealed || (storedIsPrem && !item.isDailyMatch);
+
+        if (isRevealed) {
+            // Açık profil
+            document.getElementById('match-card').classList.remove('match-card-blur');
+            document.getElementById('match-card').classList.add('match-card-revealed');
+            document.getElementById('match-name').textContent = m.full_name || '???';
+            document.getElementById('match-avatar').innerHTML = '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover" alt="">';
+            document.getElementById('btn-reveal').style.display = 'none';
+            document.getElementById('no-credits-msg').style.display = 'none';
+            document.getElementById('premium-paywall').style.display = 'none';
+            document.getElementById('revealed-info').style.display = (item.isDailyMatch && item.revealed) ? 'block' : 'none';
+        } else {
+            // Bulanık profil
+            document.getElementById('match-card').classList.add('match-card-blur');
+            document.getElementById('match-card').classList.remove('match-card-revealed');
+            document.getElementById('match-name').textContent = maskName(m.full_name);
+            document.getElementById('match-avatar').innerHTML = '<span class="text-cosmic-violet text-4xl font-black">' + initial(m.full_name) + '</span>';
+            document.getElementById('revealed-info').style.display = 'none';
+
+            if (!storedIsPrem) {
+                // Free kullanıcı — paywall
+                document.getElementById('btn-reveal').style.display = 'none';
+                document.getElementById('no-credits-msg').style.display = 'none';
+                document.getElementById('premium-paywall').style.display = 'block';
+            } else if (item.isDailyMatch && storedRemaining > 0) {
+                // Premium + günlük eşleşme + hakkı var
+                document.getElementById('btn-reveal').style.display = 'flex';
+                document.getElementById('no-credits-msg').style.display = 'none';
+                document.getElementById('premium-paywall').style.display = 'none';
+                document.getElementById('reveal-label').textContent = 'Profili Aç (' + storedRemaining + ' hak kaldı)';
+            } else if (item.isDailyMatch) {
+                // Premium + günlük eşleşme + hakkı doldu
+                document.getElementById('btn-reveal').style.display = 'none';
+                document.getElementById('no-credits-msg').style.display = 'block';
+                document.getElementById('premium-paywall').style.display = 'none';
+            } else {
+                // Radar eşleşmesi (premium ama günlük değil)
+                document.getElementById('btn-reveal').style.display = 'none';
+                document.getElementById('no-credits-msg').style.display = 'none';
+                document.getElementById('premium-paywall').style.display = 'none';
+            }
+        }
     }
 
     // ─── RADAR RENDER ────────────────────────────────────────
