@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
+    <title>Manifest Portal</title>
+    <script src="js/api-base.js"></script>
+    <script src="js/tailwind.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="js/supabase.min.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/play-billing.js"></script>
+    <script src="js/premium.js"></script>
+    <script src="js/gamification-engine.js"></script>
+    <script src="js/profile.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(180deg, #0a0a1a 0%, #12081f 50%, #0a0a1a 100%);
+            color: #fff;
+            min-height: 100dvh;
+            padding-bottom: 140px;
+        }
+        .tab-btn { padding: 8px 18px; border-radius: 9999px; font-size: 12px; font-weight: 600; letter-spacing: 0.04em; border: none; cursor: pointer; transition: all 0.2s; }
+        .tab-btn.active { background: #7c3aed; color: #fff; }
+        .tab-btn:not(.active) { background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.5); }
+        .cat-chip { padding: 6px 14px; border-radius: 9999px; font-size: 11px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+        .cat-chip.active { background: rgba(124,58,237,0.25); color: #c084fc; border: 1px solid rgba(124,58,237,0.5); }
+        .cat-chip:not(.active) { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08); }
+        .weekly-card {
+            background: linear-gradient(135deg, rgba(30,20,50,0.95) 0%, rgba(20,12,35,1) 100%);
+            border: 1px solid rgba(124,58,237,0.35);
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .weekly-badge {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 6px;
+        }
+        .manifest-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+        .manifest-card:active { transform: scale(0.98); }
+        .user-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700;
+            flex-shrink: 0;
+        }
+        .manifest-now-btn {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            color: #fff;
+            border: none;
+            border-radius: 9999px;
+            padding: 14px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            box-shadow: 0 4px 24px rgba(124,58,237,0.4);
+            display: flex; align-items: center; gap: 8px;
+            z-index: 100;
+            transition: transform 0.15s;
+        }
+        .manifest-now-btn:active { transform: scale(0.95); }
+        .join-ritual-btn {
+            color: #f59e0b;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .action-btn {
+            display: flex; align-items: center; gap: 4px;
+            background: none; border: none;
+            color: rgba(255,255,255,0.35);
+            font-size: 12px; font-weight: 500;
+            cursor: pointer;
+        }
+        .action-btn .material-symbols-outlined { font-size: 18px; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-up { animation: fadeUp 0.4s ease forwards; opacity: 0; }
+        .fade-d1 { animation-delay: 0.05s; }
+        .fade-d2 { animation-delay: 0.1s; }
+        .fade-d3 { animation-delay: 0.15s; }
+        .fade-d4 { animation-delay: 0.2s; }
+        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 8px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="px-5 pt-12 pb-4">
+        <div class="flex items-center justify-between mb-5">
+            <h1 class="text-2xl font-bold tracking-tight">Manifest Portal</h1>
+            <button onclick="showInfoModal()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-white/50 text-lg">info</span>
+            </button>
+        </div>
+
+        <!-- Sort Tabs -->
+        <div class="flex gap-2 mb-4">
+            <button class="tab-btn active" data-sort="newest" onclick="switchSort(this)">Newest</button>
+            <button class="tab-btn" data-sort="top_rated" onclick="switchSort(this)">Top Rated</button>
+            <button class="tab-btn" data-sort="weekly_top" onclick="switchSort(this)">Weekly Top</button>
+        </div>
+
+        <!-- Category Filters -->
+        <div class="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1" style="scrollbar-width:none;">
+            <button class="cat-chip active" data-cat="all" onclick="switchCategory(this)">
+                <span class="material-symbols-outlined text-xs">all_inclusive</span> All
+            </button>
+            <button class="cat-chip" data-cat="money" onclick="switchCategory(this)">
+                <span style="font-size:12px">💰</span> Money
+            </button>
+            <button class="cat-chip" data-cat="love" onclick="switchCategory(this)">
+                <span style="font-size:12px">❤️</span> Love
+            </button>
+            <button class="cat-chip" data-cat="health" onclick="switchCategory(this)">
+                <span style="font-size:12px">🌿</span> Health
+            </button>
+            <button class="cat-chip" data-cat="career" onclick="switchCategory(this)">
+                <span style="font-size:12px">⭐</span> Career
+            </button>
+            <button class="cat-chip" data-cat="spiritual" onclick="switchCategory(this)">
+                <span style="font-size:12px">🔮</span> Spiritual
+            </button>
+        </div>
+    </div>
+
+    <!-- Feed -->
+    <div id="manifest-feed" class="px-5 space-y-4">
+        <!-- Loading Skeletons -->
+        <div class="skeleton" style="height:180px;"></div>
+        <div class="skeleton" style="height:120px;"></div>
+        <div class="skeleton" style="height:120px;"></div>
+    </div>
+
+    <!-- Info Modal -->
+    <div id="info-modal" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); align-items:center; justify-content:center;">
+        <div style="background:rgba(20,15,35,0.98); border:1px solid rgba(124,58,237,0.3); border-radius:20px; padding:28px; max-width:320px; width:90%; text-align:center;">
+            <span class="material-symbols-outlined text-4xl text-purple-400 mb-3" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+            <h3 class="text-lg font-bold mb-2">Manifest Portal</h3>
+            <p class="text-white/50 text-sm leading-relaxed mb-5">Topluluk manifestlerini keşfet, ilham al ve kendi niyetlerini evrene gönder. Birlikte manifest oluşturmak enerjinizi katlar!</p>
+            <button onclick="closeInfoModal()" class="w-full py-3 rounded-full bg-purple-600 text-white font-semibold text-sm">Anladım</button>
+        </div>
+    </div>
+
+    <!-- Manifest Now FAB -->
+    <button class="manifest-now-btn" onclick="window.location.href='cosmic_manifest_portal.html'">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">edit_note</span>
+        Manifest Now
+    </button>
+
+    <script>
+    (function() {
+        'use strict';
+
+        // ─── State ──────────────────────────────────────────
+        var currentSort = 'newest';
+        var currentCategory = 'all';
+
+        // ─── Renk paleti ────────────────────────────────────
+        var AVATAR_COLORS = [
+            '#7c3aed', '#a855f7', '#ec4899', '#f43f5e', '#f59e0b',
+            '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6'
+        ];
+
+        function getAvatarColor(name) {
+            var hash = 0;
+            for (var i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length];
+        }
+
+        function getInitials(name) {
+            var parts = name.trim().split(/[\s_]+/);
+            if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+            return name.substring(0, 2).toUpperCase();
+        }
+
+        // ─── Kategori emojileri ─────────────────────────────
+        var CAT_LABELS = {
+            money: '💰', love: '❤️', health: '🌿', career: '⭐', spiritual: '🔮', general: '✨'
+        };
+
+        // ─── Örnek veriler ──────────────────────────────────
+        var SAMPLE_MANIFESTS = [
+            { id: 1, user: 'MysticSoul_88', path: 7, text: 'I am attracting abundance in all forms. My career is expanding into roles that fulfill my soul\'s purpose, and financial freedom flows to me effortlessly.', likes: 2400, comments: 12, category: 'money', weekly: true, time: '1s ago' },
+            { id: 2, user: 'CosmicTraveler_3', path: 3, text: 'Manifesting a new home filled with light, peace, and creative energy. My environment reflects my inner harmony.', likes: 142, comments: 3, category: 'general', weekly: false, time: '2h ago' },
+            { id: 3, user: 'HeartCentered_7', path: 6, text: 'Calling in a partner who sees my true essence. We support each other\'s growth and build a life of shared joy.', likes: 89, comments: 1, category: 'love', weekly: false, time: '5h ago' },
+            { id: 4, user: 'VitalEnergy_22', path: 22, text: 'My body is strong, healthy, and vibrant. I wake up every morning with renewed energy to pursue my dreams.', likes: 215, comments: 8, category: 'health', weekly: false, time: '8h ago' },
+            { id: 5, user: 'StarSeeker_11', path: 11, text: 'I am stepping into my highest timeline. The universe conspires to bring me opportunities that align with my soul mission.', likes: 378, comments: 15, category: 'spiritual', weekly: false, time: '12h ago' },
+            { id: 6, user: 'LunarWitch_9', path: 9, text: 'My creative talents are being recognized and rewarded. I attract collaborations that elevate my work to new heights.', likes: 167, comments: 5, category: 'career', weekly: false, time: '1d ago' },
+            { id: 7, user: 'NumeraelAdept_5', path: 5, text: 'I release all fear around money. Abundance is my birthright and I welcome it with open arms and a grateful heart.', likes: 523, comments: 21, category: 'money', weekly: false, time: '1d ago' },
+            { id: 8, user: 'CelestialMind_1', path: 1, text: 'I am the architect of my reality. Every thought I think creates my future, and I choose thoughts of love and prosperity.', likes: 301, comments: 9, category: 'spiritual', weekly: false, time: '2d ago' },
+            { id: 9, user: 'SoulPath_33', path: 33, text: 'Deep healing flows through every cell of my body. I honor my temple and nourish it with love, rest, and wholesome food.', likes: 198, comments: 7, category: 'health', weekly: false, time: '2d ago' },
+            { id: 10, user: 'CosmicLove_4', path: 4, text: 'My relationship grows deeper every day. We communicate with compassion and our bond is unbreakable.', likes: 445, comments: 14, category: 'love', weekly: false, time: '3d ago' }
+        ];
+
+        // ─── Kendi manifestlerini ekle ──────────────────────
+        function loadUserManifests() {
+            try {
+                var authData = JSON.parse(localStorage.getItem('numerael-auth-token') || 'null');
+                if (!authData || !authData.user) return [];
+                var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
+                var stored = JSON.parse(localStorage.getItem('numerael_manifests_' + authData.user.id) || '[]');
+                var userName = (ud && ud.name) ? ud.name.split(' ')[0] : 'You';
+                return stored.map(function(m, i) {
+                    var date = new Date(m.created_at || Date.now());
+                    var diff = Math.floor((Date.now() - date.getTime()) / 3600000);
+                    var timeStr = diff < 1 ? 'Just now' : diff < 24 ? diff + 'h ago' : Math.floor(diff/24) + 'd ago';
+                    return {
+                        id: 1000 + i,
+                        user: userName,
+                        path: null,
+                        text: m.text || m.intention || '',
+                        likes: Math.floor(Math.random() * 50),
+                        comments: Math.floor(Math.random() * 5),
+                        category: 'general',
+                        weekly: false,
+                        time: timeStr,
+                        isOwn: true
+                    };
+                });
+            } catch(e) { return []; }
+        }
+
+        // ─── Render ─────────────────────────────────────────
+        function renderFeed() {
+            var feed = document.getElementById('manifest-feed');
+            var userManifests = loadUserManifests();
+            var allManifests = userManifests.reverse().concat(SAMPLE_MANIFESTS);
+
+            // Filtrele
+            var filtered = allManifests;
+            if (currentCategory !== 'all') {
+                filtered = allManifests.filter(function(m) { return m.category === currentCategory; });
+            }
+
+            // Sırala
+            if (currentSort === 'top_rated') {
+                filtered.sort(function(a, b) { return b.likes - a.likes; });
+            } else if (currentSort === 'weekly_top') {
+                filtered = filtered.filter(function(m) { return m.weekly || m.likes > 200; });
+                filtered.sort(function(a, b) { return b.likes - a.likes; });
+            }
+
+            if (filtered.length === 0) {
+                feed.innerHTML = '<div class="text-center py-12"><span class="material-symbols-outlined text-white/15 text-5xl mb-3" style="font-variation-settings:\'FILL\' 1;">search_off</span><p class="text-white/30 text-sm">Bu kategoride manifest bulunamadı</p></div>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < filtered.length; i++) {
+                var m = filtered[i];
+                var delay = Math.min(i, 6);
+                if (m.weekly && currentSort === 'newest' && currentCategory === 'all') {
+                    html += renderWeeklyCard(m, delay);
+                } else {
+                    html += renderManifestCard(m, delay);
+                }
+            }
+            feed.innerHTML = html;
+        }
+
+        function renderWeeklyCard(m, delay) {
+            var color = getAvatarColor(m.user);
+            var initials = getInitials(m.user);
+            var likesStr = m.likes >= 1000 ? (m.likes / 1000).toFixed(1) + 'k' : m.likes;
+            return '<div class="weekly-card fade-up fade-d' + delay + '">' +
+                '<div class="flex items-start gap-3 mb-4">' +
+                    '<div class="user-avatar" style="background:' + color + ';">' + initials + '</div>' +
+                    '<div class="flex-1">' +
+                        '<div class="flex items-center gap-2">' +
+                            '<span class="text-white font-bold text-sm">' + m.user + '</span>' +
+                            '<span class="weekly-badge">WEEKLY MANIFEST</span>' +
+                        '</div>' +
+                        (m.path ? '<span class="text-white/30 text-[10px] tracking-wider uppercase">Numerology Path ' + m.path + '</span>' : '') +
+                    '</div>' +
+                '</div>' +
+                '<p class="text-white/80 text-[15px] leading-relaxed italic mb-4">"' + m.text + '"</p>' +
+                '<div class="flex items-center justify-between">' +
+                    '<div class="flex items-center gap-4">' +
+                        '<button class="action-btn" onclick="toggleLike(this,' + m.id + ')"><span class="material-symbols-outlined">arrow_upward</span> ' + likesStr + '</button>' +
+                        '<button class="action-btn"><span class="material-symbols-outlined">arrow_downward</span> ' + m.comments + '</button>' +
+                    '</div>' +
+                    '<button class="join-ritual-btn">JOIN RITUAL</button>' +
+                '</div>' +
+            '</div>';
+        }
+
+        function renderManifestCard(m, delay) {
+            var color = getAvatarColor(m.user);
+            var initials = getInitials(m.user);
+            return '<div class="manifest-card fade-up fade-d' + delay + '">' +
+                '<div class="flex items-start gap-3 mb-3">' +
+                    '<div class="user-avatar" style="background:' + color + '; width:32px; height:32px; font-size:12px;">' + initials + '</div>' +
+                    '<div class="flex-1">' +
+                        '<div class="flex items-center justify-between">' +
+                            '<span class="text-white font-semibold text-sm">' + m.user + (m.isOwn ? ' <span class="text-purple-400 text-[10px]">(sen)</span>' : '') + '</span>' +
+                            '<span class="text-white/20 text-[10px]">' + m.time + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+                '<p class="text-white/60 text-sm leading-relaxed mb-3">' + m.text + '</p>' +
+                '<div class="flex items-center gap-4">' +
+                    '<button class="action-btn" onclick="toggleLike(this,' + m.id + ')"><span class="material-symbols-outlined">thumb_up</span> ' + m.likes + '</button>' +
+                    '<button class="action-btn"><span class="material-symbols-outlined">chat_bubble</span> ' + m.comments + '</button>' +
+                    '<div class="flex-1"></div>' +
+                    '<button class="action-btn"><span class="material-symbols-outlined">share</span></button>' +
+                '</div>' +
+            '</div>';
+        }
+
+        // ─── Global fonksiyonlar ────────────────────────────
+        window.switchSort = function(btn) {
+            currentSort = btn.getAttribute('data-sort');
+            var btns = document.querySelectorAll('.tab-btn');
+            for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+            btn.classList.add('active');
+            renderFeed();
+        };
+
+        window.switchCategory = function(btn) {
+            currentCategory = btn.getAttribute('data-cat');
+            var chips = document.querySelectorAll('.cat-chip');
+            for (var i = 0; i < chips.length; i++) chips[i].classList.remove('active');
+            btn.classList.add('active');
+            renderFeed();
+        };
+
+        window.toggleLike = function(btn, id) {
+            var span = btn.querySelector('.material-symbols-outlined');
+            if (span) {
+                span.style.fontVariationSettings = "'FILL' 1";
+                span.style.color = '#a855f7';
+            }
+        };
+
+        window.showInfoModal = function() {
+            var m = document.getElementById('info-modal');
+            m.style.display = 'flex';
+        };
+
+        window.closeInfoModal = function() {
+            document.getElementById('info-modal').style.display = 'none';
+        };
+
+        // ─── Init ───────────────────────────────────────────
+        async function init() {
+            if (window.auth && window.auth.whenReady) await window.auth.whenReady();
+            if (window.gamification) window.gamification.trackAction('manifest_community_visit');
+            renderFeed();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+    <script src="js/notification-engine.js"></script>
+    <script src="js/bottom-nav.js"></script>
+</body>
+</html>

@@ -34,7 +34,7 @@
         { icon: 'home', label: 'Home', href: 'mystic_numerology_home_1.html', active: isActive(['mystic_numerology_home_1', 'cosmic_energy_calendar', 'daily_spiritual_guide', 'daily_number_deep_dive', 'numerology_meaning_chart', 'numerael_app_ui_design_system']) },
         { icon: 'diversity_3', label: 'Bağlantılar', href: 'connections_shared_readings.html', active: isActive(['connections', 'kisi_profil', 'friendship_dynamics', 'name_numerology_breakdown', 'past_reading_archive', 'letter_vibration']) },
         { icon: 'ADD_BUTTON', label: '', href: '', active: false },
-        { icon: 'auto_awesome', label: 'ManifestPortal', href: 'manifest_portal.html', active: isActive(['manifest_portal']) },
+        { icon: 'auto_awesome', label: 'Manifest', href: 'manifest_community.html', active: isActive(['manifest_community']) },
         { icon: 'mystery', label: 'The Oracle', href: 'cosmic_match.html', active: isActive(['cosmic_match']) }
     ];
 
