@@ -153,31 +153,31 @@
                 </div>
                 <div class="grid grid-cols-3 gap-4">
                     <div id="reward-1"
-                        class="flex flex-col items-center p-3 rounded-md bg-bronze/5 border border-bronze/10 text-center">
+                        class="flex flex-col items-center p-3 rounded-md bg-bronze/5 border border-bronze/10 text-center transition-all duration-500">
                         <div
                             class="w-12 h-12 rounded-full border border-bronze/30 flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-bronze text-2xl">auto_fix_high</span>
+                            <span class="material-symbols-outlined text-bronze text-2xl">workspace_premium</span>
                         </div>
-                        <span class="text-[11px] font-serif-body italic text-parchment/80 leading-tight">Bedava
-                            Sezgi</span>
+                        <span class="text-[11px] font-serif-body italic text-parchment/80 leading-tight">1 Gün Premium</span>
+                        <span class="text-[9px] text-bronze/50 mt-1">%15 şans</span>
                     </div>
                     <div id="reward-2"
-                        class="flex flex-col items-center p-3 rounded-md bg-bronze/5 border border-bronze/10 text-center">
+                        class="flex flex-col items-center p-3 rounded-md bg-bronze/5 border border-bronze/10 text-center transition-all duration-500">
                         <div
                             class="w-12 h-12 rounded-full border border-bronze/30 flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-bronze text-2xl">filter_7</span>
+                            <span class="material-symbols-outlined text-bronze text-2xl">diamond</span>
                         </div>
-                        <span class="text-[11px] font-serif-body italic text-parchment/80 leading-tight">Şanslı
-                            Sayı</span>
+                        <span class="text-[11px] font-serif-body italic text-parchment/80 leading-tight">5 Gün Premium</span>
+                        <span class="text-[9px] text-bronze/50 mt-1">%5 şans</span>
                     </div>
                     <div id="reward-3"
-                        class="flex flex-col items-center p-3 rounded-md bg-white/5 border border-white/5 text-center opacity-40 grayscale">
+                        class="flex flex-col items-center p-3 rounded-md bg-bronze/5 border border-bronze/10 text-center transition-all duration-500">
                         <div
-                            class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center mb-3">
-                            <span class="material-symbols-outlined text-white/50 text-2xl">electric_bolt</span>
+                            class="w-12 h-12 rounded-full border border-bronze/30 flex items-center justify-center mb-3">
+                            <span class="material-symbols-outlined text-bronze text-2xl">auto_awesome</span>
                         </div>
-                        <span class="text-[11px] font-serif-body italic text-white/40 leading-tight">Enerji
-                            Artışı</span>
+                        <span class="text-[11px] font-serif-body italic text-parchment/80 leading-tight">10 Gün Premium</span>
+                        <span class="text-[9px] text-bronze/50 mt-1">%2 şans</span>
                     </div>
                 </div>
             </div>
@@ -202,6 +202,10 @@
             id="result-number">7</p>
         <p style="font-size:16px;color:#e8d5b5;opacity:0.8;font-family:Cormorant Garamond,serif;font-style:italic;text-align:center;padding:0 24px;"
             id="result-text"></p>
+        <div id="premium-reward-banner" style="display:none;margin-top:16px;padding:12px 24px;background:linear-gradient(135deg,#bf953f,#fcf6ba,#b38728);border-radius:12px;text-align:center;">
+            <p style="font-size:11px;color:#02040a;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;font-family:Cinzel,serif;">⭐ Premium Ödülü Kazandın!</p>
+            <p id="premium-reward-text" style="font-size:18px;font-weight:900;color:#02040a;font-family:Cinzel,serif;margin-top:4px;">5 Gün Premium</p>
+        </div>
         <button onclick="closeResult()"
             style="margin-top:24px;padding:14px 40px;background:linear-gradient(to bottom,#cd7f32,#a67c00);border-radius:9999px;color:#02040a;font-weight:700;font-family:Cinzel,serif;letter-spacing:0.15em;font-size:13px;cursor:pointer;border:none;">ÖDÜLÜ
             AL</button>
@@ -301,16 +305,73 @@
             }, 4200);
         }
 
+        // ─── PREMİUM ÖDÜL OLASILIK SİSTEMİ ───────────────────────
+        // %15 → 1 gün, %5 → 5 gün, %2 → 10 gün, %78 → ödül yok
+        function rollPremiumReward() {
+            var roll = Math.random() * 100;
+            if (roll < 2) return 10;
+            if (roll < 7) return 5;    // 2-7 arası = %5
+            if (roll < 22) return 1;   // 7-22 arası = %15
+            return 0;
+        }
+
+        function activatePremiumReward(days) {
+            if (days <= 0) return;
+            // Premium simüle et
+            if (window.premium && window.premium.simulate) {
+                window.premium.simulate(days);
+            }
+            // Supabase'e kaydet
+            try {
+                window.auth.getSession().then(function(session) {
+                    if (!session) return;
+                    window.supabaseClient.from('wheel_spins').update({
+                        premium_days: days
+                    }).eq('user_id', session.user.id).order('created_at', { ascending: false }).limit(1);
+                });
+            } catch(e) { console.warn('[Wheel] Premium kayıt hatası:', e); }
+        }
+
+        function highlightRewardBox(days) {
+            var boxId = days === 1 ? 'reward-1' : (days === 5 ? 'reward-2' : 'reward-3');
+            var box = document.getElementById(boxId);
+            if (!box) return;
+            box.style.background = 'linear-gradient(135deg, rgba(191,149,63,0.3), rgba(252,246,186,0.15))';
+            box.style.borderColor = '#cd7f32';
+            box.style.boxShadow = '0 0 20px rgba(205,127,50,0.4)';
+            box.style.transform = 'scale(1.08)';
+            // İçindeki icon'u parlat
+            var icon = box.querySelector('.material-symbols-outlined');
+            if (icon) icon.style.color = '#fcf6ba';
+            // "Kazanıldı!" etiketi ekle
+            var badge = document.createElement('span');
+            badge.textContent = '✓ Kazanıldı!';
+            badge.style.cssText = 'display:block;font-size:9px;font-weight:800;color:#fcf6ba;margin-top:4px;letter-spacing:0.05em;';
+            box.appendChild(badge);
+        }
+
         function showResult(seg) {
             document.getElementById('result-icon').textContent = seg.icon;
             document.getElementById('result-number').textContent = 'Titreşim ' + seg.num;
             document.getElementById('result-text').textContent = seg.text;
+
+            // Premium ödülü çek
+            var premDays = rollPremiumReward();
+            var banner = document.getElementById('premium-reward-banner');
+            if (premDays > 0) {
+                banner.style.display = 'block';
+                document.getElementById('premium-reward-text').textContent = premDays + ' Gün Premium';
+                activatePremiumReward(premDays);
+                highlightRewardBox(premDays);
+            } else {
+                banner.style.display = 'none';
+            }
+
             document.getElementById('result-overlay').style.display = 'flex';
         }
 
         function closeResult() {
             document.getElementById('result-overlay').style.display = 'none';
-            window.location.replace('wheel_reward_success.html');
         }
     </script>
     <script src="js/numerology-context-engine.js"></script>
