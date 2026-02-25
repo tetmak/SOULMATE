@@ -259,6 +259,28 @@
                 </div>
             </div>
 
+            <!-- Manifest Portal -->
+            <div id="card-manifest-portal"
+                class="relative w-full rounded-3xl overflow-hidden cursor-pointer active:scale-[0.98] transition-all"
+                style="background:linear-gradient(135deg,#0a0e2a 0%,#1a1040 40%,#0d1a3a 100%);border:1px solid rgba(99,102,241,0.2);">
+                <div class="absolute inset-0 opacity-30"
+                    style="background:radial-gradient(ellipse at 50% 30%, rgba(99,102,241,0.3), transparent 70%);"></div>
+                <div class="relative p-10 flex flex-col items-center text-center">
+                    <div class="mb-6 relative">
+                        <div class="absolute inset-0 blur-2xl bg-indigo-500/20 rounded-full scale-125"></div>
+                        <span class="material-symbols-outlined relative text-indigo-300 text-5xl drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]"
+                            style="font-variation-settings: 'FILL' 1;">flare</span>
+                    </div>
+                    <h4 class="text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Manifest Portal</h4>
+                    <p class="text-white/70 text-sm leading-relaxed max-w-[280px]">The Canvas of Space — Your intentions are the stars that light up your personal universe.</p>
+                    <div class="mt-8 flex items-center justify-center gap-4">
+                        <div class="h-px w-8 bg-indigo-400/30"></div>
+                        <span class="text-indigo-300 text-[10px] font-bold tracking-[0.3em] uppercase border-b border-indigo-400/40 pb-1">Enter Portal</span>
+                        <div class="h-px w-8 bg-indigo-400/30"></div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Günlük Görevler Mini -->
@@ -303,6 +325,7 @@
         document.getElementById('card-soulmate').onclick = function () { window.location.href = 'compatibility_input_form.html'; };
         document.getElementById('card-cosmic-match').onclick = function () { window.location.href = 'cosmic_match.html'; };
         document.getElementById('card-decision-sphere').onclick = function () { if (window.aelOpen) window.aelOpen(); };
+        document.getElementById('card-manifest-portal').onclick = function () { window.location.href = 'manifest_portal.html'; };
         // Gamification home entegrasyonu
         if (window.gamification) {
             var badge = document.getElementById('home-rank-badge');

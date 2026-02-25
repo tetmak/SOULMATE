@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html class="dark" lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
+    <title>Manifest Portal</title>
+    <script src="js/api-base.js"></script>
+    <script src="js/tailwind.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="js/supabase.min.js"></script>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/play-billing.js"></script>
+    <script src="js/premium.js"></script>
+    <script src="js/gamification-engine.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#FAC638",
+                        gold: "#D4AF37",
+                        "bg-dark": "#080c1a"
+                    },
+                    fontFamily: {
+                        display: "Montserrat"
+                    }
+                }
+            }
+        };
+    </script>
+    <style>
+        body { background: #080c1a; font-family: 'Montserrat', sans-serif; }
+        .hero-nebula {
+            background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&q=80') center/cover no-repeat;
+            position: relative;
+        }
+        .hero-nebula::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(8,12,26,0.3) 0%, rgba(8,12,26,0.85) 70%, #080c1a 100%);
+        }
+        .manifest-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px);
+            transition: transform 0.2s;
+        }
+        .manifest-card:active { transform: scale(0.98); }
+        .gold-btn {
+            background: linear-gradient(135deg, #FAC638 0%, #D4AF37 50%, #FAC638 100%);
+            color: #080c1a;
+            font-weight: 800;
+        }
+        .premium-card {
+            background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.1));
+            border: 1px solid rgba(139,92,246,0.25);
+        }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-up { animation: fadeUp 0.6s ease forwards; }
+        .fade-up-d1 { animation-delay: 0.1s; opacity: 0; }
+        .fade-up-d2 { animation-delay: 0.2s; opacity: 0; }
+        .fade-up-d3 { animation-delay: 0.3s; opacity: 0; }
+    </style>
+</head>
+<body class="text-white min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-bg-dark/80 backdrop-blur-md border-b border-white/5">
+        <button onclick="window.location.href='mystic_numerology_home_1.html'" class="flex items-center justify-center w-10 h-10 rounded-full bg-white/5 active:bg-white/10 transition-colors">
+            <span class="material-symbols-outlined text-white text-xl">arrow_back_ios</span>
+        </button>
+        <h1 class="text-white text-base font-bold tracking-widest uppercase">Manifest Portal</h1>
+        <div class="w-10 h-10"></div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero-nebula w-full h-56 relative">
+        <div class="relative z-10 flex flex-col items-center justify-end h-full pb-6 px-6 text-center">
+            <h2 class="text-white text-2xl font-extrabold tracking-wide mb-2 fade-up">The Canvas of Space</h2>
+            <p class="text-white/60 text-sm leading-relaxed max-w-xs fade-up fade-up-d1">Your intentions are the stars that light up your personal universe.</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-4 -mt-4 relative z-10">
+
+        <!-- Empty State / Manifests List -->
+        <div id="manifests-empty" class="manifest-card rounded-2xl p-8 text-center mb-6 fade-up fade-up-d2">
+            <span class="material-symbols-outlined text-white/20 text-5xl mb-4" style="font-variation-settings:'FILL' 1;">edit_note</span>
+            <h3 class="text-white font-bold text-lg mb-2">Henüz manifest yok</h3>
+            <p class="text-white/40 text-sm leading-relaxed mb-6">Evren niyetlerini bekliyor. İsteklerini kelimelere dökerek yolculuğuna başla.</p>
+            <button onclick="window.location.href='cosmic_manifest_portal.html'"
+                class="gold-btn w-full py-4 rounded-full text-sm tracking-wider flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                <span class="material-symbols-outlined text-lg">auto_awesome</span>
+                Write a Manifest
+            </button>
+        </div>
+
+        <!-- Manifests List (populated by JS) -->
+        <div id="manifests-list" class="space-y-3 mb-6" style="display:none"></div>
+
+        <!-- Write Button (shown when manifests exist) -->
+        <div id="write-btn-section" class="mb-6" style="display:none">
+            <button onclick="window.location.href='cosmic_manifest_portal.html'"
+                class="gold-btn w-full py-4 rounded-full text-sm tracking-wider flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                <span class="material-symbols-outlined text-lg">auto_awesome</span>
+                Write a Manifest
+            </button>
+        </div>
+
+        <!-- Premium Benefit Card -->
+        <div class="premium-card rounded-2xl p-5 mb-8 fade-up fade-up-d3">
+            <div class="flex items-start gap-4">
+                <div class="w-11 h-11 rounded-full bg-violet-500/20 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-violet-400 text-2xl" style="font-variation-settings:'FILL' 1;">favorite</span>
+                </div>
+                <div class="flex-1">
+                    <h4 class="text-white font-bold text-sm mb-1" id="premium-title">Premium Benefit</h4>
+                    <p class="text-white/50 text-xs leading-relaxed" id="premium-desc">Premium üyelikle sınırsız manifest oluşturabilir ve kozmik enerji akışını güçlendirebilirsin.</p>
+                </div>
+            </div>
+            <button onclick="window.location.href='premium_crystal_store.html'"
+                class="w-full mt-4 py-2.5 rounded-full text-xs font-bold tracking-wider text-violet-300 bg-violet-500/10 border border-violet-500/20 active:bg-violet-500/20 transition-colors text-center">
+                View All Benefits
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Bottom Nav -->
+    <script src="js/notification-engine.js"></script>
+    <script src="js/bottom-nav.js"></script>
+
+    <script>
+    (function() {
+        'use strict';
+
+        var isNative = window.location.protocol === 'capacitor:' ||
+                       window.location.protocol === 'ionic:' ||
+                       window.location.hostname === 'localhost' ||
+                       window.location.protocol === 'file:' ||
+                       (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+        var API_BASE = isNative ? 'https://soulmate-kohl.vercel.app' : '';
+
+        async function init() {
+            if (window.auth && window.auth.whenReady) await window.auth.whenReady();
+            var session = await window.auth.getSession();
+            if (!session) return;
+
+            // Premium durum kontrolü
+            var isPrem = window.premium && window.premium.isPremium();
+            if (isPrem) {
+                document.getElementById('premium-title').textContent = 'Premium Benefit Unlocked';
+                document.getElementById('premium-desc').textContent = 'Sınırsız manifest oluşturma hakkına sahipsin. Kozmik enerji akışını güçlendir!';
+            }
+
+            // Manifestleri yükle (cosmic_manifest_portal sayfasındaki localStorage'dan)
+            var manifests = [];
+            try {
+                var stored = localStorage.getItem('numerael_manifests_' + session.user.id);
+                if (stored) manifests = JSON.parse(stored);
+            } catch(e) {}
+
+            if (manifests.length > 0) {
+                document.getElementById('manifests-empty').style.display = 'none';
+                document.getElementById('manifests-list').style.display = 'block';
+                document.getElementById('write-btn-section').style.display = 'block';
+                renderManifests(manifests);
+            }
+
+            // Gamification
+            if (window.gamification) {
+                window.gamification.trackAction('manifest_portal_visit');
+            }
+        }
+
+        function renderManifests(manifests) {
+            var list = document.getElementById('manifests-list');
+            // Son 10 manifesti göster, en yeniden eskiye
+            var recent = manifests.slice(-10).reverse();
+            list.innerHTML = recent.map(function(m) {
+                var date = new Date(m.created_at || m.date || Date.now());
+                var dateStr = date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+                var text = m.text || m.intention || 'Manifest';
+                var preview = text.length > 80 ? text.substring(0, 80) + '...' : text;
+                return '<div class="manifest-card rounded-xl p-4 cursor-pointer" onclick="window.location.href=\'cosmic_manifest_portal.html\'">' +
+                    '<div class="flex items-start gap-3">' +
+                        '<span class="material-symbols-outlined text-primary/60 text-lg mt-0.5" style="font-variation-settings:\'FILL\' 1;">auto_awesome</span>' +
+                        '<div class="flex-1 min-w-0">' +
+                            '<p class="text-white/80 text-sm leading-relaxed">' + preview + '</p>' +
+                            '<p class="text-white/30 text-[10px] mt-2 tracking-wider uppercase">' + dateStr + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            }).join('');
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+</body>
+</html>
