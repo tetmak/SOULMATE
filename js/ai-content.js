@@ -47,7 +47,7 @@
 
   // ─── OpenAI çağrısı ───────────────────────────────────────────────
   async function askAI(prompt, systemMsg) {
-    var system = systemMsg || `Sen Numerael uygulamasının Numeroloji Üstadısın. 
+    var system = systemMsg || `Sen Soulnum uygulamasının Numeroloji Üstadısın. 
 Türkçe, mistik, etkileyici ve kişisel bir dilde yaz. 
 Sayılar, kozmik bağlantılar ve ruhsal anlamlar konusunda derin bilgeliğe sahipsin.
 Kısa ve çarpıcı yaz — gereksiz tekrar yapma.
@@ -504,7 +504,7 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
       if (el.textContent.trim().length > 30 && !el.closest('nav') && count < 3) {
         count++;
         skeletonFill(el, askAI(
-          `Numerael uygulamasının ${count}. ayar özelliği için kısa açıklama. 1 cümle, sade ve kullanışlı.`
+          `Soulnum uygulamasının ${count}. ayar özelliği için kısa açıklama. 1 cümle, sade ve kullanışlı.`
         ));
       }
     });
