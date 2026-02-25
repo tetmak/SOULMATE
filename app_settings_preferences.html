@@ -134,9 +134,9 @@
                         <div class="flex flex-col justify-center">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
                                 Full Name</p>
-                            <p
+                            <p id="settings-fullname"
                                 class="text-slate-500 dark:text-[#b9b29d] text-sm font-normal leading-normal line-clamp-1">
-                                Alexandrina Vance</p>
+                                Yükleniyor...</p>
                         </div>
                     </div>
                     <div class="shrink-0">
@@ -152,10 +152,10 @@
                         </div>
                         <div class="flex flex-col justify-center">
                             <p class="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
-                                Birthdate &amp; Time</p>
-                            <p
+                                Birthdate</p>
+                            <p id="settings-birthdate"
                                 class="text-slate-500 dark:text-[#b9b29d] text-sm font-normal leading-normal line-clamp-1">
-                                Nov 12, 1990 at 11:11 PM</p>
+                                Yükleniyor...</p>
                         </div>
                     </div>
                     <div class="shrink-0">
@@ -555,6 +555,53 @@
     </script>
 
 
+    <script>
+    // ─── Load Real User Data ─────────────────────────────
+    (function() {
+        function loadUserInfo() {
+            var nameEl = document.getElementById('settings-fullname');
+            var birthEl = document.getElementById('settings-birthdate');
+
+            // 1. localStorage'dan oku
+            try {
+                var cached = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
+                if (cached) {
+                    if (cached.name && nameEl) nameEl.textContent = cached.name;
+                    if (cached.birthDate && birthEl) {
+                        var d = new Date(cached.birthDate);
+                        birthEl.textContent = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+                    }
+                }
+            } catch(e) {}
+
+            // 2. Supabase'den güncel veri çek
+            if (window.auth && window.auth.whenReady) {
+                window.auth.whenReady().then(function() {
+                    var client = window.supabaseClient;
+                    if (!client) return;
+                    client.auth.getUser().then(function(res) {
+                        if (!res.data || !res.data.user) return;
+                        var userId = res.data.user.id;
+                        client.from('profiles').select('full_name, birth_date').eq('id', userId).single().then(function(r) {
+                            if (r.data) {
+                                if (r.data.full_name && nameEl) nameEl.textContent = r.data.full_name;
+                                if (r.data.birth_date && birthEl) {
+                                    var bd = new Date(r.data.birth_date);
+                                    birthEl.textContent = bd.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+                                }
+                            }
+                        });
+                    });
+                });
+            }
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadUserInfo);
+        } else {
+            loadUserInfo();
+        }
+    })();
+    </script>
 <script src="js/notification-engine.js"></script>
 <script src="js/bottom-nav.js"></script>
 </body>
