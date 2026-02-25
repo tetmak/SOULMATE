@@ -6,6 +6,46 @@
 (function() {
     'use strict';
 
+    // ─── Fake (bot) kullanıcı ID'leri ──────────────────
+    // Cron job tarafindan manifest olusturan fake kullanicilar.
+    // Gercek kullanicilar her zaman feed'de üstte gösterilir.
+    var FAKE_USER_IDS = {
+        '197028bd-1437-4e1e-9f80-23aa911b3a83': true,
+        'df133f11-cffa-4a8c-a730-3d2aeb3777c1': true,
+        '1904ad8a-8cd4-4581-a31c-5a71e8c3819b': true,
+        '9227c768-cd43-4620-affb-2b83b989f21c': true,
+        'aa686093-14db-4af6-b31c-1fe44b290884': true,
+        '588c5b08-4964-4a19-adc5-a004124cc818': true,
+        'c0121793-1a75-4aae-ae9a-275642a4badb': true,
+        'b3b873bb-ba5f-4172-bb8e-ecb93a9a8161': true,
+        '887a6780-1f50-4f7d-81b1-ba8e83c7bccb': true,
+        '61b8111e-1300-481c-ae79-445b9c96c9c5': true,
+        '09afa18e-e79a-4a45-a1ba-aa53c688874b': true,
+        'e33492ac-7f50-4fbb-8211-8ba1df23cc71': true,
+        '44b5e069-b34c-44e4-9912-d0606161dbff': true,
+        '650a8088-0f2b-490e-a5b9-9544949f5981': true,
+        '012d1483-ba04-457f-b546-02cb221c3658': true,
+        '5e8321d4-e52c-4cb5-831e-46674234e85d': true,
+        '92da8501-0946-402c-9e51-dc66850785b4': true,
+        '54f6d2ae-179e-47e6-9c3a-ba3b8e1af4c1': true,
+        'b38acf4e-5b23-4b09-8f46-c276d7c626dc': true,
+        '3d0cc7e7-5aa9-46f6-be0d-cd53ede04961': true,
+        'fd0cb355-91a2-48d5-aa07-085007fd4a05': true,
+        'b1cc59ad-697a-49ca-af7f-a1d952b8e274': true,
+        'dff3a1ce-279c-4cdc-bf83-6192309d852f': true,
+        'c730dd3d-c4ae-4ac9-8d07-4070f95e10fd': true,
+        '6c7b0bc9-b5fb-46c1-b1a7-c560d27c833a': true,
+        '9a436ee9-7c4c-4dd4-9530-661dea38833c': true,
+        'a1e20d8d-387f-429c-9fbd-8739a4ebaa40': true,
+        'de0be15a-a940-4225-9f61-9e4b6b9a2848': true,
+        '707c0e54-b93f-4338-8f9d-f2996a8f5734': true,
+        '6992f7c2-29a9-4e2b-bb00-a0b49febdbbf': true
+    };
+
+    function isFakeUser(userId) {
+        return !!FAKE_USER_IDS[userId];
+    }
+
     // ─── Helpers ───────────────────────────────────────
     function sb() { return window.supabaseClient; }
 
@@ -154,7 +194,25 @@
                 manifests.sort(function(a, b) { return b.likes - a.likes; });
             }
 
-            console.log('[Manifest] Loaded', manifests.length, 'manifests (' + sort + '/' + category + ')');
+            // Her manifeste isBot flag'i ekle
+            manifests.forEach(function(m) {
+                m.isBot = isFakeUser(m.user_id);
+            });
+
+            // Gercek kullanicilarin manifestlerini en üste çıkar
+            // Her grup kendi içinde mevcut sıralamayı korur
+            var realManifests = [];
+            var botManifests = [];
+            for (var r = 0; r < manifests.length; r++) {
+                if (manifests[r].isBot) {
+                    botManifests.push(manifests[r]);
+                } else {
+                    realManifests.push(manifests[r]);
+                }
+            }
+            manifests = realManifests.concat(botManifests);
+
+            console.log('[Manifest] Loaded', manifests.length, 'manifests (' + sort + '/' + category + ') — ' + realManifests.length + ' real, ' + botManifests.length + ' bot');
             return manifests;
 
         } catch(e) {
@@ -240,7 +298,8 @@
         save: save,
         loadFeed: loadFeed,
         toggleLike: toggleLike,
-        deleteMy: deleteMy
+        deleteMy: deleteMy,
+        isFakeUser: isFakeUser
     };
 
 })();
