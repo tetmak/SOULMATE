@@ -15,6 +15,7 @@
     <script src="js/premium.js"></script>
     <script src="js/gamification-engine.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/manifest-engine.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -304,6 +305,10 @@
         }
         .card-likes .material-symbols-outlined {
             font-size: 13px;
+            transition: all 0.2s;
+        }
+        .card-likes:active .material-symbols-outlined {
+            transform: scale(1.3);
         }
 
         /* ── FAB ─────────────────────────────────────── */
@@ -388,6 +393,8 @@
 
         var currentSort = 'newest';
         var currentCat = 'all';
+        var feedData = [];    // Supabase'den gelen manifest listesi
+        var isLoading = false;
 
         // ─── Category Config ────────────────────────────
         var CAT_CFG = {
@@ -410,78 +417,34 @@
             var p = name.trim().split(/[\s_]+/);
             return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
         }
+        function fmtLikes(n) { return n >= 1000 ? (n/1000).toFixed(1) + 'k' : '' + n; }
 
-        // ─── Data (topluluk manifestleri) ─────────────────
-        var DATA = [
-            { id:1, user:'Elif', path:7, text:'"Evrenin bana gönderdiği sevgiyi açık kalplerle karşılıyorum."', likes:287, category:'love', weekly:true },
-            { id:2, user:'Burak', path:3, text:'"Bolluk ve bereket hayatımın her alanına akıyor."', likes:214, category:'money' },
-            { id:3, user:'Zeynep', path:11, text:'"Ruhum her gün daha derin bir farkındalıkla uyanıyor."', likes:195, category:'spiritual' },
-            { id:4, user:'Emre', path:5, text:'"Kariyer yolculuğumda evrenin rehberliğine güveniyorum."', likes:178, category:'career' },
-            { id:5, user:'Ayşe', path:9, text:'"Bedenim sağlıkla dolu, her hücrem ışıkla titreşiyor."', likes:162, category:'health' },
-            { id:6, user:'Kaan', path:1, text:'"Gerçek aşk beni buluyor, kalbim hazır."', likes:156, category:'love' },
-            { id:7, user:'Defne', path:22, text:'"Finansal özgürlüğüm her geçen gün büyüyor."', likes:148, category:'money' },
-            { id:8, user:'Arda', path:6, text:'"İç huzurum dış dünyama yansıyor, her şey akışında."', likes:143, category:'spiritual' },
-            { id:9, user:'Selin', path:4, text:'"Hayalimdeki işe kavuşuyorum, evren kapıları açıyor."', likes:137, category:'career' },
-            { id:10, user:'Mert', path:8, text:'"Enerjim yükseliyor, zihinim berrak ve güçlü."', likes:129, category:'health' },
-            { id:11, user:'Beren', path:2, text:'"Ruh eşimle karşılaşma anı yaklaşıyor, hissediyorum."', likes:118, category:'love' },
-            { id:12, user:'Yusuf', path:33, text:'"Maddi engeller kalkıyor, refah kapım açılıyor."', likes:112, category:'money' },
-            { id:13, user:'İrem', path:7, text:'"Meditasyonlarım derinleşiyor, evrenle bağlantım güçleniyor."', likes:108, category:'spiritual' },
-            { id:14, user:'Ceren', path:5, text:'"Yaratıcılığım sınırsız, projelerim başarıya ulaşıyor."', likes:95, category:'career' },
-            { id:15, user:'Oğuz', path:3, text:'"Bedenime sevgiyle yaklaşıyorum, kendimi iyileştiriyorum."', likes:89, category:'health' },
-            { id:16, user:'Deniz', path:9, text:'"İlişkilerimde denge ve uyum manifest ediyorum."', likes:84, category:'love' },
-            { id:17, user:'Hazal', path:11, text:'"Beklenmedik gelir kaynakları hayatıma giriyor."', likes:78, category:'money' },
-            { id:18, user:'Barış', path:1, text:'"Üçüncü gözüm açılıyor, sezgilerim güçleniyor."', likes:72, category:'spiritual' },
-            { id:19, user:'Melis', path:6, text:'"Liderlik enerjim yükseliyor, takımım bana güveniyor."', likes:67, category:'career' },
-            { id:20, user:'Tolga', path:4, text:'"Uykularım derin, sabahlarım enerjik başlıyor."', likes:63, category:'health' },
-            { id:21, user:'Nehir', path:8, text:'"Sevgi frekansında titreşiyorum, etrafımdaki herkes hissediyor."', likes:58, category:'love' },
-            { id:22, user:'Aslı', path:2, text:'"Yatırımlarım meyvesini veriyor, bereket çoğalıyor."', likes:54, category:'money' },
-            { id:23, user:'Tuna', path:7, text:'"Kozmik enerji bedenimi ve ruhumu arındırıyor."', likes:49, category:'spiritual' },
-            { id:24, user:'Eylül', path:33, text:'"Tutkulu olduğum alanda büyük başarılar elde ediyorum."', likes:45, category:'career' },
-            { id:25, user:'Doruk', path:5, text:'"Stres vücudumdan akıp gidiyor, huzurla doluyorum."', likes:42, category:'health' },
-            { id:26, user:'Nil', path:9, text:'"Kalbimin sesini dinliyorum, doğru kişi geliyor."', likes:38, category:'love' },
-            { id:27, user:'Pelin', path:3, text:'"Para enerjisiyle barışıyorum, bolluk doğal halim."', likes:35, category:'money' },
-            { id:28, user:'Koray', path:1, text:'"Her nefeste evrenle daha derin bağlanıyorum."', likes:31, category:'spiritual' },
-            { id:29, user:'Gizem', path:6, text:'"Yeni fırsatlar kapımı çalıyor, cesaretle açıyorum."', likes:28, category:'career' },
-            { id:30, user:'Alp', path:4, text:'"Sağlığım mükemmel, vücudum kendini yeniliyor."', likes:24, category:'health' },
-            { id:31, user:'Sibel', path:11, text:'"Aşk enerjim evrenle rezonansa giriyor."', likes:21, category:'love' },
-            { id:32, user:'Kerem', path:8, text:'"Hayatıma bereketle dolu insanlar çekiyorum."', likes:18, category:'money' },
-            { id:33, user:'Dila', path:22, text:'"Ruhsal yolculuğum en güzel meyvelerini veriyor."', likes:15, category:'spiritual' },
-            { id:34, user:'Onur', path:5, text:'"Kariyerimde zirveye yürüyorum, adımlarım emin."', likes:12, category:'career' },
-            { id:35, user:'Cansu', path:9, text:'"Vücudum bir tapınak, ona saygıyla davranıyorum."', likes:9, category:'health' }
+        // ─── Fallback Data (Supabase baglanamazsa) ──────
+        var FALLBACK = [
+            { id:'f1', display_name:'Elif', life_path:7, text:'Evrenin bana gönderdiği sevgiyi açık kalplerle karşılıyorum.', likes:287, category:'love', liked:false },
+            { id:'f2', display_name:'Burak', life_path:3, text:'Bolluk ve bereket hayatımın her alanına akıyor.', likes:214, category:'money', liked:false },
+            { id:'f3', display_name:'Zeynep', life_path:11, text:'Ruhum her gün daha derin bir farkındalıkla uyanıyor.', likes:195, category:'spiritual', liked:false },
+            { id:'f4', display_name:'Emre', life_path:5, text:'Kariyer yolculuğumda evrenin rehberliğine güveniyorum.', likes:178, category:'career', liked:false },
+            { id:'f5', display_name:'Ayşe', life_path:9, text:'Bedenim sağlıkla dolu, her hücrem ışıkla titreşiyor.', likes:162, category:'health', liked:false }
         ];
 
-        // ─── User manifests from localStorage ───────────
-        function userManifests() {
+        // ─── Supabase'den feed yükle ────────────────────
+        async function loadFromSupabase() {
+            if (!window.manifestEngine) return FALLBACK;
             try {
-                var auth = JSON.parse(localStorage.getItem('numerael-auth-token') || 'null');
-                if (!auth || !auth.user) return [];
-                var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
-                var stored = JSON.parse(localStorage.getItem('numerael_manifests_' + auth.user.id) || '[]');
-                var name = (ud && ud.name) ? ud.name.split(' ')[0] : 'You';
-                return stored.map(function(m, i) {
-                    return { id: 2000 + i, user: name, path: null, text: '"' + (m.text || '') + '"', likes: Math.floor(Math.random() * 40) + 5, category: m.category || 'general', isOwn: true };
-                });
-            } catch(e) { return []; }
+                var data = await window.manifestEngine.loadFeed(currentSort, currentCat, 100);
+                if (data && data.length > 0) return data;
+                return FALLBACK;
+            } catch(e) {
+                console.warn('[ManifestCommunity] Supabase load failed, using fallback:', e);
+                return FALLBACK;
+            }
         }
-
-        function fmtLikes(n) { return n >= 1000 ? (n/1000).toFixed(1) + 'k' : '' + n; }
 
         // ─── RENDER ─────────────────────────────────────
         function render() {
             var feed = document.getElementById('manifest-feed');
-            var uM = userManifests().reverse();
-            var all = uM.concat(DATA);
-
-            // Filter
-            if (currentCat !== 'all') all = all.filter(function(m) { return m.category === currentCat; });
-
-            // Sort
-            if (currentSort === 'top_rated') {
-                all.sort(function(a, b) { return b.likes - a.likes; });
-            } else if (currentSort === 'weekly') {
-                all = all.filter(function(m) { return m.weekly || m.likes > 150; });
-                all.sort(function(a, b) { return b.likes - a.likes; });
-            }
+            var all = feedData.slice(); // kopyala
 
             if (!all.length) {
                 feed.innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined text-white/10" style="font-size:48px;font-variation-settings:\'FILL\' 1;">search_off</span><p class="text-white/20 text-sm mt-3">Bu kategoride manifest bulunamadı</p></div>';
@@ -490,32 +453,39 @@
 
             var html = '';
 
-            // ── Weekly Champion ──────────────────────────
+            // ── Weekly Champion (newest + all kategorisinde en çok beğenilen) ──
             var weekly = null;
-            if (currentSort === 'newest' && currentCat === 'all') {
-                for (var w = 0; w < all.length; w++) {
-                    if (all[w].weekly) { weekly = all[w]; all.splice(w, 1); break; }
+            if (currentSort === 'newest' && currentCat === 'all' && all.length > 0) {
+                // En cok begenilen manifesti bul
+                var topIdx = 0;
+                for (var w = 1; w < all.length; w++) {
+                    if ((all[w].likes || 0) > (all[topIdx].likes || 0)) topIdx = w;
+                }
+                if ((all[topIdx].likes || 0) >= 5) {
+                    weekly = all[topIdx];
+                    all.splice(topIdx, 1);
                 }
             }
 
             if (weekly) {
-                var wc = avatarColor(weekly.user);
-                var wi = initials(weekly.user);
+                var wName = weekly.display_name || 'User';
+                var wc = avatarColor(wName);
+                var wi = initials(wName);
                 html += '<div class="weekly-card fade-up fd1 mb-4">' +
                     '<div class="flex items-center justify-between mb-4">' +
                         '<span class="weekly-badge">⭐ WEEKLY CHAMPION</span>' +
-                        '<span class="weekly-likes">' + fmtLikes(weekly.likes) + ' Likes</span>' +
+                        '<span class="weekly-likes">' + fmtLikes(weekly.likes || 0) + ' Likes</span>' +
                     '</div>' +
-                    '<p class="weekly-quote mb-5">' + weekly.text + '</p>' +
+                    '<p class="weekly-quote mb-5">"' + weekly.text + '"</p>' +
                     '<div class="flex items-center justify-between">' +
                         '<div class="user-pill">' +
                             '<div class="user-avatar-sm" style="background:' + wc + ';">' + wi + '</div>' +
                             '<div style="line-height:1.2;">' +
-                                '<div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);">' + weekly.user + '</div>' +
-                                (weekly.path ? '<div style="font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;">Life Path ' + weekly.path + '</div>' : '') +
+                                '<div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);">' + wName + '</div>' +
+                                (weekly.life_path ? '<div style="font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;">Life Path ' + weekly.life_path + '</div>' : '') +
                             '</div>' +
                         '</div>' +
-                        '<button class="ritual-btn">RITUAL</button>' +
+                        '<button class="ritual-btn" onclick="handleLike(\'' + weekly.id + '\')"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;font-variation-settings:\'FILL\' ' + (weekly.liked ? '1' : '0') + ';">favorite</span> ' + fmtLikes(weekly.likes || 0) + '</button>' +
                     '</div>' +
                 '</div>';
             }
@@ -526,15 +496,19 @@
                 var m = all[i];
                 var c = CAT_CFG[m.category] || CAT_CFG.general;
                 var d = Math.min(i + 2, 6);
+                var mName = m.display_name || 'User';
+                var likedFill = m.liked ? '1' : '0';
 
                 html += '<div class="grid-card ' + c.grad + ' fade-up fd' + d + '">' +
                     '<div>' +
                         '<span class="cat-tag"><span class="dot" style="background:' + c.dot + '"></span> ' + c.label + '</span>' +
-                        '<p class="card-quote">' + m.text + '</p>' +
+                        '<p class="card-quote">"' + m.text + '"</p>' +
                     '</div>' +
                     '<div class="card-bottom">' +
-                        '<span class="card-user">@' + m.user + '</span>' +
-                        '<span class="card-likes"><span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;">thumb_up</span> ' + fmtLikes(m.likes) + '</span>' +
+                        '<span class="card-user">@' + mName + '</span>' +
+                        '<button class="card-likes" onclick="event.stopPropagation();handleLike(\'' + m.id + '\')" style="background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:8px;">' +
+                            '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' ' + likedFill + ';' + (m.liked ? 'color:rgba(220,50,50,0.7);' : '') + '">favorite</span> ' + fmtLikes(m.likes || 0) +
+                        '</button>' +
                     '</div>' +
                 '</div>';
             }
@@ -543,20 +517,63 @@
             feed.innerHTML = html;
         }
 
+        // ─── Like Handler ───────────────────────────────
+        window.handleLike = async function(manifestId) {
+            if (!manifestId || manifestId.startsWith('f')) return; // fallback data — like desteklenmiyor
+            if (!window.manifestEngine) return;
+
+            // Optimistic UI update
+            for (var i = 0; i < feedData.length; i++) {
+                if (feedData[i].id === manifestId) {
+                    feedData[i].liked = !feedData[i].liked;
+                    feedData[i].likes = (feedData[i].likes || 0) + (feedData[i].liked ? 1 : -1);
+                    if (feedData[i].likes < 0) feedData[i].likes = 0;
+                    break;
+                }
+            }
+            render();
+
+            // Supabase'e kaydet
+            var result = await window.manifestEngine.toggleLike(manifestId);
+            if (result.success) {
+                // Gercek sayiyi guncelle
+                for (var j = 0; j < feedData.length; j++) {
+                    if (feedData[j].id === manifestId) {
+                        feedData[j].likes = result.newCount;
+                        feedData[j].liked = (result.action === 'liked');
+                        break;
+                    }
+                }
+                render();
+            }
+        };
+
+        // ─── Sort/Category değiştirince yeniden yükle ───
+        async function reloadFeed() {
+            if (isLoading) return;
+            isLoading = true;
+            var feed = document.getElementById('manifest-feed');
+            feed.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(124,58,237,0.3);border-top-color:#a855f7;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p class="text-white/20 text-xs mt-3">Yükleniyor...</p></div>';
+
+            feedData = await loadFromSupabase();
+            isLoading = false;
+            render();
+        }
+
         // ─── Global Handlers ────────────────────────────
         window.switchSort = function(btn) {
             currentSort = btn.getAttribute('data-sort');
             var t = document.querySelectorAll('.sort-tab');
             for (var i = 0; i < t.length; i++) t[i].classList.remove('active');
             btn.classList.add('active');
-            render();
+            reloadFeed();
         };
         window.switchCat = function(btn) {
             currentCat = btn.getAttribute('data-cat');
             var c = document.querySelectorAll('.cat-chip');
             for (var i = 0; i < c.length; i++) c[i].classList.remove('active');
             btn.classList.add('active');
-            render();
+            reloadFeed();
         };
         window.showInfoModal = function() { document.getElementById('info-modal').style.display = 'flex'; };
         window.closeInfoModal = function() { document.getElementById('info-modal').style.display = 'none'; };
@@ -565,6 +582,7 @@
         async function init() {
             if (window.auth && window.auth.whenReady) await window.auth.whenReady();
             if (window.gamification) window.gamification.trackAction('manifest_community_visit');
+            feedData = await loadFromSupabase();
             render();
         }
         if (document.readyState === 'loading') {
