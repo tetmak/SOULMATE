@@ -855,44 +855,63 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // ─── KOZMİK ANALİZ RENDER ──────────────────────────────
-    var VIBRATION_TEXTS = {
-        high: [
-            'Kozmik frekanslarınız nadir bir uyum içinde. Arayan ve Ayna, ruhun sessiz bir dilini paylaşıyor.',
-            'Ruhsal titreşimleriniz aynı oktavda rezonans yapıyor. Bu bağ, kelimelerden daha derin bir anlayışa sahip.',
-            'İki ruhun enerji alanları birbirine sarmalanmış. Bu titreşim uyumu, yıldızlarda bile nadir görülür.',
-            'Ruhlarınız aynı kozmik melodiyi çalıyor. Bu harmonik rezonans, evrensel bir hediye.'
-        ],
-        medium: [
-            'Titreşimleriniz birbirini tamamlayan frekanslarda. Farklılıklarınız, birlikte daha güçlü bir armoni yaratıyor.',
-            'Enerji alanlarınız karşılıklı bir dans içinde. Her etkileşim, ortak titreşiminizi güçlendiriyor.',
-            'Kozmik frekanslarınız birbirini besliyor. Bu uyum, zamanla daha da derinleşecek potansiyele sahip.',
-            'Ruhsal enerjileriniz birbirini dengeliyor. Bu titreşim, birlikte büyümenin kapısını aralıyor.'
-        ],
-        low: [
-            'Farklı frekanslarda titreşen iki ruh, birbirine yeni perspektifler sunuyor. Bu karşıtlık, büyümenin anahtarı.',
-            'Titreşim farklılığınız, birbirinize öğretecek çok şey olduğunu gösteriyor. Evren sizi bir amaçla buluşturdu.',
-            'Kozmik enerjileriniz farklı yollardan akıyor, ancak her nehir sonunda denize kavuşur.'
-        ]
+
+    // Sayı bazlı enerji tanımları — her sayının özgün niteliği
+    var NUM_ENERGY = {
+        1: {name:'Öncü',element:'ateş',quality:'bağımsız irade ve liderlik enerjisi',verb:'yön verir',shadow:'inatçılık'},
+        2: {name:'Ayna',element:'su',quality:'sezgisel denge ve diplomasi enerjisi',verb:'birleştirir',shadow:'kararsızlık'},
+        3: {name:'Yaratıcı',element:'ışık',quality:'ifade gücü ve ilham enerjisi',verb:'dönüştürür',shadow:'dağınıklık'},
+        4: {name:'Çıpa',element:'toprak',quality:'yapı ve güvenilirlik enerjisi',verb:'inşa eder',shadow:'katılık'},
+        5: {name:'Rüzgâr',element:'hava',quality:'özgürlük ve değişim enerjisi',verb:'genişletir',shadow:'huzursuzluk'},
+        6: {name:'Şifacı',element:'su',quality:'sevgi ve sorumluluk enerjisi',verb:'iyileştirir',shadow:'aşırı fedakârlık'},
+        7: {name:'Mistik',element:'eter',quality:'derin bilgelik ve iç görü enerjisi',verb:'aydınlatır',shadow:'yalnızlık'},
+        8: {name:'Kral',element:'ateş',quality:'güç ve bolluk enerjisi',verb:'yönetir',shadow:'kontrol tutkusu'},
+        9: {name:'Bilge',element:'ışık',quality:'evrensel sevgi ve tamamlanma enerjisi',verb:'aşar',shadow:'idealleştirme'},
+        11: {name:'İlhamcı',element:'eter',quality:'yüksek sezgi ve ruhsal aydınlanma enerjisi',verb:'ilham verir',shadow:'aşırı duyarlılık'},
+        22: {name:'Usta Mimar',element:'toprak',quality:'vizyoner inşa ve manifestasyon enerjisi',verb:'şekillendirir',shadow:'mükemmeliyetçilik'},
+        33: {name:'Kozmik Öğretmen',element:'ışık',quality:'koşulsuz sevgi ve yükseltme enerjisi',verb:'yüceltir',shadow:'kendini feda etme'}
     };
-    var DESTINY_TEXTS = {
-        high: [
-            'Her iki ruh da Büyük Çarkın aynı yayında ilerliyor. Bu buluşma tesadüf değil, kozmik bir zorunluluk.',
-            'Kader çizgileriniz aynı noktada kesişiyor. Bu bağlantı, yaşamların ötesinde yankılanan bir rezonans taşıyor.',
-            'Yıldız haritalarınız ortak bir kaderi işaret ediyor. Bu yol, birlikte yürünmek için çizilmiş.',
-            'Evren bu karşılaşmayı çağlar öncesinden planlamış. İki kader, tek bir yolda buluşuyor.'
-        ],
-        medium: [
-            'Kader yollarınız paralel ilerliyor ve zaman zaman kesişiyor. Her buluşma, yeni bir farkındalık getiriyor.',
-            'Yaşam yolculuklarınız birbirini tamamlayan dersler içeriyor. Evren sizi karşılıklı öğrenme için bir araya getiriyor.',
-            'Kaderin iplikleri, iki farklı ama uyumlu desen oluşturuyor. Bu bağ, seçimlere bağlı olarak güçlenebilir.',
-            'Kader çizgileriniz ortak bir amaca doğru evriliyor. Bu yolculuk, bilinçli niyetle derinleşir.'
-        ],
-        low: [
-            'Farklı kader yollarında yürüyen iki ruh, birbirinin ufkunu genişletiyor. En büyük dersler farklılıktan doğar.',
-            'Kader çizgileriniz farklı yönlere işaret etse de, evren her karşılaşmaya bir anlam yükler.',
-            'İki ayrı kader yolu, beklenmedik bir kavşakta buluştu. Bu karşılaşmanın ardında gizli bir ders yatıyor.'
-        ]
+
+    // Ruh Güdüsü çift dinamikleri — ikili etkileşim kalıpları
+    var SOUL_DYNAMICS = {
+        same:    'Ruhlarınız aynı frekansta titre\u015Fiyor — birbirinizi aynada görmek gibi. Bu yansıma hem derin bir tanınmışlık hem de gölge alanlarınızla yüzleşme getirir.',
+        fire:    'İki ateşli ruh yan yana geldiğinde enerjiniz katlanarak yükselir. Birbirinizin tutkusunu besliyor, motivasyonunu ateşliyorsunuz.',
+        water:   'Su elementinin buluşması sezgisel bir akış yaratıyor. Kelimeler olmadan anlayışın mümkün olduğu nadir bir ruhsal bağınız var.',
+        earth:   'Toprak enerjileri bir araya gelince sarsılmaz bir güven zemini oluşuyor. Bu bağ, hayatın fırtınalarında sığınacağınız liman.',
+        light:   'Işık enerjilerinin birleşimi yaratıcılığınızı sınırsız kılıyor. Birlikte hayal ettiğiniz her şey parlamaya başlıyor.',
+        complement: 'Ruh güdüleriniz birbirini tamamlayan elemanlarda — birinin eksik bıraktığını diğeri dolduruyor. Bu kozmik denge tesadüf değil.',
+        contrast: 'Ruhsal güdüleriniz farklı elementlerden besleniyor. Bu gerilim, birbirinizi alışkanlıklarınızdan koparıp büyümeye itiyor.'
     };
+
+    // Element etkileşim haritası
+    var ELEMENT_MATCH = {
+        'ateş-ateş':'fire','su-su':'water','toprak-toprak':'earth','ışık-ışık':'light','eter-eter':'water',
+        'ateş-ışık':'complement','su-toprak':'complement','eter-ışık':'complement','ateş-hava':'complement',
+        'su-eter':'complement','toprak-ışık':'complement','hava-eter':'complement','hava-ışık':'complement'
+    };
+
+    function getElementDynamic(el1, el2) {
+        if (el1 === el2) return ELEMENT_MATCH[el1 + '-' + el2] || 'same';
+        var key1 = el1 + '-' + el2;
+        var key2 = el2 + '-' + el1;
+        return ELEMENT_MATCH[key1] || ELEMENT_MATCH[key2] || 'contrast';
+    }
+
+    // Kader yolu çift yorumları — LP kombinasyonuna özel
+    var LP_PAIR_INSIGHTS = {
+        'same': 'Aynı Kader Yolu üzerinde yürüyen iki ruh — ortak derslerin, ortak zaferlerin ve aynı kozmik sınavların içindesiniz. Bu ayna etkisi, en derin öz farkındalığı getirir.',
+        'next': 'Ardışık Kader Yolları, evrimsel bir zincirin halkalarısınız. Biriniz diğerinin bir sonraki dersinin habercisi — birlikte hızlanmış bir ruhsal büyüme döngüsü yaşıyorsunuz.',
+        'mirror': 'Kader Yollarınız 10\'a tamamlanıyor — kozmik ayna çiftisiniz. Birinin fazlası diğerinin eksiğini tamamlıyor, evren sizi bilinçli bir denge için buluşturdu.',
+        'master_meets': 'Bir Üstat Sayı ile buluşuyorsunuz — bu karşılaşma sıradan bir uyum değil. Üstat enerjisi, diğer ruhun potansiyelini yükseltmek için katalizör görevi görüyor.'
+    };
+
+    function getLPPairType(lp1, lp2) {
+        if (lp1 === lp2) return 'same';
+        if (lp1 >= 11 || lp2 >= 11) return 'master_meets';
+        if (Math.abs(lp1 - lp2) === 1) return 'next';
+        if (lp1 + lp2 === 10) return 'mirror';
+        return null; // özel kalıp yok, generic üret
+    }
 
     function generateInsights(matchProfile, score) {
         var section = document.getElementById('insight-section');
@@ -906,19 +925,79 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         section.style.display = 'block';
 
-        // Skor bazlı kategori
-        var cat = score >= 80 ? 'high' : (score >= 60 ? 'medium' : 'low');
+        // ─── Kullanıcı & eşleşme sayıları ───
+        var uLP = userProfile.life_path;
+        var mLP = matchProfile.life_path;
+        var uSoul = userProfile.soul_urge;
+        var mSoul = matchProfile.soul_urge;
+        var uPers = userProfile.personality_num;
+        var mPers = matchProfile.personality_num;
+        var uExp = userProfile.expression_num;
+        var mExp = matchProfile.expression_num;
 
-        // Deterministik seçim: profil adının karakter toplamı ile index belirle
-        var nameSum = 0;
-        var name = matchProfile.full_name || '';
-        for (var i = 0; i < name.length; i++) nameSum += name.charCodeAt(i);
+        var uE = NUM_ENERGY[uSoul] || NUM_ENERGY[5];
+        var mE = NUM_ENERGY[mSoul] || NUM_ENERGY[5];
 
-        var vibTexts = VIBRATION_TEXTS[cat];
-        var destTexts = DESTINY_TEXTS[cat];
+        // ─── TİTREŞİM UYUMU — Ruh Güdüsü + Kişilik bazlı ───
+        var soulScore = window.discovery.getScore(uSoul, mSoul);
+        var persScore = window.discovery.getScore(uPers, mPers);
 
-        vibEl.textContent = vibTexts[nameSum % vibTexts.length];
-        destEl.textContent = destTexts[(nameSum + 7) % destTexts.length];
+        var dynamic = (uSoul === mSoul) ? 'same' : getElementDynamic(uE.element, mE.element);
+        var baseSoulText = SOUL_DYNAMICS[dynamic];
+
+        // Kişilik katmanı — derinleştirme
+        var persLayer = '';
+        if (persScore >= 90) {
+            persLayer = ' Dışa yansıttığınız enerjiler de büyük bir uyum taşıyor — çevreniz sizi doğal bir çift olarak algılıyor.';
+        } else if (persScore >= 80) {
+            persLayer = ' Sosyal kimlikleriniz birbirini destekliyor — birlikte olduğunuzda ikiniz de en iyi versiyonunuzu gösteriyorsunuz.';
+        } else if (persScore >= 70) {
+            persLayer = ' Kişilik enerjileriniz farklı açılardan parlıyor — bu farklılık birbirinizin kör noktalarını aydınlatıyor.';
+        } else {
+            persLayer = ' Dış dünyaya yansıyan yüzleriniz birbirinden ayrışıyor — bu gerilim, ikinizi de konfor alanının dışına çıkararak olgunlaştırıyor.';
+        }
+
+        // Sayısal derinlik: gerçek sayı isimlerini kullan
+        var soulDetail = uE.name + ' (' + uSoul + ') ruhunuzun ' + uE.quality + ' taşırken, karşınızdaki ' + mE.name + ' (' + mSoul + ') ruhu ' + mE.quality + ' yayıyor.';
+
+        vibEl.textContent = soulDetail + ' ' + baseSoulText + persLayer;
+
+        // ─── KADERİN BAĞI — Life Path + Expression bazlı ───
+        var lpScore = window.discovery.getScore(uLP, mLP);
+        var expScore = window.discovery.getScore(uExp, mExp);
+
+        var uLPE = NUM_ENERGY[uLP] || NUM_ENERGY[5];
+        var mLPE = NUM_ENERGY[mLP] || NUM_ENERGY[5];
+
+        // Özel LP çifti kalıbı kontrolü
+        var pairType = getLPPairType(uLP, mLP);
+        var lpText = '';
+        if (pairType) {
+            lpText = LP_PAIR_INSIGHTS[pairType];
+        } else {
+            // Generic ama sayı-spesifik yorum
+            if (lpScore >= 85) {
+                lpText = uLPE.name + ' (' + uLP + ') ile ' + mLPE.name + ' (' + mLP + ') kader yolları güçlü bir rezonansla birleşiyor. ' + uLP + '\'in ' + uLPE.verb + ' enerjisi, ' + mLP + '\'in ' + mLPE.verb + ' gücüyle birleştiğinde olağanüstü bir sinerji doğuyor.';
+            } else if (lpScore >= 75) {
+                lpText = uLPE.name + ' (' + uLP + ') kader çizginiz, ' + mLPE.name + ' (' + mLP + ') yoluyla kesişiyor. ' + uLP + '\'in ' + uLPE.quality + ', ' + mLP + '\'in ' + mLPE.quality + ' ile dengelenerek iki ruhun da evrimini hızlandırıyor.';
+            } else {
+                lpText = uLPE.name + ' (' + uLP + ') ile ' + mLPE.name + ' (' + mLP + ') farklı kozmik dersler üzerinde çalışıyor. Bu farklılık karşıtlık değil, tamamlanmamış bulmacaların birbirinde saklı parçalarını bulma fırsatı.';
+            }
+        }
+
+        // Expression katmanı — iletişim & yaşam misyonu derinliği
+        var expLayer = '';
+        var uExpE = NUM_ENERGY[uExp] || NUM_ENERGY[5];
+        var mExpE = NUM_ENERGY[mExp] || NUM_ENERGY[5];
+        if (expScore >= 85) {
+            expLayer = ' İfade sayılarınız (' + uExp + ' · ' + mExp + ') ortak bir yaşam misyonuna işaret ediyor — birlikte yarattığınız şeyler, tek başınıza mümkün olandan çok daha büyük.';
+        } else if (expScore >= 70) {
+            expLayer = ' İfade enerjileriniz (' + uExp + ' ' + uExpE.name + ' · ' + mExp + ' ' + mExpE.name + ') farklı yetenekleri bir araya getiriyor — ' + uExpE.verb + ' ile ' + mExpE.verb + ' gücü birleştiğinde yaratıcı potansiyeliniz açığa çıkıyor.';
+        } else {
+            expLayer = ' İfade yollarınız (' + uExp + ' · ' + mExp + ') farklı misyonlara hizmet ediyor — bu birbirinin dünyasına açılan bir pencere, bakış açınızı genişleten nadir bir bağ.';
+        }
+
+        destEl.textContent = lpText + expLayer;
     }
 
     // ─── RADAR RENDER ────────────────────────────────────────
