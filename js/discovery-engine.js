@@ -449,6 +449,7 @@
         calcSoul: calcSoul,
         calcPers: calcPers,
         calcFullMatch: calcFullMatch,
+        getScore: getScore,
         bondLabel: bondLabel,
         ARCHETYPES: ARCHETYPES,
 
