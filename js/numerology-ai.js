@@ -634,11 +634,11 @@
 
       // Chat'e özet mesaj ekle
       var label = window.DecisionTiming.ACTION_LABELS[action] || action;
-      var _summaryText = label.charAt(0).toUpperCase() + label.slice(1) + ': ' + currentResult.score + '/100\n' +
+      addAelMessage(
+        label.charAt(0).toUpperCase() + label.slice(1) + ': ' + currentResult.score + '/100\n' +
         'Risk: ' + currentResult.risk_level + '\n' +
-        '→ ' + currentResult.action_directive;
-      addAelMessage(_summaryText);
-      if (window.AvatarGuide) { window.AvatarGuide.onDecisionResult(currentResult.action_directive); }
+        '→ ' + currentResult.action_directive
+      );
     });
   });
 
@@ -899,9 +899,7 @@
       hideTyping();
 
       if (data.choices && data.choices[0]) {
-        var _aiText = data.choices[0].message.content;
-        addAelMessage(_aiText);
-        if (window.AvatarGuide) { window.AvatarGuide.onDecisionResult(_aiText); }
+        addAelMessage(data.choices[0].message.content);
       } else {
         addAelMessage('Yanıt alınamadı. Tekrar dene.');
       }
