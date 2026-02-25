@@ -241,14 +241,19 @@
      * @returns {Promise<{success:boolean, action:string, newCount:number}>}
      */
     async function toggleLike(manifestId) {
+        console.log('[Manifest] toggleLike called, manifestId:', manifestId);
+
         var userId = await getCurrentUserId();
+        console.log('[Manifest] toggleLike userId:', userId);
+
         if (!userId) {
-            console.warn('[Manifest] toggleLike: No authenticated user');
+            console.warn('[Manifest] toggleLike: No authenticated user — cannot like');
             return { success: false, action: 'none', newCount: 0 };
         }
 
         try {
             // Mevcut like var mi kontrol et
+            console.log('[Manifest] Checking existing like...');
             var existing = await sb()
                 .from('manifest_likes')
                 .select('id')
@@ -256,51 +261,57 @@
                 .eq('user_id', userId)
                 .maybeSingle();
 
+            console.log('[Manifest] Existing check — data:', existing.data, 'error:', existing.error);
+
             if (existing.error) {
-                console.warn('[Manifest] Like check error:', existing.error);
+                console.warn('[Manifest] Like check FAILED:', existing.error.message || existing.error);
+                return { success: false, action: 'error', newCount: 0 };
             }
+
+            var action;
 
             if (existing.data) {
                 // Unlike — sil
+                console.log('[Manifest] Unliking — deleting like row...');
                 var delRes = await sb().from('manifest_likes')
                     .delete()
                     .eq('manifest_id', manifestId)
                     .eq('user_id', userId);
 
                 if (delRes.error) {
-                    console.warn('[Manifest] Unlike delete error:', delRes.error);
+                    console.warn('[Manifest] Unlike delete FAILED:', delRes.error.message || delRes.error);
                     return { success: false, action: 'error', newCount: 0 };
                 }
-
-                // Yeni like sayisini al
-                var countRes = await sb().from('manifest_likes')
-                    .select('id', { count: 'exact', head: true })
-                    .eq('manifest_id', manifestId);
-                var newCount = countRes.count || 0;
-                console.log('[Manifest] Unliked', manifestId, '→', newCount);
-                return { success: true, action: 'unliked', newCount: newCount };
+                console.log('[Manifest] Unlike delete OK');
+                action = 'unliked';
             } else {
                 // Like — ekle
+                console.log('[Manifest] Liking — inserting new like...');
                 var insRes = await sb().from('manifest_likes').insert({
                     manifest_id: manifestId,
                     user_id: userId
                 });
 
                 if (insRes.error) {
-                    console.warn('[Manifest] Like insert error:', insRes.error);
+                    console.warn('[Manifest] Like insert FAILED:', insRes.error.message || insRes.error);
                     return { success: false, action: 'error', newCount: 0 };
                 }
-
-                // Yeni like sayisini al
-                var countRes2 = await sb().from('manifest_likes')
-                    .select('id', { count: 'exact', head: true })
-                    .eq('manifest_id', manifestId);
-                var newCount2 = countRes2.count || 0;
-                console.log('[Manifest] Liked', manifestId, '→', newCount2);
-                return { success: true, action: 'liked', newCount: newCount2 };
+                console.log('[Manifest] Like insert OK');
+                action = 'liked';
             }
+
+            // Yeni like sayisini al — basit SELECT ile say (SDK uyumlulugu icin)
+            var countRes = await sb()
+                .from('manifest_likes')
+                .select('id')
+                .eq('manifest_id', manifestId);
+
+            var newCount = (countRes.data && countRes.data.length) ? countRes.data.length : 0;
+            console.log('[Manifest] toggleLike DONE:', action, manifestId, '→ count:', newCount);
+            return { success: true, action: action, newCount: newCount };
+
         } catch(e) {
-            console.warn('[Manifest] Like error:', e);
+            console.warn('[Manifest] toggleLike EXCEPTION:', e);
             return { success: false, action: 'error', newCount: 0 };
         }
     }
