@@ -107,6 +107,24 @@
                 profileMap[p.user_id] = p;
             });
 
+            // discovery_profiles'da olmayan kullanıcılar için profiles tablosundan fallback
+            var missingIds = senderIds.filter(function(id) { return !profileMap[id]; });
+            if (missingIds.length > 0) {
+                var fallbackRes = await sb().from('profiles')
+                    .select('id, full_name, gender, birth_date, avatar_url')
+                    .in('id', missingIds);
+                (fallbackRes.data || []).forEach(function(p) {
+                    profileMap[p.id] = {
+                        user_id: p.id,
+                        full_name: p.full_name,
+                        gender: p.gender,
+                        avatar_url: p.avatar_url,
+                        life_path: null,
+                        birth_date: p.birth_date
+                    };
+                });
+            }
+
             requests.forEach(function(r) {
                 r.sender_profile = profileMap[r.sender_id] || null;
             });
