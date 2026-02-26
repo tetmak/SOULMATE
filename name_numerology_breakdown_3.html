@@ -349,8 +349,11 @@
 
   <!-- ═══ ANA SAYFA MANTIK SCRIPTI ═══ -->
   <script>
-  (function() {
+  (async function() {
     'use strict';
+
+    // Auth hazır olana kadar bekle (Supabase'den veri çekilsin)
+    if (window.auth && window.auth.whenReady) await window.auth.whenReady();
 
     // Pisagor tablosu (Türkçe karakter desteği)
     var TABLE = {
@@ -514,7 +517,7 @@
     }
 
     // === SAYFA INIT ===
-    window.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('DOMContentLoaded', async function() {
       // Premium gate
       if (window.premium && !window.premium.isPremium()) {
         window.premium.showPaywall('Bu analiz sayfas\u0131 Premium \u00F6zelli\u011Fidir.', 'breakdown_page_3');

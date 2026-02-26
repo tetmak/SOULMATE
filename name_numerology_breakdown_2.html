@@ -207,6 +207,9 @@
   <script>
     // NUMERAEL APP - Navigation & Dynamic Content
     window.addEventListener('DOMContentLoaded', async function () {
+      // Auth hazır olana kadar bekle (Supabase'den veri çekilsin)
+      if (window.auth && window.auth.whenReady) await window.auth.whenReady();
+
       // Premium gate — sayfa 2 ve 3 sadece premium
       if (window.premium && !window.premium.isPremium()) {
         window.premium.showPaywall('Bu analiz sayfası Premium özelliğidir.', 'breakdown_page_2');
