@@ -120,6 +120,9 @@
 
 <script>
 (async function() {
+    // Auth hazır olana kadar bekle (Supabase'den veri çekilsin)
+    if (window.auth && window.auth.whenReady) await window.auth.whenReady();
+
     var league = window.gamification.getLeague();
     var s = window.gamification.getState();
     var rp = window.gamification.getRankProgress();
