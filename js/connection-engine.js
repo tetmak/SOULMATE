@@ -272,12 +272,26 @@
                 profileMap[p.user_id] = p;
             });
 
-            // discovery_profiles'da olmayan ama profiles'da olan kullanıcılar için fallback
-            otherIds.forEach(function(uid) {
-                if (!profileMap[uid] && profAvatarMap[uid]) {
-                    profileMap[uid] = { user_id: uid, avatar_url: profAvatarMap[uid], full_name: null };
-                }
-            });
+            // discovery_profiles'da olmayan kullanıcılar için profiles tablosundan tam fallback
+            var missingConnIds = otherIds.filter(function(uid) { return !profileMap[uid]; });
+            if (missingConnIds.length > 0) {
+                var fallbackConnRes = await sb().from('profiles')
+                    .select('id, full_name, gender, birth_date, avatar_url')
+                    .in('id', missingConnIds);
+                (fallbackConnRes.data || []).forEach(function(p) {
+                    profileMap[p.id] = {
+                        user_id: p.id,
+                        full_name: p.full_name,
+                        gender: p.gender,
+                        avatar_url: p.avatar_url || profAvatarMap[p.id] || null,
+                        life_path: p.birth_date ? window.discovery.calcLP(p.birth_date) : null,
+                        birth_date: p.birth_date,
+                        expression_num: p.full_name ? window.discovery.calcExp(p.full_name) : null,
+                        soul_urge: p.full_name ? window.discovery.calcSoul(p.full_name) : null,
+                        personality_num: p.full_name ? window.discovery.calcPers(p.full_name) : null
+                    };
+                });
+            }
 
             return connections.map(function(c) {
                 var otherId = c.user_a === userId ? c.user_b : c.user_a;
