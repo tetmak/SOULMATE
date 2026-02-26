@@ -130,23 +130,26 @@ KİŞİLİK KURALLARI:
 
   // Kart bazlı kullanıcı promptları
   const CARD_PROMPTS = {
-    soul: (ctx) => `${ctx.name} için Ruh Güdüsü (Kalp Arzusu) analizi — Sayı: ${ctx.soulUrgeNumber}.
+    soul: (ctx) => `${ctx.name} (${ctx.gender || 'bilinmiyor'}) için Ruh Güdüsü (Kalp Arzusu) analizi — Sayı: ${ctx.soulUrgeNumber}.
 İçsel motivasyonu, kimseye söylemediği gizli arzuları, sevgi dili ve duygusal gerçeklerini yaz.
+Cinsiyete uygun hitap et ve cinsiyet perspektifini analze yansıt.
 Kişilik veya Kader Yolu hakkında yazmak KESİNLİKLE yasak.
 ${ctx.soulUrgeNumber} sayısının tonuyla, 4 kısa paragraf, 150-170 kelime.`,
 
-    pers: (ctx) => `${ctx.name} için Kişilik Sayısı analizi — Sayı: ${ctx.personalityNumber}.
-Dışarıya yansıttığı imajı, insanların onu ilk tanıdığında ne hissettiğini, toplumsal maskesini yaz.
+    pers: (ctx) => `${ctx.name} (${ctx.gender || 'bilinmiyor'}) için Kişilik Sayısı analizi — Sayı: ${ctx.personalityNumber}.
+Dışarıya yansıttığı imajı, insanların ${ctx.gender === 'kadın' ? 'onu' : ctx.gender === 'erkek' ? 'onu' : 'bu kişiyi'} ilk tanıdığında ne hissettiğini, toplumsal maskesini yaz.
+Cinsiyete uygun hitap et.
 Ruh Güdüsü veya Kader Yolu hakkında yazmak KESİNLİKLE yasak.
 ${ctx.personalityNumber} sayısının tonuyla, 4 kısa paragraf, 150-170 kelime.`,
 
-    lp: (ctx) => `${ctx.name} için Kader Yolu (Hayat Amacı) analizi — Sayı: ${ctx.lifePathNumber}.
-Bu hayattaki büyük amacını, kaderin onu nereye çektiğini, hayat boyunca tekrar eden temaları yaz.
+    lp: (ctx) => `${ctx.name} (${ctx.gender || 'bilinmiyor'}) için Kader Yolu (Hayat Amacı) analizi — Sayı: ${ctx.lifePathNumber}.
+Bu hayattaki büyük amacını, kaderin ${ctx.gender === 'kadın' ? 'onu' : ctx.gender === 'erkek' ? 'onu' : 'bu kişiyi'} nereye çektiğini, hayat boyunca tekrar eden temaları yaz.
+Cinsiyete uygun hitap et ve analizi cinsiyetin perspektifinden zenginleştir.
 Ruh Güdüsü veya Kişilik hakkında yazmak KESİNLİKLE yasak.
 Eğer ${ctx.lifePathNumber} bir Üstat Sayı ise (11/22/33) bunun yüksek potansiyelini ve zorluklarını özellikle vurgula.
 ${ctx.lifePathNumber} sayısının tonuyla, 4 kısa paragraf, 150-170 kelime.`,
 
-    full: (ctx) => `${ctx.name} için PREMIUM TAM KADER ANALİZİ. Doğum Tarihi: ${ctx.birthDate}.
+    full: (ctx) => `${ctx.name} (Cinsiyet: ${ctx.gender || 'bilinmiyor'}) için PREMIUM TAM KADER ANALİZİ. Doğum Tarihi: ${ctx.birthDate}.
 
 SAYILAR:
 - Kader Yolu (Hayat Amacı): ${ctx.lifePathNumber}
@@ -158,6 +161,7 @@ ${(ctx.lifePathNumber === 11 || ctx.lifePathNumber === 22 || ctx.lifePathNumber 
 
 YAZI KURALLARI:
 - Türkçe. Vaaz yok. "Sen" diye hitap et.
+- Cinsiyete uygun hitap et ve cinsiyet perspektifini analize yansıt (${ctx.gender === 'kadın' ? 'kadın' : ctx.gender === 'erkek' ? 'erkek' : 'kişi'} perspektifi).
 - Başlık yok, madde işareti yok. Sadece akıcı düz paragraflar.
 - ${ctx.lifePathNumber} sayısının tonu hâkim — ton kılavuzuna bak.
 - Her paragraf bir öncekinden daha derine iner.
@@ -186,9 +190,13 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
     // API key artık /api/openai proxy'si tarafından server-side ekleniyor
 
     const system = context.system || 'pythagorean';
+    var genderLabel = '';
+    if (context.gender === 'female' || context.gender === 'kadın') genderLabel = 'kadın';
+    else if (context.gender === 'male' || context.gender === 'erkek') genderLabel = 'erkek';
     const numCtx = {
       name: context.name,
       birthDate: context.birthDate,
+      gender: genderLabel,
       lifePathNumber: calcLifePath(context.birthDate),
       expressionNumber: calcNameNumber(context.name, system),
       soulUrgeNumber: calcSoulUrge(context.name, system),
@@ -333,7 +341,7 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
               <p style="font-size:12px; opacity:0.6;">Bu derin okuma 20-30 saniye sürebilir</p>
             </div>`;
 
-          getAIAnalysis('full', 0, { name, birthDate: data.birthDate, system: systemName }).then(result => {
+          getAIAnalysis('full', 0, { name, birthDate: data.birthDate, gender: data.gender, system: systemName }).then(result => {
             if (result) {
               const paragraphs = result.split(/\n\n+/).filter(p => p.trim());
               const formatted = paragraphs.map((p, i) => {
@@ -396,7 +404,7 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
               </div>
             `;
 
-            getAIAnalysis(item.type, item.id, { name, birthDate: data.birthDate, system: systemName }).then(result => {
+            getAIAnalysis(item.type, item.id, { name, birthDate: data.birthDate, gender: data.gender, system: systemName }).then(result => {
               const wrapper = contentDiv.querySelector('.ai-content-wrapper');
               if (!wrapper) return;
               const loading = wrapper.querySelector('.acc-loading');
@@ -446,7 +454,7 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
     if (kisiName && window.profile) {
       try {
         const conn = await window.profile.getConnectionDetail(kisiName);
-        if (conn) data = { name: conn.fullName, birthDate: conn.birthDate };
+        if (conn) data = { name: conn.fullName, birthDate: conn.birthDate, gender: conn.gender };
       } catch(e) {}
     }
 

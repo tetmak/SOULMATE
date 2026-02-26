@@ -102,10 +102,12 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
     // Kullanıcı verilerini localStorage'dan al (data attribute'lardan daha güvenilir)
     var userName = 'Değerli ruh';
     var lifePathNumber = '7';
+    var userGender = '';
     try {
       var ud = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
       if (ud.name) userName = ud.name.split(' ')[0]; // sadece ilk isim
       if (ud.lifePath) lifePathNumber = String(ud.lifePath);
+      if (ud.gender) userGender = ud.gender === 'female' ? 'kadın' : (ud.gender === 'male' ? 'erkek' : '');
     } catch(e) {}
 
     // Fallback: DOM'dan kontrol et
@@ -120,6 +122,7 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
       dayNum: today.getDate(),
       lifePathNumber: lifePathNumber,
       userName: userName,
+      gender: userGender,
     };
   }
 
@@ -137,16 +140,17 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
     var insightEl = document.querySelector('p.text-white\\/90, p.leading-relaxed.text-base, .border-l-2 + p, .border-l-2.border-primary ~ p');
     if (!insightEl) insightEl = document.querySelector('.border-l-2');
 
+    var gTag = ctx.gender ? ' (Cinsiyet: ' + ctx.gender + ')' : '';
     if (affirmEl) {
       skeletonFill(affirmEl, askAI(
-        `${ctx.date} tarihi için, Titreşim ${vibNum} enerjisinde güçlü bir günlük afirmasyon yaz. 
-         Tırnak içinde, kişisel ve kozmik bağlantılı olsun. Maksimum 12 kelime.`
+        `${ctx.userName}${gTag} için ${ctx.date} tarihi, Titreşim ${vibNum} enerjisinde güçlü bir günlük afirmasyon yaz.
+         Tırnak içinde, kişisel ve kozmik bağlantılı olsun. Cinsiyete uygun hitap et. Maksimum 12 kelime.`
       ));
     }
     if (insightEl) {
       skeletonFill(insightEl, askAI(
-        `${ctx.date}, ${ctx.day} günü. Titreşim ${vibNum} için kişisel bir günlük rehberlik mesajı yaz.
-         Kozmik enerji, günün fırsatları ve nelere dikkat edilmesi gerektiğinden bahset.
+        `${ctx.userName}${gTag} için ${ctx.date}, ${ctx.day} günü. Titreşim ${vibNum} için kişisel bir günlük rehberlik mesajı yaz.
+         Kozmik enerji, günün fırsatları ve nelere dikkat edilmesi gerektiğinden bahset. Cinsiyete uygun dil kullan.
          2-3 cümle, mistik ve ilham verici tonda.`
       ));
     }
@@ -168,11 +172,12 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
     var descEls = document.querySelectorAll('p.text-white\\/70, p.text-white\\/80, p.text-white\\/60, p.leading-relaxed, p.font-light');
     descEls.forEach(function(el, i) {
       if (el.textContent.trim().length > 40 && !el.closest('nav') && !el.closest('header')) {
+        var gInfo = ctx.gender ? ' Kullanıcı: ' + ctx.gender + '.' : '';
         var prompts = [
-          `${num} sayısının kozmik anlamını ve bu günkü enerjisini açıkla. 2-3 cümle, derin ve mistik.`,
-          `${num} sayısını taşıyan kişinin bugün karşılaşacağı fırsatlar ve zorluklar nelerdir? 2 cümle.`,
-          `${num} sayısının ruhsal mesajı nedir? Kısa, çarpıcı, ilham verici. 1-2 cümle.`,
-          `${num} sayısı ve aşk, ilişkiler üzerindeki etkisi. 2 cümle, romantik ve kozmik tonda.`,
+          `${num} sayısının kozmik anlamını ve bu günkü enerjisini açıkla.${gInfo} 2-3 cümle, derin ve mistik.`,
+          `${num} sayısını taşıyan bir ${ctx.gender || 'kişi'}nin bugün karşılaşacağı fırsatlar ve zorluklar nelerdir? 2 cümle.`,
+          `${num} sayısının ruhsal mesajı nedir?${gInfo} Kısa, çarpıcı, ilham verici. 1-2 cümle.`,
+          `${num} sayısı ve aşk, ilişkiler üzerindeki etkisi. ${ctx.gender === 'kadın' ? 'Bir kadın' : ctx.gender === 'erkek' ? 'Bir erkek' : 'Bir kişi'} perspektifinden yaz. 2 cümle, romantik ve kozmik tonda.`,
         ];
         skeletonFill(el, askAI(prompts[i % prompts.length]));
       }
@@ -191,12 +196,13 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
     textEls.forEach(function(el) {
       if (el.textContent.trim().length > 50 && !el.closest('nav') && !el.closest('header') && !el.closest('[id*="overlay"]') && !el.closest('[id*="share"]') && count < 5) {
         count++;
+        var gCtx = ctx.gender ? ' (Cinsiyet: ' + ctx.gender + ')' : '';
         var prompts = [
-          `${name} ismi için Yaşam Yolu ${lifeNum} analizini yaz. Kişinin temel özellikleri ve misyonu. 2-3 cümle.`,
-          `Yaşam Yolu ${lifeNum} olan ${name} için bu sayının ruhsal anlamı ve güçlü yönleri nelerdir? 2 cümle.`,
-          `${name} ismindeki harflerin titreşiminin kişiliğe etkisi. 2 cümle, mistik ton.`,
-          `Yaşam Yolu ${lifeNum} için kariyer ve aşk rehberliği. 2 cümle.`,
-          `${lifeNum} sayısının evrensel enerjisi ve ${name} üzerindeki kozmik etkisi. 1-2 cümle.`,
+          `${name}${gCtx} ismi için Yaşam Yolu ${lifeNum} analizini yaz. Kişinin temel özellikleri ve misyonu. Cinsiyete uygun hitap et. 2-3 cümle.`,
+          `Yaşam Yolu ${lifeNum} olan ${name}${gCtx} için bu sayının ruhsal anlamı ve güçlü yönleri nelerdir? 2 cümle.`,
+          `${name} ismindeki harflerin titreşiminin kişiliğe etkisi.${gCtx} 2 cümle, mistik ton.`,
+          `Yaşam Yolu ${lifeNum} olan bir ${ctx.gender || 'kişi'} için kariyer ve aşk rehberliği. 2 cümle.`,
+          `${lifeNum} sayısının evrensel enerjisi ve ${name}${gCtx} üzerindeki kozmik etkisi. 1-2 cümle.`,
         ];
         skeletonFill(el, askAI(prompts[(count-1) % prompts.length]));
       }
@@ -280,12 +286,13 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
     textEls.forEach(function(el) {
       if (el.textContent.trim().length > 40 && !el.closest('nav') && !el.closest('header') && !el.closest('[id*="overlay"]') && count < 5) {
         count++;
+        var gCtx2 = ctx.gender ? ' (Cinsiyet: ' + ctx.gender + ')' : '';
         var prompts = [
-          `${name} için Yaşam Yolu ${lifeNum} kapsamlı ruh yolculuğu analizi. 3 cümle, kişisel ve ilham verici.`,
-          `Yaşam Yolu ${lifeNum} olan ${name}'in ruhsal misyonu ve bu dünyaya geliş amacı. 2 cümle.`,
-          `${name}'in güçlü yönleri ve doğal yetenekleri numeroloji perspektifinden. 2 cümle.`,
-          `${name} için 2025 yılı enerjisi ve fırsatları. 2 cümle.`,
-          `${name}'in ruh eşi ve ilişki enerjisi hakkında kozmik mesaj. 2 cümle.`,
+          `${name}${gCtx2} için Yaşam Yolu ${lifeNum} kapsamlı ruh yolculuğu analizi. Cinsiyete uygun hitap et. 3 cümle, kişisel ve ilham verici.`,
+          `Yaşam Yolu ${lifeNum} olan ${name}${gCtx2}'in ruhsal misyonu ve bu dünyaya geliş amacı. 2 cümle.`,
+          `${name}'in güçlü yönleri ve doğal yetenekleri numeroloji perspektifinden.${gCtx2} 2 cümle.`,
+          `${name}${gCtx2} için 2026 yılı enerjisi ve fırsatları. 2 cümle.`,
+          `${name}'in ruh eşi ve ilişki enerjisi hakkında kozmik mesaj. ${ctx.gender === 'kadın' ? 'Bir kadın' : ctx.gender === 'erkek' ? 'Bir erkek' : 'Bir kişi'} perspektifinden yaz. 2 cümle.`,
         ];
         skeletonFill(el, askAI(prompts[(count-1) % prompts.length]));
       }
