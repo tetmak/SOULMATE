@@ -376,20 +376,21 @@
                                 window.premium.showPaywall(check.reason, 'add_connection');
                                 return;
                             }
+                            // Arkadaşı saved_contacts'a kaydet (sadece arkadaş eklemede, ilk kayıtta DEĞİL)
+                            await window.profile.saveConnection({
+                                fullName: name.trim(),
+                                birthDate: dob,
+                                birthTime: tob,
+                                birthPlace: pob,
+                                gender: gender
+                            });
+                            // XP tracking (sadece arkadaş eklemede)
+                            if (window.gamification) { window.gamification.addXP('add_connection', 0); window.gamification.trackAction('add_connection'); }
                         }
 
                         // Aktif analiz (her seferinde güncellenir — profil etkilenmez)
                         localStorage.setItem('numerael_active_analysis', JSON.stringify(personData));
 
-                        await window.profile.saveConnection({
-                            fullName: name.trim(),
-                            birthDate: dob,
-                            birthTime: tob,
-                            birthPlace: pob,
-                            gender: gender
-                        });
-                        // XP tracking
-                        if (window.gamification) { window.gamification.addXP('add_connection', 0); window.gamification.trackAction('add_connection'); }
                         window.location.href = 'cosmic_calculation_loading.html';
                     } catch (e) {
                         console.error('Kayıt Hatası:', e);
