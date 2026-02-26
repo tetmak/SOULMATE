@@ -275,13 +275,10 @@
         // Calculate Button Logic
         setTimeout(async function () {
 
-            // Kullanıcının kendi profili yoksa Supabase'den çek ve localStorage'a kaydet
+            // Her zaman Supabase'den profil çek (tek doğru kaynak)
             try {
-                var localCheck = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
-                var hasProfile = localCheck && localCheck.name && localCheck.birthDate;
-
-                if (!hasProfile) {
-                    // Profil henüz yok — Supabase'den çekmeyi dene
+                var hasProfile = false;
+                try {
                     var sess = await window.auth.getSession();
                     if (sess && sess.user && window.supabaseClient) {
                         var { data: prof, error: profErr } = await window.supabaseClient
@@ -296,12 +293,18 @@
                                 birthDate: prof.birth_date,
                                 birthTime: prof.birth_time || '',
                                 birthPlace: prof.birth_place || '',
-                                gender: prof.gender || 'male',
+                                gender: prof.gender || 'unknown',
                                 avatarUrl: prof.avatar_url || ''
                             }));
                             hasProfile = true;
                         }
                     }
+                } catch(supErr) {
+                    // Supabase'e ulaşılamazsa localStorage fallback
+                    try {
+                        var localCheck = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
+                        if (localCheck && localCheck.name && localCheck.birthDate) hasProfile = true;
+                    } catch(e) {}
                 }
 
                 // İlk kayıt (profil yok) → signup'tan gelen ismi doldur
