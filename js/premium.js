@@ -153,9 +153,33 @@
     }
 
     async function checkPremiumStatus() {
-        if (isPremium()) return true;
+        if (EVERYONE_IS_PREMIUM) return true;
 
-        // platformInit bitmesini bekle (RC veya Paddle hazır olsun)
+        // HER ZAMAN Supabase'den kontrol et (tek doğru kaynak)
+        try {
+            var session = await window.auth.getSession();
+            if (!session || !session.user) return isPremium(); // offline → cache'e güven
+            var res = await window.supabaseClient.from('subscriptions').select('*').eq('user_id', session.user.id).in('status', ['active', 'cancelled']).maybeSingle();
+            if (res.data) {
+                var isActive = res.data.status === 'active' || (res.data.expires_at && new Date(res.data.expires_at) > new Date());
+                if (isActive) {
+                    localStorage.setItem('numerael_premium', JSON.stringify({ active: true, plan: res.data.plan || 'monthly', expires_at: res.data.expires_at, source: 'supabase', cached_at: new Date().toISOString() }));
+                    return true;
+                } else {
+                    // Supabase'de aktif abonelik yok — cache'i temizle
+                    localStorage.removeItem('numerael_premium');
+                }
+            } else {
+                // Supabase'de kayıt yok — cache'i temizle
+                localStorage.removeItem('numerael_premium');
+            }
+        } catch(e) {
+            console.warn('[Premium] Supabase kontrol hatası (offline?):', e.message);
+            // Ağ hatası — cache'e güven
+            return isPremium();
+        }
+
+        // platformInit bitmesini bekle (PlayBilling hazır olsun)
         try { await platformReady; } catch(e) {}
 
         // Native platform → PlayBilling'ten kontrol et
@@ -164,33 +188,73 @@
                 var rcPremium = await window.billing.checkEntitlements();
                 if (rcPremium) return true;
             } catch(e) {
-                console.warn('[Premium] Billingentitlement check hatası:', e);
+                console.warn('[Premium] Billing entitlement check hatası:', e);
             }
         }
 
-        // Supabase'den kontrol et (tüm platformlar)
-        try {
-            var session = await window.auth.getSession();
-            if (!session || !session.user) return false;
-            var res = await window.supabaseClient.from('subscriptions').select('*').eq('user_id', session.user.id).in('status', ['active', 'cancelled']).maybeSingle();
-            if (res.data) {
-                var isActive = res.data.status === 'active' || (res.data.expires_at && new Date(res.data.expires_at) > new Date());
-                if (isActive) {
-                    localStorage.setItem('numerael_premium', JSON.stringify({ active: true, plan: res.data.plan || 'monthly', expires_at: res.data.expires_at, source: 'supabase', cached_at: new Date().toISOString() }));
-                    return true;
-                }
-            }
-        } catch(e) {}
         return false;
     }
 
-    // ─── KULLANIM LİMİTLERİ ─────────────────────────────────
+    // ─── KULLANIM LİMİTLERİ (Supabase + localStorage cache) ─────
     function getUsageKey(f) { return 'numerael_usage_' + f + '_' + new Date().toISOString().slice(0, 7); }
     function getDailyUsageKey(f) { return 'numerael_usage_' + f + '_' + new Date().toISOString().slice(0, 10); }
     function getUsageCount(f) { try { return parseInt(localStorage.getItem(getUsageKey(f)) || '0'); } catch(e) { return 0; } }
     function getDailyUsageCount(f) { try { return parseInt(localStorage.getItem(getDailyUsageKey(f)) || '0'); } catch(e) { return 0; } }
-    function incrementUsage(f) { var c = getUsageCount(f) + 1; try { localStorage.setItem(getUsageKey(f), c.toString()); } catch(e) {} return c; }
-    function incrementDailyUsage(f) { var c = getDailyUsageCount(f) + 1; try { localStorage.setItem(getDailyUsageKey(f), c.toString()); } catch(e) {} return c; }
+
+    function incrementUsage(f) {
+        var c = getUsageCount(f) + 1;
+        try { localStorage.setItem(getUsageKey(f), c.toString()); } catch(e) {}
+        // Supabase'e de kaydet
+        _syncUsageToSupabase(f, new Date().toISOString().slice(0, 7), c);
+        return c;
+    }
+    function incrementDailyUsage(f) {
+        var c = getDailyUsageCount(f) + 1;
+        try { localStorage.setItem(getDailyUsageKey(f), c.toString()); } catch(e) {}
+        // Supabase'e de kaydet
+        _syncUsageToSupabase(f, new Date().toISOString().slice(0, 10), c);
+        return c;
+    }
+
+    // Supabase'e kullanım sayacı senkronize et
+    async function _syncUsageToSupabase(feature, period, count) {
+        try {
+            var session = await window.auth.getSession();
+            if (!session || !session.user || !window.supabaseClient) return;
+            await window.supabaseClient.from('usage_counters').upsert({
+                user_id: session.user.id,
+                feature: feature,
+                period: period,
+                count: count,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'user_id,feature,period' });
+        } catch(e) { /* sessiz hata — offline olabilir */ }
+    }
+
+    // Sayfa yüklendiğinde Supabase'den güncel sayaçları çek
+    async function _loadUsageFromSupabase() {
+        try {
+            var session = await window.auth.getSession();
+            if (!session || !session.user || !window.supabaseClient) return;
+            var monthPeriod = new Date().toISOString().slice(0, 7);
+            var dayPeriod = new Date().toISOString().slice(0, 10);
+            var res = await window.supabaseClient.from('usage_counters')
+                .select('feature, period, count')
+                .eq('user_id', session.user.id)
+                .in('period', [monthPeriod, dayPeriod]);
+            if (res.data) {
+                res.data.forEach(function(row) {
+                    var key = 'numerael_usage_' + row.feature + '_' + row.period;
+                    var localCount = parseInt(localStorage.getItem(key) || '0');
+                    // Supabase'deki sayaç daha yüksekse güncelle
+                    if (row.count > localCount) {
+                        try { localStorage.setItem(key, row.count.toString()); } catch(e) {}
+                    }
+                });
+                console.log('[Premium] Kullanım sayaçları Supabase\'den yüklendi');
+            }
+        } catch(e) { /* sessiz hata */ }
+    }
 
     // ─── FEATURE GATE ────────────────────────────────────────
     function canUseFeature(feature) {
@@ -495,6 +559,11 @@
     // Platform bazlı init: native → PlayBilling, web → Paddle
     // platformReady diğer modüller tarafından await edilebilir
     var platformReady = (async function platformInit() {
+        // Supabase'den kullanım sayaçlarını yükle (auth hazır olduktan sonra)
+        if (window.auth && window.auth.whenReady) {
+            window.auth.whenReady().then(function() { _loadUsageFromSupabase(); });
+        }
+
         // ⚠️ GEÇICI: Herkes premium — ödeme platformu init atla
         if (EVERYONE_IS_PREMIUM) {
             console.log('[Premium] EVERYONE_IS_PREMIUM aktif — platform init atlandı');
