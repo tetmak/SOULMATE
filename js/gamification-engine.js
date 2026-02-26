@@ -151,7 +151,7 @@
         return mon.toISOString().slice(0, 10);
     }
 
-    // Uygulama açılınca Supabase'den state çek (varsa)
+    // Uygulama açılınca Supabase'den state çek — HER ZAMAN Supabase kaynak
     async function loadFromSupabase() {
         if (!window.supabaseClient || !window.auth) return;
         try {
@@ -161,22 +161,32 @@
                 .from('user_gamification')
                 .select('*')
                 .eq('user_id', session.user.id)
-                .single();
+                .maybeSingle();
 
-            if (res.data && res.data.nbp > 0) {
+            if (res.data) {
                 var s = getState();
-                // Supabase'deki veri daha yüksekse güncelle
-                if (res.data.nbp > s.nbp) {
-                    s.nbp = res.data.nbp;
-                    s.total_xp = res.data.total_xp;
-                    s.max_streak = res.data.max_streak;
-                    s.reveals = res.data.reveals_count;
-                    s.unlocked_badges = res.data.unlocked_badges || [];
-                    try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e) {}
-                    console.log('[Gamification] State loaded from Supabase, NBP:', s.nbp);
+                // Supabase'den gelen veri HER ZAMAN güncellenir (tek doğru kaynak)
+                s.nbp = Math.max(res.data.nbp || 0, s.nbp);
+                s.total_xp = Math.max(res.data.total_xp || 0, s.total_xp);
+                s.current_streak = res.data.current_streak || s.current_streak;
+                s.max_streak = Math.max(res.data.max_streak || 0, s.max_streak);
+                s.total_analyses = Math.max(res.data.total_analyses || 0, s.total_analyses);
+                s.connections = Math.max(res.data.connections_count || 0, s.connections);
+                s.reveals = Math.max(res.data.reveals_count || 0, s.reveals);
+                s.premium_days_earned = Math.max(res.data.premium_days_earned || 0, s.premium_days_earned);
+                s.bonus_reveals = Math.max(res.data.bonus_reveals || 0, s.bonus_reveals);
+                if (res.data.unlocked_badges && res.data.unlocked_badges.length > 0) {
+                    // Her iki kaynaktaki rozetleri birleştir
+                    var allBadges = (s.unlocked_badges || []).concat(res.data.unlocked_badges);
+                    s.unlocked_badges = allBadges.filter(function(v, i, a) { return a.indexOf(v) === i; });
                 }
+                if (res.data.equipped_frame) s.equipped_frame = res.data.equipped_frame;
+                try { localStorage.setItem(STATE_KEY, JSON.stringify(s)); } catch(e) {}
+                console.log('[Gamification] Supabase\'den yüklendi — NBP:', s.nbp, 'XP:', s.total_xp);
             }
-        } catch(e) {}
+        } catch(e) {
+            console.warn('[Gamification] Supabase yükleme hatası (offline?):', e.message);
+        }
     }
 
     function createDefaultState() {
@@ -523,13 +533,16 @@
     // ═══════════════════════════════════════════════════════════
     // SAYFA YÜKLENME
     // ═══════════════════════════════════════════════════════════
-    function onPageLoad() {
-        // Günlük giriş XP
+    async function onPageLoad() {
+        // Önce Supabase'den güncel state çek (tek doğru kaynak)
+        try {
+            if (window.auth && window.auth.whenReady) await window.auth.whenReady();
+            await loadFromSupabase();
+        } catch(e) {}
+        // Sonra günlük giriş XP
         addXP('app_open', 0);
         // Görevleri oluştur
         getDailyQuests();
-        // Supabase'den state çek
-        loadFromSupabase();
         // Bekleyen ödülleri göster
         setTimeout(showPendingRewards, 800);
     }

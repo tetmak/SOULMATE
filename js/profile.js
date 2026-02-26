@@ -45,54 +45,127 @@ const profile = {
         return sum;
     },
 
-    // ─── CONNECTIONS (Other People) ────────────────────────────────
+    // ─── CONNECTIONS (Saved Contacts — Supabase) ──────────────────
 
-    // Helper to get storage key based on current user
-    async getStorageKey() {
-        const session = await window.auth.getSession();
-        const userId = session ? session.user.id : 'guest';
-        return `numerael_connections_${userId}`;
+    // Helper: get userId
+    async _getUserId() {
+        var session = await window.auth.getSession();
+        return session && session.user ? session.user.id : null;
     },
 
-    // Save a new connection (another person)
-    async saveConnection(data) {
-        const key = await this.getStorageKey();
-        let connections = JSON.parse(localStorage.getItem(key) || '[]');
+    // Helper: localStorage key (fallback/cache)
+    async getStorageKey() {
+        var userId = await this._getUserId();
+        return 'numerael_connections_' + (userId || 'guest');
+    },
 
-        // Veriyi zenginleştir
-        const newConn = {
+    // Save a new connection (another person) — Supabase + localStorage cache
+    async saveConnection(data) {
+        var userId = await this._getUserId();
+        var lp = this.calculateLifePathNumber(data.birthDate);
+        var newConn = {
             id: Date.now().toString(),
-            ...data,
-            lifePath: this.calculateLifePathNumber(data.birthDate),
+            fullName: data.fullName,
+            birthDate: data.birthDate,
+            gender: data.gender || 'unknown',
+            lifePath: lp,
             createdAt: new Date().toISOString()
         };
 
+        // Supabase'e kaydet
+        if (userId && window.supabaseClient) {
+            try {
+                var res = await window.supabaseClient.from('saved_contacts').insert({
+                    user_id: userId,
+                    full_name: data.fullName,
+                    birth_date: data.birthDate || null,
+                    gender: data.gender || 'unknown',
+                    life_path: lp
+                }).select();
+                if (res.data && res.data[0]) {
+                    newConn.id = res.data[0].id;
+                }
+            } catch(e) { console.warn('[Profile] Supabase contact kaydetme hatası:', e.message); }
+        }
+
+        // localStorage cache güncelle
+        var key = await this.getStorageKey();
+        var connections = [];
+        try { connections = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
         connections.push(newConn);
-        localStorage.setItem(key, JSON.stringify(connections));
+        try { localStorage.setItem(key, JSON.stringify(connections)); } catch(e) {}
         return newConn;
     },
 
-    // Get all connections
+    // Get all connections — Supabase first, localStorage fallback
     async getConnections() {
-        const key = await this.getStorageKey();
-        return JSON.parse(localStorage.getItem(key) || '[]');
+        var userId = await this._getUserId();
+
+        // Supabase'den çek (tek doğru kaynak)
+        if (userId && window.supabaseClient) {
+            try {
+                var res = await window.supabaseClient.from('saved_contacts')
+                    .select('*')
+                    .eq('user_id', userId)
+                    .order('created_at', { ascending: true });
+                if (res.data) {
+                    var contacts = res.data.map(function(c) {
+                        return {
+                            id: c.id,
+                            fullName: c.full_name,
+                            birthDate: c.birth_date,
+                            gender: c.gender || 'unknown',
+                            lifePath: c.life_path,
+                            createdAt: c.created_at
+                        };
+                    });
+                    // localStorage cache güncelle
+                    var key = 'numerael_connections_' + userId;
+                    try { localStorage.setItem(key, JSON.stringify(contacts)); } catch(e) {}
+                    return contacts;
+                }
+            } catch(e) {
+                console.warn('[Profile] Supabase contacts çekme hatası (offline?):', e.message);
+            }
+        }
+
+        // Fallback: localStorage cache
+        var key = await this.getStorageKey();
+        try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) { return []; }
     },
 
     // Get connection by name (slugified or simple match)
     async getConnectionDetail(name) {
-        const connections = await this.getConnections();
-        return connections.find(c => c.fullName.toLowerCase().includes(name.toLowerCase())) || null;
+        var connections = await this.getConnections();
+        var lowerName = name.toLowerCase();
+        for (var i = 0; i < connections.length; i++) {
+            if (connections[i].fullName && connections[i].fullName.toLowerCase().indexOf(lowerName) !== -1) {
+                return connections[i];
+            }
+        }
+        return null;
     },
 
-    // Delete connection by name
+    // Delete connection by name — Supabase + localStorage
     async deleteConnection(fullName) {
-        const key = await this.getStorageKey();
-        let connections = JSON.parse(localStorage.getItem(key) || '[]');
-        
-        // Filter out the connection with matching name
-        connections = connections.filter(c => c.fullName !== fullName);
-        
-        localStorage.setItem(key, JSON.stringify(connections));
+        var userId = await this._getUserId();
+
+        // Supabase'den sil
+        if (userId && window.supabaseClient) {
+            try {
+                await window.supabaseClient.from('saved_contacts')
+                    .delete()
+                    .eq('user_id', userId)
+                    .eq('full_name', fullName);
+            } catch(e) { console.warn('[Profile] Supabase contact silme hatası:', e.message); }
+        }
+
+        // localStorage cache güncelle
+        var key = await this.getStorageKey();
+        var connections = [];
+        try { connections = JSON.parse(localStorage.getItem(key) || '[]'); } catch(e) {}
+        connections = connections.filter(function(c) { return c.fullName !== fullName; });
+        try { localStorage.setItem(key, JSON.stringify(connections)); } catch(e) {}
         return true;
     },
 
