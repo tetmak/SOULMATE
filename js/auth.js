@@ -60,9 +60,31 @@ var auth = {
         var session = null;
         try {
             session = await this.getSession();
-            // Session varsa güveniyoruz — getUser() ile doğrulama YAPMIYORUZ
-            // Supabase SDK zaten token'ı otomatik refresh ediyor
-            // getUser() ağ hatalarında session'ı öldürüyordu — bu mobilde sürekli sorun çıkarıyordu
+            // Session varsa sunucudan doğrula — silinmiş kullanıcıları yakala
+            // Ama ağ hatalarında session'ı öldürme (mobilde offline olunabilir)
+            if (session) {
+                try {
+                    var userRes = await window.supabaseClient.auth.getUser();
+                    if (userRes.error) {
+                        var errMsg = (userRes.error.message || '').toLowerCase();
+                        // Auth hatası (user deleted, token invalid) → session'ı temizle
+                        // Ağ hatası (fetch failed, timeout) → session'a güven
+                        if (errMsg.indexOf('fetch') === -1 && errMsg.indexOf('network') === -1 && errMsg.indexOf('timeout') === -1) {
+                            console.warn('[Auth] Geçersiz session — kullanıcı silinmiş olabilir:', userRes.error.message);
+                            try { await window.supabaseClient.auth.signOut(); } catch(so) {}
+                            localStorage.removeItem('numerael-auth-token');
+                            localStorage.removeItem('numerael_user_data');
+                            localStorage.removeItem('numerael_premium');
+                            localStorage.removeItem('numerael_gamification');
+                            localStorage.removeItem('numerael_discovery_opted_in');
+                            session = null;
+                        }
+                    }
+                } catch(ue) {
+                    // getUser() çağrısı tamamen başarısız → ağ hatası, session'a güven
+                    console.warn('[Auth] getUser ağ hatası, session korunuyor:', ue.message);
+                }
+            }
         } catch(e) {
             session = null;
         }
