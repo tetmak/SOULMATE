@@ -156,8 +156,23 @@
     document.getElementById('btn-sub').addEventListener('click',goCheckout);
     document.getElementById('btn-sub2').addEventListener('click',goCheckout);
 
-    // Already premium?
-    if(window.premium&&window.premium.isPremium()){document.getElementById('sec-sales').style.display='none';document.getElementById('sec-active').style.display='block';try{var c=JSON.parse(localStorage.getItem('numerael_premium')||'{}');document.getElementById('plan-info').textContent=(c.plan==='yearly'?'Yıllık Plan':'Aylık Plan')+' · Aktif';if(c.expires_at){document.getElementById('exp-info').textContent='Yenileme: '+new Date(c.expires_at).toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});}}catch(e){}}
+    // Already premium? — Supabase'den güncel durum al
+    (async function() {
+        try {
+            if (window.auth && window.auth.whenReady) await window.auth.whenReady();
+            if (window.premium && window.premium.isPremium()) {
+                document.getElementById('sec-sales').style.display = 'none';
+                document.getElementById('sec-active').style.display = 'block';
+                try {
+                    var c = JSON.parse(localStorage.getItem('numerael_premium') || '{}');
+                    document.getElementById('plan-info').textContent = (c.plan === 'yearly' ? 'Yıllık Plan' : 'Aylık Plan') + ' · Aktif';
+                    if (c.expires_at) {
+                        document.getElementById('exp-info').textContent = 'Yenileme: ' + new Date(c.expires_at).toLocaleDateString('tr-TR', {day: 'numeric', month: 'long', year: 'numeric'});
+                    }
+                } catch(e) {}
+            }
+        } catch(e) { console.warn('[PremiumStore] Premium durum kontrol hatası:', e); }
+    })();
 })();
 </script>
 <script src="js/notification-engine.js"></script>

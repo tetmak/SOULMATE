@@ -227,40 +227,30 @@
                         if (isLoginMode) {
                             await window.auth.signIn(email, password);
                             
-                            // 1. Önce localStorage kontrol et
+                            // Her zaman Supabase'den profil çek (localStorage cache eski olabilir)
                             var hasProfile = false;
                             try {
-                                var localData = JSON.parse(localStorage.getItem('numerael_user_data'));
-                                if (localData && localData.name && localData.birthDate) {
-                                    hasProfile = true;
-                                    console.log('[Login] localStorage profil bulundu');
-                                }
-                            } catch(e) {}
-
-                            // 2. localStorage'da yoksa Supabase'den çek
-                            if (!hasProfile) {
-                                try {
-                                    var sess = await window.auth.getSession();
-                                    if (sess && sess.user && window.supabaseClient) {
-                                        var { data: prof, error: profError } = await window.supabaseClient
-                                            .from('profiles')
-                                            .select('*')
-                                            .eq('id', sess.user.id)
-                                            .single();
-                                        if (!profError && prof && (prof.full_name || prof.name) && prof.birth_date) {
-                                            localStorage.setItem('numerael_user_data', JSON.stringify({
-                                                name: prof.full_name || prof.name,
-                                                birthDate: prof.birth_date,
-                                                birthTime: prof.birth_time || '',
-                                                birthPlace: prof.birth_place || '',
-                                                gender: prof.gender || 'male'
-                                            }));
-                                            hasProfile = true;
-                                            console.log('[Login] Supabase profil bulundu, localStorage güncellendi');
-                                        }
+                                var sess = await window.auth.getSession();
+                                if (sess && sess.user && window.supabaseClient) {
+                                    var { data: prof, error: profError } = await window.supabaseClient
+                                        .from('profiles')
+                                        .select('*')
+                                        .eq('id', sess.user.id)
+                                        .single();
+                                    if (!profError && prof && (prof.full_name || prof.name) && prof.birth_date) {
+                                        localStorage.setItem('numerael_user_data', JSON.stringify({
+                                            name: prof.full_name || prof.name,
+                                            birthDate: prof.birth_date,
+                                            birthTime: prof.birth_time || '',
+                                            birthPlace: prof.birth_place || '',
+                                            gender: prof.gender || 'unknown',
+                                            avatarUrl: prof.avatar_url || ''
+                                        }));
+                                        hasProfile = true;
+                                        console.log('[Login] Supabase profil bulundu, localStorage güncellendi');
                                     }
-                                } catch(profErr) { console.warn('[Login] Profil çekme hatası:', profErr); }
-                            }
+                                }
+                            } catch(profErr) { console.warn('[Login] Profil çekme hatası:', profErr); }
 
                             if (hasProfile) {
                                 window.location.href = 'mystic_numerology_home_1.html';
