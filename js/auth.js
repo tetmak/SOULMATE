@@ -95,35 +95,31 @@ var auth = {
             return;
         }
 
-        // Session var ama localStorage boş — Supabase'den doldur
+        // Session varsa HER ZAMAN Supabase'den güncel profil verisi çek
+        // (mobil app — localStorage yerine Supabase tek doğru kaynak)
         if (session && publicPages.indexOf(currentPage) === -1) {
-            var existingData = null;
-            try { existingData = JSON.parse(localStorage.getItem('numerael_user_data')); } catch(e) {}
-            
-            if (!existingData || !existingData.name || !existingData.birthDate) {
-                try {
-                    var userId = session.user ? session.user.id : null;
-                    if (userId && window.supabaseClient) {
-                        var profResult = await window.supabaseClient
-                            .from('profiles')
-                            .select('*')
-                            .eq('id', userId)
-                            .single();
-                        var prof = profResult.data;
-                        if (prof && (prof.full_name || prof.name) && prof.birth_date) {
-                            localStorage.setItem('numerael_user_data', JSON.stringify({
-                                name: prof.full_name || prof.name,
-                                birthDate: prof.birth_date,
-                                birthTime: prof.birth_time || '',
-                                birthPlace: prof.birth_place || '',
-                                gender: prof.gender || 'unknown',
-                                avatarUrl: prof.avatar_url || ''
-                            }));
-                            console.log('[Auth] Supabase profili localStorage\'a yazıldı');
-                        }
+            try {
+                var userId = session.user ? session.user.id : null;
+                if (userId && window.supabaseClient) {
+                    var profResult = await window.supabaseClient
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', userId)
+                        .single();
+                    var prof = profResult.data;
+                    if (prof && (prof.full_name || prof.name) && prof.birth_date) {
+                        localStorage.setItem('numerael_user_data', JSON.stringify({
+                            name: prof.full_name || prof.name,
+                            birthDate: prof.birth_date,
+                            birthTime: prof.birth_time || '',
+                            birthPlace: prof.birth_place || '',
+                            gender: prof.gender || 'unknown',
+                            avatarUrl: prof.avatar_url || ''
+                        }));
+                        console.log('[Auth] Supabase profili localStorage\'a yazıldı (güncel)');
                     }
-                } catch(hydErr) { console.warn('[Auth] Profil hydrate hatası:', hydErr); }
-            }
+                }
+            } catch(hydErr) { console.warn('[Auth] Profil hydrate hatası:', hydErr); }
         }
 
         // Session yok + korumalı sayfadaysa → login'e yönlendir
@@ -158,8 +154,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Sayfa ilk yüklendiğinde session recover oldu — yönlendirme yap
                 done = true;
                 try { sub.data.subscription.unsubscribe(); } catch(e) {}
-                _authResolve();
-                auth.checkSession();
+                // checkSession tamamlandıktan SONRA authReady resolve et
+                // Böylece Supabase'den güncel veri localStorage'a yazılmış olur
+                auth.checkSession().then(function() {
+                    _authResolve();
+                }).catch(function() {
+                    _authResolve();
+                });
             } else if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
                 // Aktif login/signup — sayfanın kendi kodu yönlendirmeyi yapacak
                 done = true;
@@ -173,12 +174,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!done) {
                 done = true;
                 try { sub.data.subscription.unsubscribe(); } catch(e) {}
-                _authResolve();
-                auth.checkSession();
+                auth.checkSession().then(function() {
+                    _authResolve();
+                }).catch(function() {
+                    _authResolve();
+                });
             }
         }, 3000);
     } else {
-        _authResolve();
-        auth.checkSession();
+        auth.checkSession().then(function() {
+            _authResolve();
+        }).catch(function() {
+            _authResolve();
+        });
     }
 });

@@ -444,8 +444,9 @@
       }
     }
 
-    // ═══ BAŞLANGIÇ ═══
-    window.addEventListener('load', function() {
+    // ═══ BAŞLANGIÇ ═══ (auth hazır olduktan sonra — Supabase verisi)
+    window.addEventListener('load', async function() {
+      if (window.auth && window.auth.whenReady) { await window.auth.whenReady(); }
       showTodayAffirmation();
       if (window.gamification) { window.gamification.addXP('daily_reading', 0); window.gamification.trackAction('daily_reading'); }
     });

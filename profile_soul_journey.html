@@ -207,7 +207,7 @@
 </div>
 
 <script>
-(function() {
+(async function() {
 
     // ─── Pisagor Tablosu ───────────────────────────────────────
     var TABLE = {
@@ -256,10 +256,44 @@
     var CM = {'1-1':75,'1-2':85,'1-3':90,'1-4':65,'1-5':80,'1-6':70,'1-7':75,'1-8':85,'1-9':80,'2-2':80,'2-3':85,'2-4':90,'2-5':65,'2-6':95,'2-7':70,'2-8':60,'2-9':90,'3-3':75,'3-4':65,'3-5':90,'3-6':80,'3-7':70,'3-8':75,'3-9':85,'4-4':85,'4-5':60,'4-6':90,'4-7':80,'4-8':95,'4-9':70,'5-5':70,'5-6':75,'5-7':80,'5-8':65,'5-9':85,'6-6':85,'6-7':75,'6-8':80,'6-9':95,'7-7':75,'7-8':70,'7-9':85,'8-8':70,'8-9':75,'9-9':95};
     function compatScore(a,b){var k=a<=b?a+'-'+b:b+'-'+a;return CM[k]||75;}
 
-    // ─── Veri ─────────────────────────────────────────────────
+    // ─── Veri (Supabase'den çek) ──────────────────────────────
+    // Auth hazır olana kadar bekle
+    await auth.whenReady();
+    var session = null;
+    try { session = await window.auth.getSession(); } catch(e) {}
+    if (!session || !session.user) { window.location.href = 'mystic_sign_up_screen.html'; return; }
+    var userId = session.user.id;
+
+    // Supabase profiles tablosundan tüm veriyi çek
     var ud = null;
-    try { ud = JSON.parse(localStorage.getItem('numerael_user_data')||'null'); } catch(e){}
-    if (!ud || !ud.name) { window.location.href='data-ready_birth_form.html'; return; }
+    try {
+        var profRes = await window.supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('id', userId)
+            .single();
+        if (profRes.data) {
+            ud = {
+                name: profRes.data.full_name || profRes.data.name || '',
+                birthDate: profRes.data.birth_date || '',
+                birthTime: profRes.data.birth_time || '',
+                birthPlace: profRes.data.birth_place || '',
+                gender: profRes.data.gender || 'unknown',
+                avatarUrl: profRes.data.avatar_url || ''
+            };
+            // localStorage'ı cache olarak güncelle (offline destek)
+            try { localStorage.setItem('numerael_user_data', JSON.stringify(ud)); } catch(ce) {}
+        }
+    } catch(e) {
+        console.warn('[Profile] Supabase profil çekme hatası, localStorage fallback:', e.message);
+    }
+
+    // Fallback: Supabase'den çekemediyse (ağ hatası) localStorage'dan dene
+    if (!ud || !ud.name) {
+        try { ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); } catch(e) {}
+    }
+
+    if (!ud || !ud.name) { window.location.href = 'data-ready_birth_form.html'; return; }
 
     var name=ud.name, bd=ud.birthDate||'';
     var lp=calcLP(bd), exp=calcExpression(name), soul=calcSoul(name), pers=calcPers(name);
@@ -378,7 +412,20 @@
 
     // ─── Cosmic Match Keşfedilebilirlik Toggle ────────────────
     var toggleEl = document.getElementById('toggle-discoverable');
-    var isOptedIn = localStorage.getItem('numerael_discovery_opted_in') === 'true';
+    // Supabase'den discovery opt-in durumunu kontrol et
+    var isOptedIn = false;
+    try {
+        var dpRes = await window.supabaseClient
+            .from('discovery_profiles')
+            .select('user_id')
+            .eq('user_id', userId)
+            .maybeSingle();
+        isOptedIn = !!(dpRes.data);
+        localStorage.setItem('numerael_discovery_opted_in', isOptedIn ? 'true' : 'false');
+    } catch(e) {
+        // Ağ hatası — localStorage fallback
+        isOptedIn = localStorage.getItem('numerael_discovery_opted_in') === 'true';
+    }
     toggleEl.checked = isOptedIn;
 
     toggleEl.addEventListener('change', async function() {
