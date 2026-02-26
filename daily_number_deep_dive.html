@@ -846,8 +846,11 @@ function updateContent() {
   if (mantraEl) mantraEl.textContent = '"' + content.mantra + '"';
 }
 
-// Sayfa yüklendiğinde çalıştır
-window.addEventListener('load', updateContent);
+// Sayfa yüklendiğinde çalıştır (auth hazır olduktan sonra — Supabase verisi)
+window.addEventListener('load', async function() {
+  if (window.auth && window.auth.whenReady) { await window.auth.whenReady(); }
+  updateContent();
+});
 </script>
 
 <script src="js/notification-engine.js"></script>

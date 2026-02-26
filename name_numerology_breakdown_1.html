@@ -499,7 +499,9 @@
         }
 
         // ─── Sayfa Başlatıcı ──────────────────────────────────────────
-        window.addEventListener('DOMContentLoaded', function () {
+        window.addEventListener('DOMContentLoaded', async function () {
+            // Auth hazır olana kadar bekle (Supabase'den güncel veri gelsin)
+            if (window.auth && window.auth.whenReady) { await window.auth.whenReady(); }
             // 1. Veri Hazırlığı
             var params = new URLSearchParams(window.location.search);
             var userData = {};
@@ -797,6 +799,7 @@
 
         // ─── Kullanıcı verisi — birden fazla kaynaktan çek ──────────
         window.addEventListener('load', async function() {
+            if (window.auth && window.auth.whenReady) { await window.auth.whenReady(); }
             var params = new URLSearchParams(window.location.search);
             var kisiName = params.get('kisi');
 

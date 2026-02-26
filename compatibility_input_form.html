@@ -218,9 +218,12 @@ function setDateValue(prefix, dateStr) {
 
 // ─── Form: Ön doldurma + kayıt ───────────────────────────────
 (async function() {
+  // Auth hazır olana kadar bekle (Supabase'den güncel veri gelsin)
+  if (window.auth && window.auth.whenReady) { await window.auth.whenReady(); }
+
   var p1Name = '', p1BirthDate = '';
-  
-  // 1. numerael_user_data'dan al
+
+  // 1. numerael_user_data'dan al (auth.checkSession Supabase'den güncellemiş olacak)
   try {
     var ud = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
     p1Name = ud.name || '';

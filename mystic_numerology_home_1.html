@@ -358,7 +358,10 @@
 
     <!-- ═══ GÜNLÜK KİŞİSEL VİBRASYON MOTORU ═══ -->
     <script>
-    (function() {
+    (async function() {
+        // Auth hazır olana kadar bekle (Supabase'den güncel veri gelsin)
+        if (window.auth && window.auth.whenReady) { await window.auth.whenReady(); }
+
         // ─── Numeroloji Yardımcıları ──────────────────────────
         function reduce(n) {
             if (n===11||n===22||n===33) return n;
