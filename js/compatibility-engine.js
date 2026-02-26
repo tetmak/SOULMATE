@@ -140,13 +140,21 @@ YAZI KURALLARI:
 - Somut, keskin, gerçekçi.
 - Ton: İki sayının ortalamasına göre: 1-5 arası enerjik/dinamik, 6-9 arası derin/mistik, Üstat sayı varsa ağır/vizyon yüklü.`;
 
+  // Cinsiyet helper — prompt'lara eklenecek context
+  function genderCtx(ctx) {
+    var g1 = ctx.p1.gender === 'female' ? 'kadın' : ctx.p1.gender === 'male' ? 'erkek' : '';
+    var g2 = ctx.p2.gender === 'female' ? 'kadın' : ctx.p2.gender === 'male' ? 'erkek' : '';
+    if (!g1 && !g2) return '';
+    return '\nCinsiyetler: ' + ctx.p1.name + (g1 ? ' (' + g1 + ')' : '') + ', ' + ctx.p2.name + (g2 ? ' (' + g2 + ')' : '') + '. Cinsiyetlere uygun hitap et ve analizi cinsiyet perspektifinden zenginleştir.\n';
+  }
+
   var COMPAT_PROMPTS = {
 
     cosmic: function(ctx) {
       return ctx.p1.name + ' ve ' + ctx.p2.name + ' için uyum özeti.\n\n' +
         'Kader Yolları: ' + ctx.p1.lifePath + ' & ' + ctx.p2.lifePath + '\n' +
         'Ruh Güdüsü: ' + ctx.p1.soulUrge + ' & ' + ctx.p2.soulUrge + '\n' +
-        'Genel uyum skoru: ' + ctx.overall + '%\n\n' +
+        'Genel uyum skoru: ' + ctx.overall + '%\n' + genderCtx(ctx) + '\n' +
         'Aranızdaki bağın özünü, bu iki Kader Yolunun birbirine ne yarattığını ve size özgü bağın ne tür bir güç taşıdığını yaz.\n' +
         '2 paragraf, 80-100 kelime, çifte hitap et.';
     },
@@ -155,7 +163,7 @@ YAZI KURALLARI:
       return ctx.p1.name + ' ve ' + ctx.p2.name + ' için Ruh Güdüsü uyumu.\n\n' +
         ctx.p1.name + ' Ruh Güdüsü: ' + ctx.p1.soulUrge + '\n' +
         ctx.p2.name + ' Ruh Güdüsü: ' + ctx.p2.soulUrge + '\n' +
-        'Uyum skoru: ' + ctx.soulScore + '%\n\n' +
+        'Uyum skoru: ' + ctx.soulScore + '%\n' + genderCtx(ctx) + '\n' +
         'İki kişinin içsel arzuları ve duygusal ihtiyaçları birbirini nasıl etkiliyor? Nerede derin uyum, nerede gizli sürtüşme var?\n' +
         'Sadece Ruh Güdüsü uyumunu yaz. Kader Yolu veya Kişilik hakkında yazmak yasak.\n' +
         '3 paragraf, 120-140 kelime.';
@@ -165,7 +173,7 @@ YAZI KURALLARI:
       return ctx.p1.name + ' ve ' + ctx.p2.name + ' için Kişilik uyumu.\n\n' +
         ctx.p1.name + ' Kişilik: ' + ctx.p1.personality + '\n' +
         ctx.p2.name + ' Kişilik: ' + ctx.p2.personality + '\n' +
-        'Uyum skoru: ' + ctx.persScore + '%\n\n' +
+        'Uyum skoru: ' + ctx.persScore + '%\n' + genderCtx(ctx) + '\n' +
         'İki kişinin dış dünyaya yansıttığı imajlar birbirini nasıl tamamlıyor veya zorluyor? Sosyal ortamlarda aranızdaki dinamik nedir?\n' +
         'Sadece Kişilik uyumunu yaz. Ruh Güdüsü veya Kader Yolu hakkında yazmak yasak.\n' +
         '3 paragraf, 120-140 kelime.';
@@ -175,7 +183,7 @@ YAZI KURALLARI:
       return ctx.p1.name + ' ve ' + ctx.p2.name + ' için Kader Yolu birlikteliği.\n\n' +
         ctx.p1.name + ' Kader Yolu: ' + ctx.p1.lifePath + '\n' +
         ctx.p2.name + ' Kader Yolu: ' + ctx.p2.lifePath + '\n' +
-        'Uyum skoru: ' + ctx.lpScore + '%\n\n' +
+        'Uyum skoru: ' + ctx.lpScore + '%\n' + genderCtx(ctx) + '\n' +
         'Bu iki Kader Yolu bir arada yürüyünce hayat onları nereye götürüyor? Ortak temalar, tekrar eden örüntüler ve birlikte büyümeleri için gereken şey nedir?\n' +
         (ctx.p1.lifePath === 11 || ctx.p1.lifePath === 22 || ctx.p1.lifePath === 33 || ctx.p2.lifePath === 11 || ctx.p2.lifePath === 22 || ctx.p2.lifePath === 33 ? 'Üstat Sayı var — bu birlikteliğe yüklediği ağır potansiyeli özellikle vurgula.\n' : '') +
         'Sadece Kader Yolu uyumunu yaz. Ruh Güdüsü veya Kişilik hakkında yazmak yasak.\n' +
@@ -186,7 +194,8 @@ YAZI KURALLARI:
       return ctx.p1.name + ' ve ' + ctx.p2.name + ' için Derinlemesine Karmik Bağ analizi.\n\n' +
         'Tüm sayılar:\n' +
         ctx.p1.name + ': Kader=' + ctx.p1.lifePath + ', Ruh=' + ctx.p1.soulUrge + ', Kişilik=' + ctx.p1.personality + ', İfade=' + ctx.p1.expression + '\n' +
-        ctx.p2.name + ': Kader=' + ctx.p2.lifePath + ', Ruh=' + ctx.p2.soulUrge + ', Kişilik=' + ctx.p2.personality + ', İfade=' + ctx.p2.expression + '\n\n' +
+        ctx.p2.name + ': Kader=' + ctx.p2.lifePath + ', Ruh=' + ctx.p2.soulUrge + ', Kişilik=' + ctx.p2.personality + ', İfade=' + ctx.p2.expression + '\n' +
+        genderCtx(ctx) + '\n' +
         'ZORUNLU FORMAT — aşağıdaki 7 başlığı aynen ve bu sırayla kullan:\n\n' +
         '**Geçmiş Yaşam Bağı**\n[Bu iki ruhun geçmişten gelen karmik köklerini, hangi yaşamlarda karşılaştıklarını ve tamamlanmamış işlerini anlat — 2 paragraf]\n\n' +
         '**Ruhsal Amaç**\n[Bu ilişkinin ruhsal amacını, birlikte öğrenecekleri karmik dersi ve evren tarafından neden bir araya getirildiklerini anlat — 2 paragraf]\n\n' +
@@ -202,7 +211,7 @@ YAZI KURALLARI:
       return ctx.p1.name + ' ve ' + ctx.p2.name + ' için İfade Sayısı uyumu.\n\n' +
         ctx.p1.name + ' İfade: ' + ctx.p1.expression + '\n' +
         ctx.p2.name + ' İfade: ' + ctx.p2.expression + '\n' +
-        'Uyum skoru: ' + ctx.expScore + '%\n\n' +
+        'Uyum skoru: ' + ctx.expScore + '%\n' + genderCtx(ctx) + '\n' +
         'İki kişinin kendini ifade ediş biçimleri, yetenekleri ve dış dünyaya verdikleri mesaj birbirini nasıl tamamlıyor veya zorluyor?\n' +
         'Sadece İfade Sayısı uyumunu yaz. Kader Yolu veya Ruh Güdüsü hakkında yazmak yasak.\n' +
         '3 paragraf, 120-140 kelime.';
@@ -211,7 +220,8 @@ YAZI KURALLARI:
     communication: function(ctx) {
       return ctx.p1.name + ' ve ' + ctx.p2.name + ' için iletişim uyumu.\n\n' +
         'İfade Sayıları: ' + ctx.p1.expression + ' & ' + ctx.p2.expression + '\n' +
-        'Kişilik Sayıları: ' + ctx.p1.personality + ' & ' + ctx.p2.personality + '\n\n' +
+        'Kişilik Sayıları: ' + ctx.p1.personality + ' & ' + ctx.p2.personality + '\n' +
+        genderCtx(ctx) + '\n' +
         'İki kişinin iletişim tarzları, birbirini nasıl anladıkları ve yanlış anlaşılmaların neden kaynaklandığını anlat.\n' +
         '3 paragraf, 120-140 kelime, pratik ve dürüst ton.';
     },
@@ -220,7 +230,7 @@ YAZI KURALLARI:
       return ctx.p1.name + ' ve ' + ctx.p2.name + ' için TAM PREMIUM UYUM ANALİZİ.\n\n' +
         ctx.p1.name + ': Kader=' + ctx.p1.lifePath + ', Ruh=' + ctx.p1.soulUrge + ', Kişilik=' + ctx.p1.personality + ', İfade=' + ctx.p1.expression + '\n' +
         ctx.p2.name + ': Kader=' + ctx.p2.lifePath + ', Ruh=' + ctx.p2.soulUrge + ', Kişilik=' + ctx.p2.personality + ', İfade=' + ctx.p2.expression + '\n' +
-        'Genel uyum: ' + ctx.overall + '%\n\n' +
+        'Genel uyum: ' + ctx.overall + '%\n' + genderCtx(ctx) + '\n' +
         (ctx.p1.lifePath === 11 || ctx.p1.lifePath === 22 || ctx.p1.lifePath === 33 || ctx.p2.lifePath === 11 || ctx.p2.lifePath === 22 || ctx.p2.lifePath === 33 ? '⚠️ Üstat Sayı var — bunu merkeze al.\n\n' : '') +
         'PARAGRAF YAPISI (tam 6 paragraf, her biri 70-80 kelime):\n\n' +
         '1. AÇILIŞ: Bu iki insanın bir araya gelmesinin sayısal anlamı. Sarsıcı ve keskin başla.\n' +
