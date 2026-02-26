@@ -277,8 +277,14 @@
         if (isPremium()) return { allowed: true };
         switch (feature) {
             case 'add_connection':
+                // Bağlantı sayısını Supabase'den hesapla (senkron çağrı yapılamaz — localStorage cache kullan ama Supabase'den güncellenmiş olmalı)
                 var cc = 0;
-                try { var ks = Object.keys(localStorage); for (var i=0;i<ks.length;i++) { if (ks[i].indexOf('numerael_connections_')===0) { cc = JSON.parse(localStorage.getItem(ks[i])||'[]').length; break; } } } catch(e) {}
+                try {
+                    var session2 = null;
+                    try { session2 = window.auth ? window.auth._lastSession : null; } catch(e2) {}
+                    var connKey = 'numerael_connections_' + ((session2 && session2.user) ? session2.user.id : 'guest');
+                    cc = JSON.parse(localStorage.getItem(connKey) || '[]').length;
+                } catch(e) {}
                 var friendCount = Math.max(0, cc - 1);
                 var friendLimit = FREE_LIMITS.connections - 1;
                 return friendCount < friendLimit ? { allowed: true } : { allowed: false, reason: 'Ücretsiz planda ' + friendLimit + ' arkadaş ekleyebilirsin. Premium ile sınırsız!' };

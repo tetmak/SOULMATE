@@ -259,18 +259,16 @@ function setDateValue(prefix, dateStr) {
     }
   }
   
-  // 3. Hala yoksa numerael_connections'dan ara
+  // 3. Hala yoksa saved_contacts'tan ara (Supabase)
   if (p1Name && !p1BirthDate) {
     try {
-      Object.keys(localStorage).filter(function(k){ return k.startsWith('numerael_connections_'); }).forEach(function(k) {
-        if (p1BirthDate) return;
-        var conns = JSON.parse(localStorage.getItem(k) || '[]');
-        conns.forEach(function(c) {
-          if (!p1BirthDate && c.fullName && c.fullName.toLowerCase().trim() === p1Name.toLowerCase().trim() && c.birthDate) {
-            p1BirthDate = c.birthDate;
-          }
-        });
-      });
+      var conns = await window.profile.getConnections();
+      for (var ci = 0; ci < conns.length; ci++) {
+        if (!p1BirthDate && conns[ci].fullName && conns[ci].fullName.toLowerCase().trim() === p1Name.toLowerCase().trim() && conns[ci].birthDate) {
+          p1BirthDate = conns[ci].birthDate;
+          break;
+        }
+      }
     } catch(e) {}
   }
   
@@ -323,9 +321,25 @@ function setDateValue(prefix, dateStr) {
     }
 
     try {
+      // Cinsiyet bilgisini çek
+      var p1Gender = 'unknown', p2Gender = 'unknown';
+      try {
+        var udLocal = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
+        if (udLocal.gender) p1Gender = udLocal.gender;
+      } catch(ge) {}
+      // p2 için gender: saved_contacts'tan bul
+      try {
+        var allConns = await window.profile.getConnections();
+        for (var gi = 0; gi < allConns.length; gi++) {
+          if (allConns[gi].fullName && allConns[gi].fullName.toLowerCase().trim() === p2Name.trim().toLowerCase() && allConns[gi].gender && allConns[gi].gender !== 'unknown') {
+            p2Gender = allConns[gi].gender;
+            break;
+          }
+        }
+      } catch(ge2) {}
       localStorage.setItem('numerael_compat_data', JSON.stringify({
-        person1: { name: p1Name.trim(), birthDate: p1Date },
-        person2: { name: p2Name.trim(), birthDate: p2Date }
+        person1: { name: p1Name.trim(), birthDate: p1Date, gender: p1Gender },
+        person2: { name: p2Name.trim(), birthDate: p2Date, gender: p2Gender }
       }));
       // XP tracking
       if (window.gamification) { window.gamification.addXP('compatibility', 0); window.gamification.trackAction('compatibility'); }
@@ -340,12 +354,15 @@ function setDateValue(prefix, dateStr) {
       if (window.profile && typeof window.profile.saveConnection === 'function') {
         (async function() {
           try {
-            // Önce duplicate kontrolü - aynı isim var mı?
-            var storageKey = await window.profile.getStorageKey();
-            var existingConns = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            var duplicate = existingConns.find(function(c) {
-              return c.fullName && c.fullName.toLowerCase().trim() === p2Name.trim().toLowerCase();
-            });
+            // Önce duplicate kontrolü - Supabase'den aynı isim var mı?
+            var existingConns = await window.profile.getConnections();
+            var duplicate = null;
+            for (var di = 0; di < existingConns.length; di++) {
+              if (existingConns[di].fullName && existingConns[di].fullName.toLowerCase().trim() === p2Name.trim().toLowerCase()) {
+                duplicate = existingConns[di];
+                break;
+              }
+            }
             
             if (!duplicate) {
               // Yeni kişi - ekle
