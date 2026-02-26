@@ -15,6 +15,7 @@
     <script src="js/premium.js"></script>
     <script src="js/gamification-engine.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/manifest-engine.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -304,6 +305,195 @@
         }
         .card-likes .material-symbols-outlined {
             font-size: 13px;
+            transition: all 0.2s;
+        }
+        .card-likes:active .material-symbols-outlined {
+            transform: scale(1.3);
+        }
+
+        /* ── Real user badge ────────────────────────── */
+        .real-user-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+        .grid-card.real-user-card {
+            border: 1.5px solid rgba(255,255,255,0.2);
+            box-shadow: 0 0 12px rgba(168,85,247,0.15);
+        }
+
+        /* ── Champion badge (Top Rated all-time) ──── */
+        .champion-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            background: rgba(245,158,11,0.2);
+            color: #f59e0b;
+            font-size: 8px;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+        .grid-card.champion-card {
+            border: 1.5px solid rgba(245,158,11,0.25);
+            box-shadow: 0 0 12px rgba(245,158,11,0.1);
+        }
+
+        /* ── My Manifests Button ────────────────────── */
+        .my-manifests-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            background: rgba(124,58,237,0.15);
+            border: 1px solid rgba(124,58,237,0.3);
+            color: #c084fc;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .my-manifests-btn:active { transform: scale(0.95); }
+        .my-manifests-btn .material-symbols-outlined { font-size: 16px; }
+
+        /* ── My Manifests Modal ─────────────────────── */
+        .my-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .my-modal-panel {
+            position: absolute;
+            inset: 0;
+            top: 40px;
+            background: linear-gradient(180deg, #0c0a18 0%, #04040a 100%);
+            border-radius: 24px 24px 0 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .my-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+        .my-modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #c084fc, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .my-modal-close {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.1);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            color: rgba(255,255,255,0.4);
+        }
+        .my-modal-close:active { transform: scale(0.9); }
+        .my-modal-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 100px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .my-manifest-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .my-manifest-cat {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(124,58,237,0.15);
+            color: #c084fc;
+            margin-bottom: 8px;
+        }
+        .my-manifest-text {
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 12px;
+        }
+        .my-manifest-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .my-manifest-date {
+            font-size: 11px;
+            color: rgba(255,255,255,0.25);
+        }
+        .my-manifest-likes {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: rgba(255,255,255,0.35);
+        }
+        .my-manifest-likes .material-symbols-outlined {
+            font-size: 14px;
+            color: #c084fc;
+        }
+        .my-manifest-delete {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: rgba(239,68,68,0.1);
+            border: 1px solid rgba(239,68,68,0.2);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .my-manifest-delete:active { transform: scale(0.85); }
+        .my-manifest-delete .material-symbols-outlined {
+            font-size: 14px;
+            color: rgba(239,68,68,0.6);
+        }
+        .my-modal-empty {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .my-modal-count {
+            font-size: 12px;
+            color: rgba(255,255,255,0.3);
+            font-weight: 500;
         }
 
         /* ── FAB ─────────────────────────────────────── */
@@ -341,9 +531,15 @@
     <div class="px-5 pt-12 pb-2">
         <div class="flex items-center justify-between mb-5">
             <h1 class="page-title">Manifest Portal</h1>
-            <button onclick="showInfoModal()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                <span class="material-symbols-outlined text-purple-400/60 text-base">info</span>
-            </button>
+            <div class="flex items-center gap-2">
+                <button class="my-manifests-btn" onclick="openMyManifests()">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+                    My Manifests
+                </button>
+                <button onclick="showInfoModal()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-purple-400/60 text-base">info</span>
+                </button>
+            </div>
         </div>
 
         <!-- Sort Tabs -->
@@ -377,6 +573,22 @@
         </div>
     </div>
 
+    <!-- My Manifests Modal -->
+    <div id="my-manifests-modal" class="my-modal-overlay">
+        <div class="my-modal-panel">
+            <div class="my-modal-header">
+                <div>
+                    <span class="my-modal-title">My Manifests</span>
+                    <span id="my-manifests-count" class="my-modal-count" style="margin-left:8px;"></span>
+                </div>
+                <button class="my-modal-close" onclick="closeMyManifests()">
+                    <span class="material-symbols-outlined" style="font-size:18px;">close</span>
+                </button>
+            </div>
+            <div id="my-manifests-body" class="my-modal-body"></div>
+        </div>
+    </div>
+
     <!-- FAB -->
     <button class="fab-btn" onclick="window.location.href='cosmic_manifest_portal.html'">
         <span class="material-symbols-outlined">add</span>
@@ -388,6 +600,8 @@
 
         var currentSort = 'newest';
         var currentCat = 'all';
+        var feedData = [];    // Supabase'den gelen manifest listesi
+        var isLoading = false;
 
         // ─── Category Config ────────────────────────────
         var CAT_CFG = {
@@ -410,42 +624,34 @@
             var p = name.trim().split(/[\s_]+/);
             return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : name.substring(0, 2).toUpperCase();
         }
-
-        // ─── Data (sadece gerçek kullanıcı manifestleri) ──
-        var DATA = [];
-
-        // ─── User manifests from localStorage ───────────
-        function userManifests() {
-            try {
-                var auth = JSON.parse(localStorage.getItem('numerael-auth-token') || 'null');
-                if (!auth || !auth.user) return [];
-                var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
-                var stored = JSON.parse(localStorage.getItem('numerael_manifests_' + auth.user.id) || '[]');
-                var name = (ud && ud.name) ? ud.name.split(' ')[0] : 'You';
-                return stored.map(function(m, i) {
-                    return { id: 2000 + i, user: name, path: null, text: '"' + (m.text || '') + '"', likes: Math.floor(Math.random() * 40) + 5, category: m.category || 'general', isOwn: true };
-                });
-            } catch(e) { return []; }
-        }
-
         function fmtLikes(n) { return n >= 1000 ? (n/1000).toFixed(1) + 'k' : '' + n; }
+
+        // ─── Fallback Data (Supabase baglanamazsa) ──────
+        var FALLBACK = [
+            { id:'f1', display_name:'Elif', life_path:7, text:'Evrenin bana gönderdiği sevgiyi açık kalplerle karşılıyorum.', likes:287, category:'love', liked:false },
+            { id:'f2', display_name:'Burak', life_path:3, text:'Bolluk ve bereket hayatımın her alanına akıyor.', likes:214, category:'money', liked:false },
+            { id:'f3', display_name:'Zeynep', life_path:11, text:'Ruhum her gün daha derin bir farkındalıkla uyanıyor.', likes:195, category:'spiritual', liked:false },
+            { id:'f4', display_name:'Emre', life_path:5, text:'Kariyer yolculuğumda evrenin rehberliğine güveniyorum.', likes:178, category:'career', liked:false },
+            { id:'f5', display_name:'Ayşe', life_path:9, text:'Bedenim sağlıkla dolu, her hücrem ışıkla titreşiyor.', likes:162, category:'health', liked:false }
+        ];
+
+        // ─── Supabase'den feed yükle ────────────────────
+        async function loadFromSupabase() {
+            if (!window.manifestEngine) return FALLBACK;
+            try {
+                var data = await window.manifestEngine.loadFeed(currentSort, currentCat, 100);
+                if (data && data.length > 0) return data;
+                return FALLBACK;
+            } catch(e) {
+                console.warn('[ManifestCommunity] Supabase load failed, using fallback:', e);
+                return FALLBACK;
+            }
+        }
 
         // ─── RENDER ─────────────────────────────────────
         function render() {
             var feed = document.getElementById('manifest-feed');
-            var uM = userManifests().reverse();
-            var all = uM.concat(DATA);
-
-            // Filter
-            if (currentCat !== 'all') all = all.filter(function(m) { return m.category === currentCat; });
-
-            // Sort
-            if (currentSort === 'top_rated') {
-                all.sort(function(a, b) { return b.likes - a.likes; });
-            } else if (currentSort === 'weekly') {
-                all = all.filter(function(m) { return m.weekly || m.likes > 150; });
-                all.sort(function(a, b) { return b.likes - a.likes; });
-            }
+            var all = feedData.slice(); // kopyala
 
             if (!all.length) {
                 feed.innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined text-white/10" style="font-size:48px;font-variation-settings:\'FILL\' 1;">search_off</span><p class="text-white/20 text-sm mt-3">Bu kategoride manifest bulunamadı</p></div>';
@@ -454,32 +660,40 @@
 
             var html = '';
 
-            // ── Weekly Champion ──────────────────────────
+            // ── Weekly Champion (newest + all kategorisinde en çok beğenilen) ──
             var weekly = null;
-            if (currentSort === 'newest' && currentCat === 'all') {
-                for (var w = 0; w < all.length; w++) {
-                    if (all[w].weekly) { weekly = all[w]; all.splice(w, 1); break; }
+            if (currentSort === 'newest' && currentCat === 'all' && all.length > 0) {
+                // En cok begenilen manifesti bul
+                var topIdx = 0;
+                for (var w = 1; w < all.length; w++) {
+                    if ((all[w].likes || 0) > (all[topIdx].likes || 0)) topIdx = w;
+                }
+                if ((all[topIdx].likes || 0) >= 5) {
+                    weekly = all[topIdx];
+                    all.splice(topIdx, 1);
                 }
             }
 
             if (weekly) {
-                var wc = avatarColor(weekly.user);
-                var wi = initials(weekly.user);
-                html += '<div class="weekly-card fade-up fd1 mb-4">' +
+                var wName = weekly.display_name || 'User';
+                var wc = avatarColor(wName);
+                var wi = initials(wName);
+                var wIsReal = !weekly.isBot;
+                html += '<div class="weekly-card fade-up fd1 mb-4"' + (wIsReal ? ' style="border-color:rgba(168,85,247,0.5);box-shadow:0 0 20px rgba(168,85,247,0.15);"' : '') + '>' +
                     '<div class="flex items-center justify-between mb-4">' +
-                        '<span class="weekly-badge">⭐ WEEKLY CHAMPION</span>' +
-                        '<span class="weekly-likes">' + fmtLikes(weekly.likes) + ' Likes</span>' +
+                        '<div class="flex items-center gap-2"><span class="weekly-badge">⭐ WEEKLY CHAMPION</span>' + (wIsReal ? '<span class="real-user-badge" style="background:rgba(168,85,247,0.3);color:#c084fc;">✨ GERÇEK</span>' : '') + '</div>' +
+                        '<span class="weekly-likes">' + fmtLikes(weekly.likes || 0) + ' Likes</span>' +
                     '</div>' +
-                    '<p class="weekly-quote mb-5">' + weekly.text + '</p>' +
+                    '<p class="weekly-quote mb-5">"' + weekly.text + '"</p>' +
                     '<div class="flex items-center justify-between">' +
                         '<div class="user-pill">' +
                             '<div class="user-avatar-sm" style="background:' + wc + ';">' + wi + '</div>' +
                             '<div style="line-height:1.2;">' +
-                                '<div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);">' + weekly.user + '</div>' +
-                                (weekly.path ? '<div style="font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;">Life Path ' + weekly.path + '</div>' : '') +
+                                '<div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);">' + wName + '</div>' +
+                                (weekly.life_path ? '<div style="font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;">Life Path ' + weekly.life_path + '</div>' : '') +
                             '</div>' +
                         '</div>' +
-                        '<button class="ritual-btn">RITUAL</button>' +
+                        '<button class="ritual-btn" onclick="handleLike(\'' + weekly.id + '\')"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;font-variation-settings:\'FILL\' ' + (weekly.liked ? '1' : '0') + ';">favorite</span> ' + fmtLikes(weekly.likes || 0) + '</button>' +
                     '</div>' +
                 '</div>';
             }
@@ -490,15 +704,35 @@
                 var m = all[i];
                 var c = CAT_CFG[m.category] || CAT_CFG.general;
                 var d = Math.min(i + 2, 6);
+                var mName = m.display_name || 'User';
+                var likedFill = m.liked ? '1' : '0';
+                var isReal = !m.isBot;
+                var isChamp = !!m.isChampion;
+                var extraClass = isChamp ? ' champion-card' : (isReal ? ' real-user-card' : '');
 
-                html += '<div class="grid-card ' + c.grad + ' fade-up fd' + d + '">' +
+                // Champion hafta etiketi
+                var champLabel = '';
+                if (isChamp && m.championWeek) {
+                    var wd = new Date(m.championWeek);
+                    var weekNum = Math.ceil(((wd - new Date(wd.getFullYear(), 0, 1)) / 86400000 + 1) / 7);
+                    champLabel = '<span class="champion-badge">🏆 Week ' + weekNum + '</span>';
+                }
+
+                html += '<div class="grid-card ' + c.grad + extraClass + ' fade-up fd' + d + '">' +
                     '<div>' +
                         '<span class="cat-tag"><span class="dot" style="background:' + c.dot + '"></span> ' + c.label + '</span>' +
-                        '<p class="card-quote">' + m.text + '</p>' +
+                        (isChamp ? champLabel : (isReal ? '<span class="real-user-badge">✨ GERÇEK</span>' : '')) +
+                        '<p class="card-quote">"' + m.text + '"</p>' +
                     '</div>' +
                     '<div class="card-bottom">' +
-                        '<span class="card-user">@' + m.user + '</span>' +
-                        '<span class="card-likes"><span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;">thumb_up</span> ' + fmtLikes(m.likes) + '</span>' +
+                        '<span class="card-user">@' + mName + '</span>' +
+                        (isChamp ?
+                            '<span class="card-likes" style="color:rgba(245,158,11,0.6);"><span class="material-symbols-outlined" style="font-size:13px;font-variation-settings:\'FILL\' 1;color:rgba(245,158,11,0.6);">favorite</span> ' + fmtLikes(m.likes || 0) + '</span>'
+                        :
+                            '<button class="card-likes" onclick="event.stopPropagation();handleLike(\'' + m.id + '\')" style="background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:8px;">' +
+                                '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' ' + likedFill + ';' + (m.liked ? 'color:rgba(220,50,50,0.7);' : '') + '">favorite</span> ' + fmtLikes(m.likes || 0) +
+                            '</button>'
+                        ) +
                     '</div>' +
                 '</div>';
             }
@@ -507,28 +741,185 @@
             feed.innerHTML = html;
         }
 
+        // ─── Like Handler ───────────────────────────────
+        window.handleLike = async function(manifestId) {
+            if (!manifestId || manifestId.startsWith('f')) return; // fallback data — like desteklenmiyor
+            if (!window.manifestEngine) {
+                console.warn('[ManifestCommunity] No manifestEngine — cannot like');
+                return;
+            }
+
+            console.log('[ManifestCommunity] handleLike called:', manifestId);
+
+            // Onceki durumu sakla (revert icin)
+            var prevLiked = null;
+            var prevLikes = null;
+            for (var i = 0; i < feedData.length; i++) {
+                if (feedData[i].id === manifestId) {
+                    prevLiked = feedData[i].liked;
+                    prevLikes = feedData[i].likes || 0;
+                    // Optimistic UI update
+                    feedData[i].liked = !feedData[i].liked;
+                    feedData[i].likes = prevLikes + (feedData[i].liked ? 1 : -1);
+                    if (feedData[i].likes < 0) feedData[i].likes = 0;
+                    break;
+                }
+            }
+            render();
+
+            // Supabase'e kaydet
+            var result = await window.manifestEngine.toggleLike(manifestId);
+            console.log('[ManifestCommunity] toggleLike result:', JSON.stringify(result));
+
+            if (result.success) {
+                // Gercek sayiyi guncelle
+                for (var j = 0; j < feedData.length; j++) {
+                    if (feedData[j].id === manifestId) {
+                        feedData[j].likes = result.newCount;
+                        feedData[j].liked = (result.action === 'liked');
+                        break;
+                    }
+                }
+                render();
+            } else {
+                // Basarisiz — optimistic UI'yi geri al
+                console.warn('[ManifestCommunity] Like failed, reverting UI');
+                for (var k = 0; k < feedData.length; k++) {
+                    if (feedData[k].id === manifestId) {
+                        feedData[k].liked = prevLiked;
+                        feedData[k].likes = prevLikes;
+                        break;
+                    }
+                }
+                render();
+            }
+        };
+
+        // ─── Sort/Category değiştirince yeniden yükle ───
+        async function reloadFeed() {
+            if (isLoading) return;
+            isLoading = true;
+            var feed = document.getElementById('manifest-feed');
+            feed.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(124,58,237,0.3);border-top-color:#a855f7;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p class="text-white/20 text-xs mt-3">Yükleniyor...</p></div>';
+
+            feedData = await loadFromSupabase();
+            isLoading = false;
+            render();
+        }
+
         // ─── Global Handlers ────────────────────────────
         window.switchSort = function(btn) {
             currentSort = btn.getAttribute('data-sort');
             var t = document.querySelectorAll('.sort-tab');
             for (var i = 0; i < t.length; i++) t[i].classList.remove('active');
             btn.classList.add('active');
-            render();
+            reloadFeed();
         };
         window.switchCat = function(btn) {
             currentCat = btn.getAttribute('data-cat');
             var c = document.querySelectorAll('.cat-chip');
             for (var i = 0; i < c.length; i++) c[i].classList.remove('active');
             btn.classList.add('active');
-            render();
+            reloadFeed();
         };
         window.showInfoModal = function() { document.getElementById('info-modal').style.display = 'flex'; };
         window.closeInfoModal = function() { document.getElementById('info-modal').style.display = 'none'; };
+
+        // ─── My Manifests Modal ───────────────────────
+        var CAT_LABELS = { love: 'Love', money: 'Wealth', health: 'Energy', career: 'Career', spiritual: 'Soul', general: 'General' };
+
+        window.openMyManifests = async function() {
+            var modal = document.getElementById('my-manifests-modal');
+            var body = document.getElementById('my-manifests-body');
+            var countEl = document.getElementById('my-manifests-count');
+            modal.style.display = 'block';
+
+            // Loading state
+            body.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(124,58,237,0.3);border-top-color:#a855f7;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p class="text-white/20 text-xs mt-3">Loading...</p></div>';
+
+            if (!window.manifestEngine) {
+                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined text-white/10" style="font-size:48px;">cloud_off</span><p class="text-white/20 text-sm mt-3">Connection error</p></div>';
+                countEl.textContent = '';
+                return;
+            }
+
+            var myData = await window.manifestEngine.getMyManifests();
+            countEl.textContent = myData.length > 0 ? '(' + myData.length + ')' : '';
+
+            if (!myData.length) {
+                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined text-white/10" style="font-size:48px;font-variation-settings:\'FILL\' 1;">edit_note</span><p class="text-white/20 text-sm mt-3">You have no manifests yet</p><p class="text-white/10 text-xs mt-1">Tap the + button to create your first one!</p></div>';
+                return;
+            }
+
+            var html = '';
+            for (var i = 0; i < myData.length; i++) {
+                var m = myData[i];
+                var catLabel = CAT_LABELS[m.category] || 'General';
+                var dateStr = '';
+                if (m.created_at) {
+                    var d = new Date(m.created_at);
+                    dateStr = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' });
+                }
+
+                html += '<div class="my-manifest-item fade-up" style="animation-delay:' + (i * 0.04) + 's;" id="my-m-' + m.id + '">' +
+                    '<button class="my-manifest-delete" onclick="event.stopPropagation();deleteMyManifest(\'' + m.id + '\')" title="Delete">' +
+                        '<span class="material-symbols-outlined">delete</span>' +
+                    '</button>' +
+                    '<span class="my-manifest-cat">' + catLabel + '</span>' +
+                    '<p class="my-manifest-text">"' + m.text + '"</p>' +
+                    '<div class="my-manifest-meta">' +
+                        '<span class="my-manifest-date">' + dateStr + '</span>' +
+                        '<span class="my-manifest-likes"><span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;">favorite</span> ' + (m.likes || 0) + ' likes</span>' +
+                    '</div>' +
+                '</div>';
+            }
+            body.innerHTML = html;
+        };
+
+        window.closeMyManifests = function() {
+            document.getElementById('my-manifests-modal').style.display = 'none';
+        };
+
+        window.deleteMyManifest = async function(manifestId) {
+            if (!window.manifestEngine) return;
+            if (!confirm('Delete this manifest?')) return;
+
+            var success = await window.manifestEngine.deleteMy(manifestId);
+            if (success) {
+                // Animasyonlu kaldır
+                var el = document.getElementById('my-m-' + manifestId);
+                if (el) {
+                    el.style.transition = 'all 0.3s ease';
+                    el.style.opacity = '0';
+                    el.style.transform = 'translateX(60px)';
+                    setTimeout(function() { el.remove(); }, 300);
+                }
+                // Feed'den de kaldır
+                for (var i = feedData.length - 1; i >= 0; i--) {
+                    if (feedData[i].id === manifestId) {
+                        feedData.splice(i, 1);
+                        break;
+                    }
+                }
+                render();
+                // Count güncelle
+                var countEl = document.getElementById('my-manifests-count');
+                var remaining = document.querySelectorAll('.my-manifest-item');
+                setTimeout(function() {
+                    remaining = document.querySelectorAll('.my-manifest-item');
+                    countEl.textContent = remaining.length > 0 ? '(' + remaining.length + ')' : '';
+                    if (remaining.length === 0) {
+                        document.getElementById('my-manifests-body').innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined text-white/10" style="font-size:48px;font-variation-settings:\'FILL\' 1;">edit_note</span><p class="text-white/20 text-sm mt-3">You have no manifests yet</p><p class="text-white/10 text-xs mt-1">Tap the + button to create your first one!</p></div>';
+                    }
+                }, 350);
+            }
+        };
 
         // ─── Init ───────────────────────────────────────
         async function init() {
             if (window.auth && window.auth.whenReady) await window.auth.whenReady();
             if (window.gamification) window.gamification.trackAction('manifest_community_visit');
+            feedData = await loadFromSupabase();
             render();
         }
         if (document.readyState === 'loading') {

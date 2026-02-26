@@ -68,25 +68,35 @@
 
   // ─── UYUMLULUK SKORU ─────────────────────────────────────────
   // İki sayı arasındaki uyum matrisi (0-100)
+  // Gerçekçi dağılım: ort ~57%, aralık 28-88
+  // 80+ = nadir & özel, 60-79 = iyi, 40-59 = orta, <40 = zor
   var COMPAT_MATRIX = {
-    '1-1':75,'1-2':85,'1-3':90,'1-4':65,'1-5':80,'1-6':70,'1-7':75,'1-8':85,'1-9':80,
-    '2-2':80,'2-3':85,'2-4':90,'2-5':65,'2-6':95,'2-7':70,'2-8':60,'2-9':90,
-    '3-3':75,'3-4':65,'3-5':90,'3-6':80,'3-7':70,'3-8':75,'3-9':85,
-    '4-4':85,'4-5':60,'4-6':90,'4-7':80,'4-8':95,'4-9':70,
-    '5-5':70,'5-6':75,'5-7':80,'5-8':65,'5-9':85,
-    '6-6':85,'6-7':75,'6-8':80,'6-9':95,
-    '7-7':75,'7-8':70,'7-9':85,
-    '8-8':70,'8-9':75,
-    '9-9':95,
-    // Üstat sayılar
-    '11-11':95,'11-22':90,'11-33':92,'22-22':92,'22-33':95,'33-33':98,
-    '1-11':85,'2-11':90,'3-11':88,'4-22':92,'6-33':95,'9-11':90,'9-33':95
+    // 1: Lider — bağımsız, dominant
+    '1-1':52,'1-2':60,'1-3':68,'1-4':38,'1-5':75,'1-6':45,'1-7':55,'1-8':70,'1-9':62,
+    // 2: Diplomat — hassas, uyumlu
+    '2-2':58,'2-3':65,'2-4':72,'2-5':35,'2-6':80,'2-7':50,'2-8':35,'2-9':68,
+    // 3: Yaratıcı — ifadeci, sosyal
+    '3-3':55,'3-4':32,'3-5':78,'3-6':62,'3-7':45,'3-8':48,'3-9':72,
+    // 4: İnşacı — disiplinli, katı
+    '4-4':62,'4-5':28,'4-6':75,'4-7':55,'4-8':80,'4-9':40,
+    // 5: Kaşif — özgür, değişken
+    '5-5':52,'5-6':38,'5-7':62,'5-8':42,'5-9':68,
+    // 6: Bakıcı — şefkatli, sorumlu
+    '6-6':65,'6-7':48,'6-8':55,'6-9':82,
+    // 7: Mistik — analitik, içe dönük
+    '7-7':55,'7-8':42,'7-9':68,
+    // 8: Güç — hırslı, maddi odaklı
+    '8-8':50,'8-9':45,
+    // 9: İnsansever — idealist, fedakar
+    '9-9':72,
+    // Üstat sayılar — yüksek potansiyel ama kolay değil
+    '11-11':82,'11-22':75,'11-33':78,'22-22':78,'22-33':82,'33-33':88,
+    '1-11':68,'2-11':75,'3-11':70,'4-22':78,'6-33':85,'9-11':72,'9-33':80
   };
 
   function getCompatScore(n1, n2) {
     var key = n1 <= n2 ? n1+'-'+n2 : n2+'-'+n1;
-    var base = COMPAT_MATRIX[key] || 70;
-    // ±5 rastgelelik ekle (ama tutarlı olsun — seed olarak isimleri kullan)
+    var base = COMPAT_MATRIX[key] || 50;
     return base;
   }
 
@@ -100,26 +110,28 @@
 
   // ─── BAĞLANTI ETİKETLERİ ─────────────────────────────────────
   function bondLabel(score) {
-    if (score >= 95) return 'Kozmik Ruh İkizi';
-    if (score >= 88) return 'İlahi Ruh Eşi';
-    if (score >= 80) return 'Göksel Birliktelik';
-    if (score >= 70) return 'Karmik Bağ';
-    return 'Büyüme Katalizörü';
+    if (score >= 82) return 'Kozmik Ruh İkizi';
+    if (score >= 72) return 'İlahi Ruh Eşi';
+    if (score >= 62) return 'Göksel Birliktelik';
+    if (score >= 50) return 'Karmik Bağ';
+    if (score >= 38) return 'Büyüme Katalizörü';
+    return 'Kozmik Sınav';
   }
 
   function bondSubLabel(score) {
-    if (score >= 95) return 'Sonsuz Bağ · Kader · Aşk';
-    if (score >= 88) return 'Ruh Eşi · Kader · Uyum';
-    if (score >= 80) return 'Göksel Eşleşme · Uyum';
-    if (score >= 70) return 'Karmik Ders · Dönüşüm';
-    return 'Keşif · Potansiyel · Gelişim';
+    if (score >= 82) return 'Sonsuz Bağ · Kader · Aşk';
+    if (score >= 72) return 'Ruh Eşi · Kader · Uyum';
+    if (score >= 62) return 'Göksel Eşleşme · Uyum';
+    if (score >= 50) return 'Karmik Ders · Dönüşüm';
+    if (score >= 38) return 'Keşif · Potansiyel · Gelişim';
+    return 'Zorluk · Ders · Uyanış';
   }
 
   function starCount(score) {
-    if (score >= 95) return 5;
-    if (score >= 85) return 4;
-    if (score >= 75) return 3;
-    if (score >= 65) return 2;
+    if (score >= 80) return 5;
+    if (score >= 68) return 4;
+    if (score >= 55) return 3;
+    if (score >= 42) return 2;
     return 1;
   }
 
@@ -234,12 +246,13 @@ YAZI KURALLARI:
   };
 
   // ─── API ÇAĞRISI ─────────────────────────────────────────────
-  // Cache key — iki isim (sıralı) + tip
+  // Cache key — iki isim (sıralı) + doğum tarihleri + tip
+  // Doğum tarihleri dahil: aynı isimli farklı kişiler farklı analiz alsın
   function compatCacheKey(type, ctx) {
-    var names = [ctx.p1.name, ctx.p2.name]
-      .map(function(n){ return n.toLowerCase().trim().replace(/\s+/g,'_'); })
-      .sort();
-    return 'numerael_compat_ai_v2__' + names[0] + '__' + names[1] + '__' + type;
+    var p1Key = (ctx.p1.name + '_' + (ctx.p1.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
+    var p2Key = (ctx.p2.name + '_' + (ctx.p2.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
+    var sorted = [p1Key, p2Key].sort();
+    return 'numerael_compat_ai_v3__' + sorted[0] + '__' + sorted[1] + '__' + type;
   }
 
   // Sync cache getter — loading animasyonunu atlamak için
@@ -526,7 +539,7 @@ YAZI KURALLARI:
     if (smBond) smBond.textContent = ctx.bond;
 
     // "Cosmic Connection" AI içerik
-    var insightCard = document.querySelector('.bg-white\\/5.backdrop-blur-md.rounded-xl.p-6');
+    var insightCard = document.getElementById('compat-insight-card');
     if (insightCard) {
       var _cosmicCached = getCachedAnalysis('cosmic', ctx);
       insightCard.innerHTML = '<div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary">auto_awesome</span><h3 class="text-lg font-bold">Kozmik Bağ</h3></div>' +

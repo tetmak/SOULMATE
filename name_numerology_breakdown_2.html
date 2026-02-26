@@ -84,7 +84,7 @@
     </div>
     <div class="flex-1 text-center">
       <h1 class="text-xs font-bold tracking-[0.3em] text-primary uppercase mb-0.5">Full Analysis</h1>
-      <h2 class="text-lg font-extrabold tracking-tight">ALEX &amp; MAYA</h2>
+      <h2 class="text-lg font-extrabold tracking-tight">...</h2>
     </div>
     <div class="size-12 flex items-center justify-end">
       <button onclick="openSoulmateShare()"
@@ -103,16 +103,8 @@
       </div>
       <div class="gold-divider mb-5"></div>
       <div class="text-elegant text-white/80 text-sm space-y-4">
-        <p>
-          Your connection resonates with the echoes of a deep-rooted past. The alignment of your core numbers suggests a
-          <span class="text-gold font-semibold">Legacy Union</span>, where two souls meet not for the first time, but to
-          fulfill a destiny set in motion centuries ago.
-        </p>
-        <p>
-          Alex's vibrational frequency provides the grounding force that Maya's ethereal spirit seeks. In your shared
-          numerological blueprint, there is a recurring pattern of "The Weaver"—an energy that excels at taking
-          fragmented ideas and turning them into lasting reality. This isn't just a romance; it's a cosmic
-          collaboration.
+        <p style="text-align:center;color:rgba(207,161,23,0.6);font-style:italic;font-size:13px;">
+          ✦ Karmik bağ okunuyor...
         </p>
       </div>
     </section>
@@ -145,8 +137,7 @@
         </div>
       </div>
       <p class="text-elegant text-white/80 text-sm italic border-l-2 border-gold/30 pl-4">
-        "Your intellectual bond is characterized by 'The Scholar' archetype. You don't just speak; you exchange wisdom.
-        Arguments are rarely about ego, and more about finding the ultimate truth together."
+        ✦ İletişim uyumu analiz ediliyor...
       </p>
     </section>
     <section class="glass-card p-6 border-primary/20">
@@ -160,14 +151,12 @@
       <div class="flex items-center justify-between mb-6 bg-white/5 p-4 rounded-xl border border-white/5">
         <div>
           <p class="text-xs font-bold text-white/40 uppercase tracking-widest mb-1">Soul Urge Match</p>
-          <p class="text-lg font-bold text-gold">THE MYSTICS</p>
+          <p class="text-lg font-bold text-gold">...</p>
         </div>
-        <div class="text-3xl font-black text-primary">94%</div>
+        <div class="text-3xl font-black text-primary">...</div>
       </div>
       <p class="text-elegant text-white/80 text-sm">
-        This high resonance indicates that your private desires and internal worlds are perfectly mirrored. While others
-        might see your relationship as quiet, the emotional depth you share is ocean-like—vast, silent, and incredibly
-        powerful. You provide each other the safety required to be truly vulnerable.
+        ✦ Duygusal uyum hesaplanıyor...
       </p>
     </section>
     <section class="glass-card p-6 border-gold/10">
@@ -179,15 +168,8 @@
       </div>
       <div class="gold-divider mb-5"></div>
       <div class="space-y-4 text-elegant text-white/80 text-sm">
-        <div class="bg-primary/10 p-4 rounded-xl border border-primary/10">
-          <p class="font-bold text-primary mb-1">Life Path Union Advice:</p>
-          <p>As 'The Nomads', your destiny involves constant movement and evolution. Stagnation is your only true enemy.
-            To maintain this bond, prioritize shared adventures—be they physical travels or new intellectual pursuits.
-          </p>
-        </div>
-        <p>
-          The numbers suggest a significant milestone in your 3rd year of partnership. This is a "Portal Year" where a
-          major life decision will solidify your spiritual contract for the next decade.
+        <p style="text-align:center;color:rgba(207,161,23,0.6);font-style:italic;font-size:13px;">
+          ✦ Ortak kader okunuyor...
         </p>
       </div>
     </section>
@@ -205,44 +187,35 @@
 
 
   <script>
-    // NUMERAEL APP - Navigation & Dynamic Content
-    window.addEventListener('DOMContentLoaded', async function () {
+    // NUMERAEL APP - Navigation & Premium Gate
+    window.addEventListener('DOMContentLoaded', function () {
       // Premium gate — sayfa 2 ve 3 sadece premium
       if (window.premium && !window.premium.isPremium()) {
         window.premium.showPaywall('Bu analiz sayfası Premium özelliğidir.', 'breakdown_page_2');
         return;
       }
-      const params = new URLSearchParams(window.location.search);
 
-      // Update Header & Headlines
-      const headerTitle = document.querySelector('h2.text-lg.font-extrabold');
-      if (headerTitle) headerTitle.textContent = `${userName} & ${targetName}`;
+      // İsimleri compat data'dan al
+      var raw = null;
+      try { raw = JSON.parse(localStorage.getItem('numerael_compat_data')); } catch(e) {}
+      var p1Name = (raw && raw.person1 && raw.person1.name) || 'Kişi 1';
+      var p2Name = (raw && raw.person2 && raw.person2.name) || 'Kişi 2';
 
-      const subNames = document.getElementById('sm-names');
-      if (subNames) subNames.textContent = `${userName} & ${targetName}`;
+      // URL'den kisi parametresi (geri butonu için)
+      var params = new URLSearchParams(window.location.search);
+      var kisiParam = params.get('kisi') || p2Name;
 
-      // Update Text Content (Replaces "Alex" and "Maya")
-      const paragraphs = document.querySelectorAll('p.text-elegant');
-      paragraphs.forEach(p => {
-        let html = p.innerHTML;
-        html = html.replace(/Alex's/g, userName + "'s");
-        html = html.replace(/Maya's/g, targetName + "'s");
-        html = html.replace(/Alex/g, userName);
-        html = html.replace(/Maya/g, targetName);
-        p.innerHTML = html;
-      });
-
-      // Navigation Link Fixes
+      // Navigation: Geri butonu
       document.querySelectorAll('button, a, [class*="cursor"]').forEach(function (el) {
         var txt = (el.textContent || '') + (el.innerHTML || '');
         if (txt.includes('arrow_back')) {
           el.onclick = function (e) {
             e.preventDefault();
-            window.location.href = `name_numerology_breakdown_3.html?kisi=${encodeURIComponent(kisiName)}`;
+            window.location.href = 'name_numerology_breakdown_3.html?kisi=' + encodeURIComponent(kisiParam);
           };
         }
         if (txt.includes('Home') || el.innerHTML.includes('>home<')) {
-          el.onclick = () => window.location.href = 'mystic_numerology_home_1.html';
+          el.onclick = function() { window.location.href = 'mystic_numerology_home_1.html'; };
         }
       });
     });
@@ -266,23 +239,12 @@
           style="width:32px;height:32px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
       </div>
 
-      <!-- Soulmate Card - exact design -->
+      <!-- Soulmate Card -->
       <div
-        style="width:100%;max-width:300px;margin:0 auto 16px;aspect-ratio:1/1;border-radius:1.5rem;position:relative;overflow:hidden;background:radial-gradient(circle at top left,#4a0404 0%,#2d0a15 50%,#0a0907 100%);box-shadow:0 20px 50px rgba(158,27,50,0.3);border:1px solid rgba(255,255,255,0.1)">
-        <!-- Grain overlay -->
-        <div
-          style="position:absolute;inset:0;background-image:url(https://lh3.googleusercontent.com/aida-public/AB6AXuCVBO61WxIlVfsd7xLQ2RFuHwIv154zBZABkPunPBXVElJ9u5tjhGMGwqSbLVHez1XTL5JyeK77zFowzN8IHug7T-j4vaxxN76KS7kJ_I_tNTt9-pq3ia4T6zs7vdNJbLcsH27_VcyfUArrpqCzOY7FRfSGKymEFC6URwYJ4uquAG4yyTDjdF_nz8EUWUqqGFhBYcZMJ8CYFqOBXEsv-h8r3KG-i1FJgyRM9Lyyh3AufFHtzyZvw6xx4U2xPcU3u8xvRBD4Zz3Ankjf);opacity:0.4;mix-blend-mode:overlay;pointer-events:none">
-        </div>
-        <!-- Glow blobs -->
-        <div
-          style="position:absolute;top:-40px;left:-40px;width:192px;height:192px;background:rgba(158,27,50,0.3);filter:blur(60px);border-radius:50%;pointer-events:none">
-        </div>
-        <div
-          style="position:absolute;bottom:-40px;right:-40px;width:192px;height:192px;background:rgba(225,48,108,0.2);filter:blur(60px);border-radius:50%;pointer-events:none">
-        </div>
+        style="width:100%;max-width:300px;margin:0 auto 16px;aspect-ratio:1/1;border-radius:1.5rem;position:relative;overflow:hidden;background:radial-gradient(circle at 25% 20%,#4a0404 0%,#2d0a15 40%,#0a0907 100%);box-shadow:0 20px 50px rgba(158,27,50,0.3);border:1px solid rgba(255,255,255,0.1)">
         <!-- Top badge -->
         <div
-          style="position:absolute;top:20px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:8px">
+          style="position:absolute;top:16px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:8px;z-index:2">
           <div
             style="width:22px;height:22px;background:#cfa117;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(207,161,23,0.5)">
             <span class="material-symbols-outlined"
@@ -293,37 +255,28 @@
         </div>
         <!-- Main content -->
         <div
-          style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;text-align:center">
-          <p
-            style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:700;color:rgba(255,255,255,0.5);margin-bottom:8px;font-family:Manrope,sans-serif">
-            Unity Card</p>
+          style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 16px 16px;text-align:center">
           <h2 id="sm-names"
-            style="font-family:Playfair Display,serif;font-size:22px;font-style:italic;font-weight:700;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px;padding:0 8px">
+            style="font-family:Playfair Display,serif;font-size:19px;font-style:italic;font-weight:700;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:#cfa117;margin-bottom:14px;padding:0 4px;line-height:1.3">
             Alexander &amp; Sophia</h2>
           <!-- Score circle -->
           <div
-            style="width:112px;height:112px;border-radius:50%;border:2px solid rgba(207,161,23,0.5);box-shadow:0 0 25px rgba(207,161,23,0.4);background:rgba(10,9,7,0.4);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;position:relative">
+            style="width:108px;height:108px;border-radius:50%;border:2px solid rgba(207,161,23,0.5);box-shadow:0 0 20px rgba(207,161,23,0.3);background:#1a0a10;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:14px;position:relative">
             <span id="sm-score"
-              style="font-size:36px;font-weight:800;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;font-family:Manrope,sans-serif">94%</span>
+              style="font-size:36px;font-weight:800;background:linear-gradient(135deg,#cfa117,#f7e4a1,#cfa117);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:#cfa117;line-height:1;font-family:Manrope,sans-serif">94%</span>
             <span
               style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(207,161,23,0.8);font-weight:700;margin-top:4px;font-family:Manrope,sans-serif">Compatibility</span>
             <span class="material-symbols-outlined"
-              style="position:absolute;top:-6px;right:-6px;font-size:16px;color:#cfa117">colors_spark</span>
+              style="position:absolute;top:-6px;right:-6px;font-size:16px;color:#cfa117">auto_awesome</span>
           </div>
           <!-- Bond label -->
           <div
-            style="backdrop-filter:blur(12px);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:10px 20px">
+            style="background:rgba(50,20,30,0.85);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:10px 20px">
             <p id="sm-bond"
               style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);font-family:Manrope,sans-serif">Divine
               Eternal Connection</p>
-            <p style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;font-style:italic">Sacred Bond &middot;
-              Destiny &middot; Harmony</p>
           </div>
         </div>
-        <!-- Footer -->
-        <div
-          style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:9px;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">
-          numerael.app</div>
       </div>
 
       <p
@@ -386,19 +339,7 @@
     </div>
   </div>
 
-  <script>
-    function smOpen() { var o = document.getElementById('sm-overlay'), s = document.getElementById('sm-sheet'); o.style.display = 'flex'; setTimeout(function () { s.style.transform = 'translateY(0)' }, 10); }
-    function smClose() { var s = document.getElementById('sm-sheet'); s.style.transform = 'translateY(100%)'; setTimeout(function () { document.getElementById('sm-overlay').style.display = 'none' }, 400); }
-    function smAction(t) {
-      if (t === 'copy' || t === 'save') {
-        var toast = document.createElement('div');
-        toast.textContent = t === 'copy' ? 'Link kopyalandi ✓' : 'Galeriye kaydedildi ✓';
-        toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#cfa117;color:#0a0907;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:800;z-index:999;white-space:nowrap;font-family:Manrope,sans-serif';
-        document.body.appendChild(toast); setTimeout(function () { toast.remove() }, 2000);
-      }
-      if (t === 'other' && navigator.share) { navigator.share({ title: 'Ruh Esinim', text: 'Soulnum ile ruh bagimizi kesfettim!', url: window.location.href }); }
-    }
-  </script>
+  <script src="js/soulmate-share.js"></script>
 
   <script src="js/numerology-context-engine.js"></script>
   <script src="js/decision-timing-engine.js"></script>
