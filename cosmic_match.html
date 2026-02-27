@@ -515,6 +515,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 var innerDiv = frags[activeRibbonIdx].querySelector('.frag-inner');
                 if (innerDiv) innerDiv.innerHTML = '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover rounded-full">';
             }
+            // Revealed eşleşmeyi hemen geçmiş listesine ekle
+            addRevealedToHistory(activeItem, m, storedIsPrem);
         } else if (result.reason === 'daily_limit') {
             document.getElementById('btn-reveal').style.display = 'none';
             document.getElementById('no-credits-msg').style.display = 'block';
@@ -617,8 +619,11 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         var history = await window.discovery.getMatchHistory(userId, 30);
         var todayStr = window.discovery.todayStr();
-        var pastHistory = history.filter(function(h) { return h.match_date !== todayStr; });
-        renderHistory(pastHistory, isPrem);
+        // Bugünkü revealed eşleşmeler + geçmiş tüm eşleşmeler
+        var visibleHistory = history.filter(function(h) {
+            return h.match_date !== todayStr || h.revealed;
+        });
+        renderHistory(visibleHistory, isPrem);
       } catch(e) { console.error('[CosmicMatch] initMain hatası:', e); }
     }
 
@@ -819,6 +824,27 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // History — Sacred Transitions stili
+    function addRevealedToHistory(item, m, isPrem) {
+        var listEl = document.getElementById('history-list');
+        var emptyEl = document.getElementById('history-empty');
+        if (emptyEl) emptyEl.style.display = 'none';
+        var score = item.score || 0;
+        var date = item.matchDate || '';
+        var arch = m.life_path ? (window.discovery.ARCHETYPES[m.life_path] || '') : '';
+        var card = document.createElement('div');
+        card.className = 'flex items-center gap-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-primary/20 rounded-2xl shadow-sm transition active:scale-[0.98]';
+        card.innerHTML =
+            '<div class="w-14 h-14 rounded-full border-2 border-primary/40 overflow-hidden flex-shrink-0 flex items-center justify-center bg-white/60 dark:bg-card-dark"><img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover" alt=""></div>' +
+            '<div class="flex-1 min-w-0"><h4 class="text-sm font-bold text-gray-800 dark:text-[#E2D1C3] truncate cursor-pointer conn-name-click"' + (m.user_id ? ' data-uid="' + m.user_id + '" data-name="' + (m.full_name || '') + '"' : '') + '>' + (m.full_name || 'Bilinmeyen') + '</h4><p class="text-[10px] text-text-muted uppercase tracking-tighter">LP ' + (m.life_path || '?') + (arch ? ' · ' + arch : '') + '</p></div>' +
+            '<div class="text-right shrink-0"><p class="copper-gradient-text text-sm font-bold">%' + score + '</p><p class="text-text-muted/50 text-[10px]">' + formatDate(date) + '</p></div>';
+        // En üste ekle (en yeni)
+        if (listEl.firstChild) {
+            listEl.insertBefore(card, listEl.firstChild);
+        } else {
+            listEl.appendChild(card);
+        }
+    }
+
     function renderHistory(matches, isPrem) {
         var listEl=document.getElementById('history-list'); var emptyEl=document.getElementById('history-empty');
         if(!matches||!matches.length){emptyEl.style.display='block';return;}

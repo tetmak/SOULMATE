@@ -153,6 +153,9 @@
 
         console.log('[Discovery] Opt-in: userId=' + userId + ', name=' + ud.name + ', gender=' + freshGender);
 
+        // Gender'ı normalize et (Supabase case-sensitive .in() filtresi için)
+        freshGender = (freshGender || 'unknown').toLowerCase().trim();
+
         var data = {
             user_id: userId,
             full_name: ud.name,
@@ -504,6 +507,8 @@
             }
         } catch(e) {}
 
+        // Gender'ı normalize et (Supabase case-sensitive .in() filtresi için)
+        freshGender = (freshGender || 'unknown').toLowerCase().trim();
         console.log('[Discovery] refreshOwnProfile: userId=' + userId + ', gender=' + freshGender);
 
         var lp = calcLP(ud.birthDate);
