@@ -175,12 +175,49 @@
                             </div>
                         </div>
                         <div class="w-full max-w-md text-center space-y-4 pb-4">
-                            <h2 class="text-primary tracking-[0.5em] text-2xl font-light ml-[0.5em]" style="font-family:'Cinzel',serif">NuFest</h2>
+                            <h2 class="text-primary tracking-[0.5em] text-2xl font-light ml-[0.5em]" style="font-family:'Cinzel',serif">NuSphere</h2>
                             <h1 class="text-white tracking-tight text-[32px] font-bold leading-tight">
                                 Günlük <br /><span class="text-primary">Kozmik Rehberin</span>
                             </h1>
                             <p class="text-white/70 text-base font-normal leading-relaxed px-4">
                                 Her gün kişisel enerji takvimine göre en doğru kararları al ve evrenin sana sunduğu fırsatları yakala.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="slide">
+                        <div class="flex flex-1 items-center justify-center w-full">
+                            <div class="relative flex aspect-square w-full max-w-[280px] items-center justify-center">
+                                <div class="absolute inset-0 bg-emerald-500/10 blur-[100px] rounded-full"></div>
+                                <div class="z-10 flex flex-col items-center gap-6">
+                                    <div class="w-28 h-28 rounded-full bg-gradient-to-br from-primary/20 to-emerald-500/20 border border-primary/30 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary text-6xl" style="font-variation-settings:'FILL' 1">magic_button</span>
+                                    </div>
+                                    <div class="flex gap-4">
+                                        <div class="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-emerald-400/80 text-3xl" style="font-variation-settings:'FILL' 1">spa</span>
+                                        </div>
+                                        <div class="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-primary/80 text-3xl" style="font-variation-settings:'FILL' 1">flare</span>
+                                        </div>
+                                        <div class="w-16 h-16 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-teal-400/80 text-3xl" style="font-variation-settings:'FILL' 1">public</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="absolute -top-2 left-4 text-emerald-400/30 animate-pulse">
+                                    <span class="material-symbols-outlined text-3xl">auto_awesome</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full max-w-md text-center space-y-4 pb-4">
+                            <h2 class="text-primary tracking-[0.5em] text-2xl font-light ml-[0.5em]" style="font-family:'Cinzel',serif">NuFest</h2>
+                            <h1 class="text-white tracking-tight text-[32px] font-bold leading-tight">
+                                Niyetini Evrene <br /><span class="text-primary">Gönder</span>
+                            </h1>
+                            <p class="text-white/70 text-base font-normal leading-relaxed px-4">
+                                Manifest portalında niyetlerini belirle, kozmik enerjiye bırak ve toplulukla birlikte gerçekleştir.
                             </p>
                         </div>
                     </div>
@@ -195,6 +232,7 @@
                     <div class="dot active h-1.5 rounded-full cursor-pointer" data-index="0"></div>
                     <div class="dot h-1.5 rounded-full cursor-pointer" data-index="1"></div>
                     <div class="dot h-1.5 rounded-full cursor-pointer" data-index="2"></div>
+                    <div class="dot h-1.5 rounded-full cursor-pointer" data-index="3"></div>
                 </div>
                 <!-- Primary Action Button -->
                 <div class="flex flex-col gap-4">
@@ -225,7 +263,7 @@
             'use strict';
 
             var currentSlide = 0;
-            var totalSlides = 3;
+            var totalSlides = 4;
             var slidesEl = document.getElementById('slides');
             var dots = document.querySelectorAll('.dot');
             var btnNext = document.getElementById('btn-next');
