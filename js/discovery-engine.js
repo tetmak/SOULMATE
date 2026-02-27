@@ -140,11 +140,24 @@
         try { ud = JSON.parse(localStorage.getItem('numerael_user_data')||'null'); } catch(e){}
         if (!ud || !ud.name) return false;
 
+        // Supabase profiles tablosundan güncel cinsiyet bilgisini al
+        var freshGender = ud.gender || 'unknown';
+        try {
+            var profRes = await window.supabaseClient.from('profiles')
+                .select('gender').eq('id', userId).maybeSingle();
+            if (profRes.data && profRes.data.gender) {
+                freshGender = profRes.data.gender;
+                console.log('[Discovery] Opt-in: profiles tablosundan gender alındı:', freshGender);
+            }
+        } catch(e) { console.warn('[Discovery] Opt-in: profiles gender fetch hatası:', e); }
+
+        console.log('[Discovery] Opt-in: userId=' + userId + ', name=' + ud.name + ', gender=' + freshGender);
+
         var data = {
             user_id: userId,
             full_name: ud.name,
             birth_date: ud.birthDate || null,
-            gender: ud.gender || 'unknown',
+            gender: freshGender,
             life_path: calcLP(ud.birthDate),
             expression_num: calcExp(ud.name),
             soul_urge: calcSoul(ud.name),
@@ -156,6 +169,7 @@
         try {
             await window.supabaseClient.from('discovery_profiles').upsert(data);
             localStorage.setItem('numerael_discovery_opted_in', 'true');
+            console.log('[Discovery] Opt-in başarılı — gender:', freshGender);
             return true;
         } catch(e) {
             console.error('[Discovery] Opt-in error:', e);
@@ -183,6 +197,16 @@
 
     async function fetchDiscoverableProfiles(excludeUserId, userGender) {
         try {
+            // Önce tüm profilleri sayalım (debug)
+            var allQuery = window.supabaseClient
+                .from('discovery_profiles')
+                .select('user_id, full_name, gender, discoverable')
+                .eq('discoverable', true)
+                .neq('user_id', excludeUserId);
+            var allRes = await allQuery;
+            var allProfiles = allRes.data || [];
+            console.log('[Discovery] Tüm keşfedilebilir profiller (' + allProfiles.length + '):', allProfiles.map(function(p) { return p.full_name + ' (' + p.gender + ')'; }).join(', '));
+
             var query = window.supabaseClient
                 .from('discovery_profiles')
                 .select('*')
@@ -194,9 +218,12 @@
             if (opposites) {
                 query = query.in('gender', opposites);
                 console.log('[Discovery] Cinsiyet filtresi:', userGender, '→ sadece', opposites.join('/'), 'gösterilecek');
+            } else {
+                console.log('[Discovery] Cinsiyet bilinmiyor (' + userGender + '), filtre uygulanmıyor — tüm profiller gösterilecek');
             }
 
             var res = await query;
+            console.log('[Discovery] Filtrelenmiş profil sayısı:', (res.data || []).length);
             return res.data || [];
         } catch(e) {
             console.error('[Discovery] Fetch error:', e);
@@ -446,18 +473,25 @@
     async function refreshOwnProfile(userId) {
         var ud = null;
         try { ud = JSON.parse(localStorage.getItem('numerael_user_data')||'null'); } catch(e){}
-        if (!ud || !ud.name || !ud.birthDate) return;
+        if (!ud || !ud.name || !ud.birthDate) {
+            console.warn('[Discovery] refreshOwnProfile: localStorage verisi eksik, name=' + (ud && ud.name) + ', birthDate=' + (ud && ud.birthDate));
+            return null;
+        }
 
         // Supabase profiles tablosundan güncel gender'ı al
         var freshGender = ud.gender || 'unknown';
         try {
             var profRes = await window.supabaseClient.from('profiles')
                 .select('gender').eq('id', userId).maybeSingle();
-            if (profRes.data && profRes.data.gender) freshGender = profRes.data.gender;
+            if (profRes.data && profRes.data.gender) {
+                freshGender = profRes.data.gender;
+            }
         } catch(e) {}
 
+        console.log('[Discovery] refreshOwnProfile: userId=' + userId + ', gender=' + freshGender);
+
         var lp = calcLP(ud.birthDate);
-        if (!lp) return;
+        if (!lp) return null;
 
         try {
             await window.supabaseClient.from('discovery_profiles').update({
@@ -470,7 +504,11 @@
                 personality_num: calcPers(ud.name),
                 updated_at: new Date().toISOString()
             }).eq('user_id', userId);
-        } catch(e) {}
+        } catch(e) {
+            console.warn('[Discovery] refreshOwnProfile update hatası:', e);
+        }
+
+        return { gender: freshGender };
     }
 
     // ─── GLOBAL EXPORT ───────────────────────────────────────

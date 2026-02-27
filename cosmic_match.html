@@ -480,6 +480,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         soul_urge: window.discovery.calcSoul(ud.name),
         personality_num: window.discovery.calcPers(ud.name)
     };
+    console.log('[CosmicMatch] userProfile başlangıç:', userProfile.full_name, 'gender=' + userProfile.gender, 'LP=' + userProfile.life_path);
 
     document.getElementById('radar-user-initial').textContent = initial(ud.name);
 
@@ -540,7 +541,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     // ─── ANA İÇERİK YÜKLEME ─────────────────────────────────
     async function initMain() {
       try {
-        await window.discovery.refreshOwnProfile(userId);
+        var refreshResult = await window.discovery.refreshOwnProfile(userId);
+        // refreshOwnProfile Supabase profiles'dan güncel gender alır — userProfile'ı güncelle
+        if (refreshResult && refreshResult.gender) {
+            userProfile.gender = refreshResult.gender;
+            console.log('[CosmicMatch] userProfile.gender güncellendi:', refreshResult.gender);
+        }
 
         var isPrem = false;
         if (window.premium) {
