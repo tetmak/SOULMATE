@@ -283,7 +283,7 @@ function setDateValue(prefix, dateStr) {
   // *** PARTNER ALANLARI HER ZAMAN BOŞ - ön doldurma yok ***
 
   // Butona tıklandığında localStorage'a kaydet
-  document.addEventListener('click', function(e) {
+  document.addEventListener('click', async function(e) {
     var el = e.target;
     var txt = (el.textContent || '') + (el.innerHTML || '');
     if (!txt.includes('Check Compatibility') && !txt.includes('Calculate')) return;
