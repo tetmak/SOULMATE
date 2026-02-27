@@ -307,7 +307,33 @@
                 }
 
                 if (!needsRegen) {
-                    console.log('[Match] Bugün ' + existing.data.length + ' mevcut eşleşme bulundu (gender OK)');
+                    // Havuzda mevcut eşleşmelere dahil olmayan yeni profiller var mı kontrol et
+                    var existingMatchedIds = existing.data.map(function(m) { return m.matched_user_id; });
+                    var allOpposite = await fetchDiscoverableProfiles(userId, userGender);
+                    var missingProfiles = allOpposite.filter(function(p) {
+                        return existingMatchedIds.indexOf(p.user_id) === -1;
+                    });
+
+                    if (missingProfiles.length > 0 && existing.data.length < MAX_DAILY_MATCHES) {
+                        // Yeni profiller ekle (mevcut eşleşmeleri koru)
+                        console.log('[Match] ' + missingProfiles.length + ' yeni profil bulundu, eşleşmelere ekleniyor');
+                        enrichProfiles(missingProfiles);
+                        var slotsLeft = MAX_DAILY_MATCHES - existing.data.length;
+                        var toAdd = missingProfiles.slice(0, slotsLeft);
+                        for (var ai = 0; ai < toAdd.length; ai++) {
+                            var addP = toAdd[ai];
+                            var addScore = calcFullMatch(userProfile, addP);
+                            try {
+                                await sb.from('daily_matches').insert({
+                                    user_id: userId, matched_user_id: addP.user_id,
+                                    match_score: Math.min(99, addScore), match_date: today, revealed: false
+                                });
+                                existing.data.push({ user_id: userId, matched_user_id: addP.user_id, match_score: addScore, match_date: today, revealed: false });
+                            } catch(ae) {}
+                        }
+                    }
+
+                    console.log('[Match] Bugün ' + existing.data.length + ' eşleşme (gender OK)');
                     return await attachProfilesToMatches(existing.data);
                 }
 
