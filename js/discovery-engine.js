@@ -279,6 +279,8 @@
         var sb = window.supabaseClient;
 
         // ─── Bugünkü eşleşmeler zaten var mı? ───
+        var userGender = userProfile ? (userProfile.gender || 'unknown') : 'unknown';
+        var myNormGender = getOppositeGender(userGender); // normalizes: 'male' or 'female'
         try {
             var existing = await sb.from('daily_matches')
                 .select('*')
@@ -286,13 +288,39 @@
                 .eq('match_date', today);
 
             if (existing.data && existing.data.length > 0) {
-                console.log('[Match] Bugün ' + existing.data.length + ' mevcut eşleşme bulundu');
-                return await attachProfilesToMatches(existing.data);
+                // Gender doğrulama: aynı cinsiyetten eşleşme varsa sil ve yeniden oluştur
+                var needsRegen = false;
+                if (myNormGender) {
+                    var matchedIds = existing.data.map(function(m) { return m.matched_user_id; });
+                    try {
+                        var matchedProfiles = await sb.from('discovery_profiles')
+                            .select('user_id, gender').in('user_id', matchedIds);
+                        if (matchedProfiles.data) {
+                            for (var gi = 0; gi < matchedProfiles.data.length; gi++) {
+                                var mg = (matchedProfiles.data[gi].gender || '').toLowerCase().trim();
+                                var isSameGender = (myNormGender === 'male' && (mg === 'male' || mg === 'erkek')) ||
+                                                   (myNormGender === 'female' && (mg === 'female' || mg === 'kadın' || mg === 'kadin'));
+                                if (isSameGender) { needsRegen = true; break; }
+                            }
+                        }
+                    } catch(gv) {}
+                }
+
+                if (!needsRegen) {
+                    console.log('[Match] Bugün ' + existing.data.length + ' mevcut eşleşme bulundu (gender OK)');
+                    return await attachProfilesToMatches(existing.data);
+                }
+
+                // Aynı cinsiyetten eşleşme tespit edildi — bugünkü eşleşmeleri sil ve yeniden oluştur
+                console.warn('[Match] Aynı cinsiyet eşleşme tespit edildi, yeniden oluşturuluyor...');
+                try {
+                    await sb.from('daily_matches').delete()
+                        .eq('user_id', userId).eq('match_date', today);
+                } catch(de) { console.warn('[Match] Delete error:', de); }
             }
         } catch(e) { console.warn('[Match] Existing check error:', e); }
 
         // ─── Yoksa yeni eşleşmeler hesapla ───
-        var userGender = userProfile ? (userProfile.gender || 'unknown') : 'unknown';
         var profiles = await fetchDiscoverableProfiles(userId, userGender);
         if (!profiles.length) {
             console.log('[Match] Karşı cinsiyet profil yok, eşleşme oluşturulamadı');
