@@ -6,7 +6,7 @@
     <title>Manifest Portal</title>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <script src="js/supabase.min.js"></script>
     <script src="js/supabase-config.js"></script>
@@ -19,53 +19,22 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: #04040a;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0f0a19;
             color: #fff;
             min-height: 100dvh;
             padding-bottom: 140px;
             position: relative;
         }
-        /* ── Nebula Background (Horsehead-style) ──── */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background:
-                /* Stars */
-                radial-gradient(1px 1px at 12% 15%, rgba(255,255,255,0.8), transparent),
-                radial-gradient(1px 1px at 28% 8%, rgba(180,200,255,0.7), transparent),
-                radial-gradient(1.5px 1.5px at 65% 12%, rgba(100,150,255,0.9), transparent),
-                radial-gradient(1px 1px at 82% 22%, rgba(255,255,255,0.6), transparent),
-                radial-gradient(2px 2px at 8% 42%, rgba(120,160,255,1), transparent),
-                radial-gradient(1px 1px at 45% 35%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 72% 48%, rgba(255,220,200,0.6), transparent),
-                radial-gradient(1.5px 1.5px at 92% 55%, rgba(200,200,255,0.7), transparent),
-                radial-gradient(1px 1px at 35% 62%, rgba(255,255,255,0.5), transparent),
-                radial-gradient(1px 1px at 55% 78%, rgba(180,180,255,0.5), transparent),
-                radial-gradient(2px 2px at 18% 85%, rgba(255,200,150,0.6), transparent),
-                radial-gradient(1px 1px at 78% 88%, rgba(255,255,255,0.4), transparent),
-                /* Red/crimson nebula cloud — main body */
-                radial-gradient(ellipse 80% 60% at 60% 40%, rgba(140,20,40,0.35) 0%, transparent 70%),
-                radial-gradient(ellipse 50% 40% at 70% 35%, rgba(180,30,50,0.25) 0%, transparent 60%),
-                radial-gradient(ellipse 40% 50% at 45% 50%, rgba(120,15,35,0.2) 0%, transparent 55%),
-                /* Blue star glow top-left */
-                radial-gradient(circle at 15% 18%, rgba(40,80,200,0.35) 0%, transparent 40%),
-                radial-gradient(circle at 10% 25%, rgba(30,60,160,0.2) 0%, transparent 35%),
-                /* Teal/green wisp */
-                radial-gradient(ellipse 30% 25% at 50% 45%, rgba(20,120,100,0.15) 0%, transparent 60%),
-                /* Warm edge glow */
-                radial-gradient(ellipse 60% 40% at 80% 60%, rgba(100,20,30,0.2) 0%, transparent 50%),
-                /* Deep space base */
-                radial-gradient(ellipse at 50% 50%, #0a0818 0%, #04040a 100%);
-        }
         body > * { position: relative; z-index: 1; }
+
+        /* ── Scrollbar hide ─────────────────────────── */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* ── Header title ────────────────────────────── */
         .page-title {
-            background: linear-gradient(90deg, #c084fc, #a855f7);
+            background: linear-gradient(90deg, #fb7ba2, #f9a858);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -77,15 +46,14 @@
         .sort-tabs {
             display: flex;
             gap: 0;
-            background: rgba(255,255,255,0.06);
-            border-radius: 9999px;
-            padding: 3px;
-            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 6px;
         }
         .sort-tab {
             flex: 1;
-            padding: 9px 4px;
-            border-radius: 9999px;
+            padding: 10px 4px;
+            border-radius: 12px;
             font-size: 11px;
             font-weight: 700;
             letter-spacing: 0.08em;
@@ -96,9 +64,8 @@
             text-align: center;
         }
         .sort-tab.active {
-            background: rgba(124,58,237,0.85);
+            background: rgba(255,255,255,0.1);
             color: #fff;
-            box-shadow: 0 2px 12px rgba(124,58,237,0.35);
         }
         .sort-tab:not(.active) {
             background: transparent;
@@ -109,78 +76,68 @@
         .cat-row { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
         .cat-row::-webkit-scrollbar { display: none; }
         .cat-chip {
-            padding: 7px 16px;
+            padding: 8px 20px;
             border-radius: 9999px;
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 500;
             border: 1px solid rgba(255,255,255,0.1);
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
-            background: rgba(255,255,255,0.04);
+            background: rgba(255,255,255,0.05);
             color: rgba(255,255,255,0.4);
         }
         .cat-chip.active {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
-            border-color: rgba(255,255,255,0.2);
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+            font-weight: 700;
         }
 
         /* ── Weekly Champion ─────────────────────────── */
         .weekly-card {
-            background: linear-gradient(160deg, rgba(26,16,48,0.85) 0%, rgba(14,8,32,0.9) 60%, rgba(18,8,42,0.85) 100%);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(124,58,237,0.25);
-            border-radius: 20px;
-            padding: 20px;
+            background: linear-gradient(145deg, #2d1b4d 0%, #1a1226 100%);
+            border: 2px solid #D4AF37;
+            box-shadow: 0 10px 30px -5px rgba(212,175,55,0.3);
+            border-radius: 24px;
+            padding: 24px;
             position: relative;
             overflow: hidden;
-        }
-        .weekly-card::before {
-            content: '';
-            position: absolute;
-            top: -30%; right: -15%;
-            width: 50%; height: 70%;
-            background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
-            pointer-events: none;
         }
         .weekly-badge {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            background: rgba(245,158,11,0.15);
-            color: #f59e0b;
-            font-size: 9px;
-            font-weight: 800;
+            background: #D4AF37;
+            color: #0f0a19;
+            font-size: 10px;
+            font-weight: 900;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            padding: 4px 10px;
-            border-radius: 6px;
-            border: 1px solid rgba(245,158,11,0.25);
+            padding: 5px 12px;
+            border-radius: 9999px;
         }
         .weekly-likes {
-            color: rgba(255,255,255,0.3);
+            color: rgba(212,175,55,0.6);
             font-size: 11px;
-            font-weight: 500;
+            font-weight: 700;
         }
         .weekly-quote {
             font-size: 20px;
-            font-weight: 500;
+            font-weight: 700;
             line-height: 1.4;
             color: #fff;
-            letter-spacing: -0.01em;
         }
         .ritual-btn {
-            background: rgba(124,58,237,0.25);
-            color: #c084fc;
+            background: rgba(212,175,55,0.1);
+            color: #D4AF37;
             font-size: 10px;
-            font-weight: 800;
+            font-weight: 900;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            padding: 7px 16px;
-            border-radius: 10px;
-            border: 1px solid rgba(124,58,237,0.35);
+            padding: 8px 18px;
+            border-radius: 9999px;
+            border: 1px solid rgba(212,175,55,0.2);
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -188,123 +145,129 @@
         .user-pill {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         .user-avatar-sm {
-            width: 28px; height: 28px;
+            width: 40px; height: 40px;
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 700;
+            font-size: 12px; font-weight: 700;
             flex-shrink: 0;
+            border: 2px solid rgba(212,175,55,0.3);
+            padding: 2px;
         }
 
         /* ── Grid ────────────────────────────────────── */
         .manifest-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 16px;
         }
 
         /* ── Grid Cards ──────────────────────────────── */
         .grid-card {
-            border-radius: 18px;
-            padding: 16px;
+            border-radius: 24px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 170px;
+            min-height: 180px;
             cursor: pointer;
             transition: transform 0.15s;
             position: relative;
+            box-shadow: 0 8px 24px -4px rgba(0,0,0,0.15);
         }
         .grid-card:active { transform: scale(0.97); }
 
-        /* Category tag */
+        /* Category icon */
+        .cat-icon-wrap {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .cat-icon-wrap .material-symbols-outlined {
+            font-size: 14px;
+        }
         .cat-tag {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: 0.1em;
+            gap: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
             text-transform: uppercase;
-            padding: 3px 8px;
-            border-radius: 6px;
             width: fit-content;
         }
-        .cat-tag .dot {
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            display: inline-block;
-        }
 
-        /* Warm gradient palettes matching design exactly */
+        /* Pastel gradient palettes */
         .grad-love {
-            background: linear-gradient(145deg, #c44569 0%, #d4736c 40%, #e8a088 100%);
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
         }
-        .grad-love .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
-        .grad-love .cat-tag .dot { background: #ff6b8a; }
+        .grad-love .cat-tag { color: rgba(150,30,80,0.7); }
+        .grad-love .cat-icon-wrap { background: rgba(255,255,255,0.3); }
+        .grad-love .cat-icon-wrap .material-symbols-outlined { color: rgba(150,30,80,0.7); }
 
         .grad-money {
-            background: linear-gradient(145deg, #2a7d5f 0%, #5a9e5a 35%, #c4b44a 100%);
+            background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
         }
-        .grad-money .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
-        .grad-money .cat-tag .dot { background: #6ee7b7; }
+        .grad-money .cat-tag { color: rgba(140,60,0,0.7); }
+        .grad-money .cat-icon-wrap .material-symbols-outlined { color: rgba(140,60,0,0.7); }
 
         .grad-health {
-            background: linear-gradient(145deg, #c87833 0%, #d4a04a 40%, #e8cc6a 100%);
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
         }
-        .grad-health .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
-        .grad-health .cat-tag .dot { background: #fbbf24; }
+        .grad-health .cat-tag { color: rgba(0,100,100,0.7); }
+        .grad-health .cat-icon-wrap .material-symbols-outlined { color: rgba(0,100,100,0.7); }
 
         .grad-spiritual {
-            background: linear-gradient(145deg, #9a5a7c 0%, #c48a8a 40%, #e0b0a0 100%);
+            background: linear-gradient(135deg, #fbc2eb 0%, #f6a085 100%);
         }
-        .grad-spiritual .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
-        .grad-spiritual .cat-tag .dot { background: #c084fc; }
+        .grad-spiritual .cat-tag { color: rgba(140,40,80,0.7); }
+        .grad-spiritual .cat-icon-wrap .material-symbols-outlined { color: rgba(140,40,80,0.7); }
 
         .grad-career {
-            background: linear-gradient(145deg, #8a6e2f 0%, #b89a4a 40%, #d4c06a 100%);
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
         }
-        .grad-career .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
-        .grad-career .cat-tag .dot { background: #fcd34d; }
+        .grad-career .cat-tag { color: rgba(140,70,20,0.7); }
+        .grad-career .cat-icon-wrap .material-symbols-outlined { color: rgba(140,70,20,0.7); }
 
         .grad-general {
-            background: linear-gradient(145deg, #4a5a8a 0%, #6a7aaa 40%, #8a9aba 100%);
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
         }
-        .grad-general .cat-tag { background: rgba(255,255,255,0.2); color: #fff; }
-        .grad-general .cat-tag .dot { background: #93c5fd; }
+        .grad-general .cat-tag { color: rgba(30,60,120,0.7); }
+        .grad-general .cat-icon-wrap .material-symbols-outlined { color: rgba(30,60,120,0.7); }
 
         /* Card text */
         .card-quote {
             font-size: 14px;
-            font-weight: 600;
-            line-height: 1.45;
-            color: rgba(0,0,0,0.85);
-            margin-top: 10px;
+            font-weight: 700;
+            line-height: 1.5;
+            color: rgba(0,0,0,0.82);
+            margin-top: 12px;
         }
         .card-bottom {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-top: auto;
-            padding-top: 10px;
+            padding-top: 12px;
         }
         .card-user {
             font-size: 10px;
-            font-weight: 500;
-            color: rgba(0,0,0,0.45);
+            font-weight: 700;
+            color: rgba(0,0,0,0.4);
         }
         .card-likes {
             display: flex;
             align-items: center;
             gap: 3px;
             font-size: 10px;
-            font-weight: 600;
-            color: rgba(0,0,0,0.4);
+            font-weight: 700;
+            color: rgba(0,0,0,0.35);
         }
         .card-likes .material-symbols-outlined {
-            font-size: 13px;
+            font-size: 16px;
             transition: all 0.2s;
         }
         .card-likes:active .material-symbols-outlined {
@@ -330,7 +293,7 @@
             box-shadow: 0 0 12px rgba(168,85,247,0.15);
         }
 
-        /* ── Champion badge (Top Rated all-time) ──── */
+        /* ── Champion badge ──────────────────────────── */
         .champion-badge {
             display: inline-flex;
             align-items: center;
@@ -356,9 +319,9 @@
             gap: 5px;
             padding: 6px 14px;
             border-radius: 9999px;
-            background: rgba(124,58,237,0.15);
-            border: 1px solid rgba(124,58,237,0.3);
-            color: #c084fc;
+            background: rgba(127,19,236,0.15);
+            border: 1px solid rgba(127,19,236,0.3);
+            color: #a78bfa;
             font-size: 11px;
             font-weight: 700;
             cursor: pointer;
@@ -382,7 +345,7 @@
             position: absolute;
             inset: 0;
             top: 40px;
-            background: linear-gradient(180deg, #0c0a18 0%, #04040a 100%);
+            background: linear-gradient(180deg, #16102a 0%, #0f0a19 100%);
             border-radius: 24px 24px 0 0;
             display: flex;
             flex-direction: column;
@@ -399,16 +362,16 @@
         .my-modal-title {
             font-size: 18px;
             font-weight: 700;
-            background: linear-gradient(90deg, #c084fc, #a855f7);
+            background: linear-gradient(90deg, #fb7ba2, #f9a858);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         .my-modal-close {
-            width: 32px; height: 32px;
+            width: 36px; height: 36px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.05);
+            border: none;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
             color: rgba(255,255,255,0.4);
@@ -438,8 +401,8 @@
             text-transform: uppercase;
             padding: 3px 8px;
             border-radius: 6px;
-            background: rgba(124,58,237,0.15);
-            color: #c084fc;
+            background: rgba(127,19,236,0.15);
+            color: #a78bfa;
             margin-bottom: 8px;
         }
         .my-manifest-text {
@@ -467,7 +430,7 @@
         }
         .my-manifest-likes .material-symbols-outlined {
             font-size: 14px;
-            color: #c084fc;
+            color: #a78bfa;
         }
         .my-manifest-delete {
             position: absolute;
@@ -500,13 +463,13 @@
         .fab-btn {
             position: fixed;
             bottom: 100px;
-            right: 20px;
+            right: 24px;
             width: 56px; height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #7c3aed, #a855f7);
+            background: #7f13ec;
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 24px rgba(124,58,237,0.5);
+            box-shadow: 0 8px 30px rgba(127,19,236,0.4);
             display: flex; align-items: center; justify-content: center;
             z-index: 100;
             transition: transform 0.15s;
@@ -528,48 +491,48 @@
 <body>
 
     <!-- Header -->
-    <div class="px-5 pt-12 pb-2">
-        <div class="flex items-center justify-between mb-5">
-            <h1 class="page-title">Manifest Portal</h1>
-            <div class="flex items-center gap-2">
-                <button class="my-manifests-btn" onclick="openMyManifests()">
-                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
-                    My Manifests
-                </button>
-                <button onclick="showInfoModal()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-purple-400/60 text-base">info</span>
-                </button>
-            </div>
+    <header class="sticky top-0 z-20 backdrop-blur-md border-b border-white/5 px-6 py-4 flex items-center justify-between" style="background:rgba(15,10,25,0.8);">
+        <h1 class="page-title">Manifest Portal</h1>
+        <div class="flex items-center gap-2">
+            <button class="my-manifests-btn" onclick="openMyManifests()">
+                <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+                My Manifests
+            </button>
+            <button onclick="showInfoModal()" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,0.05);">
+                <span class="material-symbols-outlined text-slate-400" style="font-size:20px;">info</span>
+            </button>
         </div>
+    </header>
 
+    <div class="px-4 pt-6 pb-2">
         <!-- Sort Tabs -->
-        <div class="sort-tabs mb-4">
+        <div class="sort-tabs mb-6">
             <button class="sort-tab active" data-sort="newest" onclick="switchSort(this)">Newest</button>
             <button class="sort-tab" data-sort="top_rated" onclick="switchSort(this)">Top Rated</button>
             <button class="sort-tab" data-sort="weekly" onclick="switchSort(this)">Weekly</button>
         </div>
 
         <!-- Category Chips -->
-        <div class="cat-row pb-3">
+        <div class="cat-row no-scrollbar pb-3">
             <button class="cat-chip active" data-cat="all" onclick="switchCat(this)">All</button>
-            <button class="cat-chip" data-cat="love" onclick="switchCat(this)">Aşk</button>
-            <button class="cat-chip" data-cat="money" onclick="switchCat(this)">Para</button>
-            <button class="cat-chip" data-cat="health" onclick="switchCat(this)">Sağlık</button>
-            <button class="cat-chip" data-cat="career" onclick="switchCat(this)">Kariyer</button>
-            <button class="cat-chip" data-cat="spiritual" onclick="switchCat(this)">Ruh</button>
+            <button class="cat-chip" data-cat="money" onclick="switchCat(this)">Money</button>
+            <button class="cat-chip" data-cat="love" onclick="switchCat(this)">Love</button>
+            <button class="cat-chip" data-cat="health" onclick="switchCat(this)">Health</button>
+            <button class="cat-chip" data-cat="career" onclick="switchCat(this)">Career</button>
+            <button class="cat-chip" data-cat="spiritual" onclick="switchCat(this)">Soul</button>
         </div>
     </div>
 
     <!-- Feed -->
-    <div id="manifest-feed" class="px-5"></div>
+    <div id="manifest-feed" class="px-4"></div>
 
     <!-- Info Modal -->
     <div id="info-modal" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); align-items:center; justify-content:center;">
-        <div style="background:rgba(16,12,30,0.98); border:1px solid rgba(124,58,237,0.3); border-radius:20px; padding:28px; max-width:320px; width:90%; text-align:center;">
-            <span class="material-symbols-outlined text-4xl text-purple-400 mb-3" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+        <div style="background:rgba(22,16,42,0.98); border:1px solid rgba(127,19,236,0.3); border-radius:20px; padding:28px; max-width:320px; width:90%; text-align:center;">
+            <span class="material-symbols-outlined text-4xl mb-3" style="font-variation-settings:'FILL' 1;color:#a78bfa;">auto_awesome</span>
             <h3 class="text-lg font-bold mb-2">Manifest Portal</h3>
             <p class="text-white/50 text-sm leading-relaxed mb-5">Topluluk manifestlerini keşfet, ilham al ve kendi niyetlerini evrene gönder. Birlikte manifest oluşturmak enerjinizi katlar!</p>
-            <button onclick="closeInfoModal()" class="w-full py-3 rounded-full bg-purple-600 text-white font-semibold text-sm cursor-pointer">Anladım</button>
+            <button onclick="closeInfoModal()" class="w-full py-3 rounded-full text-white font-semibold text-sm cursor-pointer" style="background:#7f13ec;">Anladım</button>
         </div>
     </div>
 
@@ -600,17 +563,17 @@
 
         var currentSort = 'newest';
         var currentCat = 'all';
-        var feedData = [];    // Supabase'den gelen manifest listesi
+        var feedData = [];
         var isLoading = false;
 
         // ─── Category Config ────────────────────────────
         var CAT_CFG = {
-            love:      { label: 'LOVE',    grad: 'grad-love',      dot: '#ff6b8a' },
-            money:     { label: 'WEALTH',  grad: 'grad-money',     dot: '#6ee7b7' },
-            health:    { label: 'ENERGY',  grad: 'grad-health',    dot: '#fbbf24' },
-            career:    { label: 'CAREER',  grad: 'grad-career',    dot: '#fcd34d' },
-            spiritual: { label: 'SOUL',    grad: 'grad-spiritual', dot: '#c084fc' },
-            general:   { label: 'GENERAL', grad: 'grad-general',   dot: '#93c5fd' }
+            love:      { label: 'LOVE',    grad: 'grad-love',      icon: 'favorite',  iconColor: 'rgba(150,30,80,0.7)' },
+            money:     { label: 'WEALTH',  grad: 'grad-money',     icon: 'payments',  iconColor: 'rgba(140,60,0,0.7)' },
+            health:    { label: 'ENERGY',  grad: 'grad-health',    icon: 'bolt',      iconColor: 'rgba(0,100,100,0.7)' },
+            career:    { label: 'CAREER',  grad: 'grad-career',    icon: 'work',      iconColor: 'rgba(140,70,20,0.7)' },
+            spiritual: { label: 'SOUL',    grad: 'grad-spiritual', icon: 'auto_fix',  iconColor: 'rgba(140,40,80,0.7)' },
+            general:   { label: 'GENERAL', grad: 'grad-general',   icon: 'stars',     iconColor: 'rgba(30,60,120,0.7)' }
         };
 
         // ─── Avatar colors ──────────────────────────────
@@ -626,7 +589,7 @@
         }
         function fmtLikes(n) { return n >= 1000 ? (n/1000).toFixed(1) + 'k' : '' + n; }
 
-        // ─── Fallback Data (Supabase baglanamazsa) ──────
+        // ─── Fallback Data ────────────────────────────────
         var FALLBACK = [
             { id:'f1', display_name:'Elif', life_path:7, text:'Evrenin bana gönderdiği sevgiyi açık kalplerle karşılıyorum.', likes:287, category:'love', liked:false },
             { id:'f2', display_name:'Burak', life_path:3, text:'Bolluk ve bereket hayatımın her alanına akıyor.', likes:214, category:'money', liked:false },
@@ -651,19 +614,18 @@
         // ─── RENDER ─────────────────────────────────────
         function render() {
             var feed = document.getElementById('manifest-feed');
-            var all = feedData.slice(); // kopyala
+            var all = feedData.slice();
 
             if (!all.length) {
-                feed.innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined text-white/10" style="font-size:48px;font-variation-settings:\'FILL\' 1;">search_off</span><p class="text-white/20 text-sm mt-3">Bu kategoride manifest bulunamadı</p></div>';
+                feed.innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined" style="font-size:48px;color:rgba(255,255,255,0.06);font-variation-settings:\'FILL\' 1;">search_off</span><p style="color:rgba(255,255,255,0.15);font-size:14px;margin-top:12px;">Bu kategoride manifest bulunamadı</p></div>';
                 return;
             }
 
             var html = '';
 
-            // ── Weekly Champion (newest + all kategorisinde en çok beğenilen) ──
+            // ── Weekly Champion ──────────────────────────
             var weekly = null;
             if (currentSort === 'newest' && currentCat === 'all' && all.length > 0) {
-                // En cok begenilen manifesti bul
                 var topIdx = 0;
                 for (var w = 1; w < all.length; w++) {
                     if ((all[w].likes || 0) > (all[topIdx].likes || 0)) topIdx = w;
@@ -679,21 +641,21 @@
                 var wc = avatarColor(wName);
                 var wi = initials(wName);
                 var wIsReal = !weekly.isBot;
-                html += '<div class="weekly-card fade-up fd1 mb-4"' + (wIsReal ? ' style="border-color:rgba(168,85,247,0.5);box-shadow:0 0 20px rgba(168,85,247,0.15);"' : '') + '>' +
+                html += '<div class="weekly-card fade-up fd1 mb-4">' +
                     '<div class="flex items-center justify-between mb-4">' +
-                        '<div class="flex items-center gap-2"><span class="weekly-badge">⭐ WEEKLY CHAMPION</span>' + (wIsReal ? '<span class="real-user-badge" style="background:rgba(168,85,247,0.3);color:#c084fc;">✨ GERÇEK</span>' : '') + '</div>' +
+                        '<span class="weekly-badge">🏆 Weekly Champion</span>' +
                         '<span class="weekly-likes">' + fmtLikes(weekly.likes || 0) + ' Likes</span>' +
                     '</div>' +
-                    '<p class="weekly-quote mb-5">"' + weekly.text + '"</p>' +
+                    '<p class="weekly-quote mb-6">"' + weekly.text + '"</p>' +
                     '<div class="flex items-center justify-between">' +
                         '<div class="user-pill">' +
-                            '<div class="user-avatar-sm" style="background:' + wc + ';">' + wi + '</div>' +
+                            '<div class="user-avatar-sm" style="background:linear-gradient(135deg,' + wc + ',#f59e0b);">' + wi + '</div>' +
                             '<div style="line-height:1.2;">' +
-                                '<div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.8);">' + wName + '</div>' +
-                                (weekly.life_path ? '<div style="font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;">Life Path ' + weekly.life_path + '</div>' : '') +
+                                '<div style="font-size:12px;font-weight:700;color:#D4AF37;">' + wName + '</div>' +
+                                (weekly.life_path ? '<div style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:500;">Life Path ' + weekly.life_path + '</div>' : '') +
                             '</div>' +
                         '</div>' +
-                        '<button class="ritual-btn" onclick="handleLike(\'' + weekly.id + '\')"><span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;font-variation-settings:\'FILL\' ' + (weekly.liked ? '1' : '0') + ';">favorite</span> ' + fmtLikes(weekly.likes || 0) + '</button>' +
+                        '<button class="ritual-btn" onclick="handleLike(\'' + weekly.id + '\')">Ritual</button>' +
                     '</div>' +
                 '</div>';
             }
@@ -710,7 +672,6 @@
                 var isChamp = !!m.isChampion;
                 var extraClass = isChamp ? ' champion-card' : (isReal ? ' real-user-card' : '');
 
-                // Champion hafta etiketi
                 var champLabel = '';
                 if (isChamp && m.championWeek) {
                     var wd = new Date(m.championWeek);
@@ -720,17 +681,20 @@
 
                 html += '<div class="grid-card ' + c.grad + extraClass + ' fade-up fd' + d + '">' +
                     '<div>' +
-                        '<span class="cat-tag"><span class="dot" style="background:' + c.dot + '"></span> ' + c.label + '</span>' +
+                        '<div class="cat-tag">' +
+                            '<div class="cat-icon-wrap"><span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;">' + c.icon + '</span></div>' +
+                            '<span>' + c.label + '</span>' +
+                        '</div>' +
                         (isChamp ? champLabel : (isReal ? '<span class="real-user-badge">✨ GERÇEK</span>' : '')) +
                         '<p class="card-quote">"' + m.text + '"</p>' +
                     '</div>' +
                     '<div class="card-bottom">' +
                         '<span class="card-user">@' + mName + '</span>' +
                         (isChamp ?
-                            '<span class="card-likes" style="color:rgba(245,158,11,0.6);"><span class="material-symbols-outlined" style="font-size:13px;font-variation-settings:\'FILL\' 1;color:rgba(245,158,11,0.6);">favorite</span> ' + fmtLikes(m.likes || 0) + '</span>'
+                            '<span class="card-likes" style="color:rgba(245,158,11,0.6);"><span class="material-symbols-outlined" style="font-size:16px;font-variation-settings:\'FILL\' 1;color:rgba(245,158,11,0.6);">thumb_up</span> ' + fmtLikes(m.likes || 0) + '</span>'
                         :
                             '<button class="card-likes" onclick="event.stopPropagation();handleLike(\'' + m.id + '\')" style="background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:8px;">' +
-                                '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' ' + likedFill + ';' + (m.liked ? 'color:rgba(220,50,50,0.7);' : '') + '">favorite</span> ' + fmtLikes(m.likes || 0) +
+                                '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' ' + likedFill + ';' + (m.liked ? 'color:rgba(220,50,50,0.7);' : '') + '">thumb_up</span> ' + fmtLikes(m.likes || 0) +
                             '</button>'
                         ) +
                     '</div>' +
@@ -743,7 +707,7 @@
 
         // ─── Like Handler ───────────────────────────────
         window.handleLike = async function(manifestId) {
-            if (!manifestId || manifestId.startsWith('f')) return; // fallback data — like desteklenmiyor
+            if (!manifestId || manifestId.startsWith('f')) return;
             if (!window.manifestEngine) {
                 console.warn('[ManifestCommunity] No manifestEngine — cannot like');
                 return;
@@ -751,14 +715,12 @@
 
             console.log('[ManifestCommunity] handleLike called:', manifestId);
 
-            // Onceki durumu sakla (revert icin)
             var prevLiked = null;
             var prevLikes = null;
             for (var i = 0; i < feedData.length; i++) {
                 if (feedData[i].id === manifestId) {
                     prevLiked = feedData[i].liked;
                     prevLikes = feedData[i].likes || 0;
-                    // Optimistic UI update
                     feedData[i].liked = !feedData[i].liked;
                     feedData[i].likes = prevLikes + (feedData[i].liked ? 1 : -1);
                     if (feedData[i].likes < 0) feedData[i].likes = 0;
@@ -767,12 +729,10 @@
             }
             render();
 
-            // Supabase'e kaydet
             var result = await window.manifestEngine.toggleLike(manifestId);
             console.log('[ManifestCommunity] toggleLike result:', JSON.stringify(result));
 
             if (result.success) {
-                // Gercek sayiyi guncelle
                 for (var j = 0; j < feedData.length; j++) {
                     if (feedData[j].id === manifestId) {
                         feedData[j].likes = result.newCount;
@@ -782,7 +742,6 @@
                 }
                 render();
             } else {
-                // Basarisiz — optimistic UI'yi geri al
                 console.warn('[ManifestCommunity] Like failed, reverting UI');
                 for (var k = 0; k < feedData.length; k++) {
                     if (feedData[k].id === manifestId) {
@@ -795,12 +754,12 @@
             }
         };
 
-        // ─── Sort/Category değiştirince yeniden yükle ───
+        // ─── Sort/Category ──────────────────────────────
         async function reloadFeed() {
             if (isLoading) return;
             isLoading = true;
             var feed = document.getElementById('manifest-feed');
-            feed.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(124,58,237,0.3);border-top-color:#a855f7;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p class="text-white/20 text-xs mt-3">Yükleniyor...</p></div>';
+            feed.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(127,19,236,0.3);border-top-color:#7f13ec;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p style="color:rgba(255,255,255,0.15);font-size:12px;margin-top:12px;">Yükleniyor...</p></div>';
 
             feedData = await loadFromSupabase();
             isLoading = false;
@@ -834,11 +793,10 @@
             var countEl = document.getElementById('my-manifests-count');
             modal.style.display = 'block';
 
-            // Loading state
-            body.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(124,58,237,0.3);border-top-color:#a855f7;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p class="text-white/20 text-xs mt-3">Loading...</p></div>';
+            body.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(127,19,236,0.3);border-top-color:#7f13ec;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p style="color:rgba(255,255,255,0.15);font-size:12px;margin-top:12px;">Loading...</p></div>';
 
             if (!window.manifestEngine) {
-                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined text-white/10" style="font-size:48px;">cloud_off</span><p class="text-white/20 text-sm mt-3">Connection error</p></div>';
+                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined" style="font-size:48px;color:rgba(255,255,255,0.06);">cloud_off</span><p style="color:rgba(255,255,255,0.15);font-size:14px;margin-top:12px;">Connection error</p></div>';
                 countEl.textContent = '';
                 return;
             }
@@ -847,7 +805,7 @@
             countEl.textContent = myData.length > 0 ? '(' + myData.length + ')' : '';
 
             if (!myData.length) {
-                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined text-white/10" style="font-size:48px;font-variation-settings:\'FILL\' 1;">edit_note</span><p class="text-white/20 text-sm mt-3">You have no manifests yet</p><p class="text-white/10 text-xs mt-1">Tap the + button to create your first one!</p></div>';
+                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined" style="font-size:48px;color:rgba(255,255,255,0.06);font-variation-settings:\'FILL\' 1;">edit_note</span><p style="color:rgba(255,255,255,0.15);font-size:14px;margin-top:12px;">You have no manifests yet</p><p style="color:rgba(255,255,255,0.08);font-size:12px;margin-top:4px;">Tap the + button to create your first one!</p></div>';
                 return;
             }
 
@@ -886,7 +844,6 @@
 
             var success = await window.manifestEngine.deleteMy(manifestId);
             if (success) {
-                // Animasyonlu kaldır
                 var el = document.getElementById('my-m-' + manifestId);
                 if (el) {
                     el.style.transition = 'all 0.3s ease';
@@ -894,7 +851,6 @@
                     el.style.transform = 'translateX(60px)';
                     setTimeout(function() { el.remove(); }, 300);
                 }
-                // Feed'den de kaldır
                 for (var i = feedData.length - 1; i >= 0; i--) {
                     if (feedData[i].id === manifestId) {
                         feedData.splice(i, 1);
@@ -902,14 +858,13 @@
                     }
                 }
                 render();
-                // Count güncelle
                 var countEl = document.getElementById('my-manifests-count');
                 var remaining = document.querySelectorAll('.my-manifest-item');
                 setTimeout(function() {
                     remaining = document.querySelectorAll('.my-manifest-item');
                     countEl.textContent = remaining.length > 0 ? '(' + remaining.length + ')' : '';
                     if (remaining.length === 0) {
-                        document.getElementById('my-manifests-body').innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined text-white/10" style="font-size:48px;font-variation-settings:\'FILL\' 1;">edit_note</span><p class="text-white/20 text-sm mt-3">You have no manifests yet</p><p class="text-white/10 text-xs mt-1">Tap the + button to create your first one!</p></div>';
+                        document.getElementById('my-manifests-body').innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined" style="font-size:48px;color:rgba(255,255,255,0.06);font-variation-settings:\'FILL\' 1;">edit_note</span><p style="color:rgba(255,255,255,0.15);font-size:14px;margin-top:12px;">You have no manifests yet</p><p style="color:rgba(255,255,255,0.08);font-size:12px;margin-top:4px;">Tap the + button to create your first one!</p></div>';
                     }
                 }, 350);
             }
