@@ -155,9 +155,11 @@
     // ─── KEŞFEDİLEBİLİR PROFİLLERİ ÇEK ─────────────────────
     // Karşı cinsiyet filtreleme: erkek → kadın, kadın → erkek
     function getOppositeGender(gender) {
-        if (gender === 'male' || gender === 'erkek') return 'female';
-        if (gender === 'female' || gender === 'kadın' || gender === 'kadin') return 'male';
-        return null; // unknown → filtre yok
+        if (!gender) return null;
+        var g = gender.toLowerCase().trim();
+        if (g === 'male' || g === 'erkek') return ['female', 'kadın', 'kadin'];
+        if (g === 'female' || g === 'kadın' || g === 'kadin') return ['male', 'erkek'];
+        return null;
     }
 
     async function fetchDiscoverableProfiles(excludeUserId, userGender) {
@@ -169,10 +171,10 @@
                 .neq('user_id', excludeUserId);
 
             // Cinsiyet filtresi: karşı cinsiyeti göster
-            var opposite = getOppositeGender(userGender);
-            if (opposite) {
-                query = query.eq('gender', opposite);
-                console.log('[Discovery] Cinsiyet filtresi:', userGender, '→ sadece', opposite, 'gösterilecek');
+            var opposites = getOppositeGender(userGender);
+            if (opposites) {
+                query = query.in('gender', opposites);
+                console.log('[Discovery] Cinsiyet filtresi:', userGender, '→ sadece', opposites.join('/'), 'gösterilecek');
             }
 
             var res = await query;
@@ -427,11 +429,22 @@
         try { ud = JSON.parse(localStorage.getItem('numerael_user_data')||'null'); } catch(e){}
         if (!ud || !ud.name || !ud.birthDate) return;
 
+        // Supabase profiles tablosundan güncel gender'ı al
+        var freshGender = ud.gender || 'unknown';
+        try {
+            var profRes = await window.supabaseClient.from('profiles')
+                .select('gender').eq('id', userId).maybeSingle();
+            if (profRes.data && profRes.data.gender) freshGender = profRes.data.gender;
+        } catch(e) {}
+
         var lp = calcLP(ud.birthDate);
         if (!lp) return;
 
         try {
             await window.supabaseClient.from('discovery_profiles').update({
+                full_name: ud.name,
+                gender: freshGender,
+                birth_date: ud.birthDate,
                 life_path: lp,
                 expression_num: calcExp(ud.name),
                 soul_urge: calcSoul(ud.name),

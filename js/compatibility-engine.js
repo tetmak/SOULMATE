@@ -100,38 +100,46 @@
     return base;
   }
 
+  // Ham skoru [28,88] → [70,98] aralığına ölçekle (alt limit %70)
+  function scaleScore(raw) {
+    var scaled = 70 + (raw - 28) * 28 / 60;
+    return Math.max(70, Math.min(98, Math.round(scaled)));
+  }
+
   function overallScore(p1, p2) {
     var lpScore    = getCompatScore(p1.lifePath,    p2.lifePath);
     var soulScore  = getCompatScore(p1.soulUrge,    p2.soulUrge);
     var persScore  = getCompatScore(p1.personality, p2.personality);
     var expScore   = getCompatScore(p1.expression,  p2.expression);
-    return Math.round((lpScore*0.35 + soulScore*0.30 + persScore*0.20 + expScore*0.15));
+    var raw = Math.round((lpScore*0.35 + soulScore*0.30 + persScore*0.20 + expScore*0.15));
+    return scaleScore(raw);
   }
 
   // ─── BAĞLANTI ETİKETLERİ ─────────────────────────────────────
+  // Eşikler 70-98 ölçeklenmiş aralığa göre ayarlandı
   function bondLabel(score) {
-    if (score >= 82) return 'Kozmik Ruh İkizi';
-    if (score >= 72) return 'İlahi Ruh Eşi';
-    if (score >= 62) return 'Göksel Birliktelik';
-    if (score >= 50) return 'Karmik Bağ';
-    if (score >= 38) return 'Büyüme Katalizörü';
+    if (score >= 94) return 'Kozmik Ruh İkizi';
+    if (score >= 89) return 'İlahi Ruh Eşi';
+    if (score >= 84) return 'Göksel Birliktelik';
+    if (score >= 79) return 'Karmik Bağ';
+    if (score >= 74) return 'Büyüme Katalizörü';
     return 'Kozmik Sınav';
   }
 
   function bondSubLabel(score) {
-    if (score >= 82) return 'Sonsuz Bağ · Kader · Aşk';
-    if (score >= 72) return 'Ruh Eşi · Kader · Uyum';
-    if (score >= 62) return 'Göksel Eşleşme · Uyum';
-    if (score >= 50) return 'Karmik Ders · Dönüşüm';
-    if (score >= 38) return 'Keşif · Potansiyel · Gelişim';
+    if (score >= 94) return 'Sonsuz Bağ · Kader · Aşk';
+    if (score >= 89) return 'Ruh Eşi · Kader · Uyum';
+    if (score >= 84) return 'Göksel Eşleşme · Uyum';
+    if (score >= 79) return 'Karmik Ders · Dönüşüm';
+    if (score >= 74) return 'Keşif · Potansiyel · Gelişim';
     return 'Zorluk · Ders · Uyanış';
   }
 
   function starCount(score) {
-    if (score >= 80) return 5;
-    if (score >= 68) return 4;
-    if (score >= 55) return 3;
-    if (score >= 42) return 2;
+    if (score >= 92) return 5;
+    if (score >= 86) return 4;
+    if (score >= 80) return 3;
+    if (score >= 74) return 2;
     return 1;
   }
 
@@ -353,10 +361,10 @@ YAZI KURALLARI:
       }
     };
 
-    ctx.lpScore   = getCompatScore(ctx.p1.lifePath,    ctx.p2.lifePath);
-    ctx.soulScore = getCompatScore(ctx.p1.soulUrge,    ctx.p2.soulUrge);
-    ctx.persScore = getCompatScore(ctx.p1.personality, ctx.p2.personality);
-    ctx.expScore  = getCompatScore(ctx.p1.expression,  ctx.p2.expression);
+    ctx.lpScore   = scaleScore(getCompatScore(ctx.p1.lifePath,    ctx.p2.lifePath));
+    ctx.soulScore = scaleScore(getCompatScore(ctx.p1.soulUrge,    ctx.p2.soulUrge));
+    ctx.persScore = scaleScore(getCompatScore(ctx.p1.personality, ctx.p2.personality));
+    ctx.expScore  = scaleScore(getCompatScore(ctx.p1.expression,  ctx.p2.expression));
     ctx.overall   = overallScore(ctx.p1, ctx.p2);
     ctx.bond      = bondLabel(ctx.overall);
 
