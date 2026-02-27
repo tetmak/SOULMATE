@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('soulmate-label').textContent = name.split(' ')[0] + ' ile Uyumluluk Analizi';
 
     // ─── Romantik Uyumluluk Analizi butonu ─────────────────
-    document.getElementById('btn-soulmate-analysis').addEventListener('click', function() {
+    document.getElementById('btn-soulmate-analysis').addEventListener('click', async function() {
         // Ana kullanıcı verisini al
         var ud = null;
         try { ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); } catch(e) {}
