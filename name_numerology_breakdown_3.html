@@ -482,8 +482,10 @@
     }
 
     function compatCacheKey(type, ctx) {
-      var names = [ctx.p1.name, ctx.p2.name].map(function(n){return n.toLowerCase().trim().replace(/\s+/g,'_');}).sort();
-      return 'numerael_compat_ai_v2__'+names[0]+'__'+names[1]+'__'+type;
+      var p1Key = (ctx.p1.name + '_' + (ctx.p1.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
+      var p2Key = (ctx.p2.name + '_' + (ctx.p2.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
+      var sorted = [p1Key, p2Key].sort();
+      return 'numerael_compat_ai_v3__' + sorted[0] + '__' + sorted[1] + '__' + type;
     }
 
     // === HARF GRIDI ===
@@ -505,7 +507,9 @@
     }
 
     // === SAYFA INIT ===
-    window.addEventListener('DOMContentLoaded', async function() {
+    // NOT: DOMContentLoaded kullanmıyoruz çünkü await auth.whenReady() sonrasında
+    // event çoktan fire etmiş oluyor. Script body sonunda olduğu için DOM zaten hazır.
+    (function startInit() {
       // Premium gate
       if (window.premium && !window.premium.isPremium()) {
         window.premium.showPaywall('Bu analiz sayfas\u0131 Premium \u00F6zelli\u011Fidir.', 'breakdown_page_3');
@@ -648,7 +652,7 @@
       }
 
       setTimeout(initPage, 200);
-    });
+    })();
 
     // === KARM\u0130K BA\u011E SETUP ===
     function setupKarmicCard(ctx, name1, name2) {
@@ -773,12 +777,13 @@
       });
     }
 
-    document.addEventListener('DOMContentLoaded', function() {
+    // Guide chat butonları — DOM zaten hazır (auth.whenReady sonrası)
+    (function() {
       var sendBtn = document.getElementById('guide-send');
       var input = document.getElementById('guide-input');
       if (sendBtn) sendBtn.addEventListener('click', sendGuideMessage);
       if (input) input.addEventListener('keydown', function(e){if(e.key==='Enter')sendGuideMessage();});
-    });
+    })();
 
   })();
   </script>
