@@ -24,6 +24,41 @@
     @keyframes compat-pulse{0%,100%{opacity:.4}50%{opacity:.9}}
     @keyframes compat-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     @keyframes compat-spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+    /* ── Soulmate Share Sheet Light Mode ── */
+    html:not(.dark) #sm-sheet {
+      background: #ffffff !important;
+    }
+    html:not(.dark) #sm-sheet > div:first-child {
+      background: rgba(0,0,0,0.10) !important;
+    }
+    html:not(.dark) #sm-sheet h3 {
+      color: #1e293b !important;
+    }
+    html:not(.dark) #sm-sheet > div:nth-child(2) button[onclick="smClose()"] {
+      background: rgba(0,0,0,0.05) !important;
+      color: #64748b !important;
+      border-color: rgba(0,0,0,0.1) !important;
+    }
+    html:not(.dark) #sm-sheet > p,
+    html:not(.dark) #sm-sheet p[style*="text-align:center"][style*="color:rgba(255"] {
+      color: rgba(0,0,0,0.40) !important;
+    }
+    html:not(.dark) #sm-sheet button[onclick="smAction('save')"] {
+      background: #f1f5f9 !important;
+      border-color: rgba(0,0,0,0.08) !important;
+      color: #1e293b !important;
+    }
+    html:not(.dark) #sm-sheet div[style*="justify-content:center;gap:40px"] button div {
+      background: rgba(0,0,0,0.04) !important;
+      border-color: rgba(0,0,0,0.10) !important;
+    }
+    html:not(.dark) #sm-sheet div[style*="justify-content:center;gap:40px"] button div .material-symbols-outlined {
+      color: rgba(0,0,0,0.45) !important;
+    }
+    html:not(.dark) #sm-sheet div[style*="justify-content:center;gap:40px"] button > span:last-child {
+      color: rgba(0,0,0,0.40) !important;
+    }
   </style>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet" />
 </head>

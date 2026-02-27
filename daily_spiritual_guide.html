@@ -62,6 +62,42 @@
     body {
       min-height: max(884px, 100dvh);
     }
+
+    /* ── Share Sheet Light Mode ── */
+    html:not(.dark) #share-sheet {
+      background: #ffffff !important;
+    }
+    html:not(.dark) #share-sheet > div:first-child {
+      background: rgba(0,0,0,0.10) !important;
+    }
+    html:not(.dark) #share-sheet h3 {
+      color: #1e293b !important;
+    }
+    html:not(.dark) #share-sheet > div:nth-child(2) button {
+      background: rgba(0,0,0,0.05) !important;
+      color: #64748b !important;
+      border-color: rgba(0,0,0,0.1) !important;
+    }
+    html:not(.dark) #share-sheet p {
+      color: rgba(0,0,0,0.40) !important;
+    }
+    /* Save to Gallery button */
+    html:not(.dark) #share-sheet button[onclick="shareAction('save')"] {
+      background: #f1f5f9 !important;
+      border-color: rgba(0,0,0,0.08) !important;
+      color: #1e293b !important;
+    }
+    /* Copy/Other circle buttons */
+    html:not(.dark) #share-sheet div[style*="justify-content:center;gap:40px"] button div {
+      background: rgba(0,0,0,0.04) !important;
+      border-color: rgba(0,0,0,0.10) !important;
+    }
+    html:not(.dark) #share-sheet div[style*="justify-content:center;gap:40px"] button div .material-symbols-outlined {
+      color: rgba(0,0,0,0.45) !important;
+    }
+    html:not(.dark) #share-sheet div[style*="justify-content:center;gap:40px"] button > span:last-child {
+      color: rgba(0,0,0,0.40) !important;
+    }
   </style>
 </head>
 

@@ -39,8 +39,9 @@
       if (!cardEl) return reject(new Error('Kart bulunamadı'));
 
       loadHtml2Canvas().then(function() {
+        var isDark = document.documentElement.classList.contains('dark');
         return window.html2canvas(cardEl, {
-          backgroundColor: '#0a0907',
+          backgroundColor: isDark ? '#0a0907' : '#ffffff',
           scale: 3,
           useCORS: true,
           allowTaint: true,

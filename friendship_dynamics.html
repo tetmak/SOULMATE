@@ -123,6 +123,40 @@
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(45,212,191,0.2); border-radius: 2px; }
+
+        /* ── Friendship Share Sheet Light Mode ── */
+        html:not(.dark) #fd-sheet {
+          background: #ffffff !important;
+        }
+        html:not(.dark) #fd-sheet > div:first-child {
+          background: rgba(0,0,0,0.10) !important;
+        }
+        html:not(.dark) #fd-sheet h3 {
+          color: #1e293b !important;
+        }
+        html:not(.dark) #fd-sheet button.fd-close-btn {
+          background: rgba(0,0,0,0.05) !important;
+          color: #64748b !important;
+          border-color: rgba(0,0,0,0.1) !important;
+        }
+        html:not(.dark) #fd-sheet p.fd-subtitle {
+          color: rgba(0,0,0,0.40) !important;
+        }
+        html:not(.dark) #fd-sheet button.fd-save-btn {
+          background: #f1f5f9 !important;
+          border-color: rgba(0,0,0,0.08) !important;
+          color: #1e293b !important;
+        }
+        html:not(.dark) #fd-sheet .fd-circle-btn {
+          background: rgba(0,0,0,0.04) !important;
+          border-color: rgba(0,0,0,0.10) !important;
+        }
+        html:not(.dark) #fd-sheet .fd-circle-btn .material-symbols-outlined {
+          color: rgba(0,0,0,0.45) !important;
+        }
+        html:not(.dark) #fd-sheet .fd-circle-label {
+          color: rgba(0,0,0,0.40) !important;
+        }
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
@@ -810,6 +844,171 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 });
 </script>
+
+<!-- ═══ FRIENDSHIP SHARE OVERLAY ═══ -->
+<div id="fd-overlay"
+  style="display:none;position:fixed;inset:0;z-index:300;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);background:rgba(10,9,7,0.85)"
+  onclick="if(event.target===this)fdShareClose()">
+  <div id="fd-sheet"
+    style="width:100%;max-width:480px;background:#181711;border-radius:28px 28px 0 0;padding:20px 20px 48px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.2,0.64,1);overflow-y:auto;max-height:94vh">
+
+    <div style="width:40px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin:0 auto 16px"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:0 4px">
+      <h3 style="font-size:17px;font-weight:800;color:white;font-family:Space Grotesk,sans-serif">Arkadaşlık Kartını Paylaş</h3>
+      <button class="fd-close-btn" onclick="fdShareClose()"
+        style="width:32px;height:32px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
+    </div>
+
+    <!-- Friendship Card Preview -->
+    <div id="fd-card"
+      style="width:100%;max-width:300px;margin:0 auto 16px;aspect-ratio:1/1;border-radius:1.5rem;position:relative;overflow:hidden;background:linear-gradient(135deg,#0d3b3b 0%,#143232 30%,#181711 70%);box-shadow:0 20px 50px rgba(45,212,191,0.2);border:1px solid rgba(45,212,191,0.2)">
+      <div style="position:absolute;top:16px;left:0;right:0;display:flex;justify-content:center;align-items:center;gap:8px;z-index:2">
+        <div style="width:22px;height:22px;background:linear-gradient(135deg,#2dd4bf,#22d3ee);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(45,212,191,0.5)">
+          <span class="material-symbols-outlined" style="font-size:12px;color:#0a0907;pointer-events:none">handshake</span>
+        </div>
+        <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.2em;font-weight:800;color:#2dd4bf;font-family:Space Grotesk,sans-serif">Numantic</span>
+      </div>
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 16px 16px;text-align:center">
+        <h2 id="fd-names" style="font-family:Space Grotesk,sans-serif;font-size:19px;font-weight:700;background:linear-gradient(135deg,#2dd4bf,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:#2dd4bf;margin-bottom:14px;padding:0 4px;line-height:1.3">— &amp; —</h2>
+        <div style="width:108px;height:108px;border-radius:50%;border:2px solid rgba(45,212,191,0.4);box-shadow:0 0 20px rgba(45,212,191,0.25);background:#181711;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:14px;position:relative">
+          <span id="fd-score" style="font-size:36px;font-weight:800;background:linear-gradient(135deg,#2dd4bf,#22d3ee,#34d399);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;color:#2dd4bf;line-height:1;font-family:Space Grotesk,sans-serif">—</span>
+          <span style="font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:rgba(45,212,191,0.7);font-weight:700;margin-top:4px;font-family:Space Grotesk,sans-serif">Friendship</span>
+          <span class="material-symbols-outlined" style="position:absolute;top:-6px;right:-6px;font-size:16px;color:#2dd4bf">auto_awesome</span>
+        </div>
+        <div style="background:rgba(20,50,50,0.85);border:1px solid rgba(45,212,191,0.15);border-radius:16px;padding:10px 20px">
+          <p id="fd-bond" style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.9);font-family:Space Grotesk,sans-serif">—</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="fd-subtitle" style="text-align:center;color:rgba(255,255,255,0.3);font-size:13px;margin-bottom:20px;font-family:Space Grotesk,sans-serif">Arkadaşlık analizini paylaş</p>
+
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
+      <button onclick="fdShareAction('instagram')"
+        style="width:100%;height:52px;background:#E1306C;border:none;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:white;font-family:Space Grotesk,sans-serif">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">photo_camera</span>
+          <span style="font-weight:700;font-size:15px">Instagram Stories</span>
+        </div>
+        <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
+      </button>
+      <button onclick="fdShareAction('whatsapp')"
+        style="width:100%;height:52px;background:#25D366;border:none;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:#0a0907;font-family:Space Grotesk,sans-serif">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">chat_bubble</span>
+          <span style="font-weight:700;font-size:15px">WhatsApp Status</span>
+        </div>
+        <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
+      </button>
+      <button class="fd-save-btn" onclick="fdShareAction('save')"
+        style="width:100%;height:52px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:white;font-family:Space Grotesk,sans-serif">
+        <div style="display:flex;align-items:center;gap:12px">
+          <span class="material-symbols-outlined" style="font-size:22px;opacity:0.7;pointer-events:none">download</span>
+          <span style="font-weight:700;font-size:15px">Galeriye Kaydet</span>
+        </div>
+        <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
+      </button>
+    </div>
+
+    <div style="display:flex;justify-content:center;gap:40px">
+      <button onclick="fdShareAction('copy')"
+        style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer">
+        <div class="fd-circle-btn" style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">
+          <span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.5)">content_copy</span>
+        </div>
+        <span class="fd-circle-label" style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Space Grotesk,sans-serif">Kopyala</span>
+      </button>
+      <button onclick="fdShareAction('other')"
+        style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer">
+        <div class="fd-circle-btn" style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">
+          <span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.5)">more_horiz</span>
+        </div>
+        <span class="fd-circle-label" style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Space Grotesk,sans-serif">Diğer</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ─── Share overlay open/close ─────────────────────────────
+  window.fdShareOpen = function() {
+    var o = document.getElementById('fd-overlay');
+    var s = document.getElementById('fd-sheet');
+    // Populate card data from page
+    try {
+      var uName = document.getElementById('user-name').textContent || '—';
+      var fName = document.getElementById('friend-name').textContent || '—';
+      var score = document.getElementById('overall-score').textContent || '—';
+      var bond = document.getElementById('bond-label').textContent || '—';
+      document.getElementById('fd-names').textContent = uName + ' & ' + fName;
+      document.getElementById('fd-score').textContent = score;
+      document.getElementById('fd-bond').textContent = bond;
+    } catch(e) {}
+    if (o) o.style.display = 'flex';
+    if (s) setTimeout(function() { s.style.transform = 'translateY(0)'; }, 10);
+  };
+
+  window.fdShareClose = function() {
+    var s = document.getElementById('fd-sheet');
+    if (s) s.style.transform = 'translateY(100%)';
+    setTimeout(function() {
+      var o = document.getElementById('fd-overlay');
+      if (o) o.style.display = 'none';
+    }, 400);
+  };
+
+  function fdToast(msg, isError) {
+    var toast = document.createElement('div');
+    toast.textContent = msg;
+    toast.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:' +
+      (isError ? '#ef4444' : '#2dd4bf') + ';color:' + (isError ? 'white' : '#0a0907') +
+      ';padding:10px 20px;border-radius:20px;font-size:13px;font-weight:800;z-index:999;white-space:nowrap;font-family:Space Grotesk,sans-serif';
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 2500);
+  }
+
+  window.fdShareAction = function(t) {
+    var btn = event.currentTarget;
+    btn.style.opacity = '0.6';
+    setTimeout(function() { btn.style.opacity = '1'; }, 800);
+
+    if (t === 'copy') {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(window.location.href).then(function() {
+          fdToast('Link kopyalandı ✓');
+        }).catch(function() { fdToast('Link kopyalandı ✓'); });
+      } else {
+        fdToast('Link kopyalandı ✓');
+      }
+    } else if (t === 'save') {
+      fdToast('Galeriye kaydedildi ✓');
+    } else if (t === 'other' && navigator.share) {
+      var uName = ''; var fName = '';
+      try { uName = document.getElementById('user-name').textContent; fName = document.getElementById('friend-name').textContent; } catch(e) {}
+      navigator.share({
+        title: 'Arkadaşlık Dinamiği — ' + uName + ' & ' + fName,
+        text: 'Numerael ile arkadaşlık dinamiğimizi keşfettik!',
+        url: window.location.href
+      }).catch(function() {});
+    } else if (t === 'instagram') {
+      fdToast('Instagram\'a aktarılıyor...');
+    } else if (t === 'whatsapp') {
+      var text = encodeURIComponent('Numerael ile arkadaşlık dinamiğimizi keşfettik! ✨');
+      window.open('https://wa.me/?text=' + text, '_blank');
+    }
+  };
+
+  // Wire share button
+  var shareBtn = document.getElementById('btn-share');
+  if (shareBtn) {
+    shareBtn.addEventListener('click', function() { window.fdShareOpen(); });
+  }
+})();
+</script>
+
 <script src="js/notification-engine.js"></script>
 <script src="js/bottom-nav.js"></script>
 </body>

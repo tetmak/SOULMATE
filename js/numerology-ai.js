@@ -14,11 +14,21 @@
   var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
   // ═══════════════════════════════════════════════════════════
-  // CSS
+  // THEME DETECTION
+  // ═══════════════════════════════════════════════════════════
+  var _isDark = document.documentElement.classList.contains('dark');
+
+  window.addEventListener('themechange', function() {
+    _isDark = document.documentElement.classList.contains('dark');
+    applyThemeVars();
+  });
+
+  // ═══════════════════════════════════════════════════════════
+  // CSS (theme-aware via CSS custom properties)
   // ═══════════════════════════════════════════════════════════
   var style = document.createElement('style');
   style.textContent = `
-    /* ─── ORB ─── */
+    /* ─── ORB (stays dark in both modes) ─── */
     #ael-orb {
       position: fixed;
       bottom: 90px;
@@ -56,7 +66,7 @@
     }
     #ael-orb.has-result #ael-orb-dot { background: #4ade80; box-shadow: 0 0 10px rgba(74,222,128,0.4); }
 
-    /* ─── TOOLTIP ─── */
+    /* ─── TOOLTIP (stays dark in both modes) ─── */
     #ael-tooltip {
       position: fixed;
       bottom: 100px;
@@ -103,9 +113,9 @@
       max-width: 480px;
       height: 85vh;
       max-height: 700px;
-      background: #0e0e0e;
+      background: var(--ael-modal-bg, #0e0e0e);
       border-radius: 20px 20px 0 0;
-      border-top: 1px solid rgba(255,255,255,0.08);
+      border-top: 1px solid var(--ael-border, rgba(255,255,255,0.08));
       display: flex;
       flex-direction: column;
       transform: translateY(100%);
@@ -116,7 +126,7 @@
     /* ─── HEADER ─── */
     #ael-header {
       padding: 16px 20px 12px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
+      border-bottom: 1px solid var(--ael-border-subtle, rgba(255,255,255,0.06));
       display: flex;
       align-items: center;
       gap: 12px;
@@ -124,28 +134,28 @@
     }
     #ael-header-icon {
       width: 36px; height: 36px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #2a2a2a, #141414);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--ael-icon-bg, radial-gradient(circle at 35% 35%, #2a2a2a, #141414));
+      border: 1px solid var(--ael-border, rgba(255,255,255,0.08));
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-    #ael-header-icon .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); }
+    #ael-header-icon .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ael-text-muted, rgba(255,255,255,0.5)); }
     #ael-header-info { flex: 1; }
     #ael-header-name {
-      font-size: 15px; font-weight: 800; color: rgba(255,255,255,0.9);
+      font-size: 15px; font-weight: 800; color: var(--ael-text-primary, rgba(255,255,255,0.9));
       font-family: 'Space Grotesk', sans-serif; letter-spacing: 0.1em;
     }
     #ael-header-status {
-      font-size: 11px; color: rgba(255,255,255,0.35);
+      font-size: 11px; color: var(--ael-text-dim, rgba(255,255,255,0.35));
       font-family: 'Space Grotesk', sans-serif;
     }
     #ael-close {
-      width: 32px; height: 32px; background: rgba(255,255,255,0.06);
-      border: none; border-radius: 50%; color: rgba(255,255,255,0.4);
+      width: 32px; height: 32px; background: var(--ael-surface-subtle, rgba(255,255,255,0.06));
+      border: none; border-radius: 50%; color: var(--ael-text-faint, rgba(255,255,255,0.4));
       cursor: pointer; font-size: 15px;
       display: flex; align-items: center; justify-content: center;
     }
-    #ael-close:hover { background: rgba(255,255,255,0.1); }
+    #ael-close:hover { background: var(--ael-surface-hover, rgba(255,255,255,0.1)); }
 
     /* ─── SCROLLABLE CONTENT ─── */
     #ael-content {
@@ -156,14 +166,14 @@
     }
     #ael-content::-webkit-scrollbar { width: 3px; }
     #ael-content::-webkit-scrollbar-track { background: transparent; }
-    #ael-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+    #ael-content::-webkit-scrollbar-thumb { background: var(--ael-scrollbar, rgba(255,255,255,0.1)); border-radius: 2px; }
 
     /* ─── ACTION PICKER ─── */
     #ael-actions {
       padding: 12px 16px;
     }
     #ael-actions-label {
-      font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.3);
+      font-size: 10px; font-weight: 700; color: var(--ael-text-dim, rgba(255,255,255,0.3));
       text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px;
       font-family: 'Space Grotesk', sans-serif;
     }
@@ -175,25 +185,25 @@
       align-items: center;
       gap: 10px;
       padding: 8px 12px;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: var(--ael-surface-faint, rgba(255,255,255,0.04));
+      border: 1px solid var(--ael-border, rgba(255,255,255,0.1));
       border-radius: 10px;
     }
-    #ael-selected-bar .ael-action-icon { font-size: 16px; color: rgba(255,255,255,0.5); }
+    #ael-selected-bar .ael-action-icon { font-size: 16px; color: var(--ael-text-muted, rgba(255,255,255,0.5)); }
     #ael-selected-label {
-      flex: 1; font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8);
+      flex: 1; font-size: 13px; font-weight: 700; color: var(--ael-text-strong, rgba(255,255,255,0.8));
       font-family: 'Space Grotesk', sans-serif;
     }
     #ael-change-action {
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+      background: var(--ael-surface-subtle, rgba(255,255,255,0.06)); border: 1px solid var(--ael-border, rgba(255,255,255,0.1));
       border-radius: 8px; padding: 4px 10px; cursor: pointer;
-      font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.4);
+      font-size: 11px; font-weight: 700; color: var(--ael-text-faint, rgba(255,255,255,0.4));
       font-family: 'Space Grotesk', sans-serif;
     }
-    #ael-change-action:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.6); }
+    #ael-change-action:hover { background: var(--ael-surface-hover, rgba(255,255,255,0.1)); color: var(--ael-text-muted, rgba(255,255,255,0.6)); }
     .ael-action-btn {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--ael-surface-card, rgba(255,255,255,0.03));
+      border: 1px solid var(--ael-border, rgba(255,255,255,0.08));
       border-radius: 12px;
       padding: 14px 12px;
       cursor: pointer;
@@ -203,18 +213,18 @@
       align-items: center;
       gap: 10px;
     }
-    .ael-action-btn:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+    .ael-action-btn:hover { background: var(--ael-surface-subtle, rgba(255,255,255,0.06)); border-color: var(--ael-border-strong, rgba(255,255,255,0.12)); }
     .ael-action-btn:active { transform: scale(0.97); }
-    .ael-action-btn.selected { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.08); }
+    .ael-action-btn.selected { border-color: var(--ael-border-accent, rgba(255,255,255,0.25)); background: var(--ael-surface-selected, rgba(255,255,255,0.08)); }
     .ael-action-icon {
-      font-size: 18px; color: rgba(255,255,255,0.5);
+      font-size: 18px; color: var(--ael-text-muted, rgba(255,255,255,0.5));
     }
     .ael-action-label {
-      font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8);
+      font-size: 13px; font-weight: 700; color: var(--ael-text-strong, rgba(255,255,255,0.8));
       font-family: 'Space Grotesk', sans-serif;
     }
     .ael-action-sub {
-      font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 1px;
+      font-size: 10px; color: var(--ael-text-dim, rgba(255,255,255,0.3)); margin-top: 1px;
       font-family: 'Space Grotesk', sans-serif;
     }
 
@@ -226,7 +236,7 @@
     #ael-result-card {
       border-radius: 14px;
       padding: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid var(--ael-border, rgba(255,255,255,0.08));
     }
     .ael-score-row {
       display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
@@ -239,14 +249,14 @@
       font-size: 28px; font-weight: 900; font-family: 'Space Grotesk', sans-serif;
     }
     #ael-score-bar {
-      height: 4px; background: rgba(255,255,255,0.06); border-radius: 2px;
+      height: 4px; background: var(--ael-surface-subtle, rgba(255,255,255,0.06)); border-radius: 2px;
       overflow: hidden; margin-bottom: 12px;
     }
     #ael-score-fill {
       height: 100%; border-radius: 2px; transition: width 0.5s ease;
     }
     #ael-reason {
-      font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6;
+      font-size: 13px; color: var(--ael-text-secondary, rgba(255,255,255,0.6)); line-height: 1.6;
       font-family: 'Space Grotesk', sans-serif;
     }
     #ael-warning {
@@ -259,10 +269,10 @@
     #ael-rationale {
       display: none;
       margin-top: 14px; padding: 12px 14px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
+      background: var(--ael-surface-card, rgba(255,255,255,0.03));
+      border: 1px solid var(--ael-border-subtle, rgba(255,255,255,0.06));
       border-radius: 10px;
-      font-size: 12.5px; color: rgba(255,255,255,0.55);
+      font-size: 12.5px; color: var(--ael-text-secondary, rgba(255,255,255,0.55));
       line-height: 1.7;
       font-family: 'Space Grotesk', sans-serif;
     }
@@ -296,33 +306,33 @@
       font-size: 13px; line-height: 1.55; font-family: 'Space Grotesk', sans-serif;
     }
     .ael-msg-ael .ael-msg-bubble {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.8);
+      background: var(--ael-surface-faint, rgba(255,255,255,0.04));
+      border: 1px solid var(--ael-border-subtle, rgba(255,255,255,0.06));
+      color: var(--ael-text-strong, rgba(255,255,255,0.8));
       border-bottom-left-radius: 4px;
     }
     .ael-msg-user .ael-msg-bubble {
-      background: rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.9);
+      background: var(--ael-user-bubble-bg, rgba(255,255,255,0.12));
+      color: var(--ael-text-primary, rgba(255,255,255,0.9));
       font-weight: 600;
       border-bottom-right-radius: 4px;
     }
     .ael-msg-avatar {
       width: 24px; height: 24px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #2a2a2a, #141414);
-      border: 1px solid rgba(255,255,255,0.08);
+      background: var(--ael-icon-bg, radial-gradient(circle at 35% 35%, #2a2a2a, #141414));
+      border: 1px solid var(--ael-border, rgba(255,255,255,0.08));
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0; margin-top: 2px;
     }
-    .ael-msg-avatar .dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+    .ael-msg-avatar .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ael-text-faint, rgba(255,255,255,0.4)); }
 
     .ael-typing {
       display: flex; gap: 4px; padding: 10px 14px;
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
+      background: var(--ael-surface-faint, rgba(255,255,255,0.04)); border: 1px solid var(--ael-border-subtle, rgba(255,255,255,0.06));
       border-radius: 14px; border-bottom-left-radius: 4px; width: fit-content;
     }
     .ael-typing-dot {
-      width: 5px; height: 5px; background: rgba(255,255,255,0.3);
+      width: 5px; height: 5px; background: var(--ael-text-dim, rgba(255,255,255,0.3));
       border-radius: 50%; animation: ael-type 1.2s ease-in-out infinite;
     }
     .ael-typing-dot:nth-child(2) { animation-delay: 0.2s; }
@@ -335,26 +345,26 @@
     /* ─── INPUT ─── */
     #ael-input-area {
       padding: 10px 16px 24px;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      border-top: 1px solid var(--ael-border-subtle, rgba(255,255,255,0.05));
       display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0;
     }
     #ael-input {
-      flex: 1; background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(255,255,255,0.08); border-radius: 18px;
-      padding: 10px 14px; color: white; font-size: 13px;
+      flex: 1; background: var(--ael-input-bg, rgba(255,255,255,0.04));
+      border: 1px solid var(--ael-border, rgba(255,255,255,0.08)); border-radius: 18px;
+      padding: 10px 14px; color: var(--ael-input-color, white); font-size: 13px;
       font-family: 'Space Grotesk', sans-serif;
       resize: none; max-height: 80px; min-height: 40px;
       line-height: 1.4; outline: none; transition: border-color 0.2s;
     }
-    #ael-input:focus { border-color: rgba(255,255,255,0.15); }
-    #ael-input::placeholder { color: rgba(255,255,255,0.2); }
+    #ael-input:focus { border-color: var(--ael-border-strong, rgba(255,255,255,0.15)); }
+    #ael-input::placeholder { color: var(--ael-placeholder, rgba(255,255,255,0.2)); }
     #ael-send {
-      width: 40px; height: 40px; background: rgba(255,255,255,0.1);
+      width: 40px; height: 40px; background: var(--ael-surface-hover, rgba(255,255,255,0.1));
       border: none; border-radius: 50%; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; transition: all 0.2s; color: rgba(255,255,255,0.6);
+      flex-shrink: 0; transition: all 0.2s; color: var(--ael-text-secondary, rgba(255,255,255,0.6));
     }
-    #ael-send:hover { background: rgba(255,255,255,0.15); }
+    #ael-send:hover { background: var(--ael-send-hover, rgba(255,255,255,0.15)); }
     #ael-send:disabled { opacity: 0.3; cursor: not-allowed; }
     #ael-send .material-symbols-outlined { font-size: 18px; }
 
@@ -365,13 +375,71 @@
     }
     .ael-period-tag {
       display: flex; align-items: center; gap: 4px;
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+      background: var(--ael-surface-card, rgba(255,255,255,0.03)); border: 1px solid var(--ael-border-subtle, rgba(255,255,255,0.06));
       border-radius: 8px; padding: 4px 10px;
     }
-    .ael-period-label { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Space Grotesk', sans-serif; }
-    .ael-period-val { font-size: 14px; font-weight: 800; color: rgba(255,255,255,0.7); font-family: 'Space Grotesk', sans-serif; }
+    .ael-period-label { font-size: 9px; font-weight: 700; color: var(--ael-text-dim, rgba(255,255,255,0.3)); text-transform: uppercase; letter-spacing: 0.08em; font-family: 'Space Grotesk', sans-serif; }
+    .ael-period-val { font-size: 14px; font-weight: 800; color: var(--ael-text-strong, rgba(255,255,255,0.7)); font-family: 'Space Grotesk', sans-serif; }
   `;
   document.head.appendChild(style);
+
+  // ═══════════════════════════════════════════════════════════
+  // THEME VARS — apply CSS custom properties on #ael-modal
+  // ═══════════════════════════════════════════════════════════
+  function applyThemeVars() {
+    var modal = document.getElementById('ael-modal');
+    if (!modal) return;
+    var s = modal.style;
+    if (_isDark) {
+      s.setProperty('--ael-modal-bg', '#0e0e0e');
+      s.setProperty('--ael-border', 'rgba(255,255,255,0.08)');
+      s.setProperty('--ael-border-subtle', 'rgba(255,255,255,0.06)');
+      s.setProperty('--ael-border-strong', 'rgba(255,255,255,0.15)');
+      s.setProperty('--ael-border-accent', 'rgba(255,255,255,0.25)');
+      s.setProperty('--ael-text-primary', 'rgba(255,255,255,0.9)');
+      s.setProperty('--ael-text-strong', 'rgba(255,255,255,0.8)');
+      s.setProperty('--ael-text-secondary', 'rgba(255,255,255,0.6)');
+      s.setProperty('--ael-text-muted', 'rgba(255,255,255,0.5)');
+      s.setProperty('--ael-text-faint', 'rgba(255,255,255,0.4)');
+      s.setProperty('--ael-text-dim', 'rgba(255,255,255,0.3)');
+      s.setProperty('--ael-surface-card', 'rgba(255,255,255,0.03)');
+      s.setProperty('--ael-surface-faint', 'rgba(255,255,255,0.04)');
+      s.setProperty('--ael-surface-subtle', 'rgba(255,255,255,0.06)');
+      s.setProperty('--ael-surface-hover', 'rgba(255,255,255,0.1)');
+      s.setProperty('--ael-surface-selected', 'rgba(255,255,255,0.08)');
+      s.setProperty('--ael-user-bubble-bg', 'rgba(255,255,255,0.12)');
+      s.setProperty('--ael-input-bg', 'rgba(255,255,255,0.04)');
+      s.setProperty('--ael-input-color', 'white');
+      s.setProperty('--ael-placeholder', 'rgba(255,255,255,0.2)');
+      s.setProperty('--ael-scrollbar', 'rgba(255,255,255,0.1)');
+      s.setProperty('--ael-send-hover', 'rgba(255,255,255,0.15)');
+      s.setProperty('--ael-icon-bg', 'radial-gradient(circle at 35% 35%, #2a2a2a, #141414)');
+    } else {
+      s.setProperty('--ael-modal-bg', '#ffffff');
+      s.setProperty('--ael-border', 'rgba(0,0,0,0.1)');
+      s.setProperty('--ael-border-subtle', 'rgba(0,0,0,0.06)');
+      s.setProperty('--ael-border-strong', 'rgba(0,0,0,0.18)');
+      s.setProperty('--ael-border-accent', 'rgba(0,0,0,0.25)');
+      s.setProperty('--ael-text-primary', 'rgba(0,0,0,0.9)');
+      s.setProperty('--ael-text-strong', 'rgba(0,0,0,0.8)');
+      s.setProperty('--ael-text-secondary', 'rgba(0,0,0,0.55)');
+      s.setProperty('--ael-text-muted', 'rgba(0,0,0,0.5)');
+      s.setProperty('--ael-text-faint', 'rgba(0,0,0,0.4)');
+      s.setProperty('--ael-text-dim', 'rgba(0,0,0,0.35)');
+      s.setProperty('--ael-surface-card', 'rgba(0,0,0,0.02)');
+      s.setProperty('--ael-surface-faint', 'rgba(0,0,0,0.03)');
+      s.setProperty('--ael-surface-subtle', 'rgba(0,0,0,0.05)');
+      s.setProperty('--ael-surface-hover', 'rgba(0,0,0,0.08)');
+      s.setProperty('--ael-surface-selected', 'rgba(0,0,0,0.06)');
+      s.setProperty('--ael-user-bubble-bg', 'rgba(0,0,0,0.07)');
+      s.setProperty('--ael-input-bg', 'rgba(0,0,0,0.03)');
+      s.setProperty('--ael-input-color', '#1a1a1a');
+      s.setProperty('--ael-placeholder', 'rgba(0,0,0,0.3)');
+      s.setProperty('--ael-scrollbar', 'rgba(0,0,0,0.12)');
+      s.setProperty('--ael-send-hover', 'rgba(0,0,0,0.12)');
+      s.setProperty('--ael-icon-bg', 'radial-gradient(circle at 35% 35%, #e0e0e0, #c8c8c8)');
+    }
+  }
 
   // ═══════════════════════════════════════════════════════════
   // HTML
@@ -446,6 +514,9 @@
   `;
   document.body.appendChild(wrapper);
 
+  // Apply theme vars immediately after DOM is ready
+  applyThemeVars();
+
   // ═══════════════════════════════════════════════════════════
   // STATE
   // ═══════════════════════════════════════════════════════════
@@ -516,7 +587,8 @@
     var el = document.getElementById('ael-period');
     if (!el) return;
     if (!personalPeriod.day) {
-      el.innerHTML = '<div style="padding:4px 0;font-size:11px;color:rgba(255,255,255,0.2);font-family:Space Grotesk,sans-serif;">Doğum tarihi tanımlı değil</div>';
+      var emptyColor = _isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.25)';
+      el.innerHTML = '<div style="padding:4px 0;font-size:11px;color:' + emptyColor + ';font-family:Space Grotesk,sans-serif;">Doğum tarihi tanımlı değil</div>';
       return;
     }
     var tags = [
@@ -572,6 +644,10 @@
   // MODAL AÇ / KAPAT
   // ═══════════════════════════════════════════════════════════
   window.aelOpen = function() {
+    // Re-detect theme and apply vars each time modal opens
+    _isDark = document.documentElement.classList.contains('dark');
+    applyThemeVars();
+
     loadPeriod();
     var overlay = document.getElementById('ael-overlay');
     var modal = document.getElementById('ael-modal');
@@ -674,7 +750,7 @@
     var color, bgColor;
     if (r.score >= 80) { color = '#4ade80'; bgColor = 'rgba(74,222,128,0.06)'; }
     else if (r.score >= 60) { color = '#60a5fa'; bgColor = 'rgba(96,165,250,0.06)'; }
-    else if (r.score >= 40) { color = 'rgba(255,255,255,0.5)'; bgColor = 'rgba(255,255,255,0.02)'; }
+    else if (r.score >= 40) { color = _isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.45)'; bgColor = _isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)'; }
     else { color = '#f87171'; bgColor = 'rgba(248,113,113,0.06)'; }
 
     document.getElementById('ael-result-card').style.background = bgColor;
@@ -694,7 +770,7 @@
     var badge = document.getElementById('ael-risk-badge');
     badge.textContent = 'Risk: ' + r.risk_level;
     if (r.risk_level === 'yüksek') { badge.style.background = 'rgba(239,68,68,0.12)'; badge.style.color = '#f87171'; }
-    else if (r.risk_level === 'orta') { badge.style.background = 'rgba(255,255,255,0.06)'; badge.style.color = 'rgba(255,255,255,0.5)'; }
+    else if (r.risk_level === 'orta') { badge.style.background = _isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)'; badge.style.color = _isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.45)'; }
     else { badge.style.background = 'rgba(74,222,128,0.1)'; badge.style.color = '#4ade80'; }
 
     // Aksiyon direktifi
