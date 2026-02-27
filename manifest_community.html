@@ -669,7 +669,7 @@
             var all = feedData.slice();
 
             if (!all.length) {
-                feed.innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined" style="font-size:48px;color:rgba(255,255,255,0.06);font-variation-settings:\'FILL\' 1;">search_off</span><p style="color:rgba(255,255,255,0.15);font-size:14px;margin-top:12px;">Bu kategoride manifest bulunamadı</p></div>';
+                feed.innerHTML = '<div class="text-center py-16"><span class="material-symbols-outlined text-slate-200 dark:text-white/[0.06]" style="font-size:48px;font-variation-settings:\'FILL\' 1;">search_off</span><p class="text-slate-400 dark:text-white/[0.15]" style="font-size:14px;margin-top:12px;">Bu kategoride manifest bulunamadı</p></div>';
                 return;
             }
 
@@ -704,7 +704,7 @@
                             '<div class="user-avatar-sm" style="background:linear-gradient(135deg,' + wc + ',#f59e0b);">' + wi + '</div>' +
                             '<div style="line-height:1.2;">' +
                                 '<div style="font-size:12px;font-weight:700;color:#D4AF37;">' + wName + '</div>' +
-                                (weekly.life_path ? '<div style="font-size:10px;color:rgba(255,255,255,0.3);font-weight:500;">Life Path ' + weekly.life_path + '</div>' : '') +
+                                (weekly.life_path ? '<div class="text-slate-400 dark:text-white/30" style="font-size:10px;font-weight:500;">Life Path ' + weekly.life_path + '</div>' : '') +
                             '</div>' +
                         '</div>' +
                         '<button class="ritual-btn" onclick="handleLike(\'' + weekly.id + '\')">Ritual</button>' +
@@ -811,7 +811,7 @@
             if (isLoading) return;
             isLoading = true;
             var feed = document.getElementById('manifest-feed');
-            feed.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(127,19,236,0.3);border-top-color:#7f13ec;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p style="color:rgba(255,255,255,0.15);font-size:12px;margin-top:12px;">Yükleniyor...</p></div>';
+            feed.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(127,19,236,0.3);border-top-color:#7f13ec;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p class="text-slate-400 dark:text-white/[0.15]" style="font-size:12px;margin-top:12px;">Yükleniyor...</p></div>';
 
             feedData = await loadFromSupabase();
             isLoading = false;
@@ -845,10 +845,10 @@
             var countEl = document.getElementById('my-manifests-count');
             modal.style.display = 'block';
 
-            body.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(127,19,236,0.3);border-top-color:#7f13ec;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p style="color:rgba(255,255,255,0.15);font-size:12px;margin-top:12px;">Loading...</p></div>';
+            body.innerHTML = '<div class="text-center py-12"><div style="width:28px;height:28px;border:2px solid rgba(127,19,236,0.3);border-top-color:#7f13ec;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto;"></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style><p class="text-slate-400 dark:text-white/[0.15]" style="font-size:12px;margin-top:12px;">Loading...</p></div>';
 
             if (!window.manifestEngine) {
-                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined" style="font-size:48px;color:rgba(255,255,255,0.06);">cloud_off</span><p style="color:rgba(255,255,255,0.15);font-size:14px;margin-top:12px;">Connection error</p></div>';
+                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined text-slate-200 dark:text-white/[0.06]" style="font-size:48px;">cloud_off</span><p class="text-slate-400 dark:text-white/[0.15]" style="font-size:14px;margin-top:12px;">Connection error</p></div>';
                 countEl.textContent = '';
                 return;
             }
@@ -857,7 +857,7 @@
             countEl.textContent = myData.length > 0 ? '(' + myData.length + ')' : '';
 
             if (!myData.length) {
-                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined" style="font-size:48px;color:rgba(255,255,255,0.06);font-variation-settings:\'FILL\' 1;">edit_note</span><p style="color:rgba(255,255,255,0.15);font-size:14px;margin-top:12px;">You have no manifests yet</p><p style="color:rgba(255,255,255,0.08);font-size:12px;margin-top:4px;">Tap the + button to create your first one!</p></div>';
+                body.innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined text-slate-200 dark:text-white/[0.06]" style="font-size:48px;font-variation-settings:\'FILL\' 1;">edit_note</span><p class="text-slate-400 dark:text-white/[0.15]" style="font-size:14px;margin-top:12px;">You have no manifests yet</p><p class="text-slate-300 dark:text-white/[0.08]" style="font-size:12px;margin-top:4px;">Tap the + button to create your first one!</p></div>';
                 return;
             }
 
@@ -916,7 +916,7 @@
                     remaining = document.querySelectorAll('.my-manifest-item');
                     countEl.textContent = remaining.length > 0 ? '(' + remaining.length + ')' : '';
                     if (remaining.length === 0) {
-                        document.getElementById('my-manifests-body').innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined" style="font-size:48px;color:rgba(255,255,255,0.06);font-variation-settings:\'FILL\' 1;">edit_note</span><p style="color:rgba(255,255,255,0.15);font-size:14px;margin-top:12px;">You have no manifests yet</p><p style="color:rgba(255,255,255,0.08);font-size:12px;margin-top:4px;">Tap the + button to create your first one!</p></div>';
+                        document.getElementById('my-manifests-body').innerHTML = '<div class="my-modal-empty"><span class="material-symbols-outlined text-slate-200 dark:text-white/[0.06]" style="font-size:48px;font-variation-settings:\'FILL\' 1;">edit_note</span><p class="text-slate-400 dark:text-white/[0.15]" style="font-size:14px;margin-top:12px;">You have no manifests yet</p><p class="text-slate-300 dark:text-white/[0.08]" style="font-size:12px;margin-top:4px;">Tap the + button to create your first one!</p></div>';
                     }
                 }, 350);
             }

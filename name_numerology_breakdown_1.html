@@ -309,24 +309,24 @@
         </div>
         <!-- ═══ CONTEXT-AWARE INSIGHT ═══ -->
         <section id="context-insight-section" class="px-4 pb-4" style="display:none;">
-            <div class="rounded-xl border border-primary/20 bg-card-dark overflow-hidden">
-                <div class="p-4 border-b border-white/5">
+            <div class="rounded-xl border border-primary/20 bg-card-light dark:bg-card-dark overflow-hidden">
+                <div class="p-4 border-b border-slate-200 dark:border-white/5">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="material-symbols-outlined text-primary text-lg">neurology</span>
-                        <h3 class="text-white font-bold text-sm tracking-wide">Bağlamsal Analiz</h3>
+                        <h3 class="text-slate-900 dark:text-white font-bold text-sm tracking-wide">Bağlamsal Analiz</h3>
                         <span class="px-1.5 py-0.5 rounded bg-primary/15 text-primary text-[9px] font-black uppercase tracking-wider">AI</span>
                     </div>
-                    <p class="text-white/40 text-xs">Sayıların + zaman bağlamının birleşik yorumu</p>
+                    <p class="text-slate-500 dark:text-white/40 text-xs">Sayıların + zaman bağlamının birleşik yorumu</p>
                 </div>
                 <!-- Period Tags -->
                 <div id="ctx-period-tags" class="flex flex-wrap gap-2 px-4 pt-3 pb-1" style="display:none;"></div>
                 <!-- Intensity Bar -->
                 <div id="ctx-intensity-bar" class="px-4 py-2" style="display:none;">
                     <div class="flex items-center justify-between mb-1">
-                        <span class="text-white/30 text-[10px] font-bold uppercase tracking-widest">Yoğunluk</span>
+                        <span class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Yoğunluk</span>
                         <span id="ctx-intensity-val" class="text-primary text-xs font-bold"></span>
                     </div>
-                    <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
                         <div id="ctx-intensity-fill" class="h-full rounded-full transition-all" style="width:0%;background:linear-gradient(90deg,#f2cc0d,#ef4444);"></div>
                     </div>
                 </div>
@@ -399,7 +399,13 @@
         var PYTHAGOREAN = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9, J: 1, K: 2, L: 3, M: 4, N: 5, O: 6, P: 7, Q: 8, R: 9, S: 1, T: 2, U: 3, V: 4, W: 5, X: 6, Y: 7, Z: 8 };
         var VOWELS = 'AEIOU';
         function reduce(n) { while (n > 9 && n !== 11 && n !== 22 && n !== 33) { n = String(n).split('').reduce(function (a, d) { return a + parseInt(d); }, 0); } return n; }
-        
+
+        // Theme-aware color helper for inline styles
+        function _tc(darkColor, lightColor) {
+            var isDark = document.documentElement.classList.contains('dark');
+            return isDark ? darkColor : lightColor;
+        }
+
         // Detaylı hesaplama breakdown fonksiyonları
         function getExpressionBreakdown(name) {
             var clean = name.toUpperCase().replace(/[^A-Z]/g, '');
@@ -544,23 +550,23 @@
                     var isHidden = expDetail.style.display === 'none';
                     if (isHidden) {
                         // Generate content
-                        var html = '<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.05)">';
+                        var html = '<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid ' + _tc('rgba(255,255,255,0.05)','rgba(0,0,0,0.06)') + '">';
                         html += '<div style="color:#f2cc0d;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">📊 EXPRESSION NUMBER CALCULATION</div>';
-                        html += '<div style="color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:8px">Source: ALL LETTERS (Full Name)</div>';
+                        html += '<div style="color:' + _tc('rgba(255,255,255,0.6)','rgba(51,65,85,0.7)') + ';font-size:12px;margin-bottom:8px">Source: ALL LETTERS (Full Name)</div>';
                         html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">';
                         expBreakdown.letters.forEach(function(letter, idx) {
                             html += '<div style="background:rgba(242,204,13,0.15);border:1px solid rgba(242,204,13,0.3);border-radius:6px;padding:4px 8px;display:flex;gap:4px;align-items:center">';
                             html += '<span style="color:#f2cc0d;font-weight:700;font-size:13px">' + letter + '</span>';
-                            html += '<span style="color:rgba(255,255,255,0.4);font-size:11px">→</span>';
-                            html += '<span style="color:rgba(255,255,255,0.7);font-size:12px">' + expBreakdown.values[idx] + '</span>';
+                            html += '<span style="color:' + _tc('rgba(255,255,255,0.4)','rgba(100,116,139,0.6)') + ';font-size:11px">→</span>';
+                            html += '<span style="color:' + _tc('rgba(255,255,255,0.7)','#334155') + ';font-size:12px">' + expBreakdown.values[idx] + '</span>';
                             html += '</div>';
                         });
                         html += '</div>';
-                        
+
                         // Reduction steps
                         if (expBreakdown.steps.length > 1) {
                             html += '<div style="margin-top:8px">';
-                            html += '<div style="color:rgba(255,255,255,0.5);font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Reduction Steps:</div>';
+                            html += '<div style="color:' + _tc('rgba(255,255,255,0.5)','rgba(100,116,139,0.7)') + ';font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Reduction Steps:</div>';
                             html += '<div style="font-family:monospace;color:#f2cc0d;font-size:13px;font-weight:600">';
                             expBreakdown.steps.forEach(function(step, idx) {
                                 html += step;
@@ -628,18 +634,18 @@
                         
                         // Hesaplama detayı accordion içeriği oluştur
                         var breakdown = cardMapping[i].breakdown;
-                        var contentHTML = '<div style="padding:16px 20px;border-top:1px solid rgba(255,255,255,0.08);background:rgba(0,0,0,0.2)">';
-                        contentHTML += '<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,0.05)">';
+                        var contentHTML = '<div style="padding:16px 20px;border-top:1px solid ' + _tc('rgba(255,255,255,0.08)','rgba(0,0,0,0.06)') + ';background:' + _tc('rgba(0,0,0,0.2)','rgba(0,0,0,0.03)') + '">';
+                        contentHTML += '<div style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid ' + _tc('rgba(255,255,255,0.05)','rgba(0,0,0,0.06)') + '">';
                         contentHTML += '<div style="color:#f2cc0d;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">📊 CALCULATION TRANSPARENCY</div>';
-                        
+
                         if (cardMapping[i].type === 'soul') {
-                            contentHTML += '<div style="color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:8px">Source: VOWELS ONLY (A,E,I,O,U)</div>';
+                            contentHTML += '<div style="color:' + _tc('rgba(255,255,255,0.6)','rgba(51,65,85,0.7)') + ';font-size:12px;margin-bottom:8px">Source: VOWELS ONLY (A,E,I,O,U)</div>';
                             contentHTML += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">';
                             breakdown.vowels.forEach(function(v, idx) {
                                 contentHTML += '<div style="background:rgba(242,204,13,0.15);border:1px solid rgba(242,204,13,0.3);border-radius:6px;padding:4px 8px;display:flex;gap:4px;align-items:center">';
                                 contentHTML += '<span style="color:#f2cc0d;font-weight:700;font-size:13px">' + v + '</span>';
-                                contentHTML += '<span style="color:rgba(255,255,255,0.4);font-size:11px">→</span>';
-                                contentHTML += '<span style="color:rgba(255,255,255,0.7);font-size:12px">' + breakdown.values[idx] + '</span>';
+                                contentHTML += '<span style="color:' + _tc('rgba(255,255,255,0.4)','rgba(100,116,139,0.6)') + ';font-size:11px">→</span>';
+                                contentHTML += '<span style="color:' + _tc('rgba(255,255,255,0.7)','#334155') + ';font-size:12px">' + breakdown.values[idx] + '</span>';
                                 contentHTML += '</div>';
                             });
                             contentHTML += '</div>';
@@ -647,27 +653,27 @@
                                 contentHTML += '<div style="color:#ef4444;font-size:13px;font-weight:600">⚠ No vowels detected</div>';
                             }
                         } else if (cardMapping[i].type === 'personality') {
-                            contentHTML += '<div style="color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:8px">Source: CONSONANTS ONLY</div>';
+                            contentHTML += '<div style="color:' + _tc('rgba(255,255,255,0.6)','rgba(51,65,85,0.7)') + ';font-size:12px;margin-bottom:8px">Source: CONSONANTS ONLY</div>';
                             contentHTML += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px">';
                             breakdown.consonants.forEach(function(c, idx) {
-                                contentHTML += '<div style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:4px 8px;display:flex;gap:4px;align-items:center">';
-                                contentHTML += '<span style="color:rgba(255,255,255,0.9);font-weight:700;font-size:13px">' + c + '</span>';
-                                contentHTML += '<span style="color:rgba(255,255,255,0.4);font-size:11px">→</span>';
-                                contentHTML += '<span style="color:rgba(255,255,255,0.7);font-size:12px">' + breakdown.values[idx] + '</span>';
+                                contentHTML += '<div style="background:' + _tc('rgba(255,255,255,0.08)','rgba(0,0,0,0.05)') + ';border:1px solid ' + _tc('rgba(255,255,255,0.15)','rgba(0,0,0,0.1)') + ';border-radius:6px;padding:4px 8px;display:flex;gap:4px;align-items:center">';
+                                contentHTML += '<span style="color:' + _tc('rgba(255,255,255,0.9)','#0f172a') + ';font-weight:700;font-size:13px">' + c + '</span>';
+                                contentHTML += '<span style="color:' + _tc('rgba(255,255,255,0.4)','rgba(100,116,139,0.6)') + ';font-size:11px">→</span>';
+                                contentHTML += '<span style="color:' + _tc('rgba(255,255,255,0.7)','#334155') + ';font-size:12px">' + breakdown.values[idx] + '</span>';
                                 contentHTML += '</div>';
                             });
                             contentHTML += '</div>';
                         } else if (cardMapping[i].type === 'lifepath') {
-                            contentHTML += '<div style="color:rgba(255,255,255,0.6);font-size:12px;margin-bottom:8px">Source: ALL DATE DIGITS</div>';
-                            contentHTML += '<div style="font-family:monospace;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:10px;margin-bottom:8px">';
-                            contentHTML += '<div style="color:rgba(255,255,255,0.9);font-size:13px">' + breakdown.digits.join(' + ') + ' = ' + breakdown.sum + '</div>';
+                            contentHTML += '<div style="color:' + _tc('rgba(255,255,255,0.6)','rgba(51,65,85,0.7)') + ';font-size:12px;margin-bottom:8px">Source: ALL DATE DIGITS</div>';
+                            contentHTML += '<div style="font-family:monospace;background:' + _tc('rgba(0,0,0,0.3)','rgba(0,0,0,0.04)') + ';border:1px solid ' + _tc('rgba(255,255,255,0.1)','rgba(0,0,0,0.08)') + ';border-radius:6px;padding:10px;margin-bottom:8px">';
+                            contentHTML += '<div style="color:' + _tc('rgba(255,255,255,0.9)','#0f172a') + ';font-size:13px">' + breakdown.digits.join(' + ') + ' = ' + breakdown.sum + '</div>';
                             contentHTML += '</div>';
                         }
-                        
+
                         // Reduction steps
                         if (breakdown.steps.length > 1) {
                             contentHTML += '<div style="margin-top:8px">';
-                            contentHTML += '<div style="color:rgba(255,255,255,0.5);font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Reduction Steps:</div>';
+                            contentHTML += '<div style="color:' + _tc('rgba(255,255,255,0.5)','rgba(100,116,139,0.7)') + ';font-size:11px;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Reduction Steps:</div>';
                             contentHTML += '<div style="font-family:monospace;color:#f2cc0d;font-size:13px;font-weight:600">';
                             breakdown.steps.forEach(function(step, idx) {
                                 contentHTML += step;
@@ -1043,11 +1049,11 @@
                     var firstLine = lines[0];
                     var isTitle = !firstLine.endsWith('.') && firstLine.length < 60 && lines.length === 1;
                     if (isTitle) {
-                        return '<p style="margin-bottom:8px;font-weight:800;color:rgba(255,255,255,0.95);font-size:13px;letter-spacing:0.03em;">' + block + '</p>';
+                        return '<p style="margin-bottom:8px;font-weight:800;color:' + _tc('rgba(255,255,255,0.95)','#0f172a') + ';font-size:13px;letter-spacing:0.03em;">' + block + '</p>';
                     }
-                    return '<p style="margin-bottom:12px;color:rgba(186,181,156,0.9);">' + block.replace(/\n/g,'<br>') + '</p>';
+                    return '<p style="margin-bottom:12px;color:' + _tc('rgba(186,181,156,0.9)','#475569') + ';">' + block.replace(/\n/g,'<br>') + '</p>';
                 }).join('');
-            el.innerHTML = html || '<p style="color:rgba(186,181,156,0.6);">Analiz hazırlanamadı.</p>';
+            el.innerHTML = html || '<p style="color:' + _tc('rgba(186,181,156,0.6)','#94a3b8') + ';">Analiz hazırlanamadı.</p>';
         }
 
         // ─── NUMEROLOJİ USTASI CHAT ──────────────────────────────
@@ -1277,9 +1283,9 @@ SAĞLIK BAŞLIĞI İSTENİRSE sağlık ve psikoloji odaklı analiz yap.` });
                         { label: 'Kişisel Gün', val: weightedCtx.period.personal_day, color: '#60a5fa' }
                     ];
                     tagsEl.innerHTML = tags.map(function(t) {
-                        return '<div style="display:flex;align-items:center;gap:4px;background:rgba(255,255,255,0.04);border:1px solid ' + t.color + '30;border-radius:8px;padding:4px 10px;">' +
+                        return '<div style="display:flex;align-items:center;gap:4px;background:' + _tc('rgba(255,255,255,0.04)','rgba(0,0,0,0.04)') + ';border:1px solid ' + t.color + '30;border-radius:8px;padding:4px 10px;">' +
                             '<span style="color:' + t.color + ';font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;">' + t.label + '</span>' +
-                            '<span style="color:white;font-size:14px;font-weight:800;">' + t.val + '</span></div>';
+                            '<span style="color:' + _tc('white','#0f172a') + ';font-size:14px;font-weight:800;">' + t.val + '</span></div>';
                     }).join('');
                 }
             }
@@ -1322,24 +1328,24 @@ SAĞLIK BAŞLIĞI İSTENİRSE sağlık ve psikoloji odaklı analiz yap.` });
                 }
 
                 if (modules.length === 0) {
-                    modulesEl.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px;text-align:center;padding:16px;">Analiz hazırlanamadı.</p>';
+                    modulesEl.innerHTML = '<p style="color:' + _tc('rgba(255,255,255,0.3)','#94a3b8') + ';font-size:13px;text-align:center;padding:16px;">Analiz hazırlanamadı.</p>';
                     return;
                 }
 
                 modulesEl.innerHTML = modules.map(function(m, idx) {
-                    return '<div style="border-left:3px solid ' + m.color + ';padding:12px 16px;background:rgba(255,255,255,0.02);border-radius:0 8px 8px 0;animation:acc-in 0.4s ease ' + (idx * 0.15) + 's both;">' +
+                    return '<div style="border-left:3px solid ' + m.color + ';padding:12px 16px;background:' + _tc('rgba(255,255,255,0.02)','rgba(0,0,0,0.02)') + ';border-radius:0 8px 8px 0;animation:acc-in 0.4s ease ' + (idx * 0.15) + 's both;">' +
                         '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">' +
                             '<span class="material-symbols-outlined" style="font-size:16px;color:' + m.color + ';">' + m.icon + '</span>' +
                             '<span style="color:' + m.color + ';font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;">' + m.title + '</span>' +
                         '</div>' +
-                        '<p style="color:rgba(255,255,255,0.75);font-size:13px;line-height:1.7;">' + m.text + '</p>' +
+                        '<p style="color:' + _tc('rgba(255,255,255,0.75)','#334155') + ';font-size:13px;line-height:1.7;">' + m.text + '</p>' +
                     '</div>';
                 }).join('');
 
             } catch(e) {
                 console.error('[ContextInsight] Error:', e);
                 var modulesEl2 = document.getElementById('ctx-modules');
-                if (modulesEl2) modulesEl2.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px;text-align:center;padding:16px;">Bağlamsal analiz yüklenemedi.</p>';
+                if (modulesEl2) modulesEl2.innerHTML = '<p style="color:' + _tc('rgba(255,255,255,0.3)','#94a3b8') + ';font-size:13px;text-align:center;padding:16px;">Bağlamsal analiz yüklenemedi.</p>';
             }
         });
     })();
