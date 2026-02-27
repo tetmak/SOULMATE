@@ -34,8 +34,8 @@
         { icon: 'home', label: 'Home', href: 'mystic_numerology_home_1.html', active: isActive(['mystic_numerology_home_1', 'cosmic_energy_calendar', 'daily_spiritual_guide', 'daily_number_deep_dive', 'numerology_meaning_chart', 'numerael_app_ui_design_system']) },
         { icon: 'diversity_3', label: 'Bağlantılar', href: 'connections_shared_readings.html', active: isActive(['connections', 'kisi_profil', 'friendship_dynamics', 'name_numerology_breakdown', 'past_reading_archive', 'letter_vibration']) },
         { icon: 'ADD_BUTTON', label: '', href: '', active: false },
-        { icon: 'auto_awesome', label: 'Manifest', href: 'manifest_community.html', active: isActive(['manifest_community']) },
-        { icon: 'mystery', label: 'The Oracle', href: 'cosmic_match.html', active: isActive(['cosmic_match']) }
+        { icon: 'auto_awesome', label: 'NuFest', href: 'manifest_community.html', active: isActive(['manifest_community']) },
+        { icon: 'mystery', label: 'NuMatch', href: 'cosmic_match.html', active: isActive(['cosmic_match']) }
     ];
 
     // ─── BUBBLE MENU İTEMLERİ ───────────────────────────────
@@ -46,7 +46,7 @@
         { icon: 'nights_stay',   label: 'Ay Fazı',         href: 'lunar_phase_energy_tracker.html',color: '#93c5fd', bg: 'rgba(59,130,246,0.2)',  border: 'rgba(59,130,246,0.5)' },
         { icon: 'casino',        label: 'Karar Çarkı',     href: 'wheel_of_destiny.html',         color: '#fb923c', bg: 'rgba(251,146,60,0.2)',  border: 'rgba(251,146,60,0.5)' },
         { icon: 'calendar_month',label: 'Karar Takvimi',   href: 'cosmic_energy_calendar_2.html', color: '#60a5fa', bg: 'rgba(96,165,250,0.2)',  border: 'rgba(96,165,250,0.5)' },
-        { icon: 'flare',         label: 'Manifest',        href: 'manifest_portal.html',          color: '#fbbf24', bg: 'rgba(251,191,36,0.2)',  border: 'rgba(251,191,36,0.5)' },
+        { icon: 'flare',         label: 'NuFest',           href: 'manifest_portal.html',          color: '#fbbf24', bg: 'rgba(251,191,36,0.2)',  border: 'rgba(251,191,36,0.5)' },
         { icon: 'account_circle',label: 'Profil',          href: 'profile_soul_journey.html',     color: '#94a3b8', bg: 'rgba(148,163,184,0.15)', border: 'rgba(148,163,184,0.4)' }
     ];
 
@@ -65,12 +65,11 @@
         '#numerael-bottom-nav .nav-tab .material-symbols-outlined{font-size:24px;transition:all 0.2s}',
         '#numerael-bottom-nav .nav-tab.active .material-symbols-outlined{font-variation-settings:"FILL" 1}',
         '#numerael-bottom-nav .nav-tab span:last-child{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em}',
-        '#numerael-plus-btn{width:64px;height:64px;border-radius:50%;background:transparent;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;top:-22px;box-shadow:0 0 20px rgba(234,198,122,0.25);transition:transform 0.2s,box-shadow 0.2s;z-index:1002;overflow:hidden}',
+        '#numerael-plus-btn{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#f2cc0d,#e6b800);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;top:-22px;box-shadow:0 4px 20px rgba(242,204,13,0.35);transition:transform 0.2s,box-shadow 0.2s;z-index:1002}',
+        'html:not(.dark) #numerael-plus-btn{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 4px 16px rgba(251,191,36,0.35)}',
         '#numerael-plus-btn:active{transform:scale(0.92)}',
-        '#numerael-plus-btn img{width:80px;height:80px;object-fit:cover;transition:transform 0.3s}',
-        '#numerael-plus-btn.open img{transform:scale(0.85);opacity:0.5}',
-        '#numerael-plus-btn .close-x{position:absolute;font-size:24px;color:#fff;opacity:0;transition:opacity 0.3s}',
-        '#numerael-plus-btn.open .close-x{opacity:1}',
+        '#numerael-plus-btn .plus-icon{font-size:32px;color:#0a0907;transition:transform 0.3s}',
+        '#numerael-plus-btn.open .plus-icon{transform:rotate(45deg)}',
         '#numerael-bubble-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:999}',
         '#numerael-bubble-menu{display:none;position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:1001;width:300px}',
         '#numerael-bubble-menu .bubble-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;justify-items:center}',
@@ -125,7 +124,7 @@
             // Plus button
             var plusBtn = document.createElement('button');
             plusBtn.id = 'numerael-plus-btn';
-            plusBtn.innerHTML = '<img src="images/splash-logo.png" alt="Menu"><span class="close-x material-symbols-outlined">close</span>';
+            plusBtn.innerHTML = '<span class="plus-icon material-symbols-outlined">add</span>';
             plusBtn.addEventListener('click', toggleBubble);
             nav.appendChild(plusBtn);
         } else {

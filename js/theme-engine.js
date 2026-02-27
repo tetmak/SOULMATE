@@ -7,7 +7,7 @@
     'use strict';
 
     var STORAGE_KEY = 'numerael_theme';
-    var DEFAULT_THEME = 'dark';
+    var DEFAULT_THEME = 'light';
 
     // Apply theme IMMEDIATELY before DOM renders (called inline in <head>)
     function getPreferredTheme() {
