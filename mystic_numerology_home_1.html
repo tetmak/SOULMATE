@@ -54,26 +54,29 @@
                         radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.1), transparent);
         }
         html:not(.dark) .ethereal-glow {
-            background: radial-gradient(circle at top right, rgba(127, 19, 236, 0.08), transparent),
-                        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.05), transparent);
-            border-color: rgba(127, 19, 236, 0.12);
+            background: radial-gradient(circle at top right, rgba(127, 19, 236, 0.12), transparent 70%),
+                        radial-gradient(circle at bottom left, rgba(212, 175, 55, 0.08), transparent 70%),
+                        linear-gradient(135deg, #ffffff 0%, #f5f0ff 100%);
+            border-color: rgba(127, 19, 236, 0.18);
+            box-shadow: 0 4px 20px rgba(127, 19, 236, 0.08);
         }
         .cosmic-card {
             background: linear-gradient(135deg, rgba(33, 28, 39, 0.9) 0%, rgba(25, 16, 34, 1) 100%);
             border: 1px solid rgba(127, 19, 236, 0.3);
         }
         html:not(.dark) .cosmic-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 240, 255, 1) 100%);
-            border: 1px solid rgba(127, 19, 236, 0.15);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            background: linear-gradient(135deg, #ffffff 0%, #f0ecff 100%);
+            border: 1px solid rgba(127, 19, 236, 0.2);
+            box-shadow: 0 4px 24px rgba(127, 19, 236, 0.1), 0 1px 4px rgba(0,0,0,0.05);
         }
         .galaxy-gradient {
             background: radial-gradient(circle at 30% 50%, rgba(127, 19, 236, 0.6), transparent 70%),
                         radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.4), transparent 70%);
         }
         html:not(.dark) .galaxy-gradient {
-            background: radial-gradient(circle at 30% 50%, rgba(127, 19, 236, 0.1), transparent 70%),
-                        radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.08), transparent 70%);
+            background: radial-gradient(circle at 30% 50%, rgba(127, 19, 236, 0.15), transparent 70%),
+                        radial-gradient(circle at 70% 50%, rgba(236, 72, 153, 0.12), transparent 70%),
+                        linear-gradient(135deg, #ffffff 0%, #f5f0ff 100%);
         }
         .indigo-gradient {
             background: radial-gradient(circle at 30% 50%, rgba(49, 46, 129, 0.7), transparent 70%),
@@ -81,10 +84,11 @@
                         linear-gradient(135deg, rgba(15, 12, 41, 0.95) 0%, rgba(10, 10, 35, 1) 100%);
         }
         html:not(.dark) .indigo-gradient {
-            background: radial-gradient(circle at 30% 50%, rgba(49, 46, 129, 0.08), transparent 70%),
-                        radial-gradient(circle at 70% 50%, rgba(30, 58, 138, 0.06), transparent 70%),
-                        linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 242, 255, 1) 100%);
-            border-color: rgba(99, 102, 241, 0.15);
+            background: radial-gradient(circle at 30% 50%, rgba(49, 46, 129, 0.12), transparent 70%),
+                        radial-gradient(circle at 70% 50%, rgba(30, 58, 138, 0.1), transparent 70%),
+                        linear-gradient(135deg, #ffffff 0%, #eef0ff 100%);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            box-shadow: 0 4px 24px rgba(99, 102, 241, 0.1), 0 1px 4px rgba(0,0,0,0.05);
         }
         .silver-blue-gradient {
             background: radial-gradient(circle at 30% 50%, rgba(148, 163, 184, 0.3), transparent 70%),
@@ -92,14 +96,18 @@
                         linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(7, 15, 30, 1) 100%);
         }
         html:not(.dark) .silver-blue-gradient {
-            background: radial-gradient(circle at 30% 50%, rgba(148, 163, 184, 0.06), transparent 70%),
-                        radial-gradient(circle at 70% 50%, rgba(56, 189, 248, 0.05), transparent 70%),
-                        linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 248, 255, 1) 100%);
-            border-color: rgba(148, 163, 184, 0.15);
+            background: radial-gradient(circle at 30% 50%, rgba(148, 163, 184, 0.12), transparent 70%),
+                        radial-gradient(circle at 70% 50%, rgba(56, 189, 248, 0.1), transparent 70%),
+                        linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            box-shadow: 0 4px 24px rgba(148, 163, 184, 0.1), 0 1px 4px rgba(0,0,0,0.05);
         }
         .shimmer-border {
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
+        }
+        html:not(.dark) .shimmer-border {
+            border: 1px solid rgba(0, 0, 0, 0.08);
         }
         .shimmer-border::after {
             content: '';
@@ -113,6 +121,9 @@
             mask-composite: exclude;
             -webkit-mask-composite: destination-out;
             pointer-events: none;
+        }
+        html:not(.dark) .shimmer-border::after {
+            background: linear-gradient(135deg, transparent 20%, rgba(0,0,0,0.05) 50%, transparent 80%);
         }
         .aura-glow {
             background: radial-gradient(circle at center, rgba(250, 198, 56, 0.2) 0%, transparent 70%);
@@ -128,9 +139,9 @@
             border: 1px solid rgba(99,102,241,0.2);
         }
         html:not(.dark) .manifest-portal-card {
-            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,240,255,1) 40%, rgba(245,248,255,1) 100%);
-            border: 1px solid rgba(99,102,241,0.15);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            background: linear-gradient(135deg, #ffffff 0%, #eeeeff 40%, #f2f4ff 100%);
+            border: 1px solid rgba(99,102,241,0.2);
+            box-shadow: 0 4px 24px rgba(99,102,241,0.1), 0 1px 4px rgba(0,0,0,0.05);
         }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
@@ -234,7 +245,7 @@
                 <div class="relative p-10 flex flex-col items-center text-center">
                     <div class="mb-6 relative">
                         <div class="absolute inset-0 blur-2xl bg-indigo-500/30 rounded-full scale-125"></div>
-                        <span class="material-symbols-outlined relative text-indigo-300 text-5xl drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]">settings_ethernet</span>
+                        <span class="material-symbols-outlined relative text-indigo-500 dark:text-indigo-300 text-5xl drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]">settings_ethernet</span>
                     </div>
                     <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Cosmic Match</h4>
                     <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]">An analytical deep-dive into the frequency of your celestial resonance.</p>
@@ -252,7 +263,7 @@
                 <div class="relative p-10 flex flex-col items-center text-center">
                     <div class="mb-6 relative">
                         <div class="absolute inset-0 blur-2xl bg-blue-400/20 rounded-full scale-125"></div>
-                        <span class="material-symbols-outlined relative text-slate-200 text-5xl drop-shadow-[0_0_15px_rgba(226,232,240,0.5)]">model_training</span>
+                        <span class="material-symbols-outlined relative text-slate-500 dark:text-slate-200 text-5xl drop-shadow-[0_0_15px_rgba(226,232,240,0.5)]">model_training</span>
                     </div>
                     <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Decision Sphere</h4>
                     <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]">Clarity for your future paths through the lens of divine probability.</p>
@@ -270,7 +281,7 @@
                 <div class="relative p-10 flex flex-col items-center text-center">
                     <div class="mb-6 relative">
                         <div class="absolute inset-0 blur-2xl bg-blue-300/20 rounded-full scale-125"></div>
-                        <span class="material-symbols-outlined relative text-white text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">nights_stay</span>
+                        <span class="material-symbols-outlined relative text-blue-500 dark:text-white text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">nights_stay</span>
                     </div>
                     <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Lunar Insights</h4>
                     <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]">The waning crescent invites introspection. Release what no longer serves your higher purpose.</p>
@@ -310,14 +321,14 @@
                 <div class="relative p-10 flex flex-col items-center text-center">
                     <div class="mb-6 relative">
                         <div class="absolute inset-0 blur-2xl bg-indigo-500/20 rounded-full scale-125"></div>
-                        <span class="material-symbols-outlined relative text-indigo-300 text-5xl drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]"
+                        <span class="material-symbols-outlined relative text-indigo-500 dark:text-indigo-300 text-5xl drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]"
                             style="font-variation-settings: 'FILL' 1;">flare</span>
                     </div>
                     <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Manifest Portal</h4>
                     <p class="text-slate-600 dark:text-white/70 text-sm leading-relaxed max-w-[280px]">The Canvas of Space — Your intentions are the stars that light up your personal universe.</p>
                     <div class="mt-8 flex items-center justify-center gap-4">
                         <div class="h-px w-8 bg-indigo-400/30"></div>
-                        <span class="text-indigo-300 text-[10px] font-bold tracking-[0.3em] uppercase border-b border-indigo-400/40 pb-1">Enter Portal</span>
+                        <span class="text-indigo-500 dark:text-indigo-300 text-[10px] font-bold tracking-[0.3em] uppercase border-b border-indigo-400/40 pb-1">Enter Portal</span>
                         <div class="h-px w-8 bg-indigo-400/30"></div>
                     </div>
                 </div>
@@ -378,16 +389,26 @@
             var ql = document.getElementById('home-quests-list');
             if (ql && quests) {
                 ql.innerHTML = '';
+                var isDark = document.documentElement.classList.contains('dark');
                 quests.forEach(function(q) {
                     var el = document.createElement('div');
                     el.className = 'flex items-center gap-3 px-4 py-3 rounded-xl border transition-all';
-                    el.style.cssText = q.completed
-                        ? 'background:rgba(34,197,94,0.05);border-color:rgba(34,197,94,0.15)'
-                        : 'background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.05)';
+                    if (q.completed) {
+                        el.style.cssText = 'background:rgba(34,197,94,0.05);border-color:rgba(34,197,94,0.15)';
+                    } else {
+                        el.style.cssText = isDark
+                            ? 'background:rgba(255,255,255,0.02);border-color:rgba(255,255,255,0.05)'
+                            : 'background:rgba(0,0,0,0.02);border-color:rgba(0,0,0,0.08)';
+                    }
+                    var iconColor = q.completed ? '#22c55e' : (isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.25)');
+                    var textColor = q.completed
+                        ? (isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.35)')
+                        : (isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)');
+                    var xpColor = q.completed ? 'rgba(34,197,94,0.5)' : (isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.2)');
                     el.innerHTML =
-                        '<span class="material-symbols-outlined text-base" style="color:' + (q.completed ? '#22c55e' : 'rgba(255,255,255,0.2)') + ';font-variation-settings:\'FILL\' ' + (q.completed ? '1' : '0') + '">' + (q.completed ? 'check_circle' : q.icon) + '</span>' +
-                        '<span class="flex-1 text-xs font-medium" style="color:' + (q.completed ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.6)') + ';' + (q.completed ? 'text-decoration:line-through' : '') + '">' + q.name + '</span>' +
-                        '<span class="text-xs font-bold" style="color:' + (q.completed ? 'rgba(34,197,94,0.5)' : 'rgba(255,255,255,0.15)') + '">+' + q.xp + ' XP</span>';
+                        '<span class="material-symbols-outlined text-base" style="color:' + iconColor + ';font-variation-settings:\'FILL\' ' + (q.completed ? '1' : '0') + '">' + (q.completed ? 'check_circle' : q.icon) + '</span>' +
+                        '<span class="flex-1 text-xs font-medium" style="color:' + textColor + ';' + (q.completed ? 'text-decoration:line-through' : '') + '">' + q.name + '</span>' +
+                        '<span class="text-xs font-bold" style="color:' + xpColor + '">+' + q.xp + ' XP</span>';
                     ql.appendChild(el);
                 });
             }
