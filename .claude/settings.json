@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit",
+      "MultiEdit",
+      "Read",
+      "Write",
+      "Bash(npm run *)",
+      "Bash(npx cap *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(git merge *)",
+      "Bash(git checkout *)",
+      "Bash(git branch *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git status *)",
+      "Bash(git stash *)",
+      "Bash(gh pr *)",
+      "Bash(gh issue *)",
+      "Bash(vercel *)",
+      "Bash(vercel deploy *)",
+      "Bash(npx supabase *)",
+      "Bash(node *)",
+      "Bash(npm install *)",
+      "Bash(npm ci *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(cat *)",
+      "Bash(echo *)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(sudo *)",
+      "Bash(format *)"
+    ]
+  }
+}
