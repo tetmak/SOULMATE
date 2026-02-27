@@ -67,10 +67,37 @@ var auth = {
                     var userRes = await window.supabaseClient.auth.getUser();
                     if (userRes.error) {
                         var errMsg = (userRes.error.message || '').toLowerCase();
-                        // Auth hatası (user deleted, token invalid) → session'ı temizle
-                        // Ağ hatası (fetch failed, timeout) → session'a güven
-                        if (errMsg.indexOf('fetch') === -1 && errMsg.indexOf('network') === -1 && errMsg.indexOf('timeout') === -1) {
-                            console.warn('[Auth] Geçersiz session — kullanıcı silinmiş olabilir:', userRes.error.message);
+                        // Ağ hatası → session'a güven, dokunma
+                        var isNetworkErr = errMsg.indexOf('fetch') !== -1 || errMsg.indexOf('network') !== -1 || errMsg.indexOf('timeout') !== -1;
+                        // JWT/token hatası → token süresi dolmuş, refresh dene
+                        var isTokenErr = errMsg.indexOf('jwt') !== -1 || errMsg.indexOf('expired') !== -1 || errMsg.indexOf('token') !== -1 || errMsg.indexOf('invalid claim') !== -1;
+
+                        if (isNetworkErr) {
+                            console.log('[Auth] Ağ hatası, session korunuyor');
+                        } else if (isTokenErr) {
+                            // JWT süresi dolmuş — refresh dene, localStorage'ı silme
+                            console.log('[Auth] Token hatası, refresh deneniyor:', userRes.error.message);
+                            try {
+                                var refreshed = await window.supabaseClient.auth.refreshSession();
+                                if (refreshed.error || !refreshed.data.session) {
+                                    console.warn('[Auth] Refresh başarısız, session temizleniyor');
+                                    try { await window.supabaseClient.auth.signOut(); } catch(so) {}
+                                    localStorage.removeItem('numerael-auth-token');
+                                    localStorage.removeItem('numerael_user_data');
+                                    localStorage.removeItem('numerael_premium');
+                                    localStorage.removeItem('numerael_gamification');
+                                    localStorage.removeItem('numerael_discovery_opted_in');
+                                    session = null;
+                                } else {
+                                    console.log('[Auth] Token refresh başarılı, session devam ediyor');
+                                    session = refreshed.data.session;
+                                }
+                            } catch(re) {
+                                console.warn('[Auth] Refresh çağrısı başarısız (ağ?), session korunuyor:', re.message);
+                            }
+                        } else {
+                            // Gerçek auth hatası (user deleted/not found) → temizle
+                            console.warn('[Auth] Kullanıcı silinmiş:', userRes.error.message);
                             try { await window.supabaseClient.auth.signOut(); } catch(so) {}
                             localStorage.removeItem('numerael-auth-token');
                             localStorage.removeItem('numerael_user_data');
