@@ -613,12 +613,12 @@
                 }
             }
 
-            if (isPremiumUser && premiumData) {
+            if (isPremiumUser) {
                 // ─── Premium User UI ───
-                var planLabel = premiumData.plan === 'yearly' ? 'Yıllık Plan' : 'Aylık Plan';
-                var sourceLabel = premiumData.source === 'paddle' ? 'Web' :
-                                  premiumData.source === 'play_store' ? 'Google Play' :
-                                  premiumData.source === 'supabase' ? 'Sunucu' : 'Aktif';
+                var planLabel = premiumData && premiumData.plan === 'yearly' ? 'Yıllık Plan' : premiumData && premiumData.plan ? 'Aylık Plan' : 'Premium';
+                var sourceLabel = premiumData && premiumData.source === 'paddle' ? 'Web' :
+                                  premiumData && premiumData.source === 'play_store' ? 'Google Play' :
+                                  premiumData && premiumData.source === 'supabase' ? 'Sunucu' : 'Aktif';
 
                 subTitle.textContent = 'Numantic Premium';
                 subDetail.textContent = planLabel + ' · ' + sourceLabel;
@@ -629,7 +629,7 @@
                 subBadge.style.color = '#10b981';
 
                 // Expiry date
-                if (premiumData.expires_at) {
+                if (premiumData && premiumData.expires_at) {
                     var expDate = new Date(premiumData.expires_at);
                     var now = new Date();
                     var daysLeft = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
