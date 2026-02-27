@@ -14,8 +14,9 @@
                   (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
   var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
-  var CHALDEAN = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 8, G: 3, H: 5, I: 1, J: 1, K: 2, L: 3, M: 4, N: 5, O: 7, P: 8, Q: 1, R: 2, S: 3, T: 4, U: 6, V: 6, W: 6, X: 5, Y: 1, Z: 7, 'Ç': 3, 'Ğ': 3, 'İ': 1, 'Ö': 7, 'Ş': 3, 'Ü': 6 };
-  var VOWELS = 'AEIOUİÖÜ';
+  // Pisagor sistemi — NumerologyEngine ile aynı
+  var PYTHAGOREAN = { A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9, J: 1, K: 2, L: 3, M: 4, N: 5, O: 6, P: 7, Q: 8, R: 9, S: 1, T: 2, U: 3, V: 4, W: 5, X: 6, Y: 7, Z: 8, 'Ş': 1, 'Ç': 3, 'Ü': 3, 'Ö': 6, 'Ğ': 7, 'İ': 9 };
+  var VOWELS = 'AEIOUİIÖÜ';
   var TR_UPPER = { 'ç': 'Ç', 'ğ': 'Ğ', 'ı': 'I', 'i': 'İ', 'ö': 'Ö', 'ş': 'Ş', 'ü': 'Ü' };
 
   function reduce(n) {
@@ -31,13 +32,13 @@
 
   function calcSoulUrge(name) {
     return reduce(toTurkishUpper(name).replace(/[^A-ZÇĞİÖŞÜ]/g, '').split('').reduce(function (s, c) {
-      return s + (VOWELS.includes(c) ? (CHALDEAN[c] || 0) : 0);
+      return s + (VOWELS.includes(c) ? (PYTHAGOREAN[c] || 0) : 0);
     }, 0));
   }
 
   function calcPersonality(name) {
     return reduce(toTurkishUpper(name).replace(/[^A-ZÇĞİÖŞÜ]/g, '').split('').reduce(function (s, c) {
-      return s + (!VOWELS.includes(c) && c !== ' ' ? (CHALDEAN[c] || 0) : 0);
+      return s + (!VOWELS.includes(c) && c !== ' ' ? (PYTHAGOREAN[c] || 0) : 0);
     }, 0));
   }
 
