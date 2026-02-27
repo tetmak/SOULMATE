@@ -221,42 +221,45 @@ function setDateValue(prefix, dateStr) {
   // Auth hazır olana kadar bekle (Supabase'den güncel veri gelsin)
   if (window.auth && window.auth.whenReady) { await window.auth.whenReady(); }
 
-  var p1Name = '', p1BirthDate = '';
+  var p1Name = '', p1BirthDate = '', p1Gender = 'unknown';
 
-  // 1. numerael_user_data'dan al (auth.checkSession Supabase'den güncellemiş olacak)
-  try {
-    var ud = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
-    p1Name = ud.name || '';
-    p1BirthDate = ud.birthDate || '';
-  } catch(e) {}
-  
-  // 2. birthDate yoksa Supabase'den çek
-  if (p1Name && !p1BirthDate && window.supabaseClient) {
+  // 1. Her zaman önce Supabase'den çek (en güncel veri)
+  if (window.supabaseClient) {
     try {
       var { data: { user } } = await window.supabaseClient.auth.getUser();
       if (user) {
         var { data: prof } = await window.supabaseClient
           .from('profiles')
-          .select('birth_date, full_name')
+          .select('full_name, birth_date, gender')
           .eq('id', user.id)
           .single();
         if (prof) {
+          p1Name = prof.full_name || '';
           p1BirthDate = prof.birth_date || '';
-          if (!p1Name) p1Name = prof.full_name || '';
-          // numerael_user_data'yı güncelle
-          if (p1BirthDate) {
-            try {
-              var existing = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
-              existing.birthDate = p1BirthDate;
-              if (!existing.name) existing.name = p1Name;
-              localStorage.setItem('numerael_user_data', JSON.stringify(existing));
-            } catch(e2) {}
-          }
+          p1Gender = prof.gender || 'unknown';
+          // localStorage'ı güncelle
+          try {
+            var existing = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
+            if (p1Name) existing.name = p1Name;
+            if (p1BirthDate) existing.birthDate = p1BirthDate;
+            if (p1Gender !== 'unknown') existing.gender = p1Gender;
+            localStorage.setItem('numerael_user_data', JSON.stringify(existing));
+          } catch(e2) {}
         }
       }
     } catch(e) {
       console.log('[Compat Form] Supabase fetch error:', e);
     }
+  }
+
+  // 2. Supabase'den gelemediyse localStorage fallback
+  if (!p1Name || !p1BirthDate) {
+    try {
+      var ud = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
+      if (!p1Name) p1Name = ud.name || '';
+      if (!p1BirthDate) p1BirthDate = ud.birthDate || '';
+      if (p1Gender === 'unknown' && ud.gender) p1Gender = ud.gender;
+    } catch(e) {}
   }
   
   // 3. Hala yoksa saved_contacts'tan ara (Supabase)
@@ -322,10 +325,10 @@ function setDateValue(prefix, dateStr) {
 
     try {
       // Cinsiyet bilgisini çek
-      var p1Gender = 'unknown', p2Gender = 'unknown';
+      var _p1Gender = p1Gender || 'unknown', p2Gender = 'unknown';
       try {
         var udLocal = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
-        if (udLocal.gender) p1Gender = udLocal.gender;
+        if (udLocal.gender) _p1Gender = udLocal.gender;
       } catch(ge) {}
       // p2 için gender: saved_contacts'tan bul
       try {
@@ -338,7 +341,7 @@ function setDateValue(prefix, dateStr) {
         }
       } catch(ge2) {}
       localStorage.setItem('numerael_compat_data', JSON.stringify({
-        person1: { name: p1Name.trim(), birthDate: p1Date, gender: p1Gender },
+        person1: { name: p1Name.trim(), birthDate: p1Date, gender: _p1Gender },
         person2: { name: p2Name.trim(), birthDate: p2Date, gender: p2Gender }
       }));
       // XP tracking
