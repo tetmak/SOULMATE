@@ -517,6 +517,54 @@ document.addEventListener('DOMContentLoaded', async function() {
         this.innerHTML = '<span class="material-icons-round text-white text-2xl">visibility</span>';
     });
 
+    // ─── Revealed card: Add Connection button ───
+    document.getElementById('btn-connect-revealed').addEventListener('click', async function() {
+        var activeItem = ribbonMatches[activeRibbonIdx];
+        if (!activeItem || !activeItem.matchedUserId) return;
+        var btn = this;
+        var icon = btn.querySelector('span');
+        btn.disabled = true;
+        icon.textContent = 'progress_activity';
+        icon.classList.add('animate-spin');
+
+        try {
+            var connected = await window.connectionEngine.areConnected(userId, activeItem.matchedUserId);
+            if (connected) {
+                icon.classList.remove('animate-spin');
+                icon.textContent = 'how_to_reg';
+                return;
+            }
+            var existing = await window.connectionEngine.hasActiveRequest(userId, activeItem.matchedUserId);
+            if (existing) {
+                icon.classList.remove('animate-spin');
+                icon.textContent = 'schedule';
+                return;
+            }
+            var result = await window.connectionEngine.sendConnectionRequest(userId, activeItem.matchedUserId);
+            icon.classList.remove('animate-spin');
+            if (result.success) {
+                icon.textContent = 'check_circle';
+                icon.style.color = '#10b981';
+            } else {
+                icon.textContent = 'person_add';
+                btn.disabled = false;
+            }
+        } catch(e) {
+            console.error('[CosmicMatch] Connection request error:', e);
+            icon.classList.remove('animate-spin');
+            icon.textContent = 'person_add';
+            btn.disabled = false;
+        }
+    });
+
+    // ─── Revealed card: Message button ───
+    document.getElementById('btn-msg-revealed').addEventListener('click', function() {
+        var activeItem = ribbonMatches[activeRibbonIdx];
+        if (!activeItem || !activeItem.matchedUserId) return;
+        var targetName = activeItem.profile ? activeItem.profile.full_name : '';
+        window.location.href = 'messaging.html?uid=' + encodeURIComponent(activeItem.matchedUserId) + '&name=' + encodeURIComponent(targetName);
+    });
+
     async function initMain() {
       try {
         var refreshResult = await window.discovery.refreshOwnProfile(userId);
