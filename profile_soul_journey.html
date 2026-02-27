@@ -136,7 +136,7 @@
                 </div>
                 <div class="shrink-0 flex items-center gap-2">
                     <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">OPEN</span>
-                    <span class="material-symbols-outlined text-white/30">chevron_right</span>
+                    <span class="material-symbols-outlined text-slate-300 dark:text-white/30">chevron_right</span>
                 </div>
             </div>
         </div>
@@ -397,20 +397,20 @@
             var score = item.overallScore || compatScoreFull(name, bd, pName, pDate);
 
             var div = document.createElement('div');
-            div.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-white/5 cursor-pointer fade-in';
+            div.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-white/5 cursor-pointer fade-in';
             div.style.animationDelay = (0.1 + idx*0.07)+'s';
             div.innerHTML =
                 '<div class="size-12 shrink-0 rounded-full bg-red-500/10 flex items-center justify-center">' +
                     '<span class="material-symbols-outlined text-red-400">favorite</span>' +
                 '</div>' +
                 '<div class="flex-1 min-w-0">' +
-                    '<p class="text-white font-bold text-sm truncate">' + name + ' &amp; ' + pName + '</p>' +
-                    '<p class="text-white/40 text-xs mt-0.5">Life Path ' + (lp||'?') + ' &amp; ' + lp2 + ' · <span class="text-primary font-bold">' + score + '% uyum</span></p>' +
+                    '<p class="text-slate-900 dark:text-white font-bold text-sm truncate">' + name + ' &amp; ' + pName + '</p>' +
+                    '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Life Path ' + (lp||'?') + ' &amp; ' + lp2 + ' · <span class="text-primary font-bold">' + score + '% uyum</span></p>' +
                 '</div>' +
                 '<div class="flex items-center gap-2 shrink-0">' +
                     '<div class="text-right">' +
-                        '<p class="text-white/30 text-xs">' + shortDate(item.date) + '</p>' +
-                        '<span class="material-symbols-outlined text-white/20 text-sm">chevron_right</span>' +
+                        '<p class="text-slate-400 dark:text-white/30 text-xs">' + shortDate(item.date) + '</p>' +
+                        '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 text-sm">chevron_right</span>' +
                     '</div>' +
                     '<button class="compat-delete-btn size-8 rounded-full bg-red-500/10 flex items-center justify-center hover:bg-red-500/25 transition-colors" data-idx="' + idx + '" data-name="' + pName.replace(/"/g,'&quot;') + '" data-date="' + (pDate||'') + '">' +
                         '<span class="material-symbols-outlined text-red-400/60 text-base">close</span>' +
@@ -552,17 +552,17 @@
         var lp = sp.life_path || '?';
 
         var card = document.createElement('div');
-        card.className = 'flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-white/5 fade-in';
+        card.className = 'flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-white/5 fade-in';
         card.innerHTML =
             '<div class="relative shrink-0">' +
-                '<div class="size-12 rounded-full overflow-hidden border-2 border-cosmic-violet/30 bg-surface-dark">' +
+                '<div class="size-12 rounded-full overflow-hidden border-2 border-purple-300 dark:border-cosmic-violet/30 bg-slate-100 dark:bg-surface-dark">' +
                     '<img src="' + photo + '" class="w-full h-full object-cover" alt="">' +
                 '</div>' +
-                '<div class="absolute -bottom-1 -right-1 bg-cosmic-violet text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]">' + lp + '</div>' +
+                '<div class="absolute -bottom-1 -right-1 bg-purple-500 dark:bg-cosmic-violet text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-white dark:border-[#181711]">' + lp + '</div>' +
             '</div>' +
             '<div class="flex-1 min-w-0">' +
-                '<p class="text-white font-bold text-sm truncate">' + senderName + '</p>' +
-                '<p class="text-white/35 text-[10px]">LP ' + lp + '</p>' +
+                '<p class="text-slate-900 dark:text-white font-bold text-sm truncate">' + senderName + '</p>' +
+                '<p class="text-slate-500 dark:text-white/35 text-[10px]">LP ' + lp + '</p>' +
             '</div>' +
             '<div class="flex gap-2 shrink-0">' +
                 '<button class="conn-accept-btn size-10 rounded-full bg-green-500/15 flex items-center justify-center" data-reqid="' + req.id + '">' +
