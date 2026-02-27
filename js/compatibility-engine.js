@@ -812,6 +812,113 @@ YAZI KURALLARI:
     };
   }
 
+  // ─── SUPABASE PERSİSTENCE ─────────────────────────────────
+  // Uyumluluk analizini Supabase'e kaydet (upsert — aynı partner varsa güncelle)
+  async function saveReadingToSupabase(ctx) {
+    try {
+      if (!window.supabaseClient) return;
+      var session = null;
+      if (window.auth && window.auth.getSession) session = await window.auth.getSession();
+      if (!session || !session.user) return;
+
+      var row = {
+        user_id: session.user.id,
+        partner_name: ctx.p2.name,
+        partner_birth_date: ctx.p2.birthDate || null,
+        partner_gender: ctx.p2.gender || 'unknown',
+        p1_life_path: ctx.p1.lifePath,
+        p1_soul_urge: ctx.p1.soulUrge,
+        p1_personality: ctx.p1.personality,
+        p1_expression: ctx.p1.expression,
+        p2_life_path: ctx.p2.lifePath,
+        p2_soul_urge: ctx.p2.soulUrge,
+        p2_personality: ctx.p2.personality,
+        p2_expression: ctx.p2.expression,
+        overall_score: ctx.overall,
+        lp_score: ctx.lpScore,
+        soul_score: ctx.soulScore,
+        pers_score: ctx.persScore,
+        exp_score: ctx.expScore,
+        bond_label: ctx.bond,
+        updated_at: new Date().toISOString()
+      };
+
+      var res = await window.supabaseClient
+        .from('compatibility_readings')
+        .upsert(row, { onConflict: 'user_id,lower(partner_name),partner_birth_date' });
+
+      if (res.error) {
+        // Upsert conflict ile çalışmazsa insert/update dene
+        console.warn('[Compat] Upsert failed, trying select+update:', res.error.message);
+        var existing = await window.supabaseClient
+          .from('compatibility_readings')
+          .select('id')
+          .eq('user_id', session.user.id)
+          .ilike('partner_name', ctx.p2.name)
+          .eq('partner_birth_date', ctx.p2.birthDate || '')
+          .maybeSingle();
+        if (existing.data && existing.data.id) {
+          await window.supabaseClient
+            .from('compatibility_readings')
+            .update(row)
+            .eq('id', existing.data.id);
+        } else {
+          await window.supabaseClient
+            .from('compatibility_readings')
+            .insert(row);
+        }
+      }
+      console.log('[Compat] Reading saved to Supabase:', ctx.p2.name);
+    } catch(e) {
+      console.warn('[Compat] saveReadingToSupabase error:', e);
+    }
+  }
+
+  // Supabase'den kullanıcının tüm uyumluluk geçmişini çek
+  async function loadReadingsFromSupabase() {
+    try {
+      if (!window.supabaseClient) return [];
+      var session = null;
+      if (window.auth && window.auth.getSession) session = await window.auth.getSession();
+      if (!session || !session.user) return [];
+
+      var res = await window.supabaseClient
+        .from('compatibility_readings')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .order('updated_at', { ascending: false });
+
+      if (res.error) {
+        console.warn('[Compat] loadReadings error:', res.error.message);
+        return [];
+      }
+      return res.data || [];
+    } catch(e) {
+      console.warn('[Compat] loadReadingsFromSupabase error:', e);
+      return [];
+    }
+  }
+
+  // Supabase'den tek bir reading sil
+  async function deleteReadingFromSupabase(partnerName, partnerBirthDate) {
+    try {
+      if (!window.supabaseClient) return;
+      var session = null;
+      if (window.auth && window.auth.getSession) session = await window.auth.getSession();
+      if (!session || !session.user) return;
+
+      await window.supabaseClient
+        .from('compatibility_readings')
+        .delete()
+        .eq('user_id', session.user.id)
+        .ilike('partner_name', partnerName)
+        .eq('partner_birth_date', partnerBirthDate || '');
+      console.log('[Compat] Reading deleted from Supabase:', partnerName);
+    } catch(e) {
+      console.warn('[Compat] deleteReading error:', e);
+    }
+  }
+
   // Global export
   window.CompatEngine = {
     getCompatData: getCompatData,
@@ -820,7 +927,10 @@ YAZI KURALLARI:
     initBreakdown3: initBreakdown3,
     initBreakdown2: initBreakdown2,
     calculateOverall: calculateOverall,
-    bondLabel: bondLabel
+    bondLabel: bondLabel,
+    saveReadingToSupabase: saveReadingToSupabase,
+    loadReadingsFromSupabase: loadReadingsFromSupabase,
+    deleteReadingFromSupabase: deleteReadingFromSupabase
   };
 
   // openSoulmateShare alias (bazı sayfalarda smOpen var, bu wrapper her ikisini de destekler)

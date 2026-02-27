@@ -17,6 +17,7 @@
     <script src="js/discovery-engine.js"></script>
     <script src="js/connection-engine.js"></script>
     <script src="js/avatar.js"></script>
+    <script src="js/compatibility-engine.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode: "class", theme: { extend: {
             colors: { primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899" },
@@ -312,6 +313,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         } catch(e) { console.warn('[Connections] Avatar enrich error:', e); }
     }
 
+    // Supabase'den uyumluluk skorlarını çek
+    var compatMap = {};
+    if (window.CompatEngine && window.CompatEngine.loadReadingsFromSupabase) {
+        try {
+            var readings = await window.CompatEngine.loadReadingsFromSupabase();
+            readings.forEach(function(r) {
+                compatMap[(r.partner_name||'').toLowerCase()] = r;
+            });
+        } catch(e) { console.warn('[Connections] CompatEngine load error:', e); }
+    }
+
     connections.forEach(function(conn, idx) {
         var lp = conn.lifePath || calcLP(conn.birthDate) || '?';
         var exp = calcExp(conn.fullName);
@@ -319,6 +331,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         var firstName = (conn.fullName||'').split(' ')[0];
         var arch = ARCH[lp] || 'Soul';
         var uc = getUserColor(conn.fullName);
+        var reading = compatMap[(conn.fullName||'').toLowerCase()];
 
         // ── Avatar satırı ──────────────────────────────────────
         var avatarDiv = document.createElement('div');
@@ -351,8 +364,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             '</div>' +
             '<div class="flex-1 min-w-0 cursor-pointer" data-action="view">' +
                 '<p class="text-white font-bold truncate">' + conn.fullName + '</p>' +
-                '<p class="text-white/40 text-xs mt-0.5">' + arch + ' · Exp: ' + exp + '</p>' +
-                '<p class="text-white/25 text-xs">' + shortDate(conn.createdAt) + '</p>' +
+                '<p class="text-white/40 text-xs mt-0.5">' + arch + (reading ? ' · <span class="text-primary font-bold">' + reading.overall_score + '% uyum</span>' : ' · Exp: ' + exp) + '</p>' +
+                '<p class="text-white/25 text-xs">' + shortDate(reading ? (reading.updated_at || reading.created_at) : conn.createdAt) + '</p>' +
             '</div>' +
             '<button class="flex items-center justify-center size-10 rounded-full hover:bg-red-500/20 transition-colors shrink-0 group" data-action="delete" data-name="' + conn.fullName + '">' +
                 '<span class="material-symbols-outlined text-white/30 group-hover:text-red-500 transition-colors">delete</span>' +

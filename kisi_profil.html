@@ -12,6 +12,7 @@
     <script src="js/auth.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/avatar.js"></script>
+    <script src="js/compatibility-engine.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode:"class", theme:{ extend:{
             colors:{ primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628" },
@@ -312,12 +313,20 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Bağlantıya da kaydet (connections listesinde görünsün)
         if (window.profile) {
-            window.profile.saveConnection({
+            await window.profile.saveConnection({
                 fullName: name,
                 birthDate: bd,
                 relationship: 'Partner',
                 notes: 'Uyumluluk analizinden eklendi'
             });
+        }
+
+        // Supabase'e uyumluluk kaydı yaz
+        if (window.CompatEngine && window.CompatEngine.saveReadingToSupabase) {
+            try {
+                var ctx = window.CompatEngine.getCompatData();
+                await window.CompatEngine.saveReadingToSupabase(ctx);
+            } catch(se) { console.warn('[KisiProfil] Supabase compat save error:', se); }
         }
 
         // Direkt analiz loading sayfasına git

@@ -351,10 +351,39 @@
     document.getElementById('name-analysis-title').textContent = name.toUpperCase()+' — Deep Insight';
 
     // ─── Uyumluluk Geçmişi ───────────────────────────────────
+    // Önce Supabase'den çek, yoksa localStorage fallback
     var hist = [];
-    try { hist = JSON.parse(localStorage.getItem('numerael_compat_history')||'[]'); } catch(e){}
     var listEl = document.getElementById('compat-history-list');
     var emptyEl = document.getElementById('compat-empty');
+
+    // Supabase'den uyumluluk geçmişini yükle
+    var supabaseReadings = [];
+    if (window.CompatEngine && window.CompatEngine.loadReadingsFromSupabase) {
+        try { supabaseReadings = await window.CompatEngine.loadReadingsFromSupabase(); } catch(e) {}
+    }
+
+    if (supabaseReadings.length > 0) {
+        // Supabase verisini hist formatına çevir
+        hist = supabaseReadings.map(function(r) {
+            return {
+                partnerName: r.partner_name,
+                partnerDate: r.partner_birth_date || '',
+                date: r.updated_at || r.created_at,
+                overallScore: r.overall_score,
+                lpScore: r.lp_score,
+                p2LifePath: r.p2_life_path,
+                _fromSupabase: true
+            };
+        });
+        // localStorage'ı da senkronize et (cache)
+        try {
+            var localHist = hist.map(function(h) { return { partnerName: h.partnerName, partnerDate: h.partnerDate, date: h.date }; });
+            localStorage.setItem('numerael_compat_history', JSON.stringify(localHist));
+        } catch(e) {}
+    } else {
+        // Supabase boşsa localStorage fallback
+        try { hist = JSON.parse(localStorage.getItem('numerael_compat_history')||'[]'); } catch(e){}
+    }
 
     if (!hist.length) {
         emptyEl.style.display='block';
@@ -362,8 +391,8 @@
         hist.forEach(function(item, idx) {
             var pName = item.partnerName || 'Partner';
             var pDate = item.partnerDate || '';
-            var lp2 = calcLP(pDate)||1;
-            var score = compatScoreFull(name, bd, pName, pDate);
+            var lp2 = item.p2LifePath || calcLP(pDate) || 1;
+            var score = item.overallScore || compatScoreFull(name, bd, pName, pDate);
 
             var div = document.createElement('div');
             div.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-white/5 cursor-pointer fade-in';
@@ -381,7 +410,7 @@
                         '<p class="text-white/30 text-xs">' + shortDate(item.date) + '</p>' +
                         '<span class="material-symbols-outlined text-white/20 text-sm">chevron_right</span>' +
                     '</div>' +
-                    '<button class="compat-delete-btn size-8 rounded-full bg-red-500/10 flex items-center justify-center hover:bg-red-500/25 transition-colors" data-idx="' + idx + '">' +
+                    '<button class="compat-delete-btn size-8 rounded-full bg-red-500/10 flex items-center justify-center hover:bg-red-500/25 transition-colors" data-idx="' + idx + '" data-name="' + pName.replace(/"/g,'&quot;') + '" data-date="' + (pDate||'') + '">' +
                         '<span class="material-symbols-outlined text-red-400/60 text-base">close</span>' +
                     '</button>' +
                 '</div>';
@@ -389,8 +418,14 @@
             div.querySelector('.compat-delete-btn').addEventListener('click', function(e) {
                 e.stopPropagation();
                 var i = parseInt(this.getAttribute('data-idx'));
+                var delName = this.getAttribute('data-name');
+                var delDate = this.getAttribute('data-date');
                 hist.splice(i, 1);
                 try { localStorage.setItem('numerael_compat_history', JSON.stringify(hist)); } catch(ex){}
+                // Supabase'den de sil
+                if (window.CompatEngine && window.CompatEngine.deleteReadingFromSupabase) {
+                    window.CompatEngine.deleteReadingFromSupabase(delName, delDate);
+                }
                 div.style.transition = 'opacity 0.2s, transform 0.2s';
                 div.style.opacity = '0';
                 div.style.transform = 'translateX(20px)';

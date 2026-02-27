@@ -14,6 +14,7 @@
     <script src="js/premium.js"></script>
     <script src="js/gamification-engine.js"></script>
 <script src="js/profile.js"></script>
+<script src="js/compatibility-engine.js"></script>
 <script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {primary: "#de434b", "background-light": "#f8f6f6", "background-dark": "#201213", "romantic-pink": "#ff85a1"}, fontFamily: {display: "Plus Jakarta Sans"}, borderRadius: {DEFAULT: "1rem", lg: "2rem", xl: "3rem", full: "9999px"}}}};</script>
 <style>
         .glow-pulse {
@@ -388,6 +389,17 @@ function setDateValue(prefix, dateStr) {
         } catch(err) {
           console.log('[Compat Form] Connection kayıt hatası:', err);
         }
+      }
+
+      // Supabase'e uyumluluk kaydı yaz (CompatEngine kullanarak)
+      if (window.CompatEngine && window.CompatEngine.saveReadingToSupabase) {
+        try {
+          var compatData = JSON.parse(localStorage.getItem('numerael_compat_data') || 'null');
+          if (compatData) {
+            var ctx = window.CompatEngine.getCompatData();
+            await window.CompatEngine.saveReadingToSupabase(ctx);
+          }
+        } catch(se) { console.warn('[Compat Form] Supabase save error:', se); }
       }
 
       // Navigation — saveConnection tamamlandıktan sonra
