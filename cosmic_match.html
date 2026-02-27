@@ -538,6 +538,45 @@ document.addEventListener('DOMContentLoaded', async function() {
         initMain();
     }
 
+    // ─── REVEAL BUTON HANDLER ─────────────────────────────────
+    document.getElementById('btn-reveal').addEventListener('click', async function() {
+        var activeItem = ribbonMatches[activeRibbonIdx];
+        if (!activeItem || !activeItem.profile) return;
+
+        var m = activeItem.profile;
+        var isPrem = storedIsPrem;
+
+        this.disabled = true;
+        this.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
+
+        var result = await window.discovery.revealMatch(userId, activeItem.matchDate, activeItem.matchedUserId, isPrem);
+        if (result.success) {
+            // Ribbon item'ını revealed olarak işaretle
+            activeItem.revealed = true;
+            showRevealed(m);
+            storedRemaining = Math.max(0, result.remaining);
+            document.getElementById('credits-count').textContent = storedRemaining;
+
+            // Ribbon avatarını güncelle
+            var frags = document.querySelectorAll('#match-ribbon .scroll-fragment');
+            if (frags[activeRibbonIdx]) {
+                var avatarDiv = frags[activeRibbonIdx].querySelector('div');
+                if (avatarDiv) avatarDiv.innerHTML = '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" style="width:100%;height:100%;object-fit:cover">';
+            }
+        } else if (result.reason === 'daily_limit') {
+            document.getElementById('btn-reveal').style.display = 'none';
+            document.getElementById('no-credits-msg').style.display = 'block';
+            document.getElementById('credits-count').textContent = '0';
+            storedRemaining = 0;
+        } else if (result.reason === 'not_premium') {
+            document.getElementById('btn-reveal').style.display = 'none';
+            document.getElementById('premium-paywall').style.display = 'block';
+        }
+
+        this.disabled = false;
+        this.innerHTML = '<span id="reveal-label">Profili Aç</span><span class="material-symbols-outlined text-base">fluid</span>';
+    });
+
     // ─── ANA İÇERİK YÜKLEME ─────────────────────────────────
     async function initMain() {
       try {
@@ -563,17 +602,39 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         storedIsPrem = isPrem;
 
-        var match = await window.discovery.findDailyMatch(userId, userProfile);
-        await renderDailyMatch(match, streak);
+        // ─── ÇOKLU GÜNLÜK EŞLEŞMELER ───
+        var dailyMatches = await window.discovery.findDailyMatches(userId, userProfile);
+        console.log('[CosmicMatch] Günlük eşleşme sayısı:', dailyMatches.length);
 
-        var topMatches = await window.discovery.getTopMatches(userId, userProfile, 8);
-        renderRadar(topMatches);
+        // Reveal sayısını hesapla
+        var todayReveals = await window.discovery.getDailyRevealCount(userId);
+        storedRemaining = isPrem ? (window.discovery.PREMIUM_DAILY_REVEALS - todayReveals) : 0;
 
-        // Ribbon'u doldur (günlük eşleşme + radar eşleşmeleri)
-        populateRibbon(match, topMatches);
+        document.getElementById('credits-count').textContent = isPrem ? Math.max(0, storedRemaining) : '🔒';
+        document.getElementById('credits-label').textContent = isPrem ? 'Bugün' : 'Premium';
 
-        var history = await window.discovery.getMatchHistory(userId, 10);
-        renderHistory(history, topMatches, isPrem);
+        // Ribbon'u günlük eşleşmelerle doldur
+        populateRibbon(dailyMatches);
+
+        // Radar'ı günlük eşleşmelerle doldur
+        renderRadar(dailyMatches);
+
+        // İlk eşleşmeyi Soul Card'da göster
+        if (dailyMatches.length > 0) {
+            document.getElementById('match-loading').style.display = 'none';
+            document.getElementById('match-content').style.display = 'block';
+            updateCardDisplay(ribbonMatches[0]);
+        } else {
+            document.getElementById('match-loading').style.display = 'none';
+            document.getElementById('match-empty').style.display = 'flex';
+        }
+
+        // Geçmiş eşleşmeleri yükle (bugünkü hariç, sadece DB'den)
+        var history = await window.discovery.getMatchHistory(userId, 30);
+        // Bugünkü eşleşmeleri geçmişten çıkar
+        var todayStr = window.discovery.todayStr();
+        var pastHistory = history.filter(function(h) { return h.match_date !== todayStr; });
+        renderHistory(pastHistory, isPrem);
       } catch(e) {
         console.error('[CosmicMatch] initMain hatası:', e);
       }
@@ -594,104 +655,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    // ─── GÜNLÜK EŞLEŞME RENDER ──────────────────────────────
-    async function renderDailyMatch(match, streak) {
-        document.getElementById('match-loading').style.display = 'none';
-
-        if (!match || !match.matched) {
-            document.getElementById('match-empty').style.display = 'flex';
-            return;
-        }
-
-        var m = match.matched;
-        var score = match.match_score || 0;
-        var revealed = match.revealed;
-        var isPrem = window.premium && window.premium.isPremium();
-
-        var todayReveals = await window.discovery.getDailyRevealCount(userId);
-        var remaining = isPrem ? (window.discovery.PREMIUM_DAILY_REVEALS - todayReveals) : 0;
-        storedRemaining = remaining;
-
-        document.getElementById('credits-count').textContent = isPrem ? Math.max(0, remaining) : '🔒';
-        document.getElementById('credits-label').textContent = isPrem ? 'Bugün' : 'Premium';
-
-        document.getElementById('match-content').style.display = 'block';
-
-        document.getElementById('match-lp').textContent = m.life_path || '?';
-
-        document.getElementById('match-score').textContent = score + '%';
-        setTimeout(function() {
-            document.getElementById('match-bar').style.width = score + '%';
-        }, 300);
-
-        document.getElementById('match-bond').textContent = window.discovery.bondLabel(score);
-
-        var arch = window.discovery.ARCHETYPES[m.life_path] || 'Ruh';
-        document.getElementById('match-archetype').textContent = 'Life Path ' + (m.life_path||'?') + ' · ' + arch;
-
-        // Kozmik analiz güncelle
-        generateInsights(m, score);
-
-        if (revealed) {
-            showRevealed(m);
-        } else {
-            document.getElementById('match-name').textContent = maskName(m.full_name);
-            document.getElementById('match-avatar').innerHTML = '<span class="text-cosmic-violet text-4xl font-black">' + initial(m.full_name) + '</span>';
-            document.getElementById('match-card').classList.add('match-card-blur');
-            document.getElementById('match-card').classList.remove('match-card-revealed');
-
-            if (!isPrem) {
-                document.getElementById('btn-reveal').style.display = 'none';
-                document.getElementById('no-credits-msg').style.display = 'none';
-                document.getElementById('premium-paywall').style.display = 'block';
-            } else if (remaining > 0) {
-                document.getElementById('btn-reveal').style.display = 'flex';
-                document.getElementById('no-credits-msg').style.display = 'none';
-                document.getElementById('premium-paywall').style.display = 'none';
-                document.getElementById('reveal-label').textContent = 'Profili Aç (' + remaining + ' hak kaldı)';
-            } else {
-                document.getElementById('btn-reveal').style.display = 'none';
-                document.getElementById('no-credits-msg').style.display = 'block';
-                document.getElementById('premium-paywall').style.display = 'none';
-            }
-        }
-
-        document.getElementById('btn-reveal').addEventListener('click', async function() {
-            this.disabled = true;
-            this.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span>';
-
-            var result = await window.discovery.revealMatch(userId, match.match_date, isPrem);
-            if (result.success) {
-                showRevealed(m);
-                storedRemaining = Math.max(0, result.remaining);
-                document.getElementById('credits-count').textContent = storedRemaining;
-                // Ribbon'daki günlük eşleşmeyi de açılmış olarak güncelle
-                if (ribbonMatches.length > 0 && ribbonMatches[0].isDailyMatch) {
-                    ribbonMatches[0].revealed = true;
-                    // Ribbon avatarını güncelle
-                    var firstFrag = document.querySelector('#match-ribbon .scroll-fragment');
-                    if (firstFrag) {
-                        var avatarDiv = firstFrag.querySelector('div');
-                        if (avatarDiv) avatarDiv.innerHTML = '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" style="width:100%;height:100%;object-fit:cover">';
-                    }
-                }
-            } else if (result.reason === 'daily_limit') {
-                this.disabled = false;
-                this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç</span>';
-                document.getElementById('btn-reveal').style.display = 'none';
-                document.getElementById('no-credits-msg').style.display = 'block';
-                document.getElementById('credits-count').textContent = '0';
-            } else if (result.reason === 'not_premium') {
-                this.disabled = false;
-                this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç</span>';
-                document.getElementById('btn-reveal').style.display = 'none';
-                document.getElementById('premium-paywall').style.display = 'block';
-            } else {
-                this.disabled = false;
-                this.innerHTML = '<span class="material-symbols-outlined">visibility</span> <span>Profili Aç</span>';
-            }
-        });
-    }
+    // ─── YARDIMCI FONKSİYONLAR ──────────────────────────────
 
     function showRevealed(m) {
         document.getElementById('match-card').classList.remove('match-card-blur');
@@ -700,6 +664,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('match-avatar').innerHTML = '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover" alt="">';
         document.getElementById('btn-reveal').style.display = 'none';
         document.getElementById('no-credits-msg').style.display = 'none';
+        document.getElementById('premium-paywall').style.display = 'none';
         document.getElementById('revealed-info').style.display = 'block';
     }
 
@@ -711,33 +676,22 @@ document.addEventListener('DOMContentLoaded', async function() {
         }).join(' ');
     }
 
-    // ─── RIBBON: Bugünün eşleşmelerini üst çerçevelere koy ──
-    function populateRibbon(dailyMatch, topMatches) {
+    // ─── RIBBON: Günlük eşleşmeleri üst çerçevelere koy ─────
+    function populateRibbon(dailyMatches) {
         var ribbonEl = document.getElementById('match-ribbon');
         ribbonEl.innerHTML = '';
         ribbonMatches = [];
         activeRibbonIdx = 0;
 
-        // Günlük eşleşmeyi ilk sıraya koy
-        if (dailyMatch && dailyMatch.matched) {
-            ribbonMatches.push({
-                profile: dailyMatch.matched,
-                score: dailyMatch.match_score || 0,
-                isDailyMatch: true,
-                revealed: dailyMatch.revealed,
-                matchDate: dailyMatch.match_date
-            });
-        }
-
-        // Radar eşleşmelerini ekle (günlük eşleşme hariç)
-        var dailyUid = dailyMatch && dailyMatch.matched ? dailyMatch.matched.user_id : null;
-        (topMatches || []).forEach(function(item) {
-            if (item.profile && item.profile.user_id !== dailyUid) {
+        // Tüm günlük eşleşmeleri ribbon'a ekle
+        (dailyMatches || []).forEach(function(match) {
+            if (match && match.matched) {
                 ribbonMatches.push({
-                    profile: item.profile,
-                    score: item.score,
-                    isDailyMatch: false,
-                    revealed: false
+                    profile: match.matched,
+                    score: match.match_score || 0,
+                    revealed: match.revealed || false,
+                    matchDate: match.match_date,
+                    matchedUserId: match.matched_user_id
                 });
             }
         });
@@ -815,7 +769,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         generateInsights(m, score);
 
         // Reveal / blur durumu
-        var isRevealed = item.revealed || (storedIsPrem && !item.isDailyMatch);
+        var isRevealed = item.revealed;
 
         if (isRevealed) {
             // Açık profil
@@ -826,7 +780,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             document.getElementById('btn-reveal').style.display = 'none';
             document.getElementById('no-credits-msg').style.display = 'none';
             document.getElementById('premium-paywall').style.display = 'none';
-            document.getElementById('revealed-info').style.display = (item.isDailyMatch && item.revealed) ? 'block' : 'none';
+            document.getElementById('revealed-info').style.display = 'block';
         } else {
             // Bulanık profil
             document.getElementById('match-card').classList.add('match-card-blur');
@@ -840,21 +794,16 @@ document.addEventListener('DOMContentLoaded', async function() {
                 document.getElementById('btn-reveal').style.display = 'none';
                 document.getElementById('no-credits-msg').style.display = 'none';
                 document.getElementById('premium-paywall').style.display = 'block';
-            } else if (item.isDailyMatch && storedRemaining > 0) {
-                // Premium + günlük eşleşme + hakkı var
+            } else if (storedRemaining > 0) {
+                // Premium + hakkı var
                 document.getElementById('btn-reveal').style.display = 'flex';
                 document.getElementById('no-credits-msg').style.display = 'none';
                 document.getElementById('premium-paywall').style.display = 'none';
                 document.getElementById('reveal-label').textContent = 'Profili Aç (' + storedRemaining + ' hak kaldı)';
-            } else if (item.isDailyMatch) {
-                // Premium + günlük eşleşme + hakkı doldu
+            } else {
+                // Premium + hakkı doldu
                 document.getElementById('btn-reveal').style.display = 'none';
                 document.getElementById('no-credits-msg').style.display = 'block';
-                document.getElementById('premium-paywall').style.display = 'none';
-            } else {
-                // Radar eşleşmesi (premium ama günlük değil)
-                document.getElementById('btn-reveal').style.display = 'none';
-                document.getElementById('no-credits-msg').style.display = 'none';
                 document.getElementById('premium-paywall').style.display = 'none';
             }
         }
@@ -1007,9 +956,13 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // ─── RADAR RENDER ────────────────────────────────────────
-    function renderRadar(matches) {
+    // dailyMatches formatını kabul eder: [{matched, match_score, ...}]
+    function renderRadar(dailyMatches) {
         var dotsEl = document.getElementById('radar-dots');
         dotsEl.innerHTML = '';
+
+        // ribbonMatches'dan al (profile + score formatı)
+        var matches = (dailyMatches || []).filter(function(m) { return m && m.matched; });
 
         if (!matches.length) {
             document.getElementById('radar-empty').style.display = 'block';
@@ -1023,9 +976,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         var colors = ['#c084fc','#f472b6','#818cf8','#34d399','#fbbf24','#f87171','#22d3ee','#a78bfa'];
 
-        matches.forEach(function(item, idx) {
-            var p = item.profile;
-            var score = item.score;
+        matches.forEach(function(match, idx) {
+            var p = match.matched;
+            var score = match.match_score || 0;
             var distance = 120 - (score - 65) * 2;
             distance = Math.max(45, Math.min(115, distance));
             var angle = (idx / matches.length) * 2 * Math.PI - Math.PI/2;
@@ -1038,45 +991,29 @@ document.addEventListener('DOMContentLoaded', async function() {
             dot.style.cssText = 'left:' + x + 'px;top:' + y + 'px;background:' + color + '22;border-color:' + color + '66;animation:float ' + (2.5 + idx*0.3) + 's ease-in-out infinite;animation-delay:' + (idx*0.2) + 's';
             dot.innerHTML = '<span style="color:' + color + '">' + (p.life_path||'?') + '</span>';
             dot.title = maskName(p.full_name) + ' · %' + score;
+
+            // Radar dot'a tıklanınca ilgili ribbon item'ını seç
+            (function(i) {
+                dot.addEventListener('click', function() { selectRibbonItem(i); });
+            })(idx);
+
             dotsEl.appendChild(dot);
         });
     }
 
     // ─── GEÇMİŞ EŞLEŞMELER RENDER ──────────────────────────
-    function renderHistory(matches, radarMatches, isPrem) {
+    function renderHistory(matches, isPrem) {
         var listEl = document.getElementById('history-list');
         var emptyEl = document.getElementById('history-empty');
 
-        var historyIds = {};
-        (matches || []).forEach(function(m) {
-            if (m.matched_user_id) historyIds[m.matched_user_id] = true;
-        });
-
-        var radarExtras = [];
-        if (radarMatches && radarMatches.length) {
-            radarMatches.forEach(function(item) {
-                var p = item.profile;
-                if (p && p.user_id && !historyIds[p.user_id]) {
-                    radarExtras.push({
-                        matched: p,
-                        match_score: item.score,
-                        match_date: '',
-                        matched_user_id: p.user_id
-                    });
-                }
-            });
-        }
-
-        var allMatches = (matches || []).concat(radarExtras);
-
-        if (!allMatches.length) {
+        if (!matches || !matches.length) {
             emptyEl.style.display = 'block';
             return;
         }
 
         emptyEl.style.display = 'none';
 
-        allMatches.forEach(function(match) {
+        matches.forEach(function(match) {
             var m = match.matched || { full_name: 'Bilinmeyen', life_path: null };
             var revealed = isPrem || match.revealed;
             var displayName = revealed ? (m.full_name || 'Bilinmeyen') : maskName(m.full_name || 'Bilinmeyen');

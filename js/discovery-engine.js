@@ -231,48 +231,11 @@
         }
     }
 
-    // ─── GÜNLÜK EŞLEŞME BUL ─────────────────────────────────
-    async function findDailyMatch(userId, userProfile) {
-        var today = todayStr();
-        var sb = window.supabaseClient;
+    // ─── GÜNLÜK EŞLEŞMELER BUL (çoklu) ──────────────────────
+    var MAX_DAILY_MATCHES = 5;
 
-        // Bugünkü eşleşme var mı?
-        try {
-            var existing = await sb.from('daily_matches')
-                .select('*')
-                .eq('user_id', userId)
-                .eq('match_date', today)
-                .maybeSingle();
-
-            if (existing.data && existing.data.matched_user_id) {
-                // Eşleşen profili ayrı çek
-                var profileRes = await sb.from('discovery_profiles')
-                    .select('*')
-                    .eq('user_id', existing.data.matched_user_id)
-                    .maybeSingle();
-
-                if (profileRes.data) {
-                    var mp = profileRes.data;
-                    if (mp.birth_date) mp.life_path = calcLP(mp.birth_date);
-                    // Avatar fallback: profiles tablosundan avatar_url çek
-                    if (!mp.avatar_url) {
-                        try {
-                            var avRes = await sb.from('profiles').select('avatar_url').eq('id', mp.user_id).maybeSingle();
-                            if (avRes.data && avRes.data.avatar_url) mp.avatar_url = avRes.data.avatar_url;
-                        } catch(e2) {}
-                    }
-                    existing.data.matched = mp;
-                    return existing.data;
-                }
-            }
-        } catch(e) { console.warn('[Match] Existing check error:', e); }
-
-        // Yoksa yeni eşleşme hesapla
-        var userGender = userProfile ? (userProfile.gender || 'unknown') : 'unknown';
-        var profiles = await fetchDiscoverableProfiles(userId, userGender);
-        if (!profiles.length) return null;
-
-        // Recalculate life_path from birth_date
+    // Profil listesini zenginleştir (numeroloji sayıları + avatar)
+    function enrichProfiles(profiles) {
         profiles.forEach(function(p) {
             if (p.birth_date) p.life_path = calcLP(p.birth_date);
             if (p.full_name) {
@@ -281,19 +244,86 @@
                 if (!p.personality_num) p.personality_num = calcPers(p.full_name);
             }
         });
+    }
 
-        // Geçmiş eşleşmeleri al (son 30 gün tekrar etmesin)
+    // Eşleşme listesine profil bilgilerini ekle (DB'den dönen match'ler için)
+    async function attachProfilesToMatches(matches) {
+        var sb = window.supabaseClient;
+        var matchedIds = matches.map(function(m) { return m.matched_user_id; }).filter(Boolean);
+        if (!matchedIds.length) return matches;
+
+        // discovery_profiles'dan profil bilgileri
+        var profilesRes = await sb.from('discovery_profiles').select('*').in('user_id', matchedIds);
+
+        // Avatar fallback: profiles tablosu
+        var profAvatarMap = {};
+        try {
+            var profAvRes = await sb.from('profiles').select('id, avatar_url').in('id', matchedIds);
+            (profAvRes.data || []).forEach(function(pa) {
+                if (pa.avatar_url) profAvatarMap[pa.id] = pa.avatar_url;
+            });
+        } catch(e) {}
+
+        var profileMap = {};
+        (profilesRes.data || []).forEach(function(p) {
+            enrichProfiles([p]);
+            if (!p.avatar_url && profAvatarMap[p.user_id]) p.avatar_url = profAvatarMap[p.user_id];
+            profileMap[p.user_id] = p;
+        });
+
+        matches.forEach(function(m) { m.matched = profileMap[m.matched_user_id] || null; });
+        return matches.filter(function(m) { return m.matched; });
+    }
+
+    async function findDailyMatches(userId, userProfile) {
+        var today = todayStr();
+        var sb = window.supabaseClient;
+
+        // ─── Bugünkü eşleşmeler zaten var mı? ───
+        try {
+            var existing = await sb.from('daily_matches')
+                .select('*')
+                .eq('user_id', userId)
+                .eq('match_date', today);
+
+            if (existing.data && existing.data.length > 0) {
+                console.log('[Match] Bugün ' + existing.data.length + ' mevcut eşleşme bulundu');
+                return await attachProfilesToMatches(existing.data);
+            }
+        } catch(e) { console.warn('[Match] Existing check error:', e); }
+
+        // ─── Yoksa yeni eşleşmeler hesapla ───
+        var userGender = userProfile ? (userProfile.gender || 'unknown') : 'unknown';
+        var profiles = await fetchDiscoverableProfiles(userId, userGender);
+        if (!profiles.length) {
+            console.log('[Match] Karşı cinsiyet profil yok, eşleşme oluşturulamadı');
+            return [];
+        }
+
+        enrichProfiles(profiles);
+
+        // TÜM geçmiş eşleşmeleri al (bir kere gösterilen tekrar gösterilmez)
         var pastIds = [];
         try {
             var pastRes = await sb.from('daily_matches')
                 .select('matched_user_id')
-                .eq('user_id', userId)
-                .gte('match_date', new Date(Date.now() - 30*86400000).toISOString().slice(0,10));
+                .eq('user_id', userId);
             pastIds = (pastRes.data || []).map(function(r) { return r.matched_user_id; });
         } catch(e) {}
 
-        // Skor hesapla ve sırala (görünürlük çarpanı ile)
-        var scored = profiles.map(function(p) {
+        // Daha önce gösterilmemiş profilleri filtrele
+        var newProfiles = profiles.filter(function(p) {
+            return pastIds.indexOf(p.user_id) === -1;
+        });
+
+        // Eğer hiç yeni profil kalmadıysa tüm havuzdan göster
+        if (!newProfiles.length) {
+            console.log('[Match] Tüm profiller daha önce gösterilmiş, havuz yenileniyor');
+            newProfiles = profiles;
+        }
+
+        // Skor hesapla ve sırala
+        var scored = newProfiles.map(function(p) {
             var baseScore = calcFullMatch(userProfile, p);
             var visBoost = 0;
             try {
@@ -304,41 +334,43 @@
         });
         scored.sort(function(a,b) { return b.score - a.score; });
 
-        var visMultiplier = 1;
-        if (window.gamification) {
-            visMultiplier = window.gamification.getVisibility() || 1;
-        }
+        // En fazla MAX_DAILY_MATCHES kadar eşleşme seç
+        var dailyPicks = scored.slice(0, MAX_DAILY_MATCHES);
+        console.log('[Match] ' + dailyPicks.length + ' yeni günlük eşleşme oluşturuluyor');
 
-        // Tercihen son 30 günde gösterilmemiş birini seç
-        var match = null;
-        for (var i=0; i<scored.length; i++) {
-            if (pastIds.indexOf(scored[i].profile.user_id) === -1) {
-                match = scored[i]; break;
-            }
-        }
-        if (!match) match = scored[0];
+        // Hepsini DB'ye kaydet
+        var results = [];
+        for (var i = 0; i < dailyPicks.length; i++) {
+            var pick = dailyPicks[i];
+            try {
+                await sb.from('daily_matches').insert({
+                    user_id: userId,
+                    matched_user_id: pick.profile.user_id,
+                    match_score: pick.score,
+                    match_date: today,
+                    revealed: false
+                });
+            } catch(e) { console.warn('[Match] Insert error for ' + pick.profile.full_name + ':', e); }
 
-        // Kaydet (upsert — aynı gün tekrar çağrılırsa çakışmasın)
-        try {
-            await sb.from('daily_matches').upsert({
-                user_id: userId,
-                matched_user_id: match.profile.user_id,
-                match_score: match.score,
+            results.push({
+                matched_user_id: pick.profile.user_id,
+                match_score: pick.score,
                 match_date: today,
-                revealed: false
-            }, { onConflict: 'user_id,match_date' });
-        } catch(e) { console.warn('[Match] Upsert error:', e); }
+                revealed: false,
+                matched: pick.profile
+            });
+        }
 
-        return {
-            matched_user_id: match.profile.user_id,
-            match_score: match.score,
-            match_date: today,
-            revealed: false,
-            matched: match.profile
-        };
+        return results;
     }
 
-    // ─── REVEAL (Eşleşme açma) ──────────────────────────────
+    // Eski API uyumluluğu — tek eşleşme döndürür
+    async function findDailyMatch(userId, userProfile) {
+        var matches = await findDailyMatches(userId, userProfile);
+        return matches.length > 0 ? matches[0] : null;
+    }
+
+    // ─── REVEAL (Tek eşleşme açma) ────────────────────────────
     var PREMIUM_DAILY_REVEALS = 5;
 
     async function getDailyRevealCount(userId) {
@@ -354,7 +386,8 @@
         } catch(e) { return 0; }
     }
 
-    async function revealMatch(userId, matchDate, isPremium) {
+    // matchedUserId parametresi ile TEK bir eşleşmeyi reveal eder
+    async function revealMatch(userId, matchDate, matchedUserId, isPremium) {
         var sb = window.supabaseClient;
 
         // Non-premium kullanıcılar hiç reveal yapamaz
@@ -368,10 +401,18 @@
             return { success: false, reason: 'daily_limit', remaining: 0 };
         }
 
-        // Reveal yap
+        // Reveal yap — sadece belirtilen eşleşme
         try {
-            await sb.from('daily_matches').update({ revealed: true })
-                .eq('user_id', userId).eq('match_date', matchDate || todayStr());
+            var updateQuery = sb.from('daily_matches').update({ revealed: true })
+                .eq('user_id', userId)
+                .eq('match_date', matchDate || todayStr());
+
+            // matchedUserId varsa sadece o eşleşmeyi aç
+            if (matchedUserId) {
+                updateQuery = updateQuery.eq('matched_user_id', matchedUserId);
+            }
+
+            await updateQuery;
 
             // total_reveals güncelle
             try {
@@ -389,31 +430,6 @@
         } catch(e) {
             return { success: false, reason: 'error' };
         }
-    }
-
-    // ─── TOP MATCHES (Radar) ─────────────────────────────────
-    async function getTopMatches(userId, userProfile, limit) {
-        var userGender = userProfile ? (userProfile.gender || 'unknown') : 'unknown';
-        var profiles = await fetchDiscoverableProfiles(userId, userGender);
-        if (!profiles.length) return [];
-
-        // Recalculate life_path from birth_date for profiles with missing/wrong data
-        profiles.forEach(function(p) {
-            if (p.birth_date) {
-                p.life_path = calcLP(p.birth_date);
-            }
-            if (p.full_name) {
-                if (!p.expression_num) p.expression_num = calcExp(p.full_name);
-                if (!p.soul_urge) p.soul_urge = calcSoul(p.full_name);
-                if (!p.personality_num) p.personality_num = calcPers(p.full_name);
-            }
-        });
-
-        var scored = profiles.map(function(p) {
-            return { profile: p, score: calcFullMatch(userProfile, p) };
-        });
-        scored.sort(function(a,b) { return b.score - a.score; });
-        return scored.slice(0, limit || 10);
     }
 
     // ─── GEÇMIŞ EŞLEŞMELER ──────────────────────────────────
@@ -532,12 +548,13 @@
         optOut: optOut,
         refreshOwnProfile: refreshOwnProfile,
 
-        // Eşleşme
-        findDailyMatch: findDailyMatch,
+        // Eşleşme (çoklu günlük)
+        findDailyMatches: findDailyMatches,
+        findDailyMatch: findDailyMatch, // eski API uyumluluğu
         revealMatch: revealMatch,
         getDailyRevealCount: getDailyRevealCount,
         PREMIUM_DAILY_REVEALS: PREMIUM_DAILY_REVEALS,
-        getTopMatches: getTopMatches,
+        MAX_DAILY_MATCHES: MAX_DAILY_MATCHES,
         getMatchHistory: getMatchHistory,
         fetchDiscoverableProfiles: fetchDiscoverableProfiles
     };
