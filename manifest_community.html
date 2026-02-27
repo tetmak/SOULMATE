@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="tr">
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
     <title>Manifest Portal</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -16,12 +17,28 @@
     <script src="js/gamification-engine.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/manifest-engine.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#0f0a19",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1a1226"
+                    },
+                    fontFamily: {
+                        display: ["Plus Jakarta Sans", "sans-serif"]
+                    }
+                }
+            }
+        };
+    </script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background: #0f0a19;
-            color: #fff;
             min-height: 100dvh;
             padding-bottom: 140px;
             position: relative;
@@ -46,10 +63,11 @@
         .sort-tabs {
             display: flex;
             gap: 0;
-            background: rgba(255,255,255,0.05);
             border-radius: 16px;
             padding: 6px;
         }
+        html.dark .sort-tabs { background: rgba(255,255,255,0.05); }
+        html:not(.dark) .sort-tabs { background: rgba(0,0,0,0.04); }
         .sort-tab {
             flex: 1;
             padding: 10px 4px;
@@ -63,13 +81,22 @@
             transition: all 0.25s;
             text-align: center;
         }
-        .sort-tab.active {
+        html.dark .sort-tab.active {
             background: rgba(255,255,255,0.1);
             color: #fff;
         }
-        .sort-tab:not(.active) {
+        html:not(.dark) .sort-tab.active {
+            background: #fff;
+            color: #1a1a2e;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        html.dark .sort-tab:not(.active) {
             background: transparent;
             color: rgba(255,255,255,0.3);
+        }
+        html:not(.dark) .sort-tab:not(.active) {
+            background: transparent;
+            color: rgba(0,0,0,0.35);
         }
 
         /* ── Category Chips ──────────────────────────── */
@@ -80,29 +107,47 @@
             border-radius: 9999px;
             font-size: 13px;
             font-weight: 500;
-            border: 1px solid rgba(255,255,255,0.1);
             cursor: pointer;
             transition: all 0.2s;
             white-space: nowrap;
+        }
+        html.dark .cat-chip {
+            border: 1px solid rgba(255,255,255,0.1);
             background: rgba(255,255,255,0.05);
             color: rgba(255,255,255,0.4);
         }
-        .cat-chip.active {
+        html:not(.dark) .cat-chip {
+            border: 1px solid rgba(0,0,0,0.1);
+            background: rgba(0,0,0,0.03);
+            color: rgba(0,0,0,0.4);
+        }
+        html.dark .cat-chip.active {
             background: #fff;
             color: #000;
             border-color: #fff;
             font-weight: 700;
         }
+        html:not(.dark) .cat-chip.active {
+            background: #1a1a2e;
+            color: #fff;
+            border-color: #1a1a2e;
+            font-weight: 700;
+        }
 
         /* ── Weekly Champion ─────────────────────────── */
         .weekly-card {
-            background: linear-gradient(145deg, #2d1b4d 0%, #1a1226 100%);
             border: 2px solid #D4AF37;
             box-shadow: 0 10px 30px -5px rgba(212,175,55,0.3);
             border-radius: 24px;
             padding: 24px;
             position: relative;
             overflow: hidden;
+        }
+        html.dark .weekly-card {
+            background: linear-gradient(145deg, #2d1b4d 0%, #1a1226 100%);
+        }
+        html:not(.dark) .weekly-card {
+            background: linear-gradient(145deg, #f5f0ff 0%, #fffbf0 100%);
         }
         .weekly-badge {
             display: inline-flex;
@@ -126,8 +171,9 @@
             font-size: 20px;
             font-weight: 700;
             line-height: 1.4;
-            color: #fff;
         }
+        html.dark .weekly-quote { color: #fff; }
+        html:not(.dark) .weekly-quote { color: #1a1a2e; }
         .ritual-btn {
             background: rgba(212,175,55,0.1);
             color: #D4AF37;
@@ -345,20 +391,22 @@
             position: absolute;
             inset: 0;
             top: 40px;
-            background: linear-gradient(180deg, #16102a 0%, #0f0a19 100%);
             border-radius: 24px 24px 0 0;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
+        html.dark .my-modal-panel { background: linear-gradient(180deg, #16102a 0%, #0f0a19 100%); }
+        html:not(.dark) .my-modal-panel { background: linear-gradient(180deg, #ffffff 0%, #f8f8f5 100%); }
         .my-modal-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 20px 20px 16px;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
             flex-shrink: 0;
         }
+        html.dark .my-modal-header { border-bottom: 1px solid rgba(255,255,255,0.06); }
+        html:not(.dark) .my-modal-header { border-bottom: 1px solid rgba(0,0,0,0.08); }
         .my-modal-title {
             font-size: 18px;
             font-weight: 700;
@@ -370,12 +418,12 @@
         .my-modal-close {
             width: 36px; height: 36px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.05);
             border: none;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer;
-            color: rgba(255,255,255,0.4);
         }
+        html.dark .my-modal-close { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); }
+        html:not(.dark) .my-modal-close { background: rgba(0,0,0,0.05); color: rgba(0,0,0,0.4); }
         .my-modal-close:active { transform: scale(0.9); }
         .my-modal-body {
             flex: 1;
@@ -384,13 +432,13 @@
             -webkit-overflow-scrolling: touch;
         }
         .my-manifest-item {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.06);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 12px;
             position: relative;
         }
+        html.dark .my-manifest-item { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); }
+        html:not(.dark) .my-manifest-item { background: #fff; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .my-manifest-cat {
             display: inline-flex;
             align-items: center;
@@ -409,9 +457,10 @@
             font-size: 15px;
             font-weight: 500;
             line-height: 1.5;
-            color: rgba(255,255,255,0.85);
             margin-bottom: 12px;
         }
+        html.dark .my-manifest-text { color: rgba(255,255,255,0.85); }
+        html:not(.dark) .my-manifest-text { color: rgba(0,0,0,0.75); }
         .my-manifest-meta {
             display: flex;
             align-items: center;
@@ -419,15 +468,17 @@
         }
         .my-manifest-date {
             font-size: 11px;
-            color: rgba(255,255,255,0.25);
         }
+        html.dark .my-manifest-date { color: rgba(255,255,255,0.25); }
+        html:not(.dark) .my-manifest-date { color: rgba(0,0,0,0.3); }
         .my-manifest-likes {
             display: flex;
             align-items: center;
             gap: 4px;
             font-size: 11px;
-            color: rgba(255,255,255,0.35);
         }
+        html.dark .my-manifest-likes { color: rgba(255,255,255,0.35); }
+        html:not(.dark) .my-manifest-likes { color: rgba(0,0,0,0.4); }
         .my-manifest-likes .material-symbols-outlined {
             font-size: 14px;
             color: #a78bfa;
@@ -455,9 +506,10 @@
         }
         .my-modal-count {
             font-size: 12px;
-            color: rgba(255,255,255,0.3);
             font-weight: 500;
         }
+        html.dark .my-modal-count { color: rgba(255,255,255,0.3); }
+        html:not(.dark) .my-modal-count { color: rgba(0,0,0,0.35); }
 
         /* ── FAB ─────────────────────────────────────── */
         .fab-btn {
@@ -488,17 +540,17 @@
         .fd6 { animation-delay: 0.28s; }
     </style>
 </head>
-<body>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white">
 
     <!-- Header -->
-    <header class="sticky top-0 z-20 backdrop-blur-md border-b border-white/5 px-6 py-4 flex items-center justify-between" style="background:rgba(15,10,25,0.8);">
+    <header class="sticky top-0 z-20 backdrop-blur-md border-b border-slate-200 dark:border-white/5 px-6 py-4 flex items-center justify-between bg-background-light/80 dark:bg-background-dark/80">
         <h1 class="page-title">Manifest Portal</h1>
         <div class="flex items-center gap-2">
             <button class="my-manifests-btn" onclick="openMyManifests()">
                 <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
                 My Manifests
             </button>
-            <button onclick="showInfoModal()" class="w-9 h-9 rounded-full flex items-center justify-center" style="background:rgba(255,255,255,0.05);">
+            <button onclick="showInfoModal()" class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 dark:bg-white/5">
                 <span class="material-symbols-outlined text-slate-400" style="font-size:20px;">info</span>
             </button>
         </div>
@@ -528,10 +580,10 @@
 
     <!-- Info Modal -->
     <div id="info-modal" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); align-items:center; justify-content:center;">
-        <div style="background:rgba(22,16,42,0.98); border:1px solid rgba(127,19,236,0.3); border-radius:20px; padding:28px; max-width:320px; width:90%; text-align:center;">
+        <div class="bg-white dark:bg-[rgba(22,16,42,0.98)] border border-slate-200 dark:border-[rgba(127,19,236,0.3)]" style="border-radius:20px; padding:28px; max-width:320px; width:90%; text-align:center;">
             <span class="material-symbols-outlined text-4xl mb-3" style="font-variation-settings:'FILL' 1;color:#a78bfa;">auto_awesome</span>
-            <h3 class="text-lg font-bold mb-2">Manifest Portal</h3>
-            <p class="text-white/50 text-sm leading-relaxed mb-5">Topluluk manifestlerini keşfet, ilham al ve kendi niyetlerini evrene gönder. Birlikte manifest oluşturmak enerjinizi katlar!</p>
+            <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">Manifest Portal</h3>
+            <p class="text-slate-500 dark:text-white/50 text-sm leading-relaxed mb-5">Topluluk manifestlerini keşfet, ilham al ve kendi niyetlerini evrene gönder. Birlikte manifest oluşturmak enerjinizi katlar!</p>
             <button onclick="closeInfoModal()" class="w-full py-3 rounded-full text-white font-semibold text-sm cursor-pointer" style="background:#7f13ec;">Anladım</button>
         </div>
     </div>

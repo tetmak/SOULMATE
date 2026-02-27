@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="tr">
+<html lang="tr">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Kozmik Lig</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -11,11 +12,13 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/gamification-engine.js"></script>
-    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628"},fontFamily:{display:["Space Grotesk","sans-serif"]}}}}</script>
+    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{
+                        "background-light": "#f8f8f5",primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10", "surface-light": "#ffffff","card-dark":"#393628", "card-light": "#f5f5f0"},fontFamily:{display:["Space Grotesk","sans-serif"]}}}}</script>
     <style>
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
         body{min-height:100dvh;font-family:'Space Grotesk',sans-serif}
         .glass{background:rgba(57,54,40,0.3);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.05)}
+        html:not(.dark) .glass{background:rgba(255,255,255,0.9);border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04)}
         @keyframes fade-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
         @keyframes crown-bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
         .fade-up{animation:fade-up 0.4s ease forwards;opacity:0}
@@ -28,17 +31,17 @@
         .prize-card{border-radius:16px;padding:12px;text-align:center;flex:1}
     </style>
 </head>
-<body class="bg-background-dark text-white min-h-screen">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
 <div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden pb-24">
 
     <!-- Header -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-dark/90 backdrop-blur-md border-b border-white/5">
-        <div onclick="history.back()" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-white">
+    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
+        <div onclick="history.back()" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 class="text-white text-lg font-black flex-1 text-center">Kozmik Lig</h2>
+        <h2 class="text-slate-900 dark:text-white text-lg font-black flex-1 text-center">Kozmik Lig</h2>
         <div onclick="window.location.href='numerology_quiz.html'" class="w-12 flex items-center justify-end cursor-pointer">
-            <span class="material-symbols-outlined text-white/40">quiz</span>
+            <span class="material-symbols-outlined text-slate-500 dark:text-white/40">quiz</span>
         </div>
     </header>
 
@@ -49,25 +52,25 @@
 
     <!-- Haftalık Ödüller -->
     <div class="px-5 pb-4 fade-up" style="animation-delay:0.06s">
-        <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Haftalık Ödüller</p>
+        <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Haftalık Ödüller</p>
         <div class="flex gap-2">
             <div class="prize-card glass">
                 <p class="text-2xl mb-1">🥇</p>
                 <p class="text-amber-400 text-xs font-bold">1.</p>
-                <p class="text-white/40 text-[10px]">2 Gün Premium</p>
-                <p class="text-white/25 text-[10px]">+ Şampiyon Tacı</p>
+                <p class="text-slate-600 dark:text-white/40 text-[10px]">2 Gün Premium</p>
+                <p class="text-slate-400 dark:text-white/25 text-[10px]">+ Şampiyon Tacı</p>
             </div>
             <div class="prize-card glass">
                 <p class="text-2xl mb-1">🥈</p>
                 <p class="text-gray-300 text-xs font-bold">2.</p>
-                <p class="text-white/40 text-[10px]">1 Gün Premium</p>
-                <p class="text-white/25 text-[10px]">+ Gümüş Taç</p>
+                <p class="text-slate-600 dark:text-white/40 text-[10px]">1 Gün Premium</p>
+                <p class="text-slate-400 dark:text-white/25 text-[10px]">+ Gümüş Taç</p>
             </div>
             <div class="prize-card glass">
                 <p class="text-2xl mb-1">🥉</p>
                 <p class="text-amber-700 text-xs font-bold">3.</p>
-                <p class="text-white/40 text-[10px]">Nadir Kart</p>
-                <p class="text-white/25 text-[10px]">+ Bronz Taç</p>
+                <p class="text-slate-600 dark:text-white/40 text-[10px]">Nadir Kart</p>
+                <p class="text-slate-400 dark:text-white/25 text-[10px]">+ Bronz Taç</p>
             </div>
         </div>
     </div>
@@ -76,16 +79,16 @@
     <div class="px-5 pb-4 fade-up" style="animation-delay:0.08s">
         <div class="flex items-center justify-between glass rounded-xl px-4 py-3">
             <div class="flex items-center gap-2">
-                <span class="material-symbols-outlined text-white/30 text-base">timer</span>
-                <span class="text-white/40 text-xs font-bold">Lig Kapanış:</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-white/30 text-base">timer</span>
+                <span class="text-slate-600 dark:text-white/40 text-xs font-bold">Lig Kapanış:</span>
             </div>
-            <span id="countdown" class="text-white/60 text-xs font-black">--:--:--</span>
+            <span id="countdown" class="text-slate-700 dark:text-white/60 text-xs font-black">--:--:--</span>
         </div>
     </div>
 
     <!-- Sıralama -->
     <div class="px-5 pb-4 fade-up" style="animation-delay:0.1s">
-        <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Haftalık Sıralama</p>
+        <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Haftalık Sıralama</p>
         <div id="leaderboard-list" class="space-y-2"></div>
     </div>
 
@@ -102,7 +105,7 @@
                     <span class="text-red-400 text-xs font-bold">Alt 3 = Düşme</span>
                 </div>
             </div>
-            <p class="text-white/25 text-xs">Hafta sonunda üst 3 bir üst lige çıkar, alt 3 bir alt lige düşer. XP kazanmak için quiz çöz, düello yap ve günlük görevleri tamamla!</p>
+            <p class="text-slate-500 dark:text-white/25 text-xs">Hafta sonunda üst 3 bir üst lige çıkar, alt 3 bir alt lige düşer. XP kazanmak için quiz çöz, düello yap ve günlük görevleri tamamla!</p>
         </div>
     </div>
 
@@ -132,12 +135,12 @@
         '<div class="size-16 rounded-full flex items-center justify-center mx-auto mb-3" style="background:' + league.color + '20;box-shadow:0 0 30px ' + league.color + '30">' +
             '<span class="material-symbols-outlined text-3xl" style="color:' + league.color + ';font-variation-settings:\'FILL\' 1">' + league.icon + '</span>' +
         '</div>' +
-        '<h3 class="text-white text-xl font-black mb-1">' + league.name + '</h3>' +
-        '<p class="text-white/30 text-xs">Rütbe: <span style="color:' + rp.current.color + ';font-weight:700">' + rp.current.name + '</span> · ' + s.nbp + ' NBP</p>';
+        '<h3 class="text-slate-900 dark:text-white text-xl font-black mb-1">' + league.name + '</h3>' +
+        '<p class="text-slate-500 dark:text-white/30 text-xs">Rütbe: <span style="color:' + rp.current.color + ';font-weight:700">' + rp.current.name + '</span> · ' + s.nbp + ' NBP</p>';
 
     // Loading göster
     var list = document.getElementById('leaderboard-list');
-    list.innerHTML = '<div class="flex items-center justify-center gap-3 py-8"><div class="animate-spin size-5 border-2 border-white/10 border-t-amber-400 rounded-full"></div><span class="text-white/30 text-sm">Sıralama yükleniyor...</span></div>';
+    list.innerHTML = '<div class="flex items-center justify-center gap-3 py-8"><div class="animate-spin size-5 border-2 border-slate-200 dark:border-white/10 border-t-amber-400 rounded-full"></div><span class="text-slate-500 dark:text-white/30 text-sm">Sıralama yükleniyor...</span></div>';
 
     // Async leaderboard çek (Supabase → fallback simüle)
     var board;
@@ -150,7 +153,7 @@
     // Render
     list.innerHTML = '';
     if (!board || board.length === 0) {
-        list.innerHTML = '<div class="text-center py-8"><p class="text-white/30 text-sm">Henüz sıralamada kimse yok</p><p class="text-white/15 text-xs mt-1">Quiz çöz, ilk sen ol!</p></div>';
+        list.innerHTML = '<div class="text-center py-8"><p class="text-slate-500 dark:text-white/30 text-sm">Henüz sıralamada kimse yok</p><p class="text-slate-400 dark:text-white/15 text-xs mt-1">Quiz çöz, ilk sen ol!</p></div>';
         return;
     }
 
@@ -175,12 +178,12 @@
                 (entry.name ? entry.name.charAt(0).toUpperCase() : '?') +
             '</div>' +
             '<div class="flex-1 min-w-0">' +
-                '<p class="text-white text-sm font-bold truncate">' + entry.name + (entry.isUser ? ' <span style="color:#a855f7;font-size:10px">(SEN)</span>' : '') + '</p>' +
-                '<p class="text-white/25 text-xs">' + (entry.rank ? entry.rank.name : '') + '</p>' +
+                '<p class="text-slate-900 dark:text-white text-sm font-bold truncate">' + entry.name + (entry.isUser ? ' <span style="color:#a855f7;font-size:10px">(SEN)</span>' : '') + '</p>' +
+                '<p class="text-slate-400 dark:text-white/25 text-xs">' + (entry.rank ? entry.rank.name : '') + '</p>' +
             '</div>' +
             '<div class="text-right flex items-center gap-1">' +
-                '<span class="text-white/60 text-sm font-black">' + entry.weeklyXP + '</span>' +
-                '<span class="text-white/20 text-xs">XP</span>' +
+                '<span class="text-slate-700 dark:text-white/60 text-sm font-black">' + entry.weeklyXP + '</span>' +
+                '<span class="text-slate-400 dark:text-white/20 text-xs">XP</span>' +
                 arrow +
             '</div>';
 

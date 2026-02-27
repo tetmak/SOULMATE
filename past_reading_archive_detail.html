@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="js/theme-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
@@ -43,7 +44,7 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         .parchment-texture {
-            background-image: 
+            background-image:
                 radial-gradient(circle at 2px 2px, rgba(207, 161, 23, 0.05) 1px, transparent 0),
                 url("https://lh3.googleusercontent.com/aida-public/AB6AXuDoQZy9HVvAnjH7jiTRvGRM2iclMUDK29JStgLw4Pq-JCabmjlzNp2-mJFSYw6uvD3Ol-O4lCldbhZ2OCDCKo8UC-N5YHeTGZBWr1tKAr0fyayNLDcgy6xVCjoBmIxrtVXvjJ_csZTUQ5yyVv55STSo4gHu8XOs7t9C5fz5wcT-2EQVpp-irGbaDOb2wWjuCT3JB4mwiIhxl-cBpJs8oE_tyZA2UVgXKnbgYhYzPkOOd39cUdXJlPJ52pdZbx5OhPe7YtVGiqJcKZlG");
             background-size: 24px 24px, cover;
@@ -52,6 +53,38 @@
         }
         .scroll-mask {
             mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
+        }
+        /* Hero gradient overlay - dark mode: deep overlay, light mode: lighter overlay */
+        .archive-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        html.dark .archive-hero::before {
+            background: linear-gradient(0deg, rgba(24, 22, 17, 1) 0%, rgba(24, 22, 17, 0.4) 100%);
+        }
+        html:not(.dark) .archive-hero::before {
+            background: linear-gradient(0deg, rgba(24, 22, 17, 0.85) 0%, rgba(24, 22, 17, 0.3) 100%);
+        }
+        .archive-hero > * {
+            position: relative;
+            z-index: 2;
+        }
+        /* Date bar */
+        html.dark .archive-date-bar {
+            background-color: #181611;
+        }
+        html:not(.dark) .archive-date-bar {
+            background-color: #2a261c;
+        }
+        /* Quote icon background */
+        html.dark .quote-icon-bg {
+            background-color: #1e1b13;
+        }
+        html:not(.dark) .quote-icon-bg {
+            background-color: #ffffff;
         }
     </style>
     <style>
@@ -62,7 +95,7 @@
 </head>
 
 <body class="bg-background-light dark:bg-background-dark font-display text-gray-900 dark:text-white min-h-screen">
-    <div class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
+    <div class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
         <div class="flex items-center p-4 justify-between max-w-md mx-auto">
             <div onclick="window.location.href='name_numerology_breakdown_1.html'"
                 class="flex size-12 items-center cursor-pointer">
@@ -80,8 +113,8 @@
     </div>
     <main class="max-w-md mx-auto relative">
         <div class="px-4 pt-6">
-            <div class="bg-cover bg-center flex flex-col justify-end overflow-hidden bg-background-dark rounded-t-3xl min-h-[200px] border-x border-t border-primary/20 relative"
-                style='background-image: linear-gradient(0deg, rgba(24, 22, 17, 1) 0%, rgba(24, 22, 17, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuDoQZy9HVvAnjH7jiTRvGRM2iclMUDK29JStgLw4Pq-JCabmjlzNp2-mJFSYw6uvD3Ol-O4lCldbhZ2OCDCKo8UC-N5YHeTGZBWr1tKAr0fyayNLDcgy6xVCjoBmIxrtVXvjJ_csZTUQ5yyVv55STSo4gHu8XOs7t9C5fz5wcT-2EQVpp-irGbaDOb2wWjuCT3JB4mwiIhxl-cBpJs8oE_tyZA2UVgXKnbgYhYzPkOOd39cUdXJlPJ52pdZbx5OhPe7YtVGiqJcKZlG");'>
+            <div class="archive-hero bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-t-3xl min-h-[200px] border-x border-t border-primary/20 relative"
+                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDoQZy9HVvAnjH7jiTRvGRM2iclMUDK29JStgLw4Pq-JCabmjlzNp2-mJFSYw6uvD3Ol-O4lCldbhZ2OCDCKo8UC-N5YHeTGZBWr1tKAr0fyayNLDcgy6xVCjoBmIxrtVXvjJ_csZTUQ5yyVv55STSo4gHu8XOs7t9C5fz5wcT-2EQVpp-irGbaDOb2wWjuCT3JB4mwiIhxl-cBpJs8oE_tyZA2UVgXKnbgYhYzPkOOd39cUdXJlPJ52pdZbx5OhPe7YtVGiqJcKZlG"); background-color: #181611;'>
                 <div class="flex p-6 flex-col gap-2">
                     <span class="text-primary text-xs font-bold uppercase tracking-[0.3em]">Eternal Archive
                         Record</span>
@@ -103,7 +136,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-background-dark border-x border-primary/20">
+        <div class="archive-date-bar border-x border-primary/20">
             <p class="text-primary/60 text-[10px] font-medium uppercase tracking-[0.2em] py-2 text-center">
                 Inscribed on October 14, 2023 • 11:11 PM
             </p>
@@ -138,7 +171,7 @@
                 </p>
                 <div class="py-12 px-6 my-8 border-y border-primary/20 text-center relative">
                     <span
-                        class="material-symbols-outlined absolute -top-4 left-1/2 -translate-x-1/2 bg-[#1e1b13] px-2 text-primary">format_quote</span>
+                        class="material-symbols-outlined absolute -top-4 left-1/2 -translate-x-1/2 quote-icon-bg px-2 text-primary">format_quote</span>
                     <p id="archive-quote" class="italic text-xl text-primary/90 font-light leading-relaxed">
                         "The truth is not found in the noise of the world, but in the stillness of the archived soul."
                     </p>

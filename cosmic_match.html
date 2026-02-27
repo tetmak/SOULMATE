@@ -3,6 +3,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NuMatch - Sacred Embers</title>
+<script src="js/theme-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined|Material+Icons+Round" rel="stylesheet"/>
@@ -26,7 +27,7 @@
                     primary: "#C47C20",
                     "background-light": "#FDF8F5",
                     "background-dark": "#180F0A",
-                    "card-dark": "#241812",
+                    "card-dark": "#241812", "card-light": "#f5f5f0",
                     "accent-gold": "#C47C20",
                     "accent-gold-dark": "#8B5716",
                     "text-muted": "#8D7B6D",
@@ -52,13 +53,25 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none }
-    .glass {
+    html.dark .glass {
         background: rgba(36, 24, 18, 0.8);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(196, 124, 32, 0.25);
     }
-    .glass-light {
+    html:not(.dark) .glass {
+        background: rgba(255, 252, 250, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(196, 124, 32, 0.3);
+    }
+    html.dark .glass-light {
+        background: rgba(36, 24, 18, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(196, 124, 32, 0.25);
+    }
+    html:not(.dark) .glass-light {
         background: rgba(255, 252, 250, 0.85);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);

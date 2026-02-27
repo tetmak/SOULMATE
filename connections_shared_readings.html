@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Connections</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -20,7 +21,8 @@
     <script src="js/compatibility-engine.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode: "class", theme: { extend: {
-            colors: { primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899" },
+            colors: {
+                        "background-light": "#f8f8f5", primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10", "surface-light": "#ffffff","card-dark":"#393628", "card-light": "#f5f5f0","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899" },
             fontFamily: { display:["Space Grotesk","sans-serif"] },
             borderRadius: { DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" }
         }}}
@@ -43,18 +45,18 @@
         .card-unread{animation:card-unread-pulse 1.8s ease-in-out infinite}
     </style>
 </head>
-<body class="bg-background-dark text-white min-h-screen">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
 <div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden pb-10">
 
     <!-- Header -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-dark/90 backdrop-blur-md border-b border-white/5">
+    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
         <div onclick="window.location.href='mystic_numerology_home_1.html'"
-            class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-white">
+            class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 class="text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Connections</h2>
+        <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Connections</h2>
         <button onclick="window.location.href='data-ready_birth_form.html'"
-            class="flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-white/10 transition-colors text-white/60">
+            class="flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-slate-500 dark:text-white/60">
             <span class="material-symbols-outlined">person_add</span>
         </button>
     </header>
@@ -62,8 +64,8 @@
     <!-- Soul Connections Yatay Scroll -->
     <div class="flex flex-col gap-2 pt-6 pb-2">
         <div class="flex items-center justify-between px-5">
-            <h3 class="text-white text-base font-bold tracking-tight">Soul Connections</h3>
-            <p class="text-white/30 text-xs" id="connections-count"></p>
+            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight">Soul Connections</h3>
+            <p class="text-slate-400 dark:text-white/30 text-xs" id="connections-count"></p>
         </div>
         <div id="connections-row" class="flex gap-4 overflow-x-auto px-5 hide-scrollbar pb-2">
             <!-- Ekle butonu her zaman -->
@@ -72,7 +74,7 @@
                     class="size-16 rounded-full border-2 border-dashed border-primary/40 flex items-center justify-center text-primary/60 hover:border-primary/60 transition-colors">
                     <span class="material-symbols-outlined text-3xl">add</span>
                 </button>
-                <span class="text-white/40 text-xs font-medium">Ekle</span>
+                <span class="text-slate-500 dark:text-white/40 text-xs font-medium">Ekle</span>
             </div>
         </div>
     </div>
@@ -80,8 +82,8 @@
     <!-- Match-based Connections -->
     <div id="match-connections-section" style="display:none" class="px-4 pb-2">
         <div class="flex items-center justify-between py-4">
-            <h3 class="text-white text-base font-bold tracking-tight">Match Connections</h3>
-            <span id="match-conn-count" class="text-white/30 text-xs"></span>
+            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight">Match Connections</h3>
+            <span id="match-conn-count" class="text-slate-400 dark:text-white/30 text-xs"></span>
         </div>
         <div id="match-connections-list" class="flex flex-col gap-3"></div>
     </div>
@@ -89,14 +91,14 @@
     <!-- Recent Analyses Liste -->
     <div class="flex-1 px-4">
         <div class="flex items-center justify-between py-4">
-            <h3 class="text-white text-base font-bold tracking-tight">Recent Analyses</h3>
-            <span id="analyses-count" class="text-white/30 text-xs"></span>
+            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight">Recent Analyses</h3>
+            <span id="analyses-count" class="text-slate-400 dark:text-white/30 text-xs"></span>
         </div>
         <div id="analyses-list" class="flex flex-col gap-3"></div>
 
         <!-- Boş durum -->
         <div id="empty-state" style="display:none"
-            class="text-center py-16 text-white/25 text-sm italic">
+            class="text-center py-16 text-slate-400 dark:text-white/25 text-sm italic">
             Henüz analiz yapılmadı.<br/>
             <button onclick="window.location.href='data-ready_birth_form.html'"
                 class="mt-4 text-primary font-bold text-sm">+ Yeni Analiz Başlat</button>
@@ -192,12 +194,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 avatarDiv.style.animationDelay = (idx * 0.05) + 's';
                 avatarDiv.innerHTML =
                     '<div class="relative">' +
-                        '<div class="size-16 rounded-full border-2 overflow-hidden bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
+                        '<div class="size-16 rounded-full border-2 overflow-hidden bg-slate-100 dark:bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
                             '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">' +
                         '</div>' +
-                        '<div class="absolute -bottom-1 -right-1 text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                        '<div class="absolute -bottom-1 -right-1 text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
                     '</div>' +
-                    '<span class="text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
+                    '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
                 avatarDiv.addEventListener('click', function() {
                     window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
                 });
@@ -205,7 +207,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
                 // Add to match connections list
                 var card = document.createElement('div');
-                card.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border cursor-pointer fade-in';
+                card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border cursor-pointer fade-in';
                 card.style.borderColor = hexToRgba(uc.border, 0.15);
                 card.style.setProperty('--glow', hexToRgba(uc.border, 0.35));
                 card.style.setProperty('--glow-solid', uc.border);
@@ -216,15 +218,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                         '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
                             '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">' +
                         '</div>' +
-                        '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                        '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
                     '</div>' +
                     '<div class="flex-1 min-w-0">' +
-                        '<p class="text-white font-bold truncate">' + name + '</p>' +
-                        '<p class="text-white/40 text-xs mt-0.5">' + arch + ' · Exp: ' + exp + '</p>' +
-                        '<p class="text-white/25 text-xs">' + shortDate(mc.created_at) + '</p>' +
+                        '<p class="text-slate-900 dark:text-white font-bold truncate">' + name + '</p>' +
+                        '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + ' · Exp: ' + exp + '</p>' +
+                        '<p class="text-slate-400 dark:text-white/25 text-xs">' + shortDate(mc.created_at) + '</p>' +
                     '</div>' +
                     '<span class="material-symbols-outlined shrink-0" style="color:' + hexToRgba(uc.border, 0.5) + '">chat</span>' +
-                    '<span class="material-symbols-outlined text-white/20 shrink-0">chevron_right</span>';
+                    '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 shrink-0">chevron_right</span>';
 
                 card.addEventListener('click', function() {
                     window.location.href = 'messaging.html?uid=' + encodeURIComponent(mc.user_id);
@@ -339,12 +341,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         avatarDiv.style.animationDelay = (idx * 0.05) + 's';
         avatarDiv.innerHTML =
             '<div class="relative">' +
-                '<div class="size-16 rounded-full border-2 overflow-hidden bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
+                '<div class="size-16 rounded-full border-2 overflow-hidden bg-slate-100 dark:bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
                     '<img src="' + photo + '" alt="' + conn.fullName + '" class="w-full h-full object-cover">' +
                 '</div>' +
-                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
             '</div>' +
-            '<span class="text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
+            '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
         avatarDiv.addEventListener('click', function() {
             window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
         });
@@ -352,7 +354,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // ── Analiz kartı ───────────────────────────────────────
         var card = document.createElement('div');
-        card.className = 'card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border fade-in';
+        card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border fade-in';
         card.style.borderColor = hexToRgba(uc.border, 0.08);
         card.style.animationDelay = (0.05 + idx * 0.07) + 's';
         card.innerHTML =
@@ -360,17 +362,17 @@ document.addEventListener('DOMContentLoaded', async function() {
                 '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
                     '<img src="' + photo + '" alt="' + conn.fullName + '" class="w-full h-full object-cover">' +
                 '</div>' +
-                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
             '</div>' +
             '<div class="flex-1 min-w-0 cursor-pointer" data-action="view">' +
-                '<p class="text-white font-bold truncate">' + conn.fullName + '</p>' +
-                '<p class="text-white/40 text-xs mt-0.5">' + arch + (reading ? ' · <span class="text-primary font-bold">' + reading.overall_score + '% uyum</span>' : ' · Exp: ' + exp) + '</p>' +
-                '<p class="text-white/25 text-xs">' + shortDate(reading ? (reading.updated_at || reading.created_at) : conn.createdAt) + '</p>' +
+                '<p class="text-slate-900 dark:text-white font-bold truncate">' + conn.fullName + '</p>' +
+                '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + (reading ? ' · <span class="text-primary font-bold">' + reading.overall_score + '% uyum</span>' : ' · Exp: ' + exp) + '</p>' +
+                '<p class="text-slate-400 dark:text-white/25 text-xs">' + shortDate(reading ? (reading.updated_at || reading.created_at) : conn.createdAt) + '</p>' +
             '</div>' +
             '<button class="flex items-center justify-center size-10 rounded-full hover:bg-red-500/20 transition-colors shrink-0 group" data-action="delete" data-name="' + conn.fullName + '">' +
-                '<span class="material-symbols-outlined text-white/30 group-hover:text-red-500 transition-colors">delete</span>' +
+                '<span class="material-symbols-outlined text-slate-300 dark:text-white/30 group-hover:text-red-500 transition-colors">delete</span>' +
             '</button>' +
-            '<span class="material-symbols-outlined text-white/20 shrink-0 cursor-pointer" data-action="view">chevron_right</span>';
+            '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 shrink-0 cursor-pointer" data-action="view">chevron_right</span>';
 
         card.addEventListener('click', function(e) {
             var target = e.target.closest('[data-action]');

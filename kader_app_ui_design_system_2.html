@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html class="dark" lang="en"><head>
+<html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Push Notification Templates - Numantic</title>
+<script src="js/theme-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;family=Playfair+Display:wght@700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -12,6 +13,7 @@
             theme: {
                 extend: {
                     colors: {
+                        "background-light": "#f8f8f5",
                         "primary": "#b7860b",
                         "deep-space": "#0F0C29",
                         "mystic-purple": "#302B63",
@@ -42,7 +44,7 @@
                 content: "";
                 position: absolute;
                 inset: 0;
-                background-image: 
+                background-image:
                     radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
                     radial-gradient(1px 1px at 40px 70px, #fff, rgba(0,0,0,0)),
                     radial-gradient(2px 2px at 50px 160px, #fff, rgba(0,0,0,0)),
@@ -64,6 +66,18 @@
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
+        /* Light mode overrides */
+        html:not(.dark) .starry-bg {
+            background: #f8f8f5;
+        }
+        html:not(.dark) .starry-bg::before {
+            display: none;
+        }
+        html:not(.dark) .glass-card {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.06);
+        }
     </style>
 <style>
     body {
@@ -71,31 +85,31 @@
     }
   </style>
   </head>
-<body class="bg-background-dark font-display text-white min-h-screen starry-bg">
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen starry-bg">
 <div class="h-12 w-full"></div>
 <header class="px-6 pt-4 pb-8 flex items-center justify-between">
-<button class="text-white/60" onclick="window.location.href='mystic_numerology_home_1.html'">
+<button class="text-slate-400 dark:text-white/60" onclick="window.location.href='mystic_numerology_home_1.html'">
 <span class="material-symbols-outlined">chevron_left</span>
 </button>
 <h1 class="font-serif text-xl text-primary gold-glow">Notification Center</h1>
-<button class="text-white/60">
+<button class="text-slate-400 dark:text-white/60">
 <span class="material-symbols-outlined">more_horiz</span>
 </button>
 </header>
 <main class="max-w-md mx-auto px-5 space-y-6 pb-24">
-<p class="text-center text-white/40 text-sm italic mb-8">Celestial whispers from the universe</p>
+<p class="text-center text-slate-400 dark:text-white/40 text-sm italic mb-8">Celestial whispers from the universe</p>
 <div class="glass-card rounded-3xl p-5 relative overflow-hidden">
 <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-8 -mt-8 blur-2xl"></div>
 <div class="flex items-start gap-4">
-<div class="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary">
+<div class="size-12 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-primary">
 <span class="material-symbols-outlined text-3xl">brightness_3</span>
 </div>
 <div class="flex-1">
 <div class="flex justify-between items-center mb-1">
 <h3 class="font-bold text-primary tracking-wide text-sm uppercase">Daily Insight</h3>
-<span class="text-[10px] text-white/30">Just now</span>
+<span class="text-[10px] text-slate-400 dark:text-white/30">Just now</span>
 </div>
-<p class="text-white/90 text-[15px] leading-relaxed font-serif italic">
+<p class="text-slate-700 dark:text-white/90 text-[15px] leading-relaxed font-serif italic">
                         "Today's vibration resonates with the number 7. Seek silence, for the answers you crave are already within your spirit."
                     </p>
 </div>
@@ -112,15 +126,15 @@
 <div class="glass-card rounded-3xl p-5 relative overflow-hidden">
 <div class="absolute top-0 right-0 w-24 h-24 bg-mystic-purple/20 rounded-full -mr-8 -mt-8 blur-2xl"></div>
 <div class="flex items-start gap-4">
-<div class="size-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-primary">
+<div class="size-12 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 flex items-center justify-center text-primary">
 <span class="material-symbols-outlined text-3xl">brightness_low</span>
 </div>
 <div class="flex-1">
 <div class="flex justify-between items-center mb-1">
 <h3 class="font-bold text-primary tracking-wide text-sm uppercase">Lunar Alert</h3>
-<span class="text-[10px] text-white/30">2h ago</span>
+<span class="text-[10px] text-slate-400 dark:text-white/30">2h ago</span>
 </div>
-<p class="text-white/90 text-[15px] leading-relaxed">
+<p class="text-slate-700 dark:text-white/90 text-[15px] leading-relaxed">
                         The New Moon rises in Scorpio tonight. It is time to perform your manifestation ritual and plant the seeds of desire.
                     </p>
 </div>
@@ -141,9 +155,9 @@
 <div class="flex-1">
 <div class="flex justify-between items-center mb-1">
 <h3 class="font-bold text-primary tracking-wide text-sm uppercase">Lucky Hour</h3>
-<span class="text-[10px] text-white/30">Just now</span>
+<span class="text-[10px] text-slate-400 dark:text-white/30">Just now</span>
 </div>
-<p class="text-white/90 text-[15px] leading-relaxed">
+<p class="text-slate-700 dark:text-white/90 text-[15px] leading-relaxed">
                         Your golden window has opened. Between now and 4:11 PM, your manifestation power is at its celestial peak.
                     </p>
 </div>
@@ -152,21 +166,21 @@
 <button class="flex-1 bg-primary text-deep-space font-bold py-3 rounded-xl text-sm tracking-wide">
                     View Chart
                 </button>
-<button class="px-4 border border-white/10 text-white/60 font-medium py-3 rounded-xl text-sm">
+<button class="px-4 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-white/60 font-medium py-3 rounded-xl text-sm">
                     Dismiss
                 </button>
 </div>
 </div>
 <div class="pt-8 px-4 flex flex-col items-center gap-4">
-<div class="h-px w-full bg-white/10"></div>
+<div class="h-px w-full bg-slate-200 dark:bg-white/10"></div>
 <button class="text-primary/70 text-xs font-bold uppercase tracking-widest flex items-center gap-2 hover:text-primary transition-colors">
 <span class="material-symbols-outlined text-sm">settings</span>
                 Manage Notification Preferences
             </button>
 </div>
 </main>
-<div class="fixed bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-deep-space to-transparent pointer-events-none"></div>
-<div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[140px] h-1.5 bg-white/20 rounded-full"></div>
+<div class="fixed bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background-light dark:from-deep-space to-transparent pointer-events-none"></div>
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[140px] h-1.5 bg-slate-300 dark:bg-white/20 rounded-full"></div>
 <script src="js/bottom-nav.js"></script>
 </body></html><script>
 setTimeout(function() {

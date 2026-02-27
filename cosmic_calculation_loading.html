@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
+<html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="js/theme-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -31,6 +32,13 @@
         }
         .sacred-glow {
             box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
+        }
+        /* Loading screen always keeps dramatic dark look regardless of theme */
+        html:not(.dark) .nebula-gradient {
+            background: radial-gradient(circle at 50% 50%, #2d1b4d 0%, #191022 100%);
+        }
+        html:not(.dark) body {
+            color: white;
         }
     </style>
 <style>

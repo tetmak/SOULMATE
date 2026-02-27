@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Kişi Profili</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -15,7 +16,8 @@
     <script src="js/compatibility-engine.js"></script>
     <script id="tailwind-config">
         tailwind.config = { darkMode:"class", theme:{ extend:{
-            colors:{ primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628" },
+            colors:{
+                        "background-light": "#f8f8f5", primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10", "surface-light": "#ffffff","card-dark":"#393628", "card-light": "#f5f5f0" },
             fontFamily:{ display:["Space Grotesk","sans-serif"] },
             borderRadius:{ DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" }
         }}}
@@ -31,33 +33,33 @@
     </style>
     <script src="js/gamification-engine.js"></script>
 </head>
-<body class="bg-background-dark text-white min-h-screen">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
 <div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden">
 
     <!-- Header -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-dark/90 backdrop-blur-md border-b border-white/5">
+    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
         <div onclick="window.location.href='connections_shared_readings.html'"
-            class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-white">
+            class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 id="header-title" class="text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">—</h2>
+        <h2 id="header-title" class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">—</h2>
         <div class="w-12"></div>
     </header>
 
     <!-- Profile Hero -->
     <div class="flex p-6 pt-8 flex-col items-center fade-in">
         <div class="relative">
-            <div id="profil-foto" class="size-32 rounded-full border-4 border-primary/40 glow-border overflow-hidden bg-surface-dark flex items-center justify-center">
+            <div id="profil-foto" class="size-32 rounded-full border-4 border-primary/40 glow-border overflow-hidden bg-slate-100 dark:bg-surface-dark flex items-center justify-center">
                 <span id="profil-initial" class="text-primary text-5xl font-bold">?</span>
             </div>
-            <div class="absolute -bottom-2 -right-2 bg-primary text-[#181711] h-12 w-12 rounded-full flex flex-col items-center justify-center border-4 border-[#181711] font-bold shadow-lg">
+            <div class="absolute -bottom-2 -right-2 bg-primary text-[#181711] h-12 w-12 rounded-full flex flex-col items-center justify-center border-4 border-background-light dark:border-[#181711] font-bold shadow-lg">
                 <span class="text-[9px] leading-none uppercase tracking-tighter">Path</span>
                 <span id="life-path" class="text-xl leading-none font-black">—</span>
             </div>
         </div>
         <div class="mt-5 flex flex-col items-center gap-1">
-            <p id="kisi-isim" class="text-white text-2xl font-bold tracking-tight">—</p>
-            <p id="kisi-tarih" class="text-white/40 text-sm">—</p>
+            <p id="kisi-isim" class="text-slate-900 dark:text-white text-2xl font-bold tracking-tight">—</p>
+            <p id="kisi-tarih" class="text-slate-500 dark:text-white/40 text-sm">—</p>
             <div class="flex items-center gap-2 mt-1">
                 <span class="material-symbols-outlined text-primary text-base">auto_awesome</span>
                 <p id="kisi-unvan" class="text-primary/90 text-sm font-semibold">—</p>
@@ -67,71 +69,71 @@
 
     <!-- Numeroloji İstatistikleri -->
     <div class="flex gap-3 px-4 pb-4 fade-in" style="animation-delay:0.08s">
-        <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 bg-card-dark border border-white/5">
-            <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Expression</p>
-            <p id="stat-expression" class="text-white text-3xl font-black">—</p>
+        <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
+            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Expression</p>
+            <p id="stat-expression" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
         </div>
-        <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 bg-card-dark border border-white/5">
-            <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Soul Urge</p>
-            <p id="stat-soul" class="text-white text-3xl font-black">—</p>
+        <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
+            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Soul Urge</p>
+            <p id="stat-soul" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
         </div>
-        <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 bg-card-dark border border-white/5">
-            <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Personality</p>
-            <p id="stat-pers" class="text-white text-3xl font-black">—</p>
+        <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
+            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Personality</p>
+            <p id="stat-pers" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
         </div>
     </div>
 
     <!-- Kişisel Analiz Kartı -->
     <div class="px-4 pb-4 fade-in" style="animation-delay:0.15s">
-        <p class="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3">Kişilik Analizi</p>
+        <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3">Kişilik Analizi</p>
 
         <!-- İsim Analizi (Deep Insight) -->
         <div id="btn-name-analysis"
-            class="card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-primary/20 cursor-pointer mb-3">
+            class="card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-primary/20 cursor-pointer mb-3">
             <div class="size-12 shrink-0 rounded-full bg-primary/15 flex items-center justify-center">
                 <span class="material-symbols-outlined text-primary">person_search</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p id="name-analysis-label" class="text-white font-bold truncate">— Deep Insight</p>
-                <p class="text-white/40 text-xs mt-0.5">Pisagor · Expression · Soul Urge · Life Path</p>
+                <p id="name-analysis-label" class="text-slate-900 dark:text-white font-bold truncate">— Deep Insight</p>
+                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Pisagor · Expression · Soul Urge · Life Path</p>
             </div>
             <div class="shrink-0 flex items-center gap-2">
                 <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">OPEN</span>
-                <span class="material-symbols-outlined text-white/30">chevron_right</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-white/30">chevron_right</span>
             </div>
         </div>
 
         <!-- Arkadaşlık Dinamiği Butonu -->
         <div id="btn-friendship-dynamics"
-            class="card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-[#2dd4bf]/20 cursor-pointer mb-3"
+            class="card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-[#2dd4bf]/20 cursor-pointer mb-3"
             style="background: linear-gradient(135deg, rgba(45,212,191,0.06), rgba(34,211,238,0.04));">
             <div class="size-12 shrink-0 rounded-full flex items-center justify-center" style="background:rgba(45,212,191,0.12);">
                 <span class="material-symbols-outlined" style="color:#2dd4bf;">handshake</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p id="friendship-label" class="text-white font-bold truncate">Arkadaşlık Dinamiği</p>
-                <p class="text-white/40 text-xs mt-0.5">Seninle arasındaki uyum · Yol haritası · Analiz</p>
+                <p id="friendship-label" class="text-slate-900 dark:text-white font-bold truncate">Arkadaşlık Dinamiği</p>
+                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Seninle arasındaki uyum · Yol haritası · Analiz</p>
             </div>
             <div class="shrink-0 flex items-center gap-2">
                 <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#c084fc;background:rgba(139,92,246,0.15);">PRO</span>
-                <span class="material-symbols-outlined text-white/30">chevron_right</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-white/30">chevron_right</span>
             </div>
         </div>
 
         <!-- Romantik Uyumluluk Analizi Butonu -->
         <div id="btn-soulmate-analysis"
-            class="card-hover flex items-center gap-4 p-4 bg-card-dark rounded-2xl border border-[#f472b6]/20 cursor-pointer mb-3"
+            class="card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-[#f472b6]/20 cursor-pointer mb-3"
             style="background: linear-gradient(135deg, rgba(244,114,182,0.06), rgba(236,72,153,0.04));">
             <div class="size-12 shrink-0 rounded-full flex items-center justify-center" style="background:rgba(244,114,182,0.12);">
                 <span class="material-symbols-outlined" style="color:#f472b6;">favorite</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p id="soulmate-label" class="text-white font-bold truncate">Uyumluluk Analizi</p>
-                <p class="text-white/40 text-xs mt-0.5">Romantik uyum · Karmik bağ · Ruh eşi skoru</p>
+                <p id="soulmate-label" class="text-slate-900 dark:text-white font-bold truncate">Uyumluluk Analizi</p>
+                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Romantik uyum · Karmik bağ · Ruh eşi skoru</p>
             </div>
             <div class="shrink-0 flex items-center gap-2">
                 <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#f472b6;background:rgba(244,114,182,0.15);">SOUL</span>
-                <span class="material-symbols-outlined text-white/30">chevron_right</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-white/30">chevron_right</span>
             </div>
         </div>
     </div>

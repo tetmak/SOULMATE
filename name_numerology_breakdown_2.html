@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Detailed Soulmate Analysis Report</title>
+  <script src="js/theme-engine.js"></script>
   <script src="js/tailwind.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&amp;display=swap"
     rel="stylesheet" />
@@ -28,7 +29,7 @@
             gold: "#f2cc0d",
             "background-light": "#f8f6f6",
             "background-dark": "#1a0f0f",
-            "card-dark": "rgba(34, 31, 16, 0.7)"
+            "card-dark": "rgba(34, 31, 16, 0.7)", "card-light": "#f5f5f0"
           },
           fontFamily: {
             display: ["Be Vietnam Pro", "sans-serif"],
@@ -42,6 +43,11 @@
     @layer utilities {
             .glass-card {
                 @apply backdrop-blur-md bg-white/5 border border-white/10 rounded-2xl;
+            }
+            html:not(.dark) .glass-card {
+                background: rgba(255, 255, 255, 0.85);
+                border-color: rgba(0, 0, 0, 0.08);
+                box-shadow: 0 1px 4px rgba(0,0,0,0.06);
             }
             .gold-divider {
                 height: 1px;
@@ -70,17 +76,17 @@
     rel="stylesheet" />
 </head>
 
-<body class="bg-background-dark text-white min-h-screen font-body">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen font-body">
   <div class="fixed top-0 left-0 w-full h-full pointer-events-none -z-10 overflow-hidden opacity-30">
     <div class="absolute -top-40 -right-20 size-96 rounded-full bg-primary/20 blur-[120px]"></div>
     <div class="absolute top-1/2 -left-20 size-80 rounded-full bg-gold/10 blur-[100px]"></div>
     <div class="absolute bottom-0 right-0 size-96 rounded-full bg-primary/10 blur-[120px]"></div>
   </div>
   <header
-    class="flex items-center p-4 sticky top-0 z-50 backdrop-blur-xl bg-background-dark/80 border-b border-white/5">
+    class="flex items-center p-4 sticky top-0 z-50 backdrop-blur-xl bg-background-light/80 dark:bg-background-dark/80 border-b border-slate-200 dark:border-white/5">
     <div onclick="window.location.href='name_numerology_breakdown_3.html'"
       class="size-12 flex items-center cursor-pointer">
-      <span class="material-symbols-outlined text-white/70">arrow_back_ios</span>
+      <span class="material-symbols-outlined text-slate-500 dark:text-white/70">arrow_back_ios</span>
     </div>
     <div class="flex-1 text-center">
       <h1 class="text-xs font-bold tracking-[0.3em] text-primary uppercase mb-0.5">Full Analysis</h1>
@@ -88,7 +94,7 @@
     </div>
     <div class="size-12 flex items-center justify-end">
       <button onclick="openSoulmateShare()"
-        class="size-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10">
+        class="size-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
         <span class="material-symbols-outlined text-xl" style="pointer-events:none">share</span>
       </button>
     </div>
@@ -102,7 +108,7 @@
         <h3 class="text-xl font-bold">The Karmic Bond</h3>
       </div>
       <div class="gold-divider mb-5"></div>
-      <div class="text-elegant text-white/80 text-sm space-y-4">
+      <div class="text-elegant text-slate-600 dark:text-white/80 text-sm space-y-4">
         <p style="text-align:center;color:rgba(207,161,23,0.6);font-style:italic;font-size:13px;">
           ✦ Karmik bağ okunuyor...
         </p>
@@ -121,7 +127,7 @@
           <div class="w-full bg-primary/20 rounded-t-lg relative group h-[85%]">
             <div class="absolute inset-0 bg-primary/40 rounded-t-lg blur-sm opacity-50"></div>
           </div>
-          <span class="text-[10px] font-bold text-white/40 uppercase tracking-tighter">Logic</span>
+          <span class="text-[10px] font-bold text-slate-400 dark:text-white/40 uppercase tracking-tighter">Logic</span>
         </div>
         <div class="flex flex-col items-center gap-2 flex-1">
           <div class="w-full bg-gold/30 rounded-t-lg h-[95%] border-t-2 border-gold/50"></div>
@@ -129,14 +135,14 @@
         </div>
         <div class="flex flex-col items-center gap-2 flex-1">
           <div class="w-full bg-primary/20 rounded-t-lg h-[70%]"></div>
-          <span class="text-[10px] font-bold text-white/40 uppercase tracking-tighter">Verbal</span>
+          <span class="text-[10px] font-bold text-slate-400 dark:text-white/40 uppercase tracking-tighter">Verbal</span>
         </div>
         <div class="flex flex-col items-center gap-2 flex-1">
           <div class="w-full bg-primary/20 rounded-t-lg h-[88%]"></div>
-          <span class="text-[10px] font-bold text-white/40 uppercase tracking-tighter">Empathy</span>
+          <span class="text-[10px] font-bold text-slate-400 dark:text-white/40 uppercase tracking-tighter">Empathy</span>
         </div>
       </div>
-      <p class="text-elegant text-white/80 text-sm italic border-l-2 border-gold/30 pl-4">
+      <p class="text-elegant text-slate-600 dark:text-white/80 text-sm italic border-l-2 border-gold/30 pl-4">
         ✦ İletişim uyumu analiz ediliyor...
       </p>
     </section>
@@ -148,14 +154,14 @@
         <h3 class="text-xl font-bold">Emotional Synergy</h3>
       </div>
       <div class="gold-divider mb-5"></div>
-      <div class="flex items-center justify-between mb-6 bg-white/5 p-4 rounded-xl border border-white/5">
+      <div class="flex items-center justify-between mb-6 bg-slate-50 dark:bg-white/5 p-4 rounded-xl border border-slate-200 dark:border-white/5">
         <div>
-          <p class="text-xs font-bold text-white/40 uppercase tracking-widest mb-1">Soul Urge Match</p>
+          <p class="text-xs font-bold text-slate-400 dark:text-white/40 uppercase tracking-widest mb-1">Soul Urge Match</p>
           <p class="text-lg font-bold text-gold">...</p>
         </div>
         <div class="text-3xl font-black text-primary">...</div>
       </div>
-      <p class="text-elegant text-white/80 text-sm">
+      <p class="text-elegant text-slate-600 dark:text-white/80 text-sm">
         ✦ Duygusal uyum hesaplanıyor...
       </p>
     </section>
@@ -167,7 +173,7 @@
         <h3 class="text-xl font-bold">The Shared Destiny</h3>
       </div>
       <div class="gold-divider mb-5"></div>
-      <div class="space-y-4 text-elegant text-white/80 text-sm">
+      <div class="space-y-4 text-elegant text-slate-600 dark:text-white/80 text-sm">
         <p style="text-align:center;color:rgba(207,161,23,0.6);font-style:italic;font-size:13px;">
           ✦ Ortak kader okunuyor...
         </p>
@@ -175,7 +181,7 @@
     </section>
   </main>
   <div
-    class="fixed bottom-0 left-0 w-full p-4 pb-8 bg-gradient-to-t from-background-dark via-background-dark to-transparent z-50">
+    class="fixed bottom-0 left-0 w-full p-4 pb-8 bg-gradient-to-t from-background-light dark:from-background-dark via-background-light dark:via-background-dark to-transparent z-50">
     <div class="max-w-md mx-auto">
       <button
         class="w-full flex items-center justify-center gap-3 bg-white text-background-dark py-4 rounded-2xl font-bold text-lg shadow-[0_10px_30px_rgba(0,0,0,0.5)] active:scale-95 transition-transform">

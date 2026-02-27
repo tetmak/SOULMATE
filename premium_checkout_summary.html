@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="tr">
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Premium Checkout</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,7 +13,8 @@
     <script src="js/auth.js"></script>
     <script src="js/play-billing.js"></script>
     <script src="js/premium.js"></script>
-    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628"},fontFamily:{display:["Space Grotesk","sans-serif"]},borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"}}}}</script>
+    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{
+                        "background-light": "#f8f8f5",primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10", "surface-light": "#ffffff","card-dark":"#393628", "card-light": "#f5f5f0"},fontFamily:{display:["Space Grotesk","sans-serif"]},borderRadius:{DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px"}}}}</script>
     <style>
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
         body{min-height:max(884px,100dvh);font-family:'Space Grotesk',sans-serif}
@@ -21,21 +23,23 @@
         .pm-glow{box-shadow:0 0 30px rgba(139,92,246,0.25)}
         .gp{background:rgba(139,92,246,0.06);backdrop-filter:blur(12px);border:1px solid rgba(139,92,246,0.12)}
         .glass{background:rgba(57,54,40,0.3);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.05)}
+        html:not(.dark) .glass{background:rgba(255,255,255,0.9);border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+        html:not(.dark) .gp{background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.1)}
         @keyframes fade-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
         @keyframes success-pop{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
         .fade-up{animation:fade-up 0.5s ease forwards;opacity:0}
         .success-icon{animation:success-pop 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards}
     </style>
 </head>
-<body class="bg-background-dark text-white min-h-screen">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
 <div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden pb-10">
 
     <!-- Header -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-dark/90 backdrop-blur-md border-b border-white/5">
-        <div onclick="history.back()" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-white">
+    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
+        <div onclick="history.back()" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 class="text-white text-lg font-bold flex-1 text-center">Ödeme</h2>
+        <h2 class="text-slate-900 dark:text-white text-lg font-bold flex-1 text-center">Ödeme</h2>
         <div class="w-12 flex items-center justify-end">
             <span class="material-symbols-outlined text-green-500/60 text-lg" style="font-variation-settings:'FILL' 1">lock</span>
         </div>
@@ -51,15 +55,15 @@
                     <span class="material-symbols-outlined text-white text-xl" style="font-variation-settings:'FILL' 1">workspace_premium</span>
                 </div>
                 <div class="flex-1">
-                    <p class="text-white font-bold">Numantic Premium</p>
-                    <p id="plan-label" class="text-white/40 text-xs">—</p>
+                    <p class="text-slate-900 dark:text-white font-bold">Numantic Premium</p>
+                    <p id="plan-label" class="text-slate-500 dark:text-white/40 text-xs">—</p>
                 </div>
                 <div class="text-right">
-                    <p id="plan-price" class="text-white text-lg font-black">—</p>
-                    <p id="plan-period" class="text-white/25 text-xs">—</p>
+                    <p id="plan-price" class="text-slate-900 dark:text-white text-lg font-black">—</p>
+                    <p id="plan-period" class="text-slate-400 dark:text-white/25 text-xs">—</p>
                 </div>
             </div>
-            <p class="text-white/20 text-xs text-center mt-2">İlk 3 gün ücretsiz · İstediğin zaman iptal</p>
+            <p class="text-slate-400 dark:text-white/20 text-xs text-center mt-2">İlk 3 gün ücretsiz · İstediğin zaman iptal</p>
         </div>
 
         <!-- Bilgi Alanı -->
@@ -68,8 +72,8 @@
                 <div class="size-14 rounded-full mx-auto mb-4 flex items-center justify-center" style="background:rgba(139,92,246,0.12)">
                     <span id="info-icon" class="material-symbols-outlined text-purple-400 text-2xl">shopping_cart</span>
                 </div>
-                <p id="info-title" class="text-white/60 text-sm font-bold mb-1">Güvenli Ödeme</p>
-                <p id="info-desc" class="text-white/30 text-xs">Aşağıdaki butona basınca Paddle güvenli ödeme penceresi açılacak</p>
+                <p id="info-title" class="text-slate-700 dark:text-white/60 text-sm font-bold mb-1">Güvenli Ödeme</p>
+                <p id="info-desc" class="text-slate-500 dark:text-white/30 text-xs">Aşağıdaki butona basınca Paddle güvenli ödeme penceresi açılacak</p>
             </div>
         </div>
 
@@ -77,7 +81,7 @@
         <div class="px-5 pb-4 fade-up" style="animation-delay:0.1s">
             <div class="flex items-center gap-3 px-4 py-3 glass rounded-xl">
                 <span class="material-symbols-outlined text-green-400 text-base" style="font-variation-settings:'FILL' 1">verified_user</span>
-                <p id="security-note" class="text-white/40 text-xs">Paddle güvenli ödeme · KDV otomatik dahil</p>
+                <p id="security-note" class="text-slate-600 dark:text-white/40 text-xs">Paddle güvenli ödeme · KDV otomatik dahil</p>
             </div>
         </div>
 
@@ -91,7 +95,7 @@
 
         <!-- Koşullar -->
         <div class="px-5 pb-4">
-            <p class="text-white/15 text-[10px] text-center leading-relaxed">
+            <p class="text-slate-400 dark:text-white/15 text-[10px] text-center leading-relaxed">
                 "Ödemeyi Tamamla"ya basarak Numantic Kullanım Koşulları'nı kabul etmiş olursun.
                 Abonelik seçilen dönem sonunda otomatik yenilenir. İstediğin zaman iptal edebilirsin.
             </p>
@@ -99,7 +103,7 @@
 
         <!-- Ücretsiz devam et -->
         <div class="px-5 pb-8 text-center">
-            <a id="btn-skip" href="mystic_numerology_home_1.html" class="text-white/25 text-xs font-bold hover:text-white/40 transition-colors">
+            <a id="btn-skip" href="mystic_numerology_home_1.html" class="text-slate-400 dark:text-white/25 text-xs font-bold hover:text-slate-600 dark:hover:text-white/40 transition-colors">
                 Şimdilik ücretsiz devam et →
             </a>
         </div>
@@ -110,9 +114,9 @@
         <div class="size-28 rounded-full pm-grad flex items-center justify-center mb-8 pm-glow success-icon" style="opacity:0">
             <span class="material-symbols-outlined text-white text-6xl" style="font-variation-settings:'FILL' 1">check_circle</span>
         </div>
-        <h2 class="text-white text-2xl font-black mb-3">Premium Aktif!</h2>
-        <p class="text-white/40 text-sm leading-relaxed max-w-[300px] mb-2">Tebrikler! Artık Numantic'in tüm özelliklerine sınırsız erişimin var.</p>
-        <p id="trial-note" class="text-white/25 text-xs mb-8">3 günlük ücretsiz deneme başladı</p>
+        <h2 class="text-slate-900 dark:text-white text-2xl font-black mb-3">Premium Aktif!</h2>
+        <p class="text-slate-600 dark:text-white/40 text-sm leading-relaxed max-w-[300px] mb-2">Tebrikler! Artık Numantic'in tüm özelliklerine sınırsız erişimin var.</p>
+        <p id="trial-note" class="text-slate-400 dark:text-white/25 text-xs mb-8">3 günlük ücretsiz deneme başladı</p>
         <button id="btn-explore" class="w-full max-w-[300px] pm-grad text-white py-4 rounded-full font-bold text-base flex items-center justify-center gap-2 active:scale-95 transition-transform pm-glow">
             <span class="material-symbols-outlined">explore</span>
             Keşfe Başla

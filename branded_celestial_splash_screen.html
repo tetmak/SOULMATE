@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
+<html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>NUMANTIC - Celestial Splash Screen</title>
+<script src="js/theme-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&amp;family=Noto+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -40,6 +41,10 @@
         }
         .letter-spacing-extra {
             letter-spacing: 0.5em;
+        }
+        /* Splash screen always keeps cosmic dark look regardless of theme */
+        html:not(.dark) body {
+            background: #0d0c1d !important;
         }
     </style>
 <style>

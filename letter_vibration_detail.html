@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html class="dark" lang="en"><head>
+<html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Share Analysis Card</title>
+<script src="js/theme-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Playfair+Display:ital,wght@0,700;1,700&amp;display=swap" rel="stylesheet"/>
@@ -35,8 +36,13 @@
 <style type="text/tailwindcss">:root {
     --cosmic-gradient: radial-gradient(circle at top right, #2d1b4d 0%, #0a0907 60%)
     }
-.cosmic-bg {
+html.dark .cosmic-bg {
     background: var(--cosmic-gradient);
+    position: relative;
+    overflow: hidden
+    }
+html:not(.dark) .cosmic-bg {
+    background: radial-gradient(circle at top right, #f0e8ff 0%, #f8f7f6 60%);
     position: relative;
     overflow: hidden
     }
@@ -48,10 +54,15 @@
     opacity: 0.3;
     pointer-events: none
     }
-.glass-card {
+html.dark .glass-card {
     backdrop-filter: blur(12px);
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(207, 161, 23, 0.2)
+    }
+html:not(.dark) .glass-card {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(207, 161, 23, 0.15)
     }
 .gold-shimmer {
     background: linear-gradient(135deg, #cfa117 0%, #f7e4a1 50%, #cfa117 100%);
@@ -64,12 +75,12 @@
     }
   </style>
   </head>
-<body class="bg-background-dark font-display text-white min-h-screen">
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white min-h-screen">
 <header class="flex items-center justify-between px-6 pt-12 pb-6">
-<button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 border border-white/10">
-<span onclick="window.location.href='relationship_compatibility_analysis.html'" style="cursor:pointer" class="material-symbols-outlined text-white">arrow_back_ios_new</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+<span onclick="window.location.href='relationship_compatibility_analysis.html'" style="cursor:pointer" class="material-symbols-outlined text-slate-700 dark:text-white">arrow_back_ios_new</span>
 </button>
-<h1 class="text-lg font-bold">Share Analysis</h1>
+<h1 class="text-lg font-bold text-slate-900 dark:text-white">Share Analysis</h1>
 <div class="w-10"></div>
 </header>
 <main class="px-6 pb-12 flex flex-col items-center">
@@ -98,15 +109,15 @@
 <p class="mt-2 text-xs uppercase tracking-tighter text-white/50">Life Path Number</p>
 </div>
 <div class="glass-card px-6 py-3 rounded-2xl">
-<p class="text-sm font-bold text-white/90">Deep Spiritual Seeker</p>
-<p class="text-[10px] text-white/50 mt-1 italic leading-tight">Wisdom · Introspection · Truth</p>
+<p class="text-sm font-bold text-slate-800 dark:text-white/90">Deep Spiritual Seeker</p>
+<p class="text-[10px] text-slate-500 dark:text-white/50 mt-1 italic leading-tight">Wisdom · Introspection · Truth</p>
 </div>
 </div>
 <div class="absolute bottom-6 text-[9px] text-white/30 uppercase tracking-[0.1em]">
                 Discover your soul energy at auranum.app
             </div>
 </div>
-<p class="mt-6 text-white/40 text-sm text-center px-8">
+<p class="mt-6 text-slate-500 dark:text-white/40 text-sm text-center px-8">
             This card is formatted perfectly for stories and status updates.
         </p>
 <div class="w-full max-w-sm mt-10 space-y-4">
@@ -124,7 +135,7 @@
 </div>
 <span class="material-symbols-outlined opacity-0 group-hover:opacity-100 transition-opacity">chevron_right</span>
 </button>
-<button class="w-full h-14 bg-white/5 border border-white/10 hover:bg-white/10 transition-all rounded-2xl flex items-center justify-between px-6 group">
+<button class="w-full h-14 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/10 transition-all rounded-2xl flex items-center justify-between px-6 group">
 <div class="flex items-center gap-3">
 <span class="material-symbols-outlined text-2xl text-primary">download</span>
 <span class="font-bold text-base">Save to Gallery</span>
@@ -134,16 +145,16 @@
 </div>
 <div class="mt-8 flex gap-6">
 <button class="flex flex-col items-center gap-2">
-<div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-<span class="material-symbols-outlined text-white/60">content_copy</span>
+<div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/10">
+<span class="material-symbols-outlined text-slate-500 dark:text-white/60">content_copy</span>
 </div>
-<span class="text-[10px] font-bold text-white/40 uppercase">Copy Link</span>
+<span class="text-[10px] font-bold text-slate-500 dark:text-white/40 uppercase">Copy Link</span>
 </button>
 <button class="flex flex-col items-center gap-2">
-<div class="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center border border-white/10">
-<span class="material-symbols-outlined text-white/60">more_horiz</span>
+<div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/10">
+<span class="material-symbols-outlined text-slate-500 dark:text-white/60">more_horiz</span>
 </div>
-<span class="text-[10px] font-bold text-white/40 uppercase">Other</span>
+<span class="text-[10px] font-bold text-slate-500 dark:text-white/40 uppercase">Other</span>
 </button>
 </div>
 </main>

@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>App Settings &amp; Preferences</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
         rel="stylesheet" />
@@ -26,7 +27,7 @@
                         "primary": "#ecb613",
                         "background-light": "#f8f8f6",
                         "background-dark": "#181611",
-                        "surface-dark": "#221d10",
+                        "surface-dark": "#221d10", "surface-light": "#ffffff",
                         "border-dark": "#393528"
                     },
                     fontFamily: {
@@ -71,6 +72,10 @@
             background-color: #393528;
             transition: .4s;
             border-radius: 34px;
+        }
+
+        html:not(.dark) .slider {
+            background-color: #cbd5e1;
         }
 
         .slider:before {
@@ -214,6 +219,32 @@
                     <div class="shrink-0">
                         <span class="material-symbols-outlined text-slate-400 dark:text-white">chevron_right</span>
                     </div>
+                </div>
+            </div>
+            <!-- Appearance Section -->
+            <div class="mt-6">
+                <h3
+                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display">
+                    Görünüm</h3>
+                <!-- Theme Toggle -->
+                <div
+                    class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-16 justify-between border-b border-slate-100 dark:border-border-dark">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
+                            <span id="theme-icon" class="material-symbols-outlined">dark_mode</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="text-slate-900 dark:text-white text-base font-normal leading-normal">
+                                Karanlık Mod</p>
+                            <p id="theme-label" class="text-slate-500 dark:text-[#b9b29d] text-xs">
+                                Aktif</p>
+                        </div>
+                    </div>
+                    <label class="custom-toggle">
+                        <input id="theme-toggle" type="checkbox" />
+                        <span class="slider"></span>
+                    </label>
                 </div>
             </div>
             <!-- Subscription & Billing Section -->
@@ -432,17 +463,28 @@
                     var overlay = document.createElement('div');
                     overlay.id = 'pw-overlay';
                     overlay.style.cssText = 'position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px)';
+                    var isDark = document.documentElement.classList.contains('dark');
+                    var modalBg = isDark ? '#221d10' : '#ffffff';
+                    var modalBorder = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+                    var titleColor = isDark ? 'white' : '#1e293b';
+                    var subtextColor = isDark ? 'rgba(255,255,255,0.5)' : '#64748b';
+                    var rowBg = isDark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.04)';
+                    var rowBorder = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)';
+                    var iconColor = isDark ? 'rgba(255,255,255,0.4)' : '#94a3b8';
+                    var emailColor = isDark ? 'rgba(255,255,255,0.8)' : '#334155';
+                    var cancelBorder = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.15)';
+                    var cancelColor = isDark ? 'white' : '#1e293b';
                     overlay.innerHTML =
-                        '<div style="background:#221d10;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px 24px;width:90%;max-width:380px">' +
-                            '<h3 style="color:white;font-size:18px;font-weight:800;margin-bottom:4px;font-family:Manrope,sans-serif">Şifre Değiştir</h3>' +
-                            '<p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:20px">E-posta adresinize şifre sıfırlama bağlantısı gönderilecek.</p>' +
-                            '<div id="pw-email-row" style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px 16px;margin-bottom:16px">' +
-                                '<span class="material-symbols-outlined" style="color:rgba(255,255,255,0.4);font-size:20px">mail</span>' +
-                                '<span id="pw-email" style="color:rgba(255,255,255,0.8);font-size:14px">Yükleniyor...</span>' +
+                        '<div style="background:' + modalBg + ';border:1px solid ' + modalBorder + ';border-radius:20px;padding:28px 24px;width:90%;max-width:380px;box-shadow:0 25px 50px rgba(0,0,0,0.25)">' +
+                            '<h3 style="color:' + titleColor + ';font-size:18px;font-weight:800;margin-bottom:4px;font-family:Manrope,sans-serif">Şifre Değiştir</h3>' +
+                            '<p style="color:' + subtextColor + ';font-size:13px;margin-bottom:20px">E-posta adresinize şifre sıfırlama bağlantısı gönderilecek.</p>' +
+                            '<div id="pw-email-row" style="display:flex;align-items:center;gap:10px;background:' + rowBg + ';border:1px solid ' + rowBorder + ';border-radius:12px;padding:12px 16px;margin-bottom:16px">' +
+                                '<span class="material-symbols-outlined" style="color:' + iconColor + ';font-size:20px">mail</span>' +
+                                '<span id="pw-email" style="color:' + emailColor + ';font-size:14px">Yükleniyor...</span>' +
                             '</div>' +
                             '<p id="pw-status" style="display:none;text-align:center;font-size:13px;margin-bottom:14px;padding:8px;border-radius:8px"></p>' +
                             '<div style="display:flex;gap:10px">' +
-                                '<button id="pw-cancel" style="flex:1;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:white;font-weight:600;font-size:14px;cursor:pointer;font-family:Manrope,sans-serif">İptal</button>' +
+                                '<button id="pw-cancel" style="flex:1;height:44px;border-radius:12px;border:1px solid ' + cancelBorder + ';background:transparent;color:' + cancelColor + ';font-weight:600;font-size:14px;cursor:pointer;font-family:Manrope,sans-serif">İptal</button>' +
                                 '<button id="pw-send" style="flex:1;height:44px;border-radius:12px;border:none;background:#ecb613;color:#181611;font-weight:700;font-size:14px;cursor:pointer;font-family:Manrope,sans-serif">Gönder</button>' +
                             '</div>' +
                         '</div>';
@@ -613,18 +655,19 @@
 
             } else {
                 // ─── Free User UI ───
+                var isDarkMode = document.documentElement.classList.contains('dark');
                 subIcon.style.background = 'rgba(139,92,246,0.15)';
                 subIcon.innerHTML = '<span class="material-symbols-outlined" style="color:#a78bfa;font-size:22px">lock</span>';
-                subCard.style.background = 'rgba(57,54,40,0.3)';
-                subCard.style.border = '1px solid rgba(255,255,255,0.05)';
+                subCard.style.background = isDarkMode ? 'rgba(57,54,40,0.3)' : 'rgba(0,0,0,0.03)';
+                subCard.style.border = isDarkMode ? '1px solid rgba(255,255,255,0.05)' : '1px solid rgba(0,0,0,0.06)';
 
                 subTitle.textContent = 'Ücretsiz Plan';
                 subDetail.textContent = 'Temel özellikler · Sınırlı kullanım';
 
                 subBadge.textContent = 'FREE';
                 subBadge.style.display = 'block';
-                subBadge.style.background = 'rgba(255,255,255,0.05)';
-                subBadge.style.color = 'rgba(255,255,255,0.4)';
+                subBadge.style.background = isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)';
+                subBadge.style.color = isDarkMode ? 'rgba(255,255,255,0.4)' : '#94a3b8';
 
                 subUpgrade.style.display = 'flex';
             }
@@ -701,6 +744,35 @@
         } else {
             loadUserInfo();
         }
+    })();
+    </script>
+<script>
+    // ─── Theme Toggle Logic ─────────────────────────────
+    (function() {
+        var toggle = document.getElementById('theme-toggle');
+        var icon = document.getElementById('theme-icon');
+        var label = document.getElementById('theme-label');
+        if (!toggle || !window.themeEngine) return;
+
+        function updateUI() {
+            var isDark = window.themeEngine.isDark();
+            toggle.checked = isDark;
+            if (icon) icon.textContent = isDark ? 'dark_mode' : 'light_mode';
+            if (label) label.textContent = isDark ? 'Aktif' : 'Kapalı';
+        }
+
+        // Initialize
+        updateUI();
+
+        // Toggle handler
+        toggle.addEventListener('change', function() {
+            var theme = toggle.checked ? 'dark' : 'light';
+            window.themeEngine.set(theme);
+            updateUI();
+        });
+
+        // Listen for external theme changes
+        window.addEventListener('themechange', updateUI);
     })();
     </script>
 <script src="js/notification-engine.js"></script>

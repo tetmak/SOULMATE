@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>NUMANTIC - Ethereal Celestial Splash Screen</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
@@ -20,10 +21,12 @@
     <style type="text/tailwindcss">
         :root{--primary-gold:#EAC67A;--soft-glow:rgba(234,198,122,0.4)}
 .star-glow{filter:drop-shadow(0 0 12px var(--primary-gold))}
-body{min-height:max(884px,100dvh);background:#04040a;position:relative}
+body{min-height:max(884px,100dvh);background:#04040a;position:relative;color:white}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     background:url('images/splash-bg.png') center center / cover no-repeat}
 body>*{position:relative;z-index:1}
+/* Splash screen always keeps cosmic dark look regardless of theme */
+html:not(.dark) body{background:#04040a}
 </style>
 </head>
 

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Soulmate Compatibility Home</title>
+  <script src="js/theme-engine.js"></script>
   <script src="js/api-base.js"></script>
   <script src="js/tailwind.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -15,7 +16,7 @@
   <script src="js/premium.js"></script>
   <script src="js/gamification-engine.js"></script>
   <script src="js/profile.js"></script>
-  <script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#e8454d", "background-light": "#f8f6f6", "background-dark": "#211112", "card-dark": "#221f10" }, fontFamily: { display: "Be Vietnam Pro" }, borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" } } } };</script>
+  <script id="tailwind-config">tailwind.config = { darkMode: "class", theme: { extend: { colors: { primary: "#e8454d", "background-light": "#f8f6f6", "background-dark": "#211112", "card-dark": "#221f10", "card-light": "#f5f5f0" }, fontFamily: { display: "Be Vietnam Pro" }, borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" } } } };</script>
   <style>
     .cosmic-glow { box-shadow: 0 0 15px rgba(242, 204, 13, 0.3); }
     .letter-glow { text-shadow: 0 0 8px rgba(242, 204, 13, 0.6); }
@@ -91,16 +92,16 @@
       </div>
 
       <!-- 2. Kişilik Ahengi -->
-      <div id="card-personality" class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+      <div id="card-personality" class="flex flex-col rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
         <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
           <div class="flex items-center gap-4 flex-1 min-w-0">
-            <div class="p-2.5 rounded-lg bg-white/10 text-slate-400 dark:text-white/60 flex items-center justify-center shrink-0">
+            <div class="p-2.5 rounded-lg bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-2xl">person</span>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
                 <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Kişilik Ahengi</h2>
-                <span class="px-1.5 py-0.5 rounded bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Dış</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Dış</span>
                 <span class="archetype-display px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">—</span>
               </div>
               <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">Sosyal dinamikleriniz ve dış dünyaya yansımanız.</p>
@@ -114,7 +115,7 @@
       </div>
 
       <!-- 3. Kader Yolu Birliği -->
-      <div id="card-life-path" class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+      <div id="card-life-path" class="flex flex-col rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
         <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
           <div class="flex items-center gap-4 flex-1 min-w-0">
             <div class="p-2.5 rounded-lg bg-primary/10 text-primary/80 flex items-center justify-center shrink-0">
@@ -137,7 +138,7 @@
       </div>
 
       <!-- 4. İfade Uyumu -->
-      <div id="card-expression" class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+      <div id="card-expression" class="flex flex-col rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
         <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
           <div class="flex items-center gap-4 flex-1 min-w-0">
             <div class="p-2.5 rounded-lg bg-primary/10 text-primary/80 flex items-center justify-center shrink-0">
@@ -194,16 +195,16 @@
       </div>
 
       <!-- 6. İletişim Uyumu -->
-      <div id="card-communication" class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+      <div id="card-communication" class="flex flex-col rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
         <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
           <div class="flex items-center gap-4 flex-1 min-w-0">
-            <div class="p-2.5 rounded-lg bg-white/10 text-slate-400 dark:text-white/60 flex items-center justify-center shrink-0">
+            <div class="p-2.5 rounded-lg bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 flex items-center justify-center shrink-0">
               <span class="material-symbols-outlined text-2xl">forum</span>
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
                 <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">İletişim Uyumu</h2>
-                <span class="px-1.5 py-0.5 rounded bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">İletişim</span>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">İletişim</span>
               </div>
               <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İletişim tarzlarınız ve birbirinizi anlama biçiminiz.</p>
             </div>
@@ -224,7 +225,7 @@
         <p class="text-xs font-bold text-primary tracking-widest uppercase">Bağ Niteliği</p>
         <p id="stat-bond" class="text-slate-900 dark:text-white text-base font-bold">—</p>
       </div>
-      <div class="flex flex-col gap-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-white/5 p-4">
+      <div class="flex flex-col gap-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 p-4">
         <span class="material-symbols-outlined text-slate-400">psychology</span>
         <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">Gelişim Alanı</p>
         <p id="stat-growth" class="text-slate-900 dark:text-white text-base font-bold">—</p>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="tr">
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
     <title>Manifest Portal</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -22,7 +23,11 @@
                     colors: {
                         primary: "#FAC638",
                         gold: "#D4AF37",
-                        "bg-dark": "#080c1a"
+                        "bg-dark": "#080c1a",
+                        "background-light": "#f8f8f5",
+                        "background-dark": "#080c1a",
+                        "card-dark": "#111827",
+                        "card-light": "#ffffff"
                     },
                     fontFamily: {
                         display: "Montserrat"
@@ -32,7 +37,7 @@
         };
     </script>
     <style>
-        body { background: #080c1a; font-family: 'Montserrat', sans-serif; }
+        body { font-family: 'Montserrat', sans-serif; }
         .hero-nebula {
             background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&q=80') center/cover no-repeat;
             position: relative;
@@ -43,11 +48,21 @@
             inset: 0;
             background: linear-gradient(to bottom, rgba(8,12,26,0.3) 0%, rgba(8,12,26,0.85) 70%, #080c1a 100%);
         }
+        html:not(.dark) .hero-nebula::after {
+            background: linear-gradient(to bottom, rgba(248,248,245,0.1) 0%, rgba(248,248,245,0.7) 70%, #f8f8f5 100%);
+        }
         .manifest-card {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid rgba(255,255,255,0.08);
             backdrop-filter: blur(12px);
             transition: transform 0.2s;
+        }
+        html:not(.dark) .manifest-card {
+            background: rgba(255,255,255,0.85);
+            border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        html.dark .manifest-card {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .manifest-card:active { transform: scale(0.98); }
         .gold-btn {
@@ -56,8 +71,13 @@
             font-weight: 800;
         }
         .premium-card {
-            background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.1));
             border: 1px solid rgba(139,92,246,0.25);
+        }
+        html:not(.dark) .premium-card {
+            background: linear-gradient(135deg, rgba(139,92,246,0.08), rgba(99,102,241,0.05));
+        }
+        html.dark .premium-card {
+            background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(99,102,241,0.1));
         }
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(16px); }
@@ -69,14 +89,14 @@
         .fade-up-d3 { animation-delay: 0.3s; opacity: 0; }
     </style>
 </head>
-<body class="text-white min-h-screen flex flex-col">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen flex flex-col">
 
     <!-- Header -->
-    <header class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-bg-dark/80 backdrop-blur-md border-b border-white/5">
-        <button onclick="window.location.href='mystic_numerology_home_1.html'" class="flex items-center justify-center w-10 h-10 rounded-full bg-white/5 active:bg-white/10 transition-colors">
-            <span class="material-symbols-outlined text-white text-xl">arrow_back_ios</span>
+    <header class="sticky top-0 z-50 flex items-center justify-between px-4 py-3 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
+        <button onclick="window.location.href='mystic_numerology_home_1.html'" class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 active:bg-slate-200 dark:active:bg-white/10 transition-colors">
+            <span class="material-symbols-outlined text-slate-700 dark:text-white text-xl">arrow_back_ios</span>
         </button>
-        <h1 class="text-white text-base font-bold tracking-widest uppercase">Manifest Portal</h1>
+        <h1 class="text-slate-900 dark:text-white text-base font-bold tracking-widest uppercase">Manifest Portal</h1>
         <div class="w-10 h-10"></div>
     </header>
 
@@ -84,7 +104,7 @@
     <div class="hero-nebula w-full h-56 relative">
         <div class="relative z-10 flex flex-col items-center justify-end h-full pb-6 px-6 text-center">
             <h2 class="text-white text-2xl font-extrabold tracking-wide mb-2 fade-up">The Canvas of Space</h2>
-            <p class="text-white/60 text-sm leading-relaxed max-w-xs fade-up fade-up-d1">Your intentions are the stars that light up your personal universe.</p>
+            <p class="text-white/80 dark:text-white/60 text-sm leading-relaxed max-w-xs fade-up fade-up-d1">Your intentions are the stars that light up your personal universe.</p>
         </div>
     </div>
 
@@ -96,7 +116,7 @@
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <span class="material-symbols-outlined text-primary text-lg" style="font-variation-settings:'FILL' 1;">schedule</span>
-                    <span id="usage-text" class="text-white/60 text-xs font-medium"></span>
+                    <span id="usage-text" class="text-slate-500 dark:text-white/60 text-xs font-medium"></span>
                 </div>
                 <span id="usage-badge" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"></span>
             </div>
@@ -107,7 +127,7 @@
             <div class="flex items-start gap-3">
                 <span class="material-symbols-outlined text-red-400 text-xl mt-0.5">block</span>
                 <div class="flex-1">
-                    <p id="limit-text" class="text-white/80 text-sm font-medium mb-2"></p>
+                    <p id="limit-text" class="text-slate-700 dark:text-white/80 text-sm font-medium mb-2"></p>
                     <button id="limit-premium-btn" onclick="window.location.href='premium_crystal_store.html'" class="text-xs font-bold text-violet-300 underline" style="display:none">Premium'a Geç →</button>
                 </div>
             </div>
@@ -115,9 +135,9 @@
 
         <!-- Empty State / Manifests List -->
         <div id="manifests-empty" class="manifest-card rounded-2xl p-8 text-center mb-6 fade-up fade-up-d2">
-            <span class="material-symbols-outlined text-white/20 text-5xl mb-4" style="font-variation-settings:'FILL' 1;">edit_note</span>
-            <h3 class="text-white font-bold text-lg mb-2">Henüz manifest yok</h3>
-            <p class="text-white/40 text-sm leading-relaxed mb-6">Evren niyetlerini bekliyor. İsteklerini kelimelere dökerek yolculuğuna başla.</p>
+            <span class="material-symbols-outlined text-slate-300 dark:text-white/20 text-5xl mb-4" style="font-variation-settings:'FILL' 1;">edit_note</span>
+            <h3 class="text-slate-900 dark:text-white font-bold text-lg mb-2">Henüz manifest yok</h3>
+            <p class="text-slate-500 dark:text-white/40 text-sm leading-relaxed mb-6">Evren niyetlerini bekliyor. İsteklerini kelimelere dökerek yolculuğuna başla.</p>
             <button id="write-btn-empty" onclick="handleWriteManifest()"
                 class="gold-btn w-full py-4 rounded-full text-sm tracking-wider flex items-center justify-center gap-2 active:scale-95 transition-transform">
                 <span class="material-symbols-outlined text-lg">auto_awesome</span>
@@ -144,8 +164,8 @@
                     <span class="material-symbols-outlined text-violet-400 text-2xl" style="font-variation-settings:'FILL' 1;">favorite</span>
                 </div>
                 <div class="flex-1">
-                    <h4 class="text-white font-bold text-sm mb-1" id="premium-title">Premium Benefit</h4>
-                    <p class="text-white/50 text-xs leading-relaxed" id="premium-desc">Premium üyelikle sınırsız manifest oluşturabilir ve kozmik enerji akışını güçlendirebilirsin.</p>
+                    <h4 class="text-slate-900 dark:text-white font-bold text-sm mb-1" id="premium-title">Premium Benefit</h4>
+                    <p class="text-slate-500 dark:text-white/50 text-xs leading-relaxed" id="premium-desc">Premium üyelikle sınırsız manifest oluşturabilir ve kozmik enerji akışını güçlendirebilirsin.</p>
                 </div>
             </div>
             <button onclick="window.location.href='premium_crystal_store.html'"
@@ -279,8 +299,8 @@
                     '<div class="flex items-start gap-3">' +
                         '<span class="material-symbols-outlined text-primary/60 text-lg mt-0.5" style="font-variation-settings:\'FILL\' 1;">auto_awesome</span>' +
                         '<div class="flex-1 min-w-0">' +
-                            '<p class="text-white/80 text-sm leading-relaxed">' + preview + '</p>' +
-                            '<p class="text-white/30 text-[10px] mt-2 tracking-wider uppercase">' + dateStr + '</p>' +
+                            '<p class="text-slate-700 dark:text-white/80 text-sm leading-relaxed">' + preview + '</p>' +
+                            '<p class="text-slate-400 dark:text-white/30 text-[10px] mt-2 tracking-wider uppercase">' + dateStr + '</p>' +
                         '</div>' +
                     '</div>' +
                 '</div>';

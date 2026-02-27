@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Relationship Compatibility Analysis</title>
+  <script src="js/theme-engine.js"></script>
   <script src="js/tailwind.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
@@ -19,10 +20,11 @@
       theme: {
         extend: {
           colors: {
+                        "background-light": "#f8f8f5",
             primary: "#bc383e",
             accent: "#f2cc0d",
             "background-dark": "#13110c",
-            "card-dark": "rgba(255, 255, 255, 0.05)"
+            "card-dark": "rgba(255, 255, 255, 0.05)", "card-light": "#f5f5f0"
           },
           fontFamily: {
             display: ["Plus Jakarta Sans", "sans-serif"]
@@ -42,10 +44,17 @@
       background: radial-gradient(circle at top, #2c2712 0%, #13110c 70%);
       position: relative;
     }
+    html:not(.dark) .cosmic-bg {
+      background: none;
+    }
     .stardust {
       background-image: radial-gradient(circle, #ffffff 1px, transparent 1px);
       background-size: 40px 40px;
       opacity: 0.15;
+    }
+    html:not(.dark) .stardust {
+      background-image: radial-gradient(circle, rgba(0,0,0,0.06) 1px, transparent 1px);
+      opacity: 0.5;
     }
     .celestial-orbit {
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -63,10 +72,13 @@
       stroke-linecap: round;
     }
     @keyframes compat-pulse { 0%,100% { opacity:.4 } 50% { opacity:.9 } }
+    html:not(.dark) .celestial-orbit {
+      border-color: rgba(0, 0, 0, 0.08);
+    }
   </style>
 </head>
 
-<body class="bg-background-dark min-h-screen text-white font-display overflow-x-hidden">
+<body class="bg-background-light dark:bg-background-dark min-h-screen text-slate-900 dark:text-white font-display overflow-x-hidden">
   <div class="relative flex min-h-screen w-full flex-col cosmic-bg">
     <div class="absolute inset-0 stardust pointer-events-none"></div>
 
@@ -74,12 +86,12 @@
     <header class="relative z-20 flex items-center bg-transparent p-4 justify-between">
       <div onclick="window.location.href='compatibility_input_form.html'"
         class="flex size-12 shrink-0 items-center justify-start cursor-pointer">
-        <span class="material-symbols-outlined text-white text-[24px]">arrow_back_ios</span>
+        <span class="material-symbols-outlined text-slate-700 dark:text-white text-[24px]">arrow_back_ios</span>
       </div>
-      <h2 class="text-white text-sm font-bold uppercase tracking-widest flex-1 text-center opacity-80">Uyum Analizi</h2>
+      <h2 class="text-slate-900 dark:text-white text-sm font-bold uppercase tracking-widest flex-1 text-center opacity-80">Uyum Analizi</h2>
       <div class="flex size-12 items-center justify-end">
         <button onclick="openSoulmateShare()"
-          class="flex items-center justify-center rounded-full h-10 w-10 bg-white/5 text-white">
+          class="flex items-center justify-center rounded-full h-10 w-10 bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white">
           <span class="material-symbols-outlined text-[20px]" style="pointer-events:none;font-variation-settings:'FILL' 1">favorite</span>
         </button>
       </div>
@@ -112,9 +124,9 @@
         </div>
 
         <!-- Center Score Circle -->
-        <div class="relative z-20 flex flex-col items-center justify-center w-32 h-32 rounded-full bg-[#13110c]/80 backdrop-blur-md border border-primary/40 shadow-[0_0_30px_rgba(188,56,62,0.3)]">
+        <div class="relative z-20 flex flex-col items-center justify-center w-32 h-32 rounded-full bg-white/90 dark:bg-[#13110c]/80 backdrop-blur-md border border-primary/40 shadow-[0_0_30px_rgba(188,56,62,0.3)]">
           <span id="compat-overall-score" class="text-4xl font-bold text-primary glow-text leading-none">—</span>
-          <span class="text-[10px] uppercase tracking-widest text-white/60 mt-1">Uyum</span>
+          <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-white/60 mt-1">Uyum</span>
         </div>
 
         <!-- Avatar 1 (You) -->
@@ -125,7 +137,7 @@
               class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-20 w-20 border-2 border-white/10 ring-4 ring-primary/5"
               style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuARa_kKvzeVGVJsHcnNSL_nObRubBlB0X1Mr5vFpCswAUmD3pAtqdjQmwdrKwQZq7FiFzWaNTiwCjIZ1pxgK1LbPGsEH45QaiQABfIp_Ffm1bGKKy1hlsIqEbeG-xG1766WtFiFSjoyw_3as1ciE2dtJ6o0fKZO_xvbhhbuY4vUn5fX08okqb3T6Q1dCPtwFUehpvReBhnDWum6-TyfqICYoL5YDaiJ_BrOoVpi_yGR7N0WKP7bw_GfWGD-wEvi4pkwDlRgmszhCXHJ");'></div>
           </div>
-          <span id="compat-name-1" class="text-xs font-bold tracking-wider bg-black/40 px-2 py-0.5 rounded-full border border-white/10 backdrop-blur-sm">Sen</span>
+          <span id="compat-name-1" class="text-xs font-bold tracking-wider bg-white/80 dark:bg-black/40 px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-sm text-slate-900 dark:text-white">Sen</span>
         </div>
 
         <!-- Avatar 2 (Partner) -->
@@ -136,24 +148,24 @@
               class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-20 w-20 border-2 border-white/10 ring-4 ring-primary/5"
               style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA-mJcZ3567V4IDAnzrW6UY6b35eOybyGgf8V3bsohsQOTRjln_37NPDDQPFtqeR_AiUO4iz-Fzew9okA1TL9P2o1jY0B74Sfen3IWBWTrhTxp49qAfqGsn3rPCSvayLUEsoQlh-fOgJRq8WuLK5ZDcnwAv-RSUWNHcaSrE0qU2dFdUU2xfL8z6WNSvgLB6AB-eQNOkhMVv9bQ6gsU3Q-C7l_imBBdpeATNQ5ZeU36VIK65bXEH5aKossqG7N6jwr9pV3MmWdUR6xxb");'></div>
           </div>
-          <span id="compat-name-2" class="text-xs font-bold tracking-wider bg-black/40 px-2 py-0.5 rounded-full border border-white/10 backdrop-blur-sm">Partner</span>
+          <span id="compat-name-2" class="text-xs font-bold tracking-wider bg-white/80 dark:bg-black/40 px-2 py-0.5 rounded-full border border-slate-200 dark:border-white/10 backdrop-blur-sm text-slate-900 dark:text-white">Partner</span>
         </div>
 
         <!-- Score Labels Around Orbit -->
         <div class="absolute top-[10%] left-1/2 -translate-x-1/2 flex flex-col items-center">
-          <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Kader Yolu</span>
+          <span class="text-[10px] uppercase tracking-[0.2em] text-slate-400 dark:text-white/40">Kader Yolu</span>
           <span id="compat-bar-lp-score" class="text-sm font-bold text-primary">—</span>
         </div>
         <div class="absolute bottom-[22%] left-[15%] flex flex-col items-start">
-          <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Kişilik</span>
+          <span class="text-[10px] uppercase tracking-[0.2em] text-slate-400 dark:text-white/40">Kişilik</span>
           <span id="compat-bar-pers-score" class="text-sm font-bold text-primary">—</span>
         </div>
         <div class="absolute bottom-[22%] right-[15%] flex flex-col items-end">
-          <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">Ruh Dürtüsü</span>
+          <span class="text-[10px] uppercase tracking-[0.2em] text-slate-400 dark:text-white/40">Ruh Dürtüsü</span>
           <span id="compat-bar-soul-score" class="text-sm font-bold text-primary">—</span>
         </div>
         <div class="absolute bottom-[10%] left-1/2 -translate-x-1/2 flex flex-col items-center">
-          <span class="text-[10px] uppercase tracking-[0.2em] text-white/40">İfade</span>
+          <span class="text-[10px] uppercase tracking-[0.2em] text-slate-400 dark:text-white/40">İfade</span>
           <span id="compat-bar-exp-score" class="text-sm font-bold text-accent">—</span>
         </div>
       </div>
@@ -167,7 +179,7 @@
 
       <!-- Insight Card -->
       <div class="px-5">
-        <div id="compat-insight-card" class="bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-white/10 relative overflow-hidden">
+        <div id="compat-insight-card" class="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-3xl p-6 border border-slate-200 dark:border-white/10 relative overflow-hidden">
           <div class="absolute top-0 right-0 p-4 opacity-20">
             <span class="material-symbols-outlined text-4xl text-primary">auto_awesome</span>
           </div>
@@ -175,7 +187,7 @@
             <span class="material-symbols-outlined text-primary text-xl">temp_preferences_custom</span>
             <h3 class="text-lg font-bold">Kozmik Bağ</h3>
           </div>
-          <p class="text-white/50 text-sm leading-relaxed relative z-10" style="animation:compat-pulse 1.5s infinite;">
+          <p class="text-slate-500 dark:text-white/50 text-sm leading-relaxed relative z-10" style="animation:compat-pulse 1.5s infinite;">
             ✦ Kozmik bağ hesaplanıyor...
           </p>
         </div>

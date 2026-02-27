@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html class="dark" lang="en"><head>
+<html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="js/theme-engine.js"></script>
 <script src="js/supabase.min.js"></script>
 <script src="js/supabase-config.js"></script>
 <script src="js/auth.js"></script>
@@ -9,7 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
-tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#e11d48","soul-pink":"#db2777","soul-red":"#9f1239","background-dark":"#0f050b","mystic-gold":"#D4AF37"},fontFamily:{display:["Space Grotesk","sans-serif"]},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"}}}};
+tailwind.config={darkMode:"class",theme:{extend:{colors:{
+                        "background-light": "#f8f8f5",primary:"#e11d48","soul-pink":"#db2777","soul-red":"#9f1239","background-dark":"#0f050b","mystic-gold":"#D4AF37"},fontFamily:{display:["Space Grotesk","sans-serif"]},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"}}}};
 </script>
 <style type="text/tailwindcss">
 :root{--nebula-start:#2c0b0e;--nebula-mid:#5e1124;--nebula-end:#0f050b}
@@ -18,9 +20,12 @@ tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#e11d48","soul
 .infinity-ring{animation:pulse-slow 4s cubic-bezier(0.4,0,0.6,1) infinite}
 @keyframes pulse-slow{0%,100%{opacity:0.6;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
 body{min-height:max(884px,100dvh)}
+/* Loading screen always keeps dramatic dark look regardless of theme */
+html:not(.dark) .romantic-nebula{background:radial-gradient(circle at 50% 40%,var(--nebula-mid) 0%,var(--nebula-start) 45%,var(--nebula-end) 100%)}
+html:not(.dark) body{color:white}
 </style>
 </head>
-<body class="bg-background-dark font-display text-white overflow-hidden h-screen">
+<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden h-screen">
 <div class="relative flex h-full w-full flex-col romantic-nebula">
 <div class="flex items-center p-4 pb-2 justify-end h-14 z-10">
 <span onclick="window.location.href='compatibility_input_form.html'" class="material-symbols-outlined text-white/40 cursor-pointer hover:text-white transition-colors">close</span>

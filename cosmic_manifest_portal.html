@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Cosmic Manifestation Portal</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
@@ -29,6 +30,9 @@
             font-family: 'Space Grotesk', sans-serif;
             min-height: 100dvh;
             overflow: hidden;
+        }
+        html:not(.dark) body {
+            background: radial-gradient(circle at 50% 50%, #f0ebe4 0%, #f8f8f5 100%);
         }
 
         /* Fazlara göre temalar */
@@ -99,9 +103,6 @@
             gap: 6px;
             padding: 6px 14px;
             border-radius: 9999px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(255,255,255,0.04);
-            color: rgba(255,255,255,0.5);
             font-size: 12px;
             font-weight: 600;
             letter-spacing: 0.05em;
@@ -109,11 +110,26 @@
             transition: all 0.2s;
             font-family: inherit;
         }
+        html.dark .cat-btn {
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: rgba(255,255,255,0.5);
+        }
+        html:not(.dark) .cat-btn {
+            border: 1px solid rgba(0,0,0,0.12);
+            background: rgba(0,0,0,0.04);
+            color: rgba(0,0,0,0.5);
+        }
         .cat-btn:active { transform: scale(0.95); }
-        .cat-btn.active {
+        html.dark .cat-btn.active {
             background: rgba(255,255,255,0.12);
             border-color: rgba(255,255,255,0.25);
             color: #fff;
+        }
+        html:not(.dark) .cat-btn.active {
+            background: rgba(0,0,0,0.08);
+            border-color: rgba(0,0,0,0.25);
+            color: #1a1a2e;
         }
         .cat-dot {
             width: 8px;
@@ -242,7 +258,7 @@
     </style>
 </head>
 
-<body id="body" class="text-white flex flex-col items-center justify-center">
+<body id="body" class="text-slate-900 dark:text-white flex flex-col items-center justify-center bg-[#f8f8f5] dark:bg-transparent">
 
     <div id="flash"></div>
     <div id="sent-msg">
@@ -254,7 +270,7 @@
     </div>
 
     <!-- Cosmic bg -->
-    <div id="bg-layer" class="fixed inset-0 z-0 pointer-events-none">
+    <div id="bg-layer" class="fixed inset-0 z-0 pointer-events-none hidden dark:block">
         <div id="nebula-1" class="absolute w-[80%] h-[80%] rounded-full"
             style="top:-20%;left:-10%;filter:blur(80px);opacity:0.3"></div>
         <div id="nebula-2" class="absolute w-[70%] h-[70%] rounded-full"
@@ -314,7 +330,8 @@
             <div id="border-wrap" class="border-shimmer rounded-xl overflow-hidden shadow-2xl" style="position: relative; z-index: 10; pointer-events: none;">
                 <div id="input-bg" class="p-1 rounded-[calc(12px-1px)]" style="position: relative; z-index: 20; pointer-events: auto;">
                     <textarea id="intention-text"
-                        style="position: relative; z-index: 50; width: 100%; height: 11rem; background: transparent; border: none; font-size: 1.125rem; color: white; font-weight: 300; padding: 1.25rem; resize: none; outline: none;"
+                        style="position: relative; z-index: 50; width: 100%; height: 11rem; background: transparent; border: none; font-size: 1.125rem; font-weight: 300; padding: 1.25rem; resize: none; outline: none;"
+                        class="text-slate-900 dark:text-white"
                         placeholder=""></textarea>
                 </div>
             </div>
@@ -356,13 +373,13 @@
     <!-- Top nav -->
     <nav class="fixed top-0 w-full px-8 py-10 flex justify-between items-center z-20">
         <button onclick="window.location.href='manifest_community.html'"
-            class="p-2 rounded-full backdrop-blur-md text-white/80"
-            style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);cursor:pointer">
+            class="p-2 rounded-full backdrop-blur-md text-slate-700 dark:text-white/80 bg-slate-100/80 dark:bg-white/5 border border-slate-200 dark:border-white/10"
+            style="cursor:pointer">
             <span class="material-icons">arrow_back_ios_new</span>
         </button>
         <button onclick="window.location.href='lunar_phase_energy_tracker.html'"
-            class="p-2 rounded-full backdrop-blur-md text-white/80"
-            style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);cursor:pointer">
+            class="p-2 rounded-full backdrop-blur-md text-slate-700 dark:text-white/80 bg-slate-100/80 dark:bg-white/5 border border-slate-200 dark:border-white/10"
+            style="cursor:pointer">
             <span class="material-icons">nightlight</span>
         </button>
     </nav>
@@ -512,7 +529,9 @@
         var moon = getMoonPhase(new Date());
         var T = getTheme(moon.phase, moon.illum);
 
-        document.body.style.background = T.bodyBg;
+        if (document.documentElement.classList.contains('dark')) {
+            document.body.style.background = T.bodyBg;
+        }
         document.getElementById('nebula-1').style.background = T.nebula1;
         document.getElementById('nebula-2').style.background = T.nebula2;
 
@@ -533,8 +552,13 @@
         title.style.color = T.titleColor;
         document.getElementById('portal-sub').textContent = T.sub;
 
-        document.getElementById('input-glow').style.background = T.inputGlow;
-        document.getElementById('input-bg').style.background = T.inputBg;
+        if (document.documentElement.classList.contains('dark')) {
+            document.getElementById('input-glow').style.background = T.inputGlow;
+            document.getElementById('input-bg').style.background = T.inputBg;
+        } else {
+            document.getElementById('input-glow').style.background = 'rgba(200,180,140,0.1)';
+            document.getElementById('input-bg').style.background = 'rgba(255,255,255,0.9)';
+        }
 
         var ta = document.getElementById('intention-text');
         ta.placeholder = T.placeholder;

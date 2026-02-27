@@ -55,9 +55,13 @@
     style.id = 'numerael-nav-style';
     style.textContent = [
         '#numerael-bottom-nav{position:fixed;bottom:16px;left:16px;right:16px;height:64px;max-width:448px;margin:0 auto;background:rgba(24,23,17,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:9999px;border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-around;padding:0 12px;z-index:1000;box-shadow:0 -4px 30px rgba(0,0,0,0.4)}',
+        'html:not(.dark) #numerael-bottom-nav{background:rgba(255,255,255,0.92);border-color:rgba(0,0,0,0.08);box-shadow:0 -4px 30px rgba(0,0,0,0.08)}',
         '#numerael-bottom-nav .nav-tab{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;cursor:pointer;padding:6px 10px;transition:all 0.2s;color:rgba(255,255,255,0.35);font-family:"Space Grotesk",sans-serif}',
+        'html:not(.dark) #numerael-bottom-nav .nav-tab{color:rgba(0,0,0,0.35)}',
         '#numerael-bottom-nav .nav-tab.active{color:#f2cc0d}',
+        'html:not(.dark) #numerael-bottom-nav .nav-tab.active{color:#b8860b}',
         '#numerael-bottom-nav .nav-tab:not(.active):hover{color:rgba(255,255,255,0.6)}',
+        'html:not(.dark) #numerael-bottom-nav .nav-tab:not(.active):hover{color:rgba(0,0,0,0.6)}',
         '#numerael-bottom-nav .nav-tab .material-symbols-outlined{font-size:24px;transition:all 0.2s}',
         '#numerael-bottom-nav .nav-tab.active .material-symbols-outlined{font-variation-settings:"FILL" 1}',
         '#numerael-bottom-nav .nav-tab span:last-child{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.03em}',
@@ -74,6 +78,7 @@
         '#numerael-bubble-menu .bubble-item:active{transform:scale(0.9)}',
         '#numerael-bubble-menu .bubble-icon{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;border-width:2px;border-style:solid;transition:box-shadow 0.2s}',
         '#numerael-bubble-menu .bubble-label{font-size:10px;color:rgba(255,255,255,0.8);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;text-align:center;font-family:"Space Grotesk",sans-serif;max-width:70px}',
+        'html:not(.dark) #numerael-bubble-overlay{background:rgba(0,0,0,0.3)}',
         '@keyframes numerael-bubble-in{from{opacity:0;transform:translateY(20px) scale(0.8)}to{opacity:1;transform:translateY(0) scale(1)}}',
         '#numerael-bubble-menu.open{display:block}',
         '#numerael-bubble-menu.open .bubble-item{animation:numerael-bubble-in 0.3s ease forwards;opacity:0}',

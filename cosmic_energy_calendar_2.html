@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Karar Takvimi</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap"
@@ -53,12 +54,20 @@
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
+        html:not(.dark) .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
         .glow-gold {
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
             border: 2px solid #ffd700;
         }
         .cosmic-bg {
             background: radial-gradient(circle at top right, #1d0b3a 0%, #0a0118 100%);
+        }
+        html:not(.dark) .cosmic-bg {
+            background: none;
         }
         body {
             min-height: max(884px, 100dvh);
@@ -80,17 +89,17 @@
     </style>
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-x-hidden min-h-screen">
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white overflow-x-hidden min-h-screen">
     <input class="hidden" id="menu-toggle" type="checkbox" />
     <label class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] hidden transition-opacity duration-300"
         for="menu-toggle" id="sidebar-overlay"></label>
     <aside
-        class="fixed top-0 left-0 h-full w-72 bg-background-dark/95 border-r border-white/10 z-[70] -translate-x-full transition-transform duration-300 ease-in-out backdrop-blur-xl"
+        class="fixed top-0 left-0 h-full w-72 bg-white/95 dark:bg-background-dark/95 border-r border-slate-200 dark:border-white/10 z-[70] -translate-x-full transition-transform duration-300 ease-in-out backdrop-blur-xl"
         id="sidebar">
         <div class="flex flex-col h-full p-6">
             <div class="flex items-center justify-between mb-10">
-                <h2 class="text-xl font-bold text-white">Menü</h2>
-                <label class="text-white/60 cursor-pointer" for="menu-toggle">
+                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Menü</h2>
+                <label class="text-slate-500 dark:text-white/60 cursor-pointer" for="menu-toggle">
                     <span class="material-symbols-outlined"
                         onclick="window.location.href='mystic_numerology_home_1.html'"
                         style="cursor:pointer">close</span>
@@ -103,12 +112,12 @@
                     <span>Takvim</span>
                 </a>
                 <a onclick="window.location.href='cosmic_manifest_portal.html'"
-                    class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium cursor-pointer"
+                    class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">explore</span>
                     <span>Planlayıcı</span>
                 </a>
-                <a class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium"
+                <a class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium"
                     href="#">
                     <div class="size-8 bg-primary rounded-full flex items-center justify-center">
                         <span class="material-symbols-outlined text-white text-sm">add</span>
@@ -116,18 +125,18 @@
                     <span>Ritüel</span>
                 </a>
                 <a onclick="window.location.href='daily_spiritual_guide.html'"
-                    class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium cursor-pointer"
+                    class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">auto_graph</span>
                     <span>Günlük Rehber</span>
                 </a>
                 <a onclick="window.location.href='wheel_of_destiny.html'"
-                    class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium border-t border-white/10 pt-6 mt-2 cursor-pointer"
+                    class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium border-t border-slate-200 dark:border-white/10 pt-6 mt-2 cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">account_circle</span>
                     <span>Profil</span>
                 </a>
-                <a class="flex items-center gap-4 text-white/70 hover:text-white transition-colors font-medium"
+                <a class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium"
                     href="#">
                     <span class="material-symbols-outlined">settings</span>
                     <span>Ayarlar</span>
@@ -136,20 +145,21 @@
             <div class="mt-auto">
                 <div class="bg-primary/10 rounded-xl p-4 border border-primary/20">
                     <p class="text-xs text-cosmic-gold font-bold uppercase mb-2">Günlük Durum</p>
-                    <p class="text-sm text-white/80 italic">"Sayısal analiz aktif."</p>
+                    <p class="text-sm text-slate-600 dark:text-white/80 italic">"Sayısal analiz aktif."</p>
                 </div>
             </div>
         </div>
     </aside>
-    <div class="fixed top-0 left-0 right-0 z-50 bg-background-dark/80 backdrop-blur-md">
+    <div class="fixed top-0 left-0 right-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
         <div class="flex items-center p-4 justify-between max-w-md mx-auto">
             <button onclick="window.location.href='mystic_numerology_home_1.html'"
-                style="cursor:pointer;width:44px;height:44px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:50%;color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0">
+                style="cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0"
+                class="bg-slate-100 dark:bg-white/[0.08] border border-slate-200 dark:border-white/[0.15] text-slate-900 dark:text-white">
                 <span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">arrow_back_ios</span>
             </button>
-            <h2 class="text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Karar Takvimi
+            <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Karar Takvimi
             </h2>
-            <div class="text-white flex size-12 shrink-0 items-center justify-end">
+            <div class="text-slate-900 dark:text-white flex size-12 shrink-0 items-center justify-end">
                 <span class="material-symbols-outlined">account_circle</span>
             </div>
         </div>
@@ -157,11 +167,11 @@
     <main class="pt-20 pb-12 max-w-md mx-auto px-4 space-y-6">
         <section class="glass-card rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
-                <button onclick="changeMonth(-1)" class="text-white/60 hover:text-white transition-colors">
+                <button onclick="changeMonth(-1)" class="text-slate-400 dark:text-white/60 hover:text-slate-900 dark:hover:text-white transition-colors">
                     <span class="material-symbols-outlined">chevron_left</span>
                 </button>
-                <p class="text-white text-base font-bold" id="month-label">—</p>
-                <button onclick="changeMonth(1)" class="text-white/60 hover:text-white transition-colors"
+                <p class="text-slate-900 dark:text-white text-base font-bold" id="month-label">—</p>
+                <button onclick="changeMonth(1)" class="text-slate-400 dark:text-white/60 hover:text-slate-900 dark:hover:text-white transition-colors"
                     id="next-month-btn">
                     <span class="material-symbols-outlined">chevron_right</span>
                 </button>
@@ -180,7 +190,7 @@
             </div>
         </section>
         <div class="flex items-center justify-between px-2">
-            <h2 class="text-white text-2xl font-bold tracking-tight">Günlük Analiz</h2>
+            <h2 class="text-slate-900 dark:text-white text-2xl font-bold tracking-tight">Günlük Analiz</h2>
             <div class="flex items-center gap-1 bg-primary/20 px-3 py-1 rounded-full">
                 <span class="material-symbols-outlined text-cosmic-gold text-sm"
                     style="font-variation-settings: 'FILL' 1">analytics</span>
@@ -192,7 +202,7 @@
                 <div>
                     <p class="text-cosmic-gold text-xs font-bold uppercase tracking-[0.2em] mb-2"
                         id="selected-date-label">Bugünün Titreşimi</p>
-                    <h3 class="text-2xl font-bold text-white leading-tight mb-3" id="vibration-title">—</h3>
+                    <h3 class="text-2xl font-bold text-slate-900 dark:text-white leading-tight mb-3" id="vibration-title">—</h3>
                     <p id="day-description" class="text-[#ab9db9] text-base leading-relaxed"></p>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -362,7 +372,7 @@
             // Önceki ayın günleri (soluk)
             for (var i = firstDay - 1; i >= 0; i--) {
                 var el = document.createElement('div');
-                el.className = 'h-12 w-full flex items-center justify-center text-white/15 text-sm';
+                el.className = 'h-12 w-full flex items-center justify-center text-slate-300 dark:text-white/15 text-sm';
                 el.textContent = daysInPrevMonth - i;
                 grid.appendChild(el);
             }
@@ -382,16 +392,16 @@
                 if (isFuture) {
                     // Gelecek günler: soluk, tıklanamaz
                     btn.disabled = true;
-                    btn.innerHTML = '<div class="flex flex-col items-center justify-center opacity-25"><span class="text-sm">' + day + '</span><span class="text-[8px] text-white/40">V' + vib + '</span></div>';
+                    btn.innerHTML = '<div class="flex flex-col items-center justify-center opacity-25"><span class="text-sm">' + day + '</span><span class="text-[8px] text-slate-400 dark:text-white/40">V' + vib + '</span></div>';
                 } else if (isSelected) {
                     // Seçili gün: altın highlight
                     btn.innerHTML = '<div class="flex size-10 mx-auto flex-col items-center justify-center rounded-lg bg-primary/20" style="box-shadow:0 0 15px rgba(255,215,0,0.3);border:2px solid #ffd700"><span class="text-sm font-bold text-cosmic-gold">' + day + '</span><span class="text-[8px] text-cosmic-gold font-bold">V' + vib + '</span></div>';
                 } else if (isToday) {
                     // Bugün: belirgin ama seçili değil
-                    btn.innerHTML = '<div class="flex flex-col items-center justify-center"><span class="text-sm font-bold text-white">' + day + '</span><span class="text-[8px] text-cosmic-gold font-bold">V' + vib + '</span></div>';
+                    btn.innerHTML = '<div class="flex flex-col items-center justify-center"><span class="text-sm font-bold text-slate-900 dark:text-white">' + day + '</span><span class="text-[8px] text-cosmic-gold font-bold">V' + vib + '</span></div>';
                 } else {
                     // Geçmiş günler: normal, tıklanabilir
-                    btn.innerHTML = '<div class="flex flex-col items-center justify-center"><span class="text-sm font-medium text-white/80">' + day + '</span><span class="text-[8px] text-primary font-bold">V' + vib + '</span></div>';
+                    btn.innerHTML = '<div class="flex flex-col items-center justify-center"><span class="text-sm font-medium text-slate-700 dark:text-white/80">' + day + '</span><span class="text-[8px] text-primary font-bold">V' + vib + '</span></div>';
                 }
 
                 if (!isFuture) {
@@ -421,13 +431,13 @@
             // Supported actions
             var sa = document.getElementById('supported-actions');
             sa.innerHTML = (data.supported || []).map(function(s) {
-                return '<p class="text-sm font-medium text-white">' + s + '</p>';
+                return '<p class="text-sm font-medium text-slate-800 dark:text-white">' + s + '</p>';
             }).join('');
 
             // Challenging actions
             var ca = document.getElementById('challenging-actions');
             ca.innerHTML = (data.challenging || []).map(function(c) {
-                return '<p class="text-sm font-medium text-white/60">' + c + '</p>';
+                return '<p class="text-sm font-medium text-slate-500 dark:text-white/60">' + c + '</p>';
             }).join('');
 
             // Decision Timing CTA — pass selected date
@@ -462,7 +472,7 @@
 
     <!-- Bottom Nav -->
     <nav
-        class="fixed bottom-0 left-0 right-0 bg-background-dark/90 backdrop-blur-xl border-t border-white/10 flex items-center justify-around px-2 pb-2 pt-2 z-50">
+        class="fixed bottom-0 left-0 right-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-slate-200 dark:border-white/10 flex items-center justify-around px-2 pb-2 pt-2 z-50">
         <button onclick="window.location.href='cosmic_energy_calendar_2.html'"
             class="flex flex-col items-center gap-1 text-primary py-1">
             <span class="material-symbols-outlined text-lg"
@@ -470,24 +480,24 @@
             <span class="text-[9px] font-bold uppercase tracking-tight">Takvim</span>
         </button>
         <button onclick="window.location.href='cosmic_manifest_portal.html'"
-            class="flex flex-col items-center gap-1 text-white/40 py-1">
+            class="flex flex-col items-center gap-1 text-slate-400 dark:text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">explore</span>
             <span class="text-[9px] font-bold uppercase tracking-tight">Planlayıcı</span>
         </button>
         <div class="relative -top-4">
             <button
-                class="size-14 rounded-full bg-primary flex items-center justify-center text-white shadow-lg border-4 border-background-dark">
+                class="size-14 rounded-full bg-primary flex items-center justify-center text-white shadow-lg border-4 border-background-light dark:border-background-dark">
                 <span class="material-symbols-outlined text-2xl">add</span>
             </button>
-            <span class="text-[9px] font-bold uppercase text-white/40 block text-center mt-1">Ritüel</span>
+            <span class="text-[9px] font-bold uppercase text-slate-400 dark:text-white/40 block text-center mt-1">Ritüel</span>
         </div>
         <button onclick="window.location.href='daily_spiritual_guide.html'"
-            class="flex flex-col items-center gap-1 text-white/40 py-1">
+            class="flex flex-col items-center gap-1 text-slate-400 dark:text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">auto_graph</span>
             <span class="text-[9px] font-bold uppercase tracking-tight">Günlük Rehber</span>
         </button>
         <button onclick="window.location.href='wheel_of_destiny.html'"
-            class="flex flex-col items-center gap-1 text-white/40 py-1">
+            class="flex flex-col items-center gap-1 text-slate-400 dark:text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">casino</span>
             <span class="text-[9px] font-bold uppercase tracking-tight">Profil</span>
         </button>

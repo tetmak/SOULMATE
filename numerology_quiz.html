@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="tr">
+<html lang="tr">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Numeroloji Quiz</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -11,11 +12,17 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/gamification-engine.js"></script>
-    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10","card-dark":"#393628"},fontFamily:{display:["Space Grotesk","sans-serif"]}}}}</script>
+    <script>tailwind.config={darkMode:"class",theme:{extend:{colors:{
+                        "background-light": "#f8f8f5",primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10", "surface-light": "#ffffff","card-dark":"#393628", "card-light": "#f5f5f0"},fontFamily:{display:["Space Grotesk","sans-serif"]}}}}</script>
     <style>
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
         body{min-height:100dvh;font-family:'Space Grotesk',sans-serif}
         .glass{background:rgba(57,54,40,0.3);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.05)}
+        html:not(.dark) .glass{background:rgba(255,255,255,0.9);border:1px solid rgba(0,0,0,0.08);box-shadow:0 1px 4px rgba(0,0,0,0.04)}
+        .opt-btn{padding:14px 16px;border-radius:16px;border:2px solid rgba(0,0,0,0.06);background:rgba(255,255,255,0.6);text-align:left;cursor:pointer;transition:all 0.25s;display:flex;align-items:center;gap:12px;width:100%}
+        html:not(.dark) .opt-letter{background:rgba(0,0,0,0.04);color:rgba(0,0,0,0.35)}
+        html:not(.dark) .progress-dot{background:rgba(0,0,0,0.08)}
+        html:not(.dark) .progress-dot.current{background:rgba(0,0,0,0.25)}
         @keyframes fade-up{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
         @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
         @keyframes pulse-glow{0%,100%{box-shadow:0 0 10px rgba(34,197,94,0.3)}50%{box-shadow:0 0 25px rgba(34,197,94,0.6)}}
@@ -37,15 +44,15 @@
         .vs-badge{background:linear-gradient(135deg,#ef4444,#f59e0b);border-radius:50%;width:48px;height:48px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:white;box-shadow:0 0 20px rgba(239,68,68,0.4)}
     </style>
 </head>
-<body class="bg-background-dark text-white min-h-screen">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
 <div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden">
 
     <!-- Header -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-dark/90 backdrop-blur-md border-b border-white/5">
-        <div onclick="history.back()" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-white">
+    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
+        <div onclick="history.back()" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 id="page-title" class="text-white text-lg font-black flex-1 text-center">Numeroloji Quiz</h2>
+        <h2 id="page-title" class="text-slate-900 dark:text-white text-lg font-black flex-1 text-center">Numeroloji Quiz</h2>
         <div id="header-rank" class="w-12 flex items-center justify-end"></div>
     </header>
 
@@ -58,16 +65,16 @@
         <!-- Günlük İstatistik -->
         <div class="flex gap-3 mb-6 fade-up" style="animation-delay:0.06s">
             <div class="glass rounded-xl p-3 flex-1 text-center">
-                <p id="stat-correct" class="text-white text-2xl font-black">0</p>
-                <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest">Doğru</p>
+                <p id="stat-correct" class="text-slate-900 dark:text-white text-2xl font-black">0</p>
+                <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Doğru</p>
             </div>
             <div class="glass rounded-xl p-3 flex-1 text-center">
-                <p id="stat-streak" class="text-white text-2xl font-black">0</p>
-                <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest">Win Streak</p>
+                <p id="stat-streak" class="text-slate-900 dark:text-white text-2xl font-black">0</p>
+                <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Win Streak</p>
             </div>
             <div class="glass rounded-xl p-3 flex-1 text-center">
-                <p id="stat-nbp" class="text-white text-2xl font-black">0</p>
-                <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest">NBP</p>
+                <p id="stat-nbp" class="text-slate-900 dark:text-white text-2xl font-black">0</p>
+                <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">NBP</p>
             </div>
         </div>
 
@@ -77,10 +84,10 @@
                 <span class="material-symbols-outlined text-green-400 text-2xl">quiz</span>
             </div>
             <div class="flex-1">
-                <p class="text-white font-bold text-base">Hızlı Quiz</p>
-                <p class="text-white/35 text-xs mt-0.5">10 soru · Bilgini test et · XP kazan</p>
+                <p class="text-slate-900 dark:text-white font-bold text-base">Hızlı Quiz</p>
+                <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">10 soru · Bilgini test et · XP kazan</p>
             </div>
-            <span class="material-symbols-outlined text-white/20">chevron_right</span>
+            <span class="material-symbols-outlined text-slate-400 dark:text-white/20">chevron_right</span>
         </div>
 
         <!-- Düello -->
@@ -89,10 +96,10 @@
                 <span class="material-symbols-outlined text-red-400 text-2xl">swords</span>
             </div>
             <div class="flex-1">
-                <p class="text-white font-bold text-base">Düello <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#ef4444;background:rgba(239,68,68,0.15)">VS</span></p>
-                <p class="text-white/35 text-xs mt-0.5">5 soru · Rakibe karşı · 2x XP ödülü</p>
+                <p class="text-slate-900 dark:text-white font-bold text-base">Düello <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#ef4444;background:rgba(239,68,68,0.15)">VS</span></p>
+                <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">5 soru · Rakibe karşı · 2x XP ödülü</p>
             </div>
-            <span class="material-symbols-outlined text-white/20">chevron_right</span>
+            <span class="material-symbols-outlined text-slate-400 dark:text-white/20">chevron_right</span>
         </div>
 
         <!-- Leaderboard Link -->
@@ -101,15 +108,15 @@
                 <span class="material-symbols-outlined text-amber-400 text-2xl">leaderboard</span>
             </div>
             <div class="flex-1">
-                <p class="text-white font-bold text-base">Kozmik Lig</p>
-                <p class="text-white/35 text-xs mt-0.5">Haftalık sıralama · Lig sistemi · Ödüller</p>
+                <p class="text-slate-900 dark:text-white font-bold text-base">Kozmik Lig</p>
+                <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Haftalık sıralama · Lig sistemi · Ödüller</p>
             </div>
-            <span class="material-symbols-outlined text-white/20">chevron_right</span>
+            <span class="material-symbols-outlined text-slate-400 dark:text-white/20">chevron_right</span>
         </div>
 
         <!-- Rozetler -->
         <div class="mt-6 fade-up" style="animation-delay:0.22s">
-            <p class="text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Rozetlerin</p>
+            <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Rozetlerin</p>
             <div id="badge-grid" class="flex flex-wrap gap-2"></div>
         </div>
     </div>
@@ -123,27 +130,27 @@
         <div id="duel-scores" style="display:none" class="flex items-center justify-center gap-4 mb-4">
             <div class="text-center">
                 <p class="text-green-400 text-2xl font-black" id="player-score">0</p>
-                <p class="text-white/30 text-xs">Sen</p>
+                <p class="text-slate-500 dark:text-white/30 text-xs">Sen</p>
             </div>
             <div class="vs-badge">VS</div>
             <div class="text-center">
                 <p class="text-red-400 text-2xl font-black" id="opp-score">0</p>
-                <p class="text-white/30 text-xs">Rakip</p>
+                <p class="text-slate-500 dark:text-white/30 text-xs">Rakip</p>
             </div>
         </div>
 
         <!-- Soru -->
         <div id="question-container" class="mb-4">
             <div class="glass rounded-2xl p-5 mb-1">
-                <p class="text-white/30 text-xs font-bold mb-2">Soru <span id="q-num">1</span>/<span id="q-total">10</span></p>
-                <p id="q-text" class="text-white font-bold text-base leading-relaxed">—</p>
+                <p class="text-slate-500 dark:text-white/30 text-xs font-bold mb-2">Soru <span id="q-num">1</span>/<span id="q-total">10</span></p>
+                <p id="q-text" class="text-slate-900 dark:text-white font-bold text-base leading-relaxed">—</p>
             </div>
             <div class="flex items-center gap-2 px-2 mt-2">
-                <span class="material-symbols-outlined text-white/15 text-xs">timer</span>
-                <div class="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
+                <span class="material-symbols-outlined text-slate-300 dark:text-white/15 text-xs">timer</span>
+                <div class="flex-1 h-1 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
                     <div id="timer-bar" class="h-full bg-green-400 rounded-full transition-all" style="width:100%"></div>
                 </div>
-                <span id="timer-text" class="text-white/20 text-xs font-bold">15s</span>
+                <span id="timer-text" class="text-slate-400 dark:text-white/20 text-xs font-bold">15s</span>
             </div>
         </div>
 
@@ -153,7 +160,7 @@
         <!-- Açıklama (cevap sonrası) -->
         <div id="answer-feedback" style="display:none" class="mt-4 glass rounded-xl p-4 text-center">
             <p id="feedback-text" class="text-sm font-bold">—</p>
-            <button id="btn-next" class="mt-3 px-6 py-2 rounded-full bg-white/10 text-white text-sm font-bold active:scale-95 transition-transform">Sonraki →</button>
+            <button id="btn-next" class="mt-3 px-6 py-2 rounded-full bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white text-sm font-bold active:scale-95 transition-transform">Sonraki →</button>
         </div>
     </div>
 
@@ -162,21 +169,21 @@
         <div id="result-icon" class="size-24 rounded-full flex items-center justify-center mb-6" style="background:rgba(34,197,94,0.15)">
             <span class="material-symbols-outlined text-green-400 text-5xl" style="font-variation-settings:'FILL' 1">emoji_events</span>
         </div>
-        <h2 id="result-title" class="text-white text-2xl font-black mb-2">—</h2>
-        <p id="result-subtitle" class="text-white/40 text-sm mb-6">—</p>
+        <h2 id="result-title" class="text-slate-900 dark:text-white text-2xl font-black mb-2">—</h2>
+        <p id="result-subtitle" class="text-slate-500 dark:text-white/40 text-sm mb-6">—</p>
 
         <div class="flex gap-3 mb-6 w-full max-w-[300px]">
             <div class="glass rounded-xl p-3 flex-1 text-center">
                 <p id="res-correct" class="text-green-400 text-2xl font-black">0</p>
-                <p class="text-white/30 text-xs">Doğru</p>
+                <p class="text-slate-500 dark:text-white/30 text-xs">Doğru</p>
             </div>
             <div class="glass rounded-xl p-3 flex-1 text-center">
                 <p id="res-xp" class="text-amber-400 text-2xl font-black">+0</p>
-                <p class="text-white/30 text-xs">XP</p>
+                <p class="text-slate-500 dark:text-white/30 text-xs">XP</p>
             </div>
             <div class="glass rounded-xl p-3 flex-1 text-center">
                 <p id="res-nbp" class="text-purple-400 text-2xl font-black">+0</p>
-                <p class="text-white/30 text-xs">NBP</p>
+                <p class="text-slate-500 dark:text-white/30 text-xs">NBP</p>
             </div>
         </div>
 
@@ -184,17 +191,17 @@
         <div id="duel-result" style="display:none" class="glass rounded-2xl p-4 mb-6 w-full max-w-[300px]">
             <div class="flex items-center justify-center gap-3 mb-2">
                 <span class="text-green-400 font-black text-lg" id="dr-player">0</span>
-                <span class="text-white/20 text-xs">vs</span>
+                <span class="text-slate-400 dark:text-white/20 text-xs">vs</span>
                 <span class="text-red-400 font-black text-lg" id="dr-opp">0</span>
             </div>
-            <p id="dr-streak" class="text-white/40 text-xs">—</p>
+            <p id="dr-streak" class="text-slate-500 dark:text-white/40 text-xs">—</p>
         </div>
 
         <!-- Ödüller -->
         <div id="result-rewards" class="w-full max-w-[300px] space-y-2 mb-6"></div>
 
         <div class="flex gap-3 w-full max-w-[300px]">
-            <button onclick="showMenu()" class="flex-1 py-3 rounded-full glass text-white font-bold text-sm active:scale-95 transition-transform">← Menü</button>
+            <button onclick="showMenu()" class="flex-1 py-3 rounded-full glass text-slate-900 dark:text-white font-bold text-sm active:scale-95 transition-transform">← Menü</button>
             <button id="btn-retry" class="flex-1 py-3 rounded-full text-white font-bold text-sm active:scale-95 transition-transform" style="background:linear-gradient(135deg,#22c55e,#16a34a)">Tekrar Oyna</button>
         </div>
     </div>
@@ -232,14 +239,14 @@ function renderMenu() {
                 '<span class="material-symbols-outlined text-2xl" style="color:' + rank.color + ';font-variation-settings:\'FILL\' 1">' + rank.icon + '</span>' +
             '</div>' +
             '<div class="flex-1 min-w-0">' +
-                '<p class="text-white font-bold">' + rank.name + '</p>' +
-                '<p class="text-white/30 text-xs mt-0.5">' + s.nbp + ' NBP' + (rp.next ? ' · ' + rp.remaining + ' kaldı' : ' · MAX') + '</p>' +
-                '<div class="mt-2 h-2 bg-white/5 rounded-full overflow-hidden">' +
+                '<p class="text-slate-900 dark:text-white font-bold">' + rank.name + '</p>' +
+                '<p class="text-slate-500 dark:text-white/30 text-xs mt-0.5">' + s.nbp + ' NBP' + (rp.next ? ' · ' + rp.remaining + ' kaldı' : ' · MAX') + '</p>' +
+                '<div class="mt-2 h-2 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">' +
                     '<div class="h-full rounded-full transition-all" style="width:' + rp.progress + '%;background:' + rank.color + '"></div>' +
                 '</div>' +
             '</div>' +
         '</div>' +
-        (rp.next ? '<p class="text-white/15 text-[10px] mt-3 text-right">Sonraki: ' + rp.next.name + ' (' + rp.next.minNBP + ' NBP)</p>' : '');
+        (rp.next ? '<p class="text-slate-400 dark:text-white/15 text-[10px] mt-3 text-right">Sonraki: ' + rp.next.name + ' (' + rp.next.minNBP + ' NBP)</p>' : '');
 
     // İstatistikler
     document.getElementById('stat-correct').textContent = s.quiz_correct;
@@ -329,7 +336,7 @@ function renderQuestion() {
         var btn = document.createElement('button');
         btn.className = 'opt-btn fade-up';
         btn.style.animationDelay = (idx * 0.06) + 's';
-        btn.innerHTML = '<div class="opt-letter">' + letters[idx] + '</div><span class="text-white/70 text-sm flex-1">' + opt + '</span>';
+        btn.innerHTML = '<div class="opt-letter">' + letters[idx] + '</div><span class="text-slate-700 dark:text-white/70 text-sm flex-1">' + opt + '</span>';
         btn.addEventListener('click', function() { handleAnswer(idx); });
         opts.appendChild(btn);
     });

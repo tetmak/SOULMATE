@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
+<html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="js/theme-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -41,10 +42,10 @@
     }
   </style>
   </head>
-<body class="bg-background-light dark:bg-background-dark font-display text-white overflow-hidden">
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-white overflow-hidden">
 <!-- Mock Background (Blurred Wheel of Destiny) -->
-<div class="fixed inset-0 z-0 flex flex-col items-center justify-center opacity-40 blur-sm">
-<div class="relative w-80 h-80 rounded-full border-8 border-[#393528] flex items-center justify-center">
+<div class="fixed inset-0 z-0 flex flex-col items-center justify-center opacity-20 dark:opacity-40 blur-sm">
+<div class="relative w-80 h-80 rounded-full border-8 border-slate-200 dark:border-[#393528] flex items-center justify-center">
 <div class="absolute inset-0 rounded-full border-4 border-dashed border-primary/30"></div>
 <div class="grid grid-cols-2 grid-rows-2 w-full h-full rounded-full overflow-hidden rotate-45">
 <div class="bg-[#27241b] border border-[#393528]"></div>
@@ -56,13 +57,13 @@
 </div>
 </div>
 <!-- Main Overlay Container -->
-<div class="relative z-10 flex min-h-screen w-full flex-col bg-background-dark/80 backdrop-blur-md">
+<div class="relative z-10 flex min-h-screen w-full flex-col bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
 <!-- Top App Bar Space -->
 <div class="flex items-center p-4 pb-2 justify-between">
-<div class="text-white flex size-12 shrink-0 items-center justify-center cursor-pointer" onclick="window.location.href='wheel_of_destiny.html'">
+<div class="text-slate-700 dark:text-white flex size-12 shrink-0 items-center justify-center cursor-pointer" onclick="window.location.href='wheel_of_destiny.html'">
 <span class="material-symbols-outlined">close</span>
 </div>
-<h2 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Fortune Granted</h2>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Fortune Granted</h2>
 </div>
 <!-- Animated Background Layer (Sparks/Glow) -->
 <div class="absolute inset-0 pointer-events-none overflow-hidden">
@@ -77,21 +78,21 @@
 <div class="flex-1 flex flex-col items-center justify-center px-6 pb-20">
 <!-- Headline Text -->
 <div class="text-center mb-8">
-<h1 class="text-white tracking-light text-[32px] font-bold leading-tight pb-2">Destiny has Spoken</h1>
+<h1 class="text-slate-900 dark:text-white tracking-light text-[32px] font-bold leading-tight pb-2">Destiny has Spoken</h1>
 <p class="text-primary text-sm font-medium uppercase tracking-widest">A Sacred Gift Uncovered</p>
 </div>
 <!-- Reward Card -->
 <div class="w-full max-w-sm @container">
-<div class="flex flex-col items-stretch justify-start rounded-xl shadow-2xl bg-[#27241b] border border-primary/30 reward-card-glow overflow-hidden">
+<div class="flex flex-col items-stretch justify-start rounded-xl shadow-2xl bg-white dark:bg-[#27241b] border border-primary/30 reward-card-glow overflow-hidden">
 <!-- Reward Image/Visual -->
-<div class="w-full aspect-square bg-gradient-to-b from-[#393528] to-[#27241b] flex items-center justify-center p-8 relative">
+<div class="w-full aspect-square bg-gradient-to-b from-slate-100 to-white dark:from-[#393528] dark:to-[#27241b] flex items-center justify-center p-8 relative">
 <div class="absolute inset-0 bg-primary/5 rounded-full scale-75 blur-3xl"></div>
 <div class="relative z-10 w-full h-full bg-center bg-no-repeat bg-contain" data-alt="Three glowing golden crystals floating in darkness" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDmji-IsNEQtGo_1rm_lisPH6mW5gZQpOS4gPv1kk0PEn8tWseI9-_34KZPPQ1W7z4a2dph8AGpzyK1S84Mvd4GdwFtYy5KAUzv3FKPIstoX1aOU04bXcihkSvTY-q8N1Ab_tK-pVqeWLdbjJ4g370JFgOrScmMKzhNS3ySAo7UUS0JbXvdw2cJvCa0F-77eTnxW6LUh_6SJfSj0PL_J5y-jnI978a5mH20tvmCRalLF37iK__eiujAhAhZIox2lvUlPP0tbz4hPcdn");'>
 </div>
 </div>
 <!-- Reward Details -->
 <div class="flex w-full flex-col items-center justify-center gap-2 py-8 px-6 text-center">
-<p class="text-white text-2xl font-bold leading-tight tracking-[-0.015em]">3 Free Crystals</p>
+<p class="text-slate-900 dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]">3 Free Crystals</p>
 <div class="flex flex-col gap-2">
 <p class="text-primary/90 text-base font-semibold leading-normal">Deep Name Analysis Unlocked</p>
 <p class="text-[#bab29c] text-sm font-normal leading-relaxed max-w-[240px]">Use these to unlock your daily horoscope and reveal your spiritual path.</p>
@@ -112,7 +113,7 @@
 </div>
 </div>
 <!-- Bottom Navigation (Contextual) -->
-<div class="flex gap-2 border-t border-[#393528] bg-[#27241b]/50 backdrop-blur-xl px-4 pb-8 pt-2">
+<div class="flex gap-2 border-t border-slate-200 dark:border-[#393528] bg-white/50 dark:bg-[#27241b]/50 backdrop-blur-xl px-4 pb-8 pt-2">
 <a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#bab29c]" href="mystic_numerology_home_1.html">
 <div class="flex h-8 items-center justify-center">
 <span class="material-symbols-outlined">home</span>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 
-<html class="dark" lang="en"><head>
+<html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Daily Number Deep Dive</title>
+<script src="js/theme-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -20,6 +21,11 @@
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(244, 192, 37, 0.1);
+        }
+        html:not(.dark) .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid rgba(244, 192, 37, 0.15);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
         }
     </style>
 <style>
@@ -127,12 +133,12 @@
 </div>
 <!-- Visual Element: Abstract Gradient Map/Chart -->
 <section class="mt-10 px-6">
-<div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-800">
+<div class="relative w-full h-48 rounded-xl overflow-hidden bg-slate-200 dark:bg-slate-800">
 <img alt="Celestial nebula with golden stars" class="w-full h-full object-cover opacity-60" data-alt="Abstract deep space nebula with golden cosmic dust" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBostVvSKi6SXLATVe3-8yKKqcyC7MUnmA2Tn-ykEnUjPVb-_aCzp9obbButKvexzCqxk0csSvb3SVS6By-TRLbh7TcD6ldUZQEyhkajJtTVRkxephHOvVcqM7k_J2yu_Ozd2PUTRk0RaL0GU3fXg8cuicmJMhgh2tBvpjxAte3X87keC9p--JBkueSB_jxMpQ56-vmekI7AtL_yB6Vm49wKQShPZ0BtBMkh_VA687j8PJEx7dG9A-1F_Y78IrMsbwDStc_sSNG_nqX"/>
-<div class="absolute inset-0 bg-gradient-to-t from-background-dark via-transparent to-transparent"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background-light dark:from-background-dark via-transparent to-transparent"></div>
 <div class="absolute bottom-4 left-4 right-4">
 <p class="text-xs uppercase tracking-widest text-primary font-bold">Planetary Alignment</p>
-<p class="text-sm italic">Venus in the 7th House</p>
+<p class="text-sm italic text-slate-700 dark:text-white/90">Venus in the 7th House</p>
 </div>
 </div>
 </section>

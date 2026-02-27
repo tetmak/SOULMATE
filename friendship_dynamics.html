@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html class="dark" lang="tr">
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Arkadaşlık Dinamiği</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
@@ -19,10 +20,11 @@
     <script id="tailwind-config">
         tailwind.config = { darkMode:"class", theme:{ extend:{
             colors:{
+                        "background-light": "#f8f8f5",
                 primary:"#f2cc0d",
                 "background-dark":"#181711",
-                "surface-dark":"#221f10",
-                "card-dark":"#393628",
+                "surface-dark":"#221f10", "surface-light": "#ffffff",
+                "card-dark":"#393628", "card-light": "#f5f5f0",
                 "friend-teal":"#2dd4bf",
                 "friend-cyan":"#22d3ee",
                 "friend-emerald":"#34d399"
@@ -52,10 +54,20 @@
             -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.05);
         }
+        html:not(.dark) .glass-card {
+            background: rgba(255,255,255,0.9);
+            border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
         .glass-friend {
             background: rgba(45,212,191,0.04);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(45,212,191,0.12);
+        }
+        html:not(.dark) .glass-friend {
+            background: rgba(45,212,191,0.04);
+            border: 1px solid rgba(45,212,191,0.15);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.03);
         }
 
         /* Animations */
@@ -113,17 +125,17 @@
         ::-webkit-scrollbar-thumb { background: rgba(45,212,191,0.2); border-radius: 2px; }
     </style>
 </head>
-<body class="bg-background-dark text-white min-h-screen">
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
 <div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden pb-10">
 
     <!-- Header -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-dark/90 backdrop-blur-md border-b border-white/5">
-        <div id="btn-back" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-white">
+    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
+        <div id="btn-back" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 class="text-white text-base font-bold leading-tight tracking-tight flex-1 text-center">Arkadaşlık Dinamiği</h2>
+        <h2 class="text-slate-900 dark:text-white text-base font-bold leading-tight tracking-tight flex-1 text-center">Arkadaşlık Dinamiği</h2>
         <div class="flex w-12 items-center justify-end">
-            <button id="btn-share" class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-transparent text-white/50 hover:bg-friend-teal/10 transition-colors">
+            <button id="btn-share" class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-transparent text-slate-500 dark:text-white/50 hover:bg-friend-teal/10 transition-colors">
                 <span class="material-symbols-outlined">share</span>
             </button>
         </div>
@@ -142,7 +154,7 @@
                         <span id="user-lp">—</span>
                     </div>
                 </div>
-                <p id="user-name" class="text-white text-sm font-bold text-center max-w-[80px] truncate">—</p>
+                <p id="user-name" class="text-slate-900 dark:text-white text-sm font-bold text-center max-w-[80px] truncate">—</p>
             </div>
 
             <!-- Connection Line -->
@@ -164,14 +176,14 @@
                         <span id="friend-lp">—</span>
                     </div>
                 </div>
-                <p id="friend-name" class="text-white text-sm font-bold text-center max-w-[80px] truncate">—</p>
+                <p id="friend-name" class="text-slate-900 dark:text-white text-sm font-bold text-center max-w-[80px] truncate">—</p>
             </div>
         </div>
 
         <!-- Bond Title -->
         <div class="text-center mt-5">
             <p id="bond-label" class="friend-gradient-text text-lg font-black tracking-tight">—</p>
-            <p id="bond-archetype" class="text-white/40 text-xs mt-1 uppercase tracking-widest">Arkadaşlık Bağı Analizi</p>
+            <p id="bond-archetype" class="text-slate-500 dark:text-white/40 text-xs mt-1 uppercase tracking-widest">Arkadaşlık Bağı Analizi</p>
         </div>
     </div>
 
@@ -192,7 +204,7 @@
             </svg>
             <div class="flex flex-col items-center">
                 <span id="overall-score" class="text-4xl font-black friend-gradient-text">—</span>
-                <span class="text-white/30 text-[10px] font-bold uppercase tracking-widest">Uyum</span>
+                <span class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Uyum</span>
             </div>
         </div>
     </div>
@@ -202,37 +214,37 @@
         <div class="grid grid-cols-2 gap-3">
             <div class="glass-friend rounded-2xl p-3.5">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Yaşam Yolu</span>
+                    <span class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Yaşam Yolu</span>
                     <span id="lp-score" class="text-friend-teal text-sm font-black">—</span>
                 </div>
-                <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
                     <div id="lp-bar" class="h-full rounded-full friend-gradient score-bar-fill" style="--target-width:0%"></div>
                 </div>
             </div>
             <div class="glass-friend rounded-2xl p-3.5">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Ruh Güdüsü</span>
+                    <span class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Ruh Güdüsü</span>
                     <span id="soul-score" class="text-friend-cyan text-sm font-black">—</span>
                 </div>
-                <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
                     <div id="soul-bar" class="h-full rounded-full bg-gradient-to-r from-cyan-400 to-teal-400 score-bar-fill" style="--target-width:0%"></div>
                 </div>
             </div>
             <div class="glass-friend rounded-2xl p-3.5">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-white/40 text-[10px] font-bold uppercase tracking-widest">Kişilik</span>
+                    <span class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Kişilik</span>
                     <span id="pers-score" class="text-friend-emerald text-sm font-black">—</span>
                 </div>
-                <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
                     <div id="pers-bar" class="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 score-bar-fill" style="--target-width:0%"></div>
                 </div>
             </div>
             <div class="glass-friend rounded-2xl p-3.5">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-white/40 text-[10px] font-bold uppercase tracking-widest">İfade</span>
+                    <span class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">İfade</span>
                     <span id="exp-score" class="text-primary text-sm font-black">—</span>
                 </div>
-                <div class="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
                     <div id="exp-bar" class="h-full rounded-full bg-gradient-to-r from-yellow-400 to-amber-400 score-bar-fill" style="--target-width:0%"></div>
                 </div>
             </div>
@@ -251,10 +263,10 @@
                     <span class="material-symbols-outlined text-friend-teal">diversity_3</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-white font-bold text-[15px]">Arkadaşlık Enerjisi</p>
-                    <p class="text-white/35 text-xs mt-0.5">Bağınızın özü ve temel dinamiği</p>
+                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">Arkadaşlık Enerjisi</p>
+                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Bağınızın özü ve temel dinamiği</p>
                 </div>
-                <span class="material-symbols-outlined text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
@@ -270,10 +282,10 @@
                     <span class="material-symbols-outlined text-friend-cyan">forum</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-white font-bold text-[15px]">İletişim Dinamiği</p>
-                    <p class="text-white/35 text-xs mt-0.5">Birbirinizi nasıl anlıyorsunuz</p>
+                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">İletişim Dinamiği</p>
+                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Birbirinizi nasıl anlıyorsunuz</p>
                 </div>
-                <span class="material-symbols-outlined text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
@@ -289,10 +301,10 @@
                     <span class="material-symbols-outlined text-friend-emerald">bolt</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-white font-bold text-[15px]">Ortak Güç Alanları</p>
-                    <p class="text-white/35 text-xs mt-0.5">Birlikte nerede parlıyorsunuz</p>
+                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">Ortak Güç Alanları</p>
+                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Birlikte nerede parlıyorsunuz</p>
                 </div>
-                <span class="material-symbols-outlined text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
@@ -308,10 +320,10 @@
                     <span class="material-symbols-outlined text-amber-400">warning</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-white font-bold text-[15px]">Dikkat Noktaları</p>
-                    <p class="text-white/35 text-xs mt-0.5">Sürtüşme ve denge gereken alanlar</p>
+                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">Dikkat Noktaları</p>
+                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Sürtüşme ve denge gereken alanlar</p>
                 </div>
-                <span class="material-symbols-outlined text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
@@ -327,10 +339,10 @@
                     <span class="material-symbols-outlined text-primary">map</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-white font-bold text-[15px]">Yol Haritası</p>
-                    <p class="text-white/35 text-xs mt-0.5">Bu arkadaşlığı güçlendirmek için rehber</p>
+                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">Yol Haritası</p>
+                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Bu arkadaşlığı güçlendirmek için rehber</p>
                 </div>
-                <span class="material-symbols-outlined text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
@@ -346,34 +358,34 @@
         <div class="glass-card rounded-2xl p-5">
             <div class="flex items-center gap-2 mb-4">
                 <span class="material-symbols-outlined text-primary text-lg">analytics</span>
-                <p class="text-white font-bold text-sm">Numerolojik Karşılaştırma</p>
+                <p class="text-slate-900 dark:text-white font-bold text-sm">Numerolojik Karşılaştırma</p>
             </div>
             <div class="space-y-3">
                 <div class="flex items-center justify-between text-xs">
-                    <span class="text-white/30 font-bold uppercase tracking-wider w-28"></span>
+                    <span class="text-slate-400 dark:text-white/30 font-bold uppercase tracking-wider w-28"></span>
                     <span id="tbl-user-name" class="text-friend-teal font-bold w-16 text-center">—</span>
                     <span id="tbl-friend-name" class="text-friend-cyan font-bold w-16 text-center">—</span>
                 </div>
-                <div class="h-px bg-white/5"></div>
+                <div class="h-px bg-slate-200 dark:bg-white/5"></div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-white/50 w-28">Yaşam Yolu</span>
-                    <span id="tbl-user-lp" class="text-white font-black w-16 text-center">—</span>
-                    <span id="tbl-friend-lp" class="text-white font-black w-16 text-center">—</span>
+                    <span class="text-slate-600 dark:text-white/50 w-28">Yaşam Yolu</span>
+                    <span id="tbl-user-lp" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
+                    <span id="tbl-friend-lp" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-white/50 w-28">İfade</span>
-                    <span id="tbl-user-exp" class="text-white font-black w-16 text-center">—</span>
-                    <span id="tbl-friend-exp" class="text-white font-black w-16 text-center">—</span>
+                    <span class="text-slate-600 dark:text-white/50 w-28">İfade</span>
+                    <span id="tbl-user-exp" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
+                    <span id="tbl-friend-exp" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-white/50 w-28">Ruh Güdüsü</span>
-                    <span id="tbl-user-soul" class="text-white font-black w-16 text-center">—</span>
-                    <span id="tbl-friend-soul" class="text-white font-black w-16 text-center">—</span>
+                    <span class="text-slate-600 dark:text-white/50 w-28">Ruh Güdüsü</span>
+                    <span id="tbl-user-soul" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
+                    <span id="tbl-friend-soul" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-white/50 w-28">Kişilik</span>
-                    <span id="tbl-user-pers" class="text-white font-black w-16 text-center">—</span>
-                    <span id="tbl-friend-pers" class="text-white font-black w-16 text-center">—</span>
+                    <span class="text-slate-600 dark:text-white/50 w-28">Kişilik</span>
+                    <span id="tbl-user-pers" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
+                    <span id="tbl-friend-pers" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                 </div>
             </div>
         </div>
@@ -708,8 +720,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     function renderText(text) {
+        var isDark = document.documentElement.classList.contains('dark');
+        var textColor = isDark ? 'rgba(255,255,255,0.82)' : 'rgba(15,23,42,0.8)';
         return text.split(/\n\n+/).filter(function(p){ return p.trim(); }).map(function(p){
-            return '<p style="margin-bottom:12px;font-size:14px;line-height:1.85;color:rgba(255,255,255,0.82);">' + p.trim() + '</p>';
+            return '<p style="margin-bottom:12px;font-size:14px;line-height:1.85;color:' + textColor + ';">' + p.trim() + '</p>';
         }).join('');
     }
 

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html class="dark" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Name Numerology Breakdown</title>
+    <script src="js/theme-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link
@@ -29,7 +30,7 @@
                         "primary": "#f2cc0d",
                         "background-light": "#f8f8f5",
                         "background-dark": "#12110a",
-                        "card-dark": "#221f10",
+                        "card-dark": "#221f10", "card-light": "#f5f5f0",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"]
@@ -94,7 +95,7 @@
                 <div class="flex flex-col items-center">
                     <span class="text-primary text-xs font-bold mb-1 letter-glow">3</span>
                     <div
-                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-white/50">
+                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-slate-400 dark:text-white/50">
                         L</div>
                 </div>
                 <div class="flex flex-col items-center">
@@ -106,7 +107,7 @@
                 <div class="flex flex-col items-center">
                     <span class="text-primary text-xs font-bold mb-1 letter-glow">6</span>
                     <div
-                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-white/50">
+                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-slate-400 dark:text-white/50">
                         X</div>
                 </div>
                 <div class="flex flex-col items-center">
@@ -118,13 +119,13 @@
                 <div class="flex flex-col items-center">
                     <span class="text-primary text-xs font-bold mb-1 letter-glow">5</span>
                     <div
-                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-white/50">
+                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-slate-400 dark:text-white/50">
                         N</div>
                 </div>
                 <div class="flex flex-col items-center">
                     <span class="text-primary text-xs font-bold mb-1 letter-glow">4</span>
                     <div
-                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-white/50">
+                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-slate-400 dark:text-white/50">
                         D</div>
                 </div>
                 <div class="flex flex-col items-center">
@@ -136,7 +137,7 @@
                 <div class="flex flex-col items-center">
                     <span class="text-primary text-xs font-bold mb-1 letter-glow">2</span>
                     <div
-                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-white/50">
+                        class="w-10 h-14 flex items-center justify-center border border-primary/30 bg-primary/5 rounded-lg text-2xl font-bold text-slate-400 dark:text-white/50">
                         R</div>
                 </div>
             </div>
@@ -197,19 +198,19 @@
                 </button>
             </div>
             <div
-                class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+                class="flex flex-col rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
                 <button
                     class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
                     <div class="flex items-center gap-4 flex-1 min-w-0">
                         <div
-                            class="p-2.5 rounded-lg bg-white/10 text-slate-400 dark:text-white/60 flex items-center justify-center shrink-0">
+                            class="p-2.5 rounded-lg bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-2xl">person</span>
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1.5 flex-wrap">
                                 <h2 class="text-slate-900 dark:text-white text-lg font-bold">Personality</h2>
                                 <span
-                                    class="px-1.5 py-0.5 rounded bg-white/10 text-slate-400 dark:text-white/60 text-[10px] font-black leading-none uppercase tracking-tighter shrink-0">Outer</span>
+                                    class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 text-[10px] font-black leading-none uppercase tracking-tighter shrink-0">Outer</span>
                                 <span
                                     class="px-1.5 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">THE
                                     SCHOLAR</span>
@@ -226,7 +227,7 @@
                 </button>
             </div>
             <div id="life-path-card"
-                class="flex flex-col rounded-xl border border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+                class="flex flex-col rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
                 <button
                     class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
                     <div class="flex items-center gap-4 flex-1 min-w-0">
