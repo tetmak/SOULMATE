@@ -785,13 +785,42 @@ YAZI KURALLARI:
     setTimeout(init, 150);
   }
 
+  // ─── HESAPLAMA UTILITY ──────────────────────────────────────
+  // Dışarıdan (profile_soul_journey vb.) çağrılabilir — tek kaynak
+  function calculateOverall(name1, bd1, name2, bd2) {
+    var p1 = {
+      lifePath:    calcLifePath(bd1 || '1990-01-01'),
+      expression:  calcExpression(name1 || 'Kişi'),
+      soulUrge:    calcSoulUrge(name1 || 'Kişi'),
+      personality: calcPersonality(name1 || 'Kişi')
+    };
+    var p2 = {
+      lifePath:    calcLifePath(bd2 || '1992-01-01'),
+      expression:  calcExpression(name2 || 'Kişi'),
+      soulUrge:    calcSoulUrge(name2 || 'Kişi'),
+      personality: calcPersonality(name2 || 'Kişi')
+    };
+    return {
+      overall:   overallScore(p1, p2),
+      lpScore:   scaleScore(getCompatScore(p1.lifePath,    p2.lifePath)),
+      soulScore: scaleScore(getCompatScore(p1.soulUrge,    p2.soulUrge)),
+      persScore: scaleScore(getCompatScore(p1.personality, p2.personality)),
+      expScore:  scaleScore(getCompatScore(p1.expression,  p2.expression)),
+      bond:      bondLabel(overallScore(p1, p2)),
+      p1: p1,
+      p2: p2
+    };
+  }
+
   // Global export
   window.CompatEngine = {
     getCompatData: getCompatData,
     fetchCompatAnalysis: fetchCompatAnalysis,
     initCompatAnalysis: initCompatAnalysis,
     initBreakdown3: initBreakdown3,
-    initBreakdown2: initBreakdown2
+    initBreakdown2: initBreakdown2,
+    calculateOverall: calculateOverall,
+    bondLabel: bondLabel
   };
 
   // openSoulmateShare alias (bazı sayfalarda smOpen var, bu wrapper her ikisini de destekler)

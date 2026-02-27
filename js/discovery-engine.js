@@ -20,10 +20,28 @@
     function calcSoul(name) { var s=0,c=(name||'').toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ]/g,''); for(var i=0;i<c.length;i++){ if(VOWELS.includes(c[i])) s+=(TABLE[c[i]]||0); } return reduce(s); }
     function calcPers(name) { var s=0,c=(name||'').toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ]/g,''); for(var i=0;i<c.length;i++){ if(!VOWELS.includes(c[i])) s+=(TABLE[c[i]]||0); } return reduce(s); }
 
-    // ─── UYUM MATRİSİ ───────────────────────────────────────
-    var CM = {'1-1':75,'1-2':85,'1-3':90,'1-4':65,'1-5':80,'1-6':70,'1-7':75,'1-8':85,'1-9':80,'2-2':80,'2-3':85,'2-4':90,'2-5':65,'2-6':95,'2-7':70,'2-8':60,'2-9':90,'3-3':75,'3-4':65,'3-5':90,'3-6':80,'3-7':70,'3-8':75,'3-9':85,'4-4':85,'4-5':60,'4-6':90,'4-7':80,'4-8':95,'4-9':70,'5-5':70,'5-6':75,'5-7':80,'5-8':65,'5-9':85,'6-6':85,'6-7':75,'6-8':80,'6-9':95,'7-7':75,'7-8':70,'7-9':85,'8-8':70,'8-9':75,'9-9':95,'11-11':95,'11-22':90,'11-33':92,'22-22':92,'22-33':95,'33-33':98,'1-11':85,'2-11':90,'3-11':88,'4-22':92,'6-33':95,'9-11':90,'9-33':95};
+    // ─── UYUM MATRİSİ (compatibility-engine.js ile aynı) ────
+    var CM = {
+        '1-1':52,'1-2':60,'1-3':68,'1-4':38,'1-5':75,'1-6':45,'1-7':55,'1-8':70,'1-9':62,
+        '2-2':58,'2-3':65,'2-4':72,'2-5':35,'2-6':80,'2-7':50,'2-8':35,'2-9':68,
+        '3-3':55,'3-4':32,'3-5':78,'3-6':62,'3-7':45,'3-8':48,'3-9':72,
+        '4-4':62,'4-5':28,'4-6':75,'4-7':55,'4-8':80,'4-9':40,
+        '5-5':52,'5-6':38,'5-7':62,'5-8':42,'5-9':68,
+        '6-6':65,'6-7':48,'6-8':55,'6-9':82,
+        '7-7':55,'7-8':42,'7-9':68,
+        '8-8':50,'8-9':45,
+        '9-9':72,
+        '11-11':82,'11-22':75,'11-33':78,'22-22':78,'22-33':82,'33-33':88,
+        '1-11':68,'2-11':75,'3-11':70,'4-22':78,'6-33':85,'9-11':72,'9-33':80
+    };
 
-    function getScore(a, b) { var k=a<=b?a+'-'+b:b+'-'+a; return CM[k]||70; }
+    // Ham skoru [28,88] → [70,98] aralığına ölçekle (alt limit %70)
+    function scaleScore(raw) {
+        var scaled = 70 + (raw - 28) * 28 / 60;
+        return Math.max(70, Math.min(98, Math.round(scaled)));
+    }
+
+    function getScore(a, b) { var k=a<=b?a+'-'+b:b+'-'+a; return CM[k]||50; }
 
     function calcFullMatch(user, other) {
         var dims = [];
@@ -43,12 +61,13 @@
 
         if (!dims.length) return 70; // fallback
         var totalW = dims.reduce(function(a,d){return a+d.w;},0);
-        return Math.round(dims.reduce(function(a,d){return a + d.score*(d.w/totalW);},0));
+        var raw = Math.round(dims.reduce(function(a,d){return a + d.score*(d.w/totalW);},0));
+        return scaleScore(raw);
     }
 
     // ─── ARKETIP ETİKETLERİ ──────────────────────────────────
     var ARCHETYPES = {1:'Lider',2:'Diplomat',3:'Yaratıcı',4:'Kurucu',5:'Kaşif',6:'Şifacı',7:'Mistik',8:'Güç',9:'Bilge',11:'İlhamcı',22:'Usta Mimar',33:'Öğretmen'};
-    var BOND_LABELS = {95:'Kozmik Ruh İkizi',90:'Kaderin Birleştirdiği',85:'Yıldız Bağı',80:'Güçlü Rezonans',75:'Uyumlu Titreşim',70:'Potansiyel Bağ',0:'Keşfedilecek Enerji'};
+    var BOND_LABELS = {94:'Kozmik Ruh İkizi',89:'Kaderin Birleştirdiği',84:'Yıldız Bağı',79:'Güçlü Rezonans',74:'Uyumlu Titreşim',70:'Potansiyel Bağ',0:'Keşfedilecek Enerji'};
 
     function bondLabel(score) {
         var keys = Object.keys(BOND_LABELS).map(Number).sort(function(a,b){return b-a;});
