@@ -193,36 +193,32 @@
     function getOppositeGender(gender) {
         if (!gender) return null;
         var g = gender.toLowerCase().trim();
-        if (g === 'male' || g === 'erkek') return ['female', 'kadın', 'kadin'];
-        if (g === 'female' || g === 'kadın' || g === 'kadin') return ['male', 'erkek'];
+        if (g === 'male' || g === 'erkek') return 'male';
+        if (g === 'female' || g === 'kadın' || g === 'kadin') return 'female';
         return null;
     }
 
     async function fetchDiscoverableProfiles(excludeUserId, userGender) {
         try {
-            // Önce tüm profilleri sayalım (debug)
-            var allQuery = window.supabaseClient
-                .from('discovery_profiles')
-                .select('user_id, full_name, gender, discoverable')
-                .eq('discoverable', true)
-                .neq('user_id', excludeUserId);
-            var allRes = await allQuery;
-            var allProfiles = allRes.data || [];
-            console.log('[Discovery] Tüm keşfedilebilir profiller (' + allProfiles.length + '):', allProfiles.map(function(p) { return p.full_name + ' (' + p.gender + ')'; }).join(', '));
-
             var query = window.supabaseClient
                 .from('discovery_profiles')
                 .select('*')
                 .eq('discoverable', true)
                 .neq('user_id', excludeUserId);
 
-            // Cinsiyet filtresi: karşı cinsiyeti göster
-            var opposites = getOppositeGender(userGender);
-            if (opposites) {
-                query = query.in('gender', opposites);
-                console.log('[Discovery] Cinsiyet filtresi:', userGender, '→ sadece', opposites.join('/'), 'gösterilecek');
+            // Cinsiyet filtresi: karşı cinsiyeti göster (case-insensitive)
+            var myGender = getOppositeGender(userGender);
+            if (myGender === 'male') {
+                // Ben erkeğim → karşı cinsiyet: female/kadın (case-insensitive)
+                query = query.or('gender.ilike.female,gender.ilike.kadın,gender.ilike.kadin');
+                console.log('[Discovery] Cinsiyet filtresi: erkek → sadece kadın gösterilecek');
+            } else if (myGender === 'female') {
+                // Ben kadınım → karşı cinsiyet: male/erkek (case-insensitive)
+                query = query.or('gender.ilike.male,gender.ilike.erkek');
+                console.log('[Discovery] Cinsiyet filtresi: kadın → sadece erkek gösterilecek');
             } else {
-                console.log('[Discovery] Cinsiyet bilinmiyor (' + userGender + '), filtre uygulanmıyor — tüm profiller gösterilecek');
+                console.warn('[Discovery] Cinsiyet bilinmiyor (' + userGender + '), eşleşme yapılamıyor');
+                return [];
             }
 
             var res = await query;

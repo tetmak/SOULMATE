@@ -427,18 +427,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     try { session = await window.auth.getSession(); if (session && session.user) userId = session.user.id; } catch(e) {}
     if (!userId) { window.location.href = 'mystic_sign_up_screen.html'; return; }
 
+    // Supabase'den profili çek (tek doğru kaynak), localStorage sadece offline fallback
     var ud = null;
-    try { ud = JSON.parse(localStorage.getItem('numerael_user_data')||'null'); } catch(e){}
-    // localStorage boşsa Supabase'den çek (token refresh sonrası localStorage silinmiş olabilir)
-    if ((!ud || !ud.name) && userId && window.supabaseClient) {
-        try {
-            var profRes = await window.supabaseClient.from('profiles').select('*').eq('id', userId).single();
-            if (profRes.data && (profRes.data.full_name || profRes.data.name) && profRes.data.birth_date) {
-                ud = { name: profRes.data.full_name || profRes.data.name, birthDate: profRes.data.birth_date, gender: profRes.data.gender || 'unknown', avatarUrl: profRes.data.avatar_url || '' };
-                try { localStorage.setItem('numerael_user_data', JSON.stringify(ud)); } catch(e) {}
-                console.log('[CosmicMatch] Profil Supabase\'den kurtarıldı');
-            }
-        } catch(e) { console.warn('[CosmicMatch] Supabase profil fallback hatası:', e.message); }
+    try {
+        var profRes = await window.supabaseClient.from('profiles').select('*').eq('id', userId).single();
+        if (profRes.data && (profRes.data.full_name || profRes.data.name) && profRes.data.birth_date) {
+            ud = { name: profRes.data.full_name || profRes.data.name, birthDate: profRes.data.birth_date, gender: profRes.data.gender || 'unknown', avatarUrl: profRes.data.avatar_url || '' };
+            try { localStorage.setItem('numerael_user_data', JSON.stringify(ud)); } catch(e) {}
+        }
+    } catch(e) {
+        console.warn('[CosmicMatch] Supabase profil hatası, localStorage fallback:', e.message);
+        try { ud = JSON.parse(localStorage.getItem('numerael_user_data')||'null'); } catch(e2) {}
     }
     if (!ud || !ud.name) { window.location.href = 'data-ready_birth_form.html'; return; }
 

@@ -534,22 +534,23 @@
             window.location.reload(true);
         };
 
-        // ─── Kullanıcı Verisi ─────────────────────────────────
+        // ─── Kullanıcı Verisi (Supabase first, localStorage offline fallback) ─────
         var ud = null;
-        try { ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); } catch(e) {}
-        // localStorage boşsa Supabase'den kurtarmayı dene
-        if ((!ud || !ud.name) && window.supabaseClient) {
-            try {
-                var sess = await window.auth.getSession();
-                if (sess && sess.user) {
-                    var profRes = await window.supabaseClient.from('profiles').select('*').eq('id', sess.user.id).single();
-                    if (profRes.data && (profRes.data.full_name || profRes.data.name) && profRes.data.birth_date) {
-                        ud = { name: profRes.data.full_name || profRes.data.name, birthDate: profRes.data.birth_date, gender: profRes.data.gender || 'unknown', avatarUrl: profRes.data.avatar_url || '' };
-                        try { localStorage.setItem('numerael_user_data', JSON.stringify(ud)); } catch(e) {}
-                        console.log('[Home] Profil Supabase\'den kurtarıldı');
-                    }
+        try {
+            var sess = await window.auth.getSession();
+            if (sess && sess.user && window.supabaseClient) {
+                var profRes = await window.supabaseClient.from('profiles').select('*').eq('id', sess.user.id).single();
+                if (profRes.data && (profRes.data.full_name || profRes.data.name) && profRes.data.birth_date) {
+                    ud = { name: profRes.data.full_name || profRes.data.name, birthDate: profRes.data.birth_date, gender: profRes.data.gender || 'unknown', avatarUrl: profRes.data.avatar_url || '' };
+                    try { localStorage.setItem('numerael_user_data', JSON.stringify(ud)); } catch(e) {}
                 }
-            } catch(e) { console.warn('[Home] Supabase profil fallback hatası:', e.message); }
+            }
+        } catch(e) {
+            console.warn('[Home] Supabase profil hatası, localStorage fallback:', e.message);
+        }
+        // Offline fallback: Supabase'den çekemediyse localStorage'dan dene
+        if (!ud || !ud.name) {
+            try { ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); } catch(e) {}
         }
 
         var firstName = 'Alex';
