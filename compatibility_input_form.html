@@ -354,41 +354,39 @@ function setDateValue(prefix, dateStr) {
       localStorage.setItem('numerael_compat_history', JSON.stringify(history));
       
       // Partner'ı connections listesine de ekle (profile.js kullanarak)
+      // AWAIT ile bekle — yoksa sayfa navigate edince Supabase kaydı kaybolur
       if (window.profile && typeof window.profile.saveConnection === 'function') {
-        (async function() {
-          try {
-            // Önce duplicate kontrolü - Supabase'den aynı isim var mı?
-            var existingConns = await window.profile.getConnections();
-            var duplicate = null;
-            for (var di = 0; di < existingConns.length; di++) {
-              if (existingConns[di].fullName && existingConns[di].fullName.toLowerCase().trim() === p2Name.trim().toLowerCase()) {
-                duplicate = existingConns[di];
-                break;
-              }
+        try {
+          // Önce duplicate kontrolü - Supabase'den aynı isim var mı?
+          var existingConns = await window.profile.getConnections();
+          var duplicate = null;
+          for (var di = 0; di < existingConns.length; di++) {
+            if (existingConns[di].fullName && existingConns[di].fullName.toLowerCase().trim() === p2Name.trim().toLowerCase()) {
+              duplicate = existingConns[di];
+              break;
             }
-            
-            if (!duplicate) {
-              // Yeni kişi - ekle
-              await window.profile.saveConnection({
-                fullName: p2Name.trim(),
-                birthDate: p2Date,
-                relationship: 'Partner', // veya 'Compatibility Analysis'
-                notes: 'Uyumluluk analizinden eklendi'
-              });
-              console.log('[Compat Form] Partner connections listesine eklendi:', p2Name.trim());
-            } else {
-              // Zaten var - sadece birthDate'i güncelle (yoksa)
-              if (!duplicate.birthDate && p2Date) {
-                duplicate.birthDate = p2Date;
-                localStorage.setItem(storageKey, JSON.stringify(existingConns));
-                console.log('[Compat Form] Mevcut kişinin doğum tarihi güncellendi:', p2Name.trim());
-              }
-            }
-          } catch(err) {
-            console.log('[Compat Form] Connection kayıt hatası:', err);
           }
-        })();
+
+          if (!duplicate) {
+            // Yeni kişi - ekle
+            await window.profile.saveConnection({
+              fullName: p2Name.trim(),
+              birthDate: p2Date,
+              relationship: 'Partner',
+              notes: 'Uyumluluk analizinden eklendi'
+            });
+            console.log('[Compat Form] Partner connections listesine eklendi:', p2Name.trim());
+          } else {
+            console.log('[Compat Form] Partner zaten mevcut:', p2Name.trim());
+          }
+        } catch(err) {
+          console.log('[Compat Form] Connection kayıt hatası:', err);
+        }
       }
+
+      // Navigation — saveConnection tamamlandıktan sonra
+      e.stopPropagation(); // bubble phase handler'ı engelle
+      window.location.href = 'soul_mate_loading.html';
     } catch(err) {}
   }, true); // capture phase — navigasyon JS'inden önce çalışsın
 })();
