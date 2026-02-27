@@ -288,6 +288,12 @@ function setDateValue(prefix, dateStr) {
     var txt = (el.textContent || '') + (el.innerHTML || '');
     if (!txt.includes('Check Compatibility') && !txt.includes('Calculate')) return;
 
+    // CRITICAL: stopPropagation HEMEN çağrılmalı — await'ten önce!
+    // Aksi halde async handler await'te durduğunda event bubble phase'e geçer
+    // ve navigation handler sayfayı kapatır, saveConnection tamamlanamaz.
+    e.stopPropagation();
+    e.preventDefault();
+
     var p1Name = (document.getElementById('p1-name') || {}).value || '';
     var p1Date = getDateValue('p1-date');
     var p2Name = (document.getElementById('p2-name') || {}).value || '';
@@ -385,9 +391,11 @@ function setDateValue(prefix, dateStr) {
       }
 
       // Navigation — saveConnection tamamlandıktan sonra
-      e.stopPropagation(); // bubble phase handler'ı engelle
       window.location.href = 'soul_mate_loading.html';
-    } catch(err) {}
+    } catch(err) {
+      // Hata olsa bile navigate et
+      window.location.href = 'soul_mate_loading.html';
+    }
   }, true); // capture phase — navigasyon JS'inden önce çalışsın
 })();
 </script>
