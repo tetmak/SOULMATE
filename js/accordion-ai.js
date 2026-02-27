@@ -133,13 +133,15 @@
   // ─── Stil ───────────────────────────────────────────────────────
   var style = document.createElement('style');
   style.textContent = [
-    '.acc-loading { padding: 16px 20px; color: rgba(207,161,23,0.4); font-size: 13px;',
-    '  font-style: italic; border-top: 1px solid rgba(255,255,255,0.08);',
+    '.acc-loading { padding: 16px 20px; color: rgba(207,161,23,0.5); font-size: 13px;',
+    '  font-style: italic; border-top: 1px solid rgba(0,0,0,0.06);',
     '  animation: acc-pulse 1.5s infinite; }',
+    '.dark .acc-loading { border-top-color: rgba(255,255,255,0.08); }',
     '@keyframes acc-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.8} }',
-    '.acc-content { padding: 16px 20px; color: rgba(255,255,255,0.82); font-size: 14px;',
-    '  line-height: 1.85; border-top: 1px solid rgba(255,255,255,0.08);',
+    '.acc-content { padding: 16px 20px; color: rgba(30,30,30,0.82); font-size: 14px;',
+    '  line-height: 1.85; border-top: 1px solid rgba(0,0,0,0.06);',
     '  animation: acc-in 0.5s ease; }',
+    '.dark .acc-content { color: rgba(255,255,255,0.82); border-top-color: rgba(255,255,255,0.08); }',
     '.acc-content p { margin-bottom: 12px; }',
     '.acc-content p:last-child { margin-bottom: 0; }',
     '@keyframes acc-in { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }'

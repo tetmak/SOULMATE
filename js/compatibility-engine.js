@@ -371,6 +371,12 @@ YAZI KURALLARI:
     return ctx;
   }
 
+  // ─── THEME-AWARE TEXT COLORS ─────────────────────────────────
+  function _isDark() { return document.documentElement.classList.contains('dark'); }
+  function _textColor() { return _isDark() ? 'rgba(255,255,255,0.82)' : 'rgba(30,30,30,0.82)'; }
+  function _textMuted() { return _isDark() ? 'rgba(186,181,156,0.9)' : 'rgba(60,50,30,0.75)'; }
+  function _borderColor() { return _isDark() ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'; }
+
   // ─── LOADING HTML ────────────────────────────────────────────
   function loadingHTML(msg) {
     return '<div style="padding:20px;text-align:center;color:rgba(207,161,23,0.6);font-style:italic;font-size:13px;animation:compat-pulse 1.5s infinite;">✦ ' + (msg || 'Uyum analizi hazırlanıyor...') + '</div>';
@@ -563,14 +569,14 @@ YAZI KURALLARI:
       insightCard.innerHTML = '<div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary">auto_awesome</span><h3 class="text-lg font-bold">Kozmik Bağ</h3></div>' +
         '<div id="cosmic-ai-content">' +
           (_cosmicCached
-            ? '<div style="animation:compat-in 0.5s ease;color:rgba(186,181,156,0.9);">' + renderText(_cosmicCached) + '</div>'
+            ? '<div style="animation:compat-in 0.5s ease;color:' + _textMuted() + ';">' + renderText(_cosmicCached) + '</div>'
             : loadingHTML('Kozmik bağ hesaplanıyor...'))
         + '</div>';
       if (!_cosmicCached) {
         fetchCompatAnalysis('cosmic', ctx).then(function(text){
           var el = document.getElementById('cosmic-ai-content');
           if (!el) return;
-          if (text) el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:rgba(186,181,156,0.9);">' + renderText(text) + '</div>';
+          if (text) el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:' + _textMuted() + ';">' + renderText(text) + '</div>';
           else el.innerHTML = '<p style="color:#ef4444;font-size:13px;">Analiz yüklenemedi.</p>';
         });
       }
@@ -630,8 +636,8 @@ YAZI KURALLARI:
 
       var contentDiv = document.createElement('div');
       contentDiv.style.display = 'none';
-      contentDiv.style.borderTop = '1px solid rgba(255,255,255,0.08)';
-      contentDiv.style.color = 'rgba(255,255,255,0.85)';
+      contentDiv.style.borderTop = '1px solid ' + _borderColor();
+      contentDiv.style.color = _textColor();
       card.appendChild(contentDiv);
 
       var loaded = false;
@@ -737,7 +743,7 @@ YAZI KURALLARI:
         var el = document.getElementById('comm-ai-content');
         if (!el) return;
         if (text) {
-          el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:rgba(255,255,255,0.82);">' + renderText(text) + '</div>';
+          el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:' + _textColor() + ';">' + renderText(text) + '</div>';
         } else {
           el.innerHTML = '<p style="color:#ef4444;font-size:13px;">Analiz yüklenemedi.</p>';
         }

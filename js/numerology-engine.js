@@ -373,10 +373,10 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
             contentDiv.className = 'dynamic-accordion-content';
             contentDiv.style.display = 'none';
             contentDiv.style.padding = '16px 20px';
-            contentDiv.style.color = 'rgba(255,255,255,0.7)';
+            contentDiv.style.color = document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.7)' : 'rgba(30,30,30,0.8)';
             contentDiv.style.fontSize = '14px';
             contentDiv.style.lineHeight = '1.6';
-            contentDiv.style.borderTop = '1px solid rgba(255,255,255,0.08)';
+            contentDiv.style.borderTop = '1px solid ' + (document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)');
             card.appendChild(contentDiv);
 
             const btn = card.querySelector('button');
@@ -400,7 +400,7 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
                   <span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span>
                   ✦ Analiz hazırlanıyor...
                 </div>
-                <div class="ai-text" style="display:none; color:rgba(255,255,255,0.85); font-size:14px; line-height:1.85;"></div>
+                <div class="ai-text" style="display:none; color:${document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.85)' : 'rgba(30,30,30,0.82)'}; font-size:14px; line-height:1.85;"></div>
               </div>
             `;
 
