@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(supabase --version)",
+      "Bash(gh --version)",
+      "Bash(winget install --id GitHub.cli --accept-source-agreements --accept-package-agreements)",
+      "Bash(powershell -Command \"Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression\")",
+      "Bash(export PATH=\"$HOME/scoop/shims:$PATH\")",
+      "Bash(scoop bucket add supabase https://github.com/supabase/scoop-bucket.git)",
+      "Bash(scoop install supabase)",
+      "Bash(export PATH=\"/c/Program Files/GitHub CLI:$PATH\")",
+      "Bash(gh auth login --web --git-protocol https)",
+      "Bash(supabase login)",
+      "Bash(supabase login --token sbp_fe1370eedb5a88fd813cb7d7041a4c02e30c8ba8)",
+      "Bash(supabase projects list)",
+      "Bash(supabase db execute --project-ref cxkyyifqxbwidseofbgk -f \"C:/Users/lenovo/Documents/SOULMATE/.claude/worktrees/focused-gould/sql/compatibility_readings_migration.sql\")",
+      "Bash(node -e \":*)",
+      "Bash(git commit:*)",
+      "Bash(git config user.name)",
+      "Bash(git config user.email)",
+      "Bash(gh api user --jq '.login,.email,.name')",
+      "Bash(gh api user -q '.name')",
+      "Bash(gh api 'user/emails' -q '.[0].email')",
+      "Bash(git config user.name \"tetmak\")",
+      "Bash(git config user.email \"tetmak@users.noreply.github.com\")",
+      "Bash(git push)"
+    ]
+  }
+}
