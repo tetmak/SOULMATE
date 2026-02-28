@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="js/theme-engine.js"></script>
+<script src="js/i18n-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -63,7 +64,7 @@
 <div class="text-slate-700 dark:text-white flex size-12 shrink-0 items-center justify-center cursor-pointer" onclick="window.location.href='wheel_of_destiny.html'">
 <span class="material-symbols-outlined">close</span>
 </div>
-<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Fortune Granted</h2>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12" data-i18n="wheel_reward.header_title">Fortune Granted</h2>
 </div>
 <!-- Animated Background Layer (Sparks/Glow) -->
 <div class="absolute inset-0 pointer-events-none overflow-hidden">
@@ -78,8 +79,8 @@
 <div class="flex-1 flex flex-col items-center justify-center px-6 pb-20">
 <!-- Headline Text -->
 <div class="text-center mb-8">
-<h1 class="text-slate-900 dark:text-white tracking-light text-[32px] font-bold leading-tight pb-2">Destiny has Spoken</h1>
-<p class="text-primary text-sm font-medium uppercase tracking-widest">A Sacred Gift Uncovered</p>
+<h1 class="text-slate-900 dark:text-white tracking-light text-[32px] font-bold leading-tight pb-2" data-i18n="wheel_reward.title">Destiny has Spoken</h1>
+<p class="text-primary text-sm font-medium uppercase tracking-widest" data-i18n="wheel_reward.subtitle">A Sacred Gift Uncovered</p>
 </div>
 <!-- Reward Card -->
 <div class="w-full max-w-sm @container">
@@ -92,10 +93,10 @@
 </div>
 <!-- Reward Details -->
 <div class="flex w-full flex-col items-center justify-center gap-2 py-8 px-6 text-center">
-<p class="text-slate-900 dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]">3 Free Crystals</p>
+<p class="text-slate-900 dark:text-white text-2xl font-bold leading-tight tracking-[-0.015em]" data-i18n="wheel_reward.reward_title">3 Free Crystals</p>
 <div class="flex flex-col gap-2">
-<p class="text-primary/90 text-base font-semibold leading-normal">Deep Name Analysis Unlocked</p>
-<p class="text-[#bab29c] text-sm font-normal leading-relaxed max-w-[240px]">Use these to unlock your daily horoscope and reveal your spiritual path.</p>
+<p class="text-primary/90 text-base font-semibold leading-normal" data-i18n="wheel_reward.reward_subtitle">Deep Name Analysis Unlocked</p>
+<p class="text-[#bab29c] text-sm font-normal leading-relaxed max-w-[240px]" data-i18n="wheel_reward.reward_desc">Use these to unlock your daily horoscope and reveal your spiritual path.</p>
 </div>
 </div>
 </div>
@@ -104,9 +105,9 @@
 <div class="w-full max-w-sm mt-10">
 <div class="flex flex-col gap-4">
 <button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-5 flex-1 bg-primary text-[#181611] text-lg font-bold leading-normal tracking-[0.015em] hover:scale-[1.02] transition-transform active:scale-95 shadow-lg shadow-primary/20">
-<span class="truncate">Claim Reward</span>
+<span class="truncate" data-i18n="wheel_reward.btn_claim">Claim Reward</span>
 </button>
-<button class="text-[#bab29c] text-sm font-medium h-10 hover:text-white transition-colors">
+<button class="text-[#bab29c] text-sm font-medium h-10 hover:text-white transition-colors" data-i18n="wheel_reward.btn_vault">
                         Add to my spiritual vault
                     </button>
 </div>
@@ -118,31 +119,31 @@
 <div class="flex h-8 items-center justify-center">
 <span class="material-symbols-outlined">home</span>
 </div>
-<p class="text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]" data-i18n="wheel_reward.nav_home">Home</p>
 </a>
 <a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#bab29c]" href="daily_spiritual_guide.html">
 <div class="flex h-8 items-center justify-center">
 <span class="material-symbols-outlined">auto_awesome</span>
 </div>
-<p class="text-xs font-medium leading-normal tracking-[0.015em]">Readings</p>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]" data-i18n="wheel_reward.nav_readings">Readings</p>
 </a>
 <a class="flex flex-1 flex-col items-center justify-end gap-1 rounded-full text-primary" href="wheel_of_destiny.html">
 <div class="flex h-8 items-center justify-center">
 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">progress_activity</span>
 </div>
-<p class="text-xs font-medium leading-normal tracking-[0.015em]">Wheel</p>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]" data-i18n="wheel_reward.nav_wheel">Wheel</p>
 </a>
 <a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#bab29c]" href="premium_crystal_store.html">
 <div class="flex h-8 items-center justify-center">
 <span class="material-symbols-outlined">shopping_bag</span>
 </div>
-<p class="text-xs font-medium leading-normal tracking-[0.015em]">Store</p>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]" data-i18n="wheel_reward.nav_store">Store</p>
 </a>
 <a class="flex flex-1 flex-col items-center justify-end gap-1 text-[#bab29c]" href="profile_soul_journey.html">
 <div class="flex h-8 items-center justify-center">
 <span class="material-symbols-outlined">person</span>
 </div>
-<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]" data-i18n="wheel_reward.nav_profile">Profile</p>
 </a>
 </div>
 </div>

@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Arkadaşlık Dinamiği</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
@@ -167,7 +168,7 @@
         <div id="btn-back" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 class="text-slate-900 dark:text-white text-base font-bold leading-tight tracking-tight flex-1 text-center">Arkadaşlık Dinamiği</h2>
+        <h2 data-i18n="friendship.title" class="text-slate-900 dark:text-white text-base font-bold leading-tight tracking-tight flex-1 text-center">Arkadaşlık Dinamiği</h2>
         <div class="flex w-12 items-center justify-end">
             <button id="btn-share" class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-transparent text-slate-500 dark:text-white/50 hover:bg-friend-teal/10 transition-colors">
                 <span class="material-symbols-outlined">share</span>
@@ -217,7 +218,7 @@
         <!-- Bond Title -->
         <div class="text-center mt-5">
             <p id="bond-label" class="friend-gradient-text text-lg font-black tracking-tight">—</p>
-            <p id="bond-archetype" class="text-slate-500 dark:text-white/40 text-xs mt-1 uppercase tracking-widest">Arkadaşlık Bağı Analizi</p>
+            <p id="bond-archetype" data-i18n="friendship.bond_analysis" class="text-slate-500 dark:text-white/40 text-xs mt-1 uppercase tracking-widest">Arkadaşlık Bağı Analizi</p>
         </div>
     </div>
 
@@ -238,7 +239,7 @@
             </svg>
             <div class="flex flex-col items-center">
                 <span id="overall-score" class="text-4xl font-black friend-gradient-text">—</span>
-                <span class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Uyum</span>
+                <span data-i18n="friendship.harmony" class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Uyum</span>
             </div>
         </div>
     </div>
@@ -248,7 +249,7 @@
         <div class="grid grid-cols-2 gap-3">
             <div class="glass-friend rounded-2xl p-3.5">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Yaşam Yolu</span>
+                    <span data-i18n="friendship.life_path" class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Yaşam Yolu</span>
                     <span id="lp-score" class="text-friend-teal text-sm font-black">—</span>
                 </div>
                 <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
@@ -257,7 +258,7 @@
             </div>
             <div class="glass-friend rounded-2xl p-3.5">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Ruh Güdüsü</span>
+                    <span data-i18n="friendship.soul_urge" class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Ruh Güdüsü</span>
                     <span id="soul-score" class="text-friend-cyan text-sm font-black">—</span>
                 </div>
                 <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
@@ -266,7 +267,7 @@
             </div>
             <div class="glass-friend rounded-2xl p-3.5">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Kişilik</span>
+                    <span data-i18n="friendship.personality" class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Kişilik</span>
                     <span id="pers-score" class="text-friend-emerald text-sm font-black">—</span>
                 </div>
                 <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
@@ -275,7 +276,7 @@
             </div>
             <div class="glass-friend rounded-2xl p-3.5">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">İfade</span>
+                    <span data-i18n="friendship.expression" class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">İfade</span>
                     <span id="exp-score" class="text-primary text-sm font-black">—</span>
                 </div>
                 <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
@@ -297,14 +298,14 @@
                     <span class="material-symbols-outlined text-friend-teal">diversity_3</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">Arkadaşlık Enerjisi</p>
-                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Bağınızın özü ve temel dinamiği</p>
+                    <p data-i18n="friendship.energy_title" class="text-slate-900 dark:text-white font-bold text-[15px]">Arkadaşlık Enerjisi</p>
+                    <p data-i18n="friendship.energy_subtitle" class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Bağınızın özü ve temel dinamiği</p>
                 </div>
                 <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
-                    <p class="ai-loading">✦ Arkadaşlık enerjisi okunuyor...</p>
+                    <p class="ai-loading" data-i18n="friendship.loading_energy">✦ Arkadaşlık enerjisi okunuyor...</p>
                 </div>
             </div>
         </div>
@@ -316,14 +317,14 @@
                     <span class="material-symbols-outlined text-friend-cyan">forum</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">İletişim Dinamiği</p>
-                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Birbirinizi nasıl anlıyorsunuz</p>
+                    <p data-i18n="friendship.communication_title" class="text-slate-900 dark:text-white font-bold text-[15px]">İletişim Dinamiği</p>
+                    <p data-i18n="friendship.communication_subtitle" class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Birbirinizi nasıl anlıyorsunuz</p>
                 </div>
                 <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
-                    <p class="ai-loading">✦ İletişim uyumu hesaplanıyor...</p>
+                    <p class="ai-loading" data-i18n="friendship.loading_communication">✦ İletişim uyumu hesaplanıyor...</p>
                 </div>
             </div>
         </div>
@@ -335,14 +336,14 @@
                     <span class="material-symbols-outlined text-friend-emerald">bolt</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">Ortak Güç Alanları</p>
-                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Birlikte nerede parlıyorsunuz</p>
+                    <p data-i18n="friendship.strengths_title" class="text-slate-900 dark:text-white font-bold text-[15px]">Ortak Güç Alanları</p>
+                    <p data-i18n="friendship.strengths_subtitle" class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Birlikte nerede parlıyorsunuz</p>
                 </div>
                 <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
-                    <p class="ai-loading">✦ Güç alanları analiz ediliyor...</p>
+                    <p class="ai-loading" data-i18n="friendship.loading_strengths">✦ Güç alanları analiz ediliyor...</p>
                 </div>
             </div>
         </div>
@@ -354,14 +355,14 @@
                     <span class="material-symbols-outlined text-amber-400">warning</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">Dikkat Noktaları</p>
-                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Sürtüşme ve denge gereken alanlar</p>
+                    <p data-i18n="friendship.challenges_title" class="text-slate-900 dark:text-white font-bold text-[15px]">Dikkat Noktaları</p>
+                    <p data-i18n="friendship.challenges_subtitle" class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Sürtüşme ve denge gereken alanlar</p>
                 </div>
                 <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
-                    <p class="ai-loading">✦ Dikkat noktaları belirleniyor...</p>
+                    <p class="ai-loading" data-i18n="friendship.loading_challenges">✦ Dikkat noktaları belirleniyor...</p>
                 </div>
             </div>
         </div>
@@ -373,14 +374,14 @@
                     <span class="material-symbols-outlined text-primary">map</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-slate-900 dark:text-white font-bold text-[15px]">Yol Haritası</p>
-                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Bu arkadaşlığı güçlendirmek için rehber</p>
+                    <p data-i18n="friendship.roadmap_title" class="text-slate-900 dark:text-white font-bold text-[15px]">Yol Haritası</p>
+                    <p data-i18n="friendship.roadmap_subtitle" class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Bu arkadaşlığı güçlendirmek için rehber</p>
                 </div>
                 <span class="material-symbols-outlined text-slate-400 dark:text-white/25 accordion-icon transition-transform duration-300">expand_more</span>
             </button>
             <div class="accordion-content px-4 pb-4">
                 <div class="ai-content shimmer-bar rounded-xl p-4 min-h-[80px]">
-                    <p class="ai-loading">✦ Yol haritası çiziliyor...</p>
+                    <p class="ai-loading" data-i18n="friendship.loading_roadmap">✦ Yol haritası çiziliyor...</p>
                 </div>
             </div>
         </div>
@@ -392,7 +393,7 @@
         <div class="glass-card rounded-2xl p-5">
             <div class="flex items-center gap-2 mb-4">
                 <span class="material-symbols-outlined text-primary text-lg">analytics</span>
-                <p class="text-slate-900 dark:text-white font-bold text-sm">Numerolojik Karşılaştırma</p>
+                <p data-i18n="friendship.numerology_comparison" class="text-slate-900 dark:text-white font-bold text-sm">Numerolojik Karşılaştırma</p>
             </div>
             <div class="space-y-3">
                 <div class="flex items-center justify-between text-xs">
@@ -402,22 +403,22 @@
                 </div>
                 <div class="h-px bg-slate-200 dark:bg-white/5"></div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-slate-600 dark:text-white/50 w-28">Yaşam Yolu</span>
+                    <span data-i18n="friendship.tbl_life_path" class="text-slate-600 dark:text-white/50 w-28">Yaşam Yolu</span>
                     <span id="tbl-user-lp" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                     <span id="tbl-friend-lp" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-slate-600 dark:text-white/50 w-28">İfade</span>
+                    <span data-i18n="friendship.tbl_expression" class="text-slate-600 dark:text-white/50 w-28">İfade</span>
                     <span id="tbl-user-exp" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                     <span id="tbl-friend-exp" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-slate-600 dark:text-white/50 w-28">Ruh Güdüsü</span>
+                    <span data-i18n="friendship.tbl_soul_urge" class="text-slate-600 dark:text-white/50 w-28">Ruh Güdüsü</span>
                     <span id="tbl-user-soul" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                     <span id="tbl-friend-soul" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                    <span class="text-slate-600 dark:text-white/50 w-28">Kişilik</span>
+                    <span data-i18n="friendship.tbl_personality" class="text-slate-600 dark:text-white/50 w-28">Kişilik</span>
                     <span id="tbl-user-pers" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                     <span id="tbl-friend-pers" class="text-slate-900 dark:text-white font-black w-16 text-center">—</span>
                 </div>
@@ -854,7 +855,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     <div style="width:40px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin:0 auto 16px"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:0 4px">
-      <h3 style="font-size:17px;font-weight:800;color:white;font-family:Space Grotesk,sans-serif">Arkadaşlık Kartını Paylaş</h3>
+      <h3 data-i18n="friendship.share_title" style="font-size:17px;font-weight:800;color:white;font-family:Space Grotesk,sans-serif">Arkadaşlık Kartını Paylaş</h3>
       <button class="fd-close-btn" onclick="fdShareClose()"
         style="width:32px;height:32px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
     </div>
@@ -881,7 +882,7 @@ document.addEventListener('DOMContentLoaded', async function() {
       </div>
     </div>
 
-    <p class="fd-subtitle" style="text-align:center;color:rgba(255,255,255,0.3);font-size:13px;margin-bottom:20px;font-family:Space Grotesk,sans-serif">Arkadaşlık analizini paylaş</p>
+    <p class="fd-subtitle" data-i18n="friendship.share_subtitle" style="text-align:center;color:rgba(255,255,255,0.3);font-size:13px;margin-bottom:20px;font-family:Space Grotesk,sans-serif">Arkadaşlık analizini paylaş</p>
 
     <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
       <button onclick="fdShareAction('instagram')"
@@ -904,7 +905,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         style="width:100%;height:52px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:white;font-family:Space Grotesk,sans-serif">
         <div style="display:flex;align-items:center;gap:12px">
           <span class="material-symbols-outlined" style="font-size:22px;opacity:0.7;pointer-events:none">download</span>
-          <span style="font-weight:700;font-size:15px">Galeriye Kaydet</span>
+          <span data-i18n="friendship.save_to_gallery" style="font-weight:700;font-size:15px">Galeriye Kaydet</span>
         </div>
         <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
       </button>
@@ -916,14 +917,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         <div class="fd-circle-btn" style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">
           <span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.5)">content_copy</span>
         </div>
-        <span class="fd-circle-label" style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Space Grotesk,sans-serif">Kopyala</span>
+        <span class="fd-circle-label" data-i18n="friendship.copy" style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Space Grotesk,sans-serif">Kopyala</span>
       </button>
       <button onclick="fdShareAction('other')"
         style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer">
         <div class="fd-circle-btn" style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">
           <span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.5)">more_horiz</span>
         </div>
-        <span class="fd-circle-label" style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Space Grotesk,sans-serif">Diğer</span>
+        <span class="fd-circle-label" data-i18n="friendship.other" style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Space Grotesk,sans-serif">Diğer</span>
       </button>
     </div>
   </div>

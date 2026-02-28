@@ -6,6 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Numantic Çarkı - Kehanet</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap"
@@ -84,7 +85,7 @@
                 class="flex size-12 shrink-0 items-center justify-start cursor-pointer bg-transparent border-none">
                 <span class="material-symbols-outlined text-bronze">arrow_back_ios</span>
             </button>
-            <h2 class="text-slate-800 dark:text-parchment font-serif-title text-sm tracking-[0.2em] flex-1 text-center">Numantic Çarkı</h2>
+            <h2 data-i18n="wheel.title" class="text-slate-800 dark:text-parchment font-serif-title text-sm tracking-[0.2em] flex-1 text-center">Numantic Çarkı</h2>
             <div class="flex w-12 items-center justify-end">
                 <div class="flex items-center gap-1 bg-bronze/10 border border-bronze/30 px-3 py-1 rounded-sm">
                     <span class="material-symbols-outlined text-bronze text-sm">auto_awesome</span>
@@ -96,9 +97,9 @@
         <!-- Title -->
         <div class="flex-1 flex flex-col items-center justify-center relative px-4">
             <div class="z-10 text-center mb-10">
-                <h2 class="text-slate-800 dark:text-parchment font-serif-title text-4xl mb-1 dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Numantic
+                <h2 data-i18n="wheel.main_title" class="text-slate-800 dark:text-parchment font-serif-title text-4xl mb-1 dark:drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Numantic
                     Çarkı</h2>
-                <p class="text-bronze/80 font-serif-body italic text-lg">Kozmik hizanı keşfet</p>
+                <p data-i18n="wheel.subtitle" class="text-bronze/80 font-serif-body italic text-lg">Kozmik hizanı keşfet</p>
             </div>
 
             <!-- Wheel -->
@@ -138,14 +139,14 @@
                     <!-- Spin button -->
                     <div id="spin-btn" onclick="handleSpin()"
                         class="z-30 w-28 h-28 bg-gradient-to-b from-bronze to-burnished-gold rounded-full flex flex-col items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.6)] cursor-pointer hover:brightness-110 active:scale-95 border-[1px] border-parchment/30">
-                        <span
+                        <span data-i18n="wheel.spin"
                             class="text-abyss font-serif-title font-black tracking-[0.2em] text-xl leading-none">ÇEVİR</span>
                         <div class="w-8 h-[1px] bg-abyss/40 mt-1"></div>
                     </div>
                 </div>
             </div>
 
-            <p id="spin-hint" class="text-bronze/60 text-xs font-serif-body italic mb-8">Henüz çevirmedin...</p>
+            <p id="spin-hint" data-i18n="wheel.not_spun_yet" class="text-bronze/60 text-xs font-serif-body italic mb-8">Henüz çevirmedin...</p>
 
             <!-- Rewards -->
             <div class="w-full max-w-md bg-white/80 dark:bg-abyss/60 backdrop-blur-md rounded-lg p-6 border border-bronze/20 relative">
@@ -154,9 +155,9 @@
                 <div class="absolute bottom-0 left-0 w-4 h-4 border-b border-l border-bronze/50 rounded-bl-sm"></div>
                 <div class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-bronze/50 rounded-br-sm"></div>
                 <div class="flex items-center justify-between mb-5">
-                    <h3 class="text-slate-800 dark:text-parchment font-serif-title text-sm tracking-widest uppercase">Günün Kozmik Ödülleri
+                    <h3 data-i18n="wheel.daily_rewards" class="text-slate-800 dark:text-parchment font-serif-title text-sm tracking-widest uppercase">Günün Kozmik Ödülleri
                     </h3>
-                    <span class="text-[10px] text-bronze/60 italic font-serif-body">Günde 1 kez yenilenir</span>
+                    <span data-i18n="wheel.refreshes_daily" class="text-[10px] text-bronze/60 italic font-serif-body">Günde 1 kez yenilenir</span>
                 </div>
                 <div class="grid grid-cols-3 gap-4">
                     <div id="reward-1"
@@ -165,8 +166,8 @@
                             class="w-12 h-12 rounded-full border border-bronze/30 flex items-center justify-center mb-3">
                             <span class="material-symbols-outlined text-bronze text-2xl">workspace_premium</span>
                         </div>
-                        <span class="text-[11px] font-serif-body italic text-slate-700 dark:text-parchment/80 leading-tight">1 Gün Premium</span>
-                        <span class="text-[9px] text-bronze/50 mt-1">%15 şans</span>
+                        <span data-i18n="wheel.reward_1_day" class="text-[11px] font-serif-body italic text-slate-700 dark:text-parchment/80 leading-tight">1 Gün Premium</span>
+                        <span data-i18n="wheel.chance_15" class="text-[9px] text-bronze/50 mt-1">%15 şans</span>
                     </div>
                     <div id="reward-2"
                         class="flex flex-col items-center p-3 rounded-md bg-bronze/5 border border-bronze/10 text-center transition-all duration-500">
@@ -174,8 +175,8 @@
                             class="w-12 h-12 rounded-full border border-bronze/30 flex items-center justify-center mb-3">
                             <span class="material-symbols-outlined text-bronze text-2xl">diamond</span>
                         </div>
-                        <span class="text-[11px] font-serif-body italic text-slate-700 dark:text-parchment/80 leading-tight">5 Gün Premium</span>
-                        <span class="text-[9px] text-bronze/50 mt-1">%5 şans</span>
+                        <span data-i18n="wheel.reward_5_days" class="text-[11px] font-serif-body italic text-slate-700 dark:text-parchment/80 leading-tight">5 Gün Premium</span>
+                        <span data-i18n="wheel.chance_5" class="text-[9px] text-bronze/50 mt-1">%5 şans</span>
                     </div>
                     <div id="reward-3"
                         class="flex flex-col items-center p-3 rounded-md bg-bronze/5 border border-bronze/10 text-center transition-all duration-500">
@@ -183,8 +184,8 @@
                             class="w-12 h-12 rounded-full border border-bronze/30 flex items-center justify-center mb-3">
                             <span class="material-symbols-outlined text-bronze text-2xl">auto_awesome</span>
                         </div>
-                        <span class="text-[11px] font-serif-body italic text-slate-700 dark:text-parchment/80 leading-tight">10 Gün Premium</span>
-                        <span class="text-[9px] text-bronze/50 mt-1">%2 şans</span>
+                        <span data-i18n="wheel.reward_10_days" class="text-[11px] font-serif-body italic text-slate-700 dark:text-parchment/80 leading-tight">10 Gün Premium</span>
+                        <span data-i18n="wheel.chance_2" class="text-[9px] text-bronze/50 mt-1">%2 şans</span>
                     </div>
                 </div>
             </div>
@@ -193,7 +194,7 @@
                 <div
                     class="flex items-center gap-4 text-bronze/30 text-[10px] font-serif-title tracking-[0.4em] uppercase">
                     <span class="w-12 h-[0.5px] bg-gradient-to-r from-transparent to-bronze/30"></span>
-                    <span>Yıldızlar hizalanıyor</span>
+                    <span data-i18n="wheel.stars_aligning">Yıldızlar hizalanıyor</span>
                     <span class="w-12 h-[0.5px] bg-gradient-to-l from-transparent to-bronze/30"></span>
                 </div>
             </div>
@@ -210,11 +211,11 @@
         <p style="font-size:16px;color:#e8d5b5;opacity:0.8;font-family:Cormorant Garamond,serif;font-style:italic;text-align:center;padding:0 24px;"
             id="result-text"></p>
         <div id="premium-reward-banner" style="display:none;margin-top:16px;padding:12px 24px;background:linear-gradient(135deg,#bf953f,#fcf6ba,#b38728);border-radius:12px;text-align:center;">
-            <p style="font-size:11px;color:#02040a;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;font-family:Cinzel,serif;">⭐ Premium Ödülü Kazandın!</p>
+            <p data-i18n="wheel.premium_reward_won" style="font-size:11px;color:#02040a;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;font-family:Cinzel,serif;">⭐ Premium Ödülü Kazandın!</p>
             <p id="premium-reward-text" style="font-size:18px;font-weight:900;color:#02040a;font-family:Cinzel,serif;margin-top:4px;">5 Gün Premium</p>
         </div>
         <button onclick="closeResult()"
-            style="margin-top:24px;padding:14px 40px;background:linear-gradient(to bottom,#cd7f32,#a67c00);border-radius:9999px;color:#02040a;font-weight:700;font-family:Cinzel,serif;letter-spacing:0.15em;font-size:13px;cursor:pointer;border:none;">ÖDÜLÜ
+            style="margin-top:24px;padding:14px 40px;background:linear-gradient(to bottom,#cd7f32,#a67c00);border-radius:9999px;color:#02040a;font-weight:700;font-family:Cinzel,serif;letter-spacing:0.15em;font-size:13px;cursor:pointer;border:none;" data-i18n="wheel.claim_reward">ÖDÜLÜ
             AL</button>
     </div>
 

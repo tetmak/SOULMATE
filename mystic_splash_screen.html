@@ -6,6 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>NUMANTIC - Ethereal Celestial Splash Screen</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
@@ -34,8 +35,8 @@ body>*{position:relative;z-index:1}
         <div class="flex-grow"></div>
         <div class="w-full max-w-md px-10 pb-20 flex flex-col items-center gap-12 z-10">
             <div class="flex flex-col items-center text-center">
-                <h1 class="tracking-[0.8em] text-3xl font-light font-serif-thin ml-[0.8em]" style="color:#8b6914;text-shadow:0 1px 4px rgba(176,141,87,0.3)">NUMANTIC</h1>
-                <p class="text-[10px] tracking-[0.4em] uppercase pt-4 font-light" style="color:rgba(139,105,20,0.5)">Heavenly Insights</p>
+                <h1 class="tracking-[0.8em] text-3xl font-light font-serif-thin ml-[0.8em]" style="color:#8b6914;text-shadow:0 1px 4px rgba(176,141,87,0.3)" data-i18n="splash.brand_name">NUMANTIC</h1>
+                <p class="text-[10px] tracking-[0.4em] uppercase pt-4 font-light" style="color:rgba(139,105,20,0.5)" data-i18n="splash.brand_tagline">Heavenly Insights</p>
             </div>
             <div class="flex flex-col items-center gap-4 w-full max-w-[220px]">
                 <div class="w-full flex flex-col gap-3">
@@ -45,7 +46,7 @@ body>*{position:relative;z-index:1}
                             style="width:0%;background:rgba(176,141,87,0.6);box-shadow:0 0 8px rgba(176,141,87,0.4)"></div>
                     </div>
                     <p id="splash-text"
-                        class="text-[9px] font-light text-center uppercase tracking-[0.25em]" style="color:rgba(139,105,20,0.45)">Reading
+                        class="text-[9px] font-light text-center uppercase tracking-[0.25em]" style="color:rgba(139,105,20,0.45)" data-i18n="splash.msg_reading">Reading
                         the stars</p>
                 </div>
             </div>
@@ -55,7 +56,8 @@ body>*{position:relative;z-index:1}
         </div>
     </div>
     <script>
-        var messages = ['Reading the stars', 'Aligning the cosmos', 'Channeling your energy', 'Awakening your destiny'];
+        var _t = function(k, fb) { return (window.i18n && window.i18n.t) ? window.i18n.t(k) : fb; };
+        var messages = [_t('splash.msg_reading','Reading the stars'), _t('splash.msg_aligning','Aligning the cosmos'), _t('splash.msg_channeling','Channeling your energy'), _t('splash.msg_awakening','Awakening your destiny')];
         var progress = 0;
         var msgIndex = 0;
         var bar = document.getElementById('splash-bar');

@@ -6,6 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Name Numerology Breakdown</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link
@@ -74,7 +75,7 @@
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
         <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">
-            Name Analysis</h2>
+            <span data-i18n="breakdown1.header_title">Name Analysis</span></h2>
         <div class="flex w-12 items-center justify-end">
             <button
                 class="flex size-12 cursor-pointer items-center justify-center rounded-xl bg-transparent text-slate-900 dark:text-white">
@@ -156,12 +157,12 @@
                 </svg>
                 <div class="text-center z-10">
                     <p class="text-slate-500 dark:text-primary/70 text-sm font-bold tracking-widest uppercase">
-                        Expression</p>
+                        <span data-i18n="breakdown1.expression_label">Expression</span></p>
                     <h3 id="expression-number" class="text-slate-900 dark:text-white text-7xl font-bold py-1">32</h3>
                     <div class="bg-primary px-3 py-1 rounded-full text-background-dark text-sm font-bold">Number 5</div>
                 </div>
             </div>
-            <p class="mt-2 text-center text-primary/50 text-xs uppercase tracking-wider">Tap to see calculation</p>
+            <p class="mt-2 text-center text-primary/50 text-xs uppercase tracking-wider" data-i18n="breakdown1.tap_to_calculate">Tap to see calculation</p>
             <p id="expression-slogan" class="mt-2 text-center text-slate-500 dark:text-[#bab59c] text-sm px-8 italic">
                 "The Catalyst of Change and Freedom"
             </p>
@@ -180,14 +181,14 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1.5 flex-wrap">
-                                <h2 class="text-slate-900 dark:text-white text-lg font-bold">Soul Urge</h2>
+                                <h2 class="text-slate-900 dark:text-white text-lg font-bold" data-i18n="breakdown1.soul_urge_title">Soul Urge</h2>
                                 <span
-                                    class="px-1.5 py-0.5 rounded bg-primary text-background-dark text-[10px] font-black leading-none uppercase tracking-tighter shrink-0">Inner</span>
+                                    class="px-1.5 py-0.5 rounded bg-primary text-background-dark text-[10px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown1.soul_urge_badge">Inner</span>
                                 <span
                                     class="px-1.5 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">THE
                                     MYSTIC</span>
                             </div>
-                            <p class="text-slate-500 dark:text-[#bab59c] text-sm mt-0.5 line-clamp-1">A deep seeker of
+                            <p class="text-slate-500 dark:text-[#bab59c] text-sm mt-0.5 line-clamp-1" data-i18n="breakdown1.soul_urge_desc">A deep seeker of
                                 truth craving spiritual understanding.</p>
                         </div>
                     </div>
@@ -208,14 +209,14 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1.5 flex-wrap">
-                                <h2 class="text-slate-900 dark:text-white text-lg font-bold">Personality</h2>
+                                <h2 class="text-slate-900 dark:text-white text-lg font-bold" data-i18n="breakdown1.personality_title">Personality</h2>
                                 <span
-                                    class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 text-[10px] font-black leading-none uppercase tracking-tighter shrink-0">Outer</span>
+                                    class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 text-[10px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown1.personality_badge">Outer</span>
                                 <span
                                     class="px-1.5 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">THE
                                     SCHOLAR</span>
                             </div>
-                            <p class="text-slate-500 dark:text-[#bab59c] text-sm mt-0.5 line-clamp-1">Perceived as
+                            <p class="text-slate-500 dark:text-[#bab59c] text-sm mt-0.5 line-clamp-1" data-i18n="breakdown1.personality_desc">Perceived as
                                 reserved, analytical, and highly competent.</p>
                         </div>
                     </div>
@@ -237,14 +238,14 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1.5 flex-wrap">
-                                <h2 class="text-slate-900 dark:text-white text-lg font-bold">Life Path</h2>
+                                <h2 class="text-slate-900 dark:text-white text-lg font-bold" data-i18n="breakdown1.life_path_title">Life Path</h2>
                                 <span
-                                    class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-black leading-none uppercase tracking-tighter shrink-0">Destiny</span>
+                                    class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[10px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown1.life_path_badge">Destiny</span>
                                 <span
                                     class="px-1.5 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">THE
                                     NOMAD</span>
                             </div>
-                            <p class="text-slate-500 dark:text-[#bab59c] text-sm mt-0.5 line-clamp-1">Your destiny's
+                            <p class="text-slate-500 dark:text-[#bab59c] text-sm mt-0.5 line-clamp-1" data-i18n="breakdown1.life_path_desc">Your destiny's
                                 blueprint, guiding your ultimate purpose and growth.</p>
                         </div>
                     </div>
@@ -265,11 +266,11 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center gap-1.5 flex-wrap">
-                                <h2 class="text-slate-900 dark:text-white text-lg font-bold">Karmic Bond</h2>
-                                <span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 text-[10px] font-black leading-none uppercase tracking-tighter shrink-0">Debt</span>
+                                <h2 class="text-slate-900 dark:text-white text-lg font-bold" data-i18n="breakdown1.karmic_bond_title">Karmic Bond</h2>
+                                <span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 text-[10px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown1.karmic_bond_badge">Debt</span>
                                 <span id="karmic-badge" class="px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px] font-bold leading-none uppercase tracking-tight border border-red-500/20 shrink-0">—</span>
                             </div>
-                            <p class="text-slate-500 dark:text-[#bab59c] text-sm mt-0.5 line-clamp-1">Geçmiş yaşamdan gelen karmik borç ve dersin analizi.</p>
+                            <p class="text-slate-500 dark:text-[#bab59c] text-sm mt-0.5 line-clamp-1" data-i18n="breakdown1.karmic_bond_desc">Geçmiş yaşamdan gelen karmik borç ve dersin analizi.</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 ml-2 shrink-0">
@@ -288,7 +289,7 @@
                             <button id="btn-goto-master"
                                 style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#7f1313,#c0392b);color:white;border:none;border-radius:12px;padding:14px;font-size:13px;font-weight:800;letter-spacing:0.05em;cursor:pointer;text-transform:uppercase;">
                                 <span class="material-symbols-outlined" style="font-size:18px;">psychology</span>
-                                Numeroloji Ustasına Sor
+                                <span data-i18n="breakdown1.ask_master_btn">Numeroloji Ustasına Sor</span>
                             </button>
                         </div>
                     </div>
@@ -298,13 +299,13 @@
         <div class="grid grid-cols-2 gap-3 p-4">
             <div class="flex flex-col gap-2 rounded-xl bg-primary/5 border border-primary/10 p-4">
                 <span class="material-symbols-outlined text-primary">auto_awesome</span>
-                <p class="text-xs font-bold text-primary tracking-widest uppercase">Key Energy</p>
-                <p class="text-slate-900 dark:text-white text-base font-bold">Adaptability</p>
+                <p class="text-xs font-bold text-primary tracking-widest uppercase" data-i18n="breakdown1.key_energy_label">Key Energy</p>
+                <p class="text-slate-900 dark:text-white text-base font-bold" data-i18n="breakdown1.key_energy_value">Adaptability</p>
             </div>
             <div class="flex flex-col gap-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-white/5 p-4">
                 <span class="material-symbols-outlined text-slate-400">psychology</span>
-                <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">Focus</p>
-                <p class="text-slate-900 dark:text-white text-base font-bold">Intellect</p>
+                <p class="text-xs font-bold text-slate-400 tracking-widest uppercase" data-i18n="breakdown1.focus_label">Focus</p>
+                <p class="text-slate-900 dark:text-white text-base font-bold" data-i18n="breakdown1.focus_value">Intellect</p>
             </div>
         </div>
         <!-- ═══ CONTEXT-AWARE INSIGHT ═══ -->
@@ -313,17 +314,17 @@
                 <div class="p-4 border-b border-slate-200 dark:border-white/5">
                     <div class="flex items-center gap-2 mb-1">
                         <span class="material-symbols-outlined text-primary text-lg">neurology</span>
-                        <h3 class="text-slate-900 dark:text-white font-bold text-sm tracking-wide">Bağlamsal Analiz</h3>
+                        <h3 class="text-slate-900 dark:text-white font-bold text-sm tracking-wide" data-i18n="breakdown1.context_analysis_title">Bağlamsal Analiz</h3>
                         <span class="px-1.5 py-0.5 rounded bg-primary/15 text-primary text-[9px] font-black uppercase tracking-wider">AI</span>
                     </div>
-                    <p class="text-slate-500 dark:text-white/40 text-xs">Sayıların + zaman bağlamının birleşik yorumu</p>
+                    <p class="text-slate-500 dark:text-white/40 text-xs" data-i18n="breakdown1.context_analysis_desc">Sayıların + zaman bağlamının birleşik yorumu</p>
                 </div>
                 <!-- Period Tags -->
                 <div id="ctx-period-tags" class="flex flex-wrap gap-2 px-4 pt-3 pb-1" style="display:none;"></div>
                 <!-- Intensity Bar -->
                 <div id="ctx-intensity-bar" class="px-4 py-2" style="display:none;">
                     <div class="flex items-center justify-between mb-1">
-                        <span class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Yoğunluk</span>
+                        <span class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest" data-i18n="breakdown1.intensity_label">Yoğunluk</span>
                         <span id="ctx-intensity-val" class="text-primary text-xs font-bold"></span>
                     </div>
                     <div class="h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
@@ -334,7 +335,7 @@
                 <div id="ctx-modules" class="p-4 space-y-4">
                     <div class="flex items-center gap-2 py-6 justify-center" style="color:rgba(242,204,13,0.4);font-size:13px;">
                         <span class="material-symbols-outlined" style="animation:spin 2s linear infinite;font-size:16px;">autorenew</span>
-                        <span>Bağlamsal analiz hazırlanıyor...</span>
+                        <span data-i18n="breakdown1.context_loading">Bağlamsal analiz hazırlanıyor...</span>
                     </div>
                 </div>
             </div>
@@ -345,7 +346,7 @@
                 onclick="(function(){ var p = new URLSearchParams(window.location.search); var k = p.get('kisi'); var r = 'past_reading_archive_detail.html' + (k ? '?kisi=' + encodeURIComponent(k) : ''); if (window.premium && window.premium.isPremium()) { window.location.href = r; } else { window.location.href = 'premium_crystal_store.html?return=' + encodeURIComponent(r); } })();"
                 class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-background-dark py-4 rounded-xl font-bold text-lg transition-transform active:scale-95">
                 <span class="material-symbols-outlined">menu_book</span>
-                View Detailed Reading
+                <span data-i18n="breakdown1.view_detailed_reading">View Detailed Reading</span>
             </button>
         </div>
     </main>
@@ -368,8 +369,8 @@
                         <span class="material-symbols-outlined" style="color:white;font-size:20px;">psychology</span>
                     </div>
                     <div>
-                        <p style="color:white;font-weight:800;font-size:14px;letter-spacing:0.05em;">NUMEROLOJİ USTASI</p>
-                        <p style="color:rgba(255,255,255,0.4);font-size:11px;">Karmik sorularınızı yanıtlıyor</p>
+                        <p style="color:white;font-weight:800;font-size:14px;letter-spacing:0.05em;" data-i18n="breakdown1.master_modal_title">NUMEROLOJİ USTASI</p>
+                        <p style="color:rgba(255,255,255,0.4);font-size:11px;" data-i18n="breakdown1.master_modal_subtitle">Karmik sorularınızı yanıtlıyor</p>
                     </div>
                 </div>
                 <button onclick="closeMasterModal()" style="background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;">
@@ -380,7 +381,7 @@
             <div id="master-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;"></div>
             <!-- Input -->
             <div style="padding:12px 16px;background:#1a1711;border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;display:flex;gap:8px;">
-                <input id="master-input" type="text" placeholder="Karmik borcunuz hakkında sorun..."
+                <input id="master-input" type="text" placeholder="Karmik borcunuz hakkında sorun..." data-i18n-placeholder="breakdown1.master_input_placeholder"
                     style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 16px;color:white;font-size:14px;outline:none;font-family:'Space Grotesk',sans-serif;" />
                 <button id="master-send"
                     style="background:linear-gradient(135deg,#7f1313,#c0392b);border:none;border-radius:12px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">

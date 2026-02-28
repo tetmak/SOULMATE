@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Connections</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -65,7 +66,7 @@
             class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Connections</h2>
+        <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center" data-i18n="connections.title">Connections</h2>
         <button onclick="window.location.href='data-ready_birth_form.html'"
             class="flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-slate-500 dark:text-white/60">
             <span class="material-symbols-outlined">person_add</span>
@@ -77,9 +78,9 @@
         <div class="flex items-center justify-between mb-3">
             <h3 class="text-slate-900 dark:text-white text-sm font-bold tracking-tight flex items-center gap-2">
                 <span class="material-symbols-outlined text-base" style="color:#8b5cf6">notifications_active</span>
-                Bildirimler
+                <span data-i18n="connections.notifications">Bildirimler</span>
             </h3>
-            <button id="notif-inbox-mark-all" class="text-slate-400 dark:text-white/30 text-[10px] font-bold uppercase tracking-wider hover:text-slate-600 dark:hover:text-white/50 transition-colors">
+            <button id="notif-inbox-mark-all" class="text-slate-400 dark:text-white/30 text-[10px] font-bold uppercase tracking-wider hover:text-slate-600 dark:hover:text-white/50 transition-colors" data-i18n="connections.mark_all_read">
                 Tümünü okundu işaretle
             </button>
         </div>
@@ -89,7 +90,7 @@
     <!-- Soul Connections Yatay Scroll -->
     <div class="flex flex-col gap-2 pt-6 pb-2">
         <div class="flex items-center justify-between px-5">
-            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight">Soul Connections</h3>
+            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight" data-i18n="connections.soul_connections">Soul Connections</h3>
             <p class="text-slate-400 dark:text-white/30 text-xs" id="connections-count"></p>
         </div>
         <div id="connections-row" class="flex gap-4 overflow-x-auto px-5 hide-scrollbar pb-2">
@@ -99,7 +100,7 @@
                     class="size-16 rounded-full border-2 border-dashed border-primary/40 flex items-center justify-center text-primary/60 hover:border-primary/60 transition-colors">
                     <span class="material-symbols-outlined text-3xl">add</span>
                 </button>
-                <span class="text-slate-500 dark:text-white/40 text-xs font-medium">Ekle</span>
+                <span class="text-slate-500 dark:text-white/40 text-xs font-medium" data-i18n="connections.add">Ekle</span>
             </div>
         </div>
     </div>
@@ -107,7 +108,7 @@
     <!-- Match-based Connections -->
     <div id="match-connections-section" style="display:none" class="px-4 pb-2">
         <div class="flex items-center justify-between py-4">
-            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight">Match Connections</h3>
+            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight" data-i18n="connections.match_connections">Match Connections</h3>
             <span id="match-conn-count" class="text-slate-400 dark:text-white/30 text-xs"></span>
         </div>
         <div id="match-connections-list" class="flex flex-col gap-3"></div>
@@ -116,7 +117,7 @@
     <!-- Recent Analyses Liste -->
     <div class="flex-1 px-4">
         <div class="flex items-center justify-between py-4">
-            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight">Recent Analyses</h3>
+            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight" data-i18n="connections.recent_analyses">Recent Analyses</h3>
             <span id="analyses-count" class="text-slate-400 dark:text-white/30 text-xs"></span>
         </div>
         <div id="analyses-list" class="flex flex-col gap-3"></div>
@@ -124,9 +125,9 @@
         <!-- Boş durum -->
         <div id="empty-state" style="display:none"
             class="text-center py-16 text-slate-400 dark:text-white/25 text-sm italic">
-            Henüz analiz yapılmadı.<br/>
+            <span data-i18n="connections.no_analyses">Henüz analiz yapılmadı.</span><br/>
             <button onclick="window.location.href='data-ready_birth_form.html'"
-                class="mt-4 text-primary font-bold text-sm">+ Yeni Analiz Başlat</button>
+                class="mt-4 text-primary font-bold text-sm" data-i18n="connections.start_new_analysis">+ Yeni Analiz Başlat</button>
         </div>
     </div>
 
@@ -135,7 +136,7 @@
         <button onclick="window.location.href='data-ready_birth_form.html'"
             class="w-full bg-primary text-[#181711] py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
             <span class="material-symbols-outlined">person_add</span>
-            New Analysis for Someone
+            <span data-i18n="connections.new_analysis_btn">New Analysis for Someone</span>
         </button>
     </div>
 </div>

@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Numantic - Onboarding</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
@@ -110,9 +111,9 @@
                         </div>
                         <div class="w-full max-w-md text-center space-y-4 pb-4">
                             <h1 class="text-slate-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight">
-                                Kozmik <br /><span class="text-primary">Amacını Keşfet</span>
+                                <span data-i18n="onboarding.slide1_title_1">Kozmik</span> <br /><span class="text-primary" data-i18n="onboarding.slide1_title_2">Amacını Keşfet</span>
                             </h1>
-                            <p class="text-slate-600 dark:text-white/70 text-base font-normal leading-relaxed px-4">
+                            <p class="text-slate-600 dark:text-white/70 text-base font-normal leading-relaxed px-4" data-i18n="onboarding.slide1_desc">
                                 Doğum tarihin ve ismindeki gizli titreşimleri keşfederek ruhsal yolculuğuna ışık tut.
                             </p>
                         </div>
@@ -147,9 +148,9 @@
                         <div class="w-full max-w-md text-center space-y-4 pb-4">
                             <h2 class="text-primary tracking-[0.5em] text-2xl font-light ml-[0.5em]" style="font-family:'Cinzel',serif">NuMatch</h2>
                             <h1 class="text-slate-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight">
-                                Ruh Eşini Bul <br /><span class="text-primary">Yeni Ruhsal Bağlarını Keşfet</span>
+                                <span data-i18n="onboarding.slide2_title_1">Ruh Eşini Bul</span> <br /><span class="text-primary" data-i18n="onboarding.slide2_title_2">Yeni Ruhsal Bağlarını Keşfet</span>
                             </h1>
-                            <p class="text-slate-600 dark:text-white/70 text-base font-normal leading-relaxed px-4">
+                            <p class="text-slate-600 dark:text-white/70 text-base font-normal leading-relaxed px-4" data-i18n="onboarding.slide2_desc">
                                 Numerolojik uyumluluk analizi ile aşk, arkadaşlık ve iş ilişkilerindeki kozmik bağlarını keşfet.
                             </p>
                         </div>
@@ -184,9 +185,9 @@
                         <div class="w-full max-w-md text-center space-y-4 pb-4">
                             <h2 class="text-primary tracking-[0.5em] text-2xl font-light ml-[0.5em]" style="font-family:'Cinzel',serif">NuSphere</h2>
                             <h1 class="text-slate-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight">
-                                Günlük <br /><span class="text-primary">Kozmik Rehberin</span>
+                                <span data-i18n="onboarding.slide3_title_1">Günlük</span> <br /><span class="text-primary" data-i18n="onboarding.slide3_title_2">Kozmik Rehberin</span>
                             </h1>
-                            <p class="text-slate-600 dark:text-white/70 text-base font-normal leading-relaxed px-4">
+                            <p class="text-slate-600 dark:text-white/70 text-base font-normal leading-relaxed px-4" data-i18n="onboarding.slide3_desc">
                                 Her gün kişisel enerji takvimine göre en doğru kararları al ve evrenin sana sunduğu fırsatları yakala.
                             </p>
                         </div>
@@ -221,9 +222,9 @@
                         <div class="w-full max-w-md text-center space-y-4 pb-4">
                             <h2 class="text-primary tracking-[0.5em] text-2xl font-light ml-[0.5em]" style="font-family:'Cinzel',serif">NuFest</h2>
                             <h1 class="text-slate-900 dark:text-white tracking-tight text-[32px] font-bold leading-tight">
-                                Niyetini Evrene <br /><span class="text-primary">Gönder</span>
+                                <span data-i18n="onboarding.slide4_title_1">Niyetini Evrene</span> <br /><span class="text-primary" data-i18n="onboarding.slide4_title_2">Gönder</span>
                             </h1>
-                            <p class="text-slate-600 dark:text-white/70 text-base font-normal leading-relaxed px-4">
+                            <p class="text-slate-600 dark:text-white/70 text-base font-normal leading-relaxed px-4" data-i18n="onboarding.slide4_desc">
                                 Manifest portalında niyetlerini belirle, kozmik enerjiye bırak ve toplulukla birlikte gerçekleştir.
                             </p>
                         </div>
@@ -245,18 +246,18 @@
                 <div class="flex flex-col gap-2">
                     <button id="btn-next"
                         class="flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-8 bg-primary text-background-dark text-lg font-bold leading-normal tracking-wide glow-effect transition-transform active:scale-95">
-                        <span id="btn-next-text" class="truncate">Devam Et</span>
+                        <span id="btn-next-text" class="truncate" data-i18n="onboarding.btn_continue">Devam Et</span>
                         <span class="material-symbols-outlined ml-2 text-xl font-bold">arrow_forward</span>
                     </button>
                     <div class="flex items-center justify-between w-full h-10">
-                        <button id="theme-switch" onclick="if(window.themeEngine){window.themeEngine.toggle();var i=document.getElementById('theme-sw-icon');var l=document.getElementById('theme-sw-label');if(i)i.textContent=window.themeEngine.isDark()?'dark_mode':'light_mode';if(l)l.textContent=window.themeEngine.isDark()?'Koyu Mod':'Açık Mod';}"
+                        <button id="theme-switch" onclick="if(window.themeEngine){window.themeEngine.toggle();var i=document.getElementById('theme-sw-icon');var l=document.getElementById('theme-sw-label');if(i)i.textContent=window.themeEngine.isDark()?'dark_mode':'light_mode';if(l){var dk=(window.i18n&&window.i18n.t)?window.i18n.t('onboarding.theme_dark'):'Koyu Mod';var lt=(window.i18n&&window.i18n.t)?window.i18n.t('onboarding.theme_light'):'Açık Mod';l.textContent=window.themeEngine.isDark()?dk:lt;l.setAttribute('data-i18n',window.themeEngine.isDark()?'onboarding.theme_dark':'onboarding.theme_light');}}"
                             class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-white/10 border border-slate-200 dark:border-white/10 transition-all active:scale-95">
                             <span id="theme-sw-icon" class="material-symbols-outlined text-slate-400 dark:text-white/50" style="font-size:14px;font-variation-settings:'FILL' 1">light_mode</span>
-                            <span id="theme-sw-label" class="text-[10px] font-semibold text-slate-400 dark:text-white/50">Açık Mod</span>
+                            <span id="theme-sw-label" class="text-[10px] font-semibold text-slate-400 dark:text-white/50" data-i18n="onboarding.theme_light">Açık Mod</span>
                         </button>
                         <button id="btn-login"
                             class="flex cursor-pointer items-center justify-center text-slate-500 dark:text-white/50 text-sm font-medium hover:text-slate-900 dark:hover:text-white transition-colors">
-                            <span>Giriş yap</span>
+                            <span data-i18n="onboarding.btn_login">Giriş yap</span>
                         </button>
                     </div>
                 </div>
@@ -306,9 +307,13 @@
 
             function updateButton() {
                 if (currentSlide === totalSlides - 1) {
-                    btnNextText.textContent = 'Başla';
+                    var startText = (window.i18n && window.i18n.t) ? window.i18n.t('onboarding.btn_start') : 'Başla';
+                    btnNextText.textContent = startText;
+                    btnNextText.setAttribute('data-i18n', 'onboarding.btn_start');
                 } else {
-                    btnNextText.textContent = 'Devam Et';
+                    var contText = (window.i18n && window.i18n.t) ? window.i18n.t('onboarding.btn_continue') : 'Devam Et';
+                    btnNextText.textContent = contText;
+                    btnNextText.setAttribute('data-i18n', 'onboarding.btn_continue');
                 }
             }
 
@@ -433,7 +438,12 @@
                 var swIcon = document.getElementById('theme-sw-icon');
                 var swLabel = document.getElementById('theme-sw-label');
                 if (swIcon) swIcon.textContent = window.themeEngine.isDark() ? 'dark_mode' : 'light_mode';
-                if (swLabel) swLabel.textContent = window.themeEngine.isDark() ? 'Koyu Mod' : 'Açık Mod';
+                if (swLabel) {
+                    var darkLabel = (window.i18n && window.i18n.t) ? window.i18n.t('onboarding.theme_dark') : 'Koyu Mod';
+                    var lightLabel = (window.i18n && window.i18n.t) ? window.i18n.t('onboarding.theme_light') : 'Açık Mod';
+                    swLabel.textContent = window.themeEngine.isDark() ? darkLabel : lightLabel;
+                    swLabel.setAttribute('data-i18n', window.themeEngine.isDark() ? 'onboarding.theme_dark' : 'onboarding.theme_light');
+                }
             }
         })();
     </script>

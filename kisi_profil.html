@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Kişi Profili</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -85,7 +86,7 @@
 
     <!-- Kişisel Analiz Kartı -->
     <div class="px-4 pb-4 fade-in" style="animation-delay:0.15s">
-        <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3">Kişilik Analizi</p>
+        <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3" data-i18n="kisi.personality_analysis">Kişilik Analizi</p>
 
         <!-- İsim Analizi (Deep Insight) -->
         <div id="btn-name-analysis"
@@ -95,7 +96,7 @@
             </div>
             <div class="flex-1 min-w-0">
                 <p id="name-analysis-label" class="text-slate-900 dark:text-white font-bold truncate">— Deep Insight</p>
-                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Pisagor · Expression · Soul Urge · Life Path</p>
+                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5" data-i18n="kisi.deep_insight_desc">Pisagor · Expression · Soul Urge · Life Path</p>
             </div>
             <div class="shrink-0 flex items-center gap-2">
                 <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">OPEN</span>
@@ -111,8 +112,8 @@
                 <span class="material-symbols-outlined" style="color:#2dd4bf;">handshake</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p id="friendship-label" class="text-slate-900 dark:text-white font-bold truncate">Arkadaşlık Dinamiği</p>
-                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Seninle arasındaki uyum · Yol haritası · Analiz</p>
+                <p id="friendship-label" class="text-slate-900 dark:text-white font-bold truncate" data-i18n="kisi.friendship_dynamics">Arkadaşlık Dinamiği</p>
+                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5" data-i18n="kisi.friendship_desc">Seninle arasındaki uyum · Yol haritası · Analiz</p>
             </div>
             <div class="shrink-0 flex items-center gap-2">
                 <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#c084fc;background:rgba(139,92,246,0.15);">PRO</span>
@@ -128,8 +129,8 @@
                 <span class="material-symbols-outlined" style="color:#f472b6;">favorite</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p id="soulmate-label" class="text-slate-900 dark:text-white font-bold truncate">Uyumluluk Analizi</p>
-                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Romantik uyum · Karmik bağ · Ruh eşi skoru</p>
+                <p id="soulmate-label" class="text-slate-900 dark:text-white font-bold truncate" data-i18n="kisi.compatibility_analysis">Uyumluluk Analizi</p>
+                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5" data-i18n="kisi.compatibility_desc">Romantik uyum · Karmik bağ · Ruh eşi skoru</p>
             </div>
             <div class="shrink-0 flex items-center gap-2">
                 <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#f472b6;background:rgba(244,114,182,0.15);">SOUL</span>
