@@ -196,8 +196,21 @@
     }
 
     // ─── KULLANIM LİMİTLERİ (Supabase + localStorage cache) ─────
-    function getUsageKey(f) { return 'numerael_usage_' + f + '_' + new Date().toISOString().slice(0, 7); }
-    function getDailyUsageKey(f) { return 'numerael_usage_' + f + '_' + new Date().toISOString().slice(0, 10); }
+    // userId'yi senkron olarak localStorage'dan oku (her hesap kendi sayacını görsün)
+    function _getUidSync() {
+        try {
+            var raw = localStorage.getItem('numerael-auth-token');
+            if (raw) {
+                var parsed = JSON.parse(raw);
+                var u = parsed && parsed.user ? parsed.user : (parsed && parsed.session && parsed.session.user ? parsed.session.user : null);
+                if (u && u.id) return u.id.slice(0, 8); // kısa uid yeterli
+            }
+        } catch(e) {}
+        return 'anon';
+    }
+
+    function getUsageKey(f) { return 'numerael_usage_' + _getUidSync() + '_' + f + '_' + new Date().toISOString().slice(0, 7); }
+    function getDailyUsageKey(f) { return 'numerael_usage_' + _getUidSync() + '_' + f + '_' + new Date().toISOString().slice(0, 10); }
     function getUsageCount(f) { try { return parseInt(localStorage.getItem(getUsageKey(f)) || '0'); } catch(e) { return 0; } }
     function getDailyUsageCount(f) { try { return parseInt(localStorage.getItem(getDailyUsageKey(f)) || '0'); } catch(e) { return 0; } }
 
@@ -243,15 +256,16 @@
                 .eq('user_id', session.user.id)
                 .in('period', [monthPeriod, dayPeriod]);
             if (res.data) {
+                var uid = _getUidSync();
                 res.data.forEach(function(row) {
-                    var key = 'numerael_usage_' + row.feature + '_' + row.period;
+                    var key = 'numerael_usage_' + uid + '_' + row.feature + '_' + row.period;
                     var localCount = parseInt(localStorage.getItem(key) || '0');
                     // Supabase'deki sayaç daha yüksekse güncelle
                     if (row.count > localCount) {
                         try { localStorage.setItem(key, row.count.toString()); } catch(e) {}
                     }
                 });
-                console.log('[Premium] Kullanım sayaçları Supabase\'den yüklendi');
+                console.log('[Premium] Kullanım sayaçları Supabase\'den yüklendi (uid: ' + uid + ')');
             }
         } catch(e) { /* sessiz hata */ }
     }
