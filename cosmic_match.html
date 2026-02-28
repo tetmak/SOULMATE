@@ -718,6 +718,35 @@ document.addEventListener('DOMContentLoaded', async function() {
                 document.getElementById('no-credits-msg').style.display = 'none';
                 document.getElementById('premium-paywall').style.display = 'none';
                 document.getElementById('revealed-info').style.display = 'flex';
+
+                // Bağlantı durumuna göre butonu güncelle
+                (async function() {
+                    try {
+                        var connectBtn = document.getElementById('btn-connect-revealed');
+                        var connectIcon = connectBtn.querySelector('span');
+                        var matchedUid = m.user_id;
+                        if (!matchedUid || !window.connectionEngine) return;
+
+                        // Önce reset
+                        connectBtn.disabled = false;
+                        connectIcon.textContent = 'person_add';
+                        connectIcon.style.color = '';
+
+                        var connected = await window.connectionEngine.areConnected(userId, matchedUid);
+                        if (connected) {
+                            connectIcon.textContent = 'how_to_reg';
+                            connectIcon.style.color = '#10b981';
+                            connectBtn.disabled = true;
+                            return;
+                        }
+                        var pending = await window.connectionEngine.hasActiveRequest(userId, matchedUid);
+                        if (pending) {
+                            connectIcon.textContent = 'schedule';
+                            connectIcon.style.color = '#f59e0b';
+                            connectBtn.disabled = true;
+                        }
+                    } catch(e) {}
+                })();
             } else {
                 document.getElementById('match-card').classList.add('match-card-blur');
                 document.getElementById('match-card').classList.remove('match-card-revealed');
