@@ -688,6 +688,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('no-credits-msg').style.display = 'none';
         document.getElementById('premium-paywall').style.display = 'none';
         document.getElementById('revealed-info').style.display = 'flex';
+        // Yeni reveal — henüz bağlantı yok, mesaj butonu gizle
+        document.getElementById('btn-msg-revealed').style.display = 'none';
     }
 
     function maskName(name) {
@@ -758,24 +760,29 @@ document.addEventListener('DOMContentLoaded', async function() {
                 document.getElementById('premium-paywall').style.display = 'none';
                 document.getElementById('revealed-info').style.display = 'flex';
 
-                // Bağlantı durumuna göre butonu güncelle
+                // Bağlantı durumuna göre butonları güncelle
                 (async function() {
                     try {
                         var connectBtn = document.getElementById('btn-connect-revealed');
+                        var msgBtn = document.getElementById('btn-msg-revealed');
                         var connectIcon = connectBtn.querySelector('span');
                         var matchedUid = m.user_id;
                         if (!matchedUid || !window.connectionEngine) return;
 
-                        // Önce reset
+                        // Önce reset — mesaj butonunu gizle, connect göster
                         connectBtn.disabled = false;
+                        connectBtn.style.display = 'flex';
                         connectIcon.textContent = 'person_add';
                         connectIcon.style.color = '';
+                        msgBtn.style.display = 'none';
 
                         var connected = await window.connectionEngine.areConnected(userId, matchedUid);
                         if (connected) {
                             connectIcon.textContent = 'how_to_reg';
                             connectIcon.style.color = '#10b981';
                             connectBtn.disabled = true;
+                            // Bağlantı varsa mesaj butonunu göster
+                            msgBtn.style.display = 'flex';
                             return;
                         }
                         var pending = await window.connectionEngine.hasActiveRequest(userId, matchedUid);
