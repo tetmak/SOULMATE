@@ -52,10 +52,16 @@
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
         <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Soul Journey</h2>
-        <button onclick="window.location.href='app_settings_preferences.html'"
-            class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
-            <span class="material-symbols-outlined text-slate-500 dark:text-white/60">settings</span>
-        </button>
+        <div class="flex items-center gap-1">
+            <button id="btn-theme-profile"
+                class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
+                <span id="theme-icon-profile" class="material-symbols-outlined text-slate-500 dark:text-white/60">light_mode</span>
+            </button>
+            <button onclick="window.location.href='app_settings_preferences.html'"
+                class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
+                <span class="material-symbols-outlined text-slate-500 dark:text-white/60">settings</span>
+            </button>
+        </div>
     </header>
 
     <!-- Profile Hero -->
@@ -611,6 +617,18 @@
             badgeEl.textContent = remaining;
         }
     }
+})();
+
+// ─── Theme Toggle ─────────────────────────────────────
+(function() {
+    var btn = document.getElementById('btn-theme-profile');
+    var icon = document.getElementById('theme-icon-profile');
+    if (!btn || !icon || !window.themeEngine) return;
+    icon.textContent = window.themeEngine.isDark() ? 'dark_mode' : 'light_mode';
+    btn.addEventListener('click', function() {
+        window.themeEngine.toggle();
+        icon.textContent = window.themeEngine.isDark() ? 'dark_mode' : 'light_mode';
+    });
 })();
 </script>
 <script src="js/notification-engine.js"></script>
