@@ -304,7 +304,7 @@
             { name: 'Polatl\u0131', lat: 39.58, lng: 32.15 },
             { name: 'Pursaklar', lat: 40.05, lng: 32.90 },
             { name: 'Sincan', lat: 39.97, lng: 32.58 },
-            { name: '\u015eereflikochisar', lat: 38.94, lng: 33.54 },
+            { name: 'Şereflikoçhisar', lat: 38.94, lng: 33.54 },
             { name: 'Yenimahalle', lat: 39.97, lng: 32.81 },
         ]},
         { name: 'Antalya', districts: [
