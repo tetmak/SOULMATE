@@ -370,7 +370,24 @@
     <div class="pt-4 fade-up" style="animation-delay:0.15s">
         <div class="flex justify-between items-center mb-3 px-1">
             <h2 class="text-base font-bold text-gray-800 dark:text-[#E2D1C3]">Kozmik Harita</h2>
-            <span class="text-text-muted text-xs" id="map-info"></span>
+            <div class="flex items-center gap-2">
+                <span class="text-text-muted text-xs" id="map-info"></span>
+                <button id="btn-change-city" class="flex items-center gap-1 text-xs text-primary font-bold px-2 py-1 rounded-lg bg-primary/10 border border-primary/20 transition active:scale-95">
+                    <span class="material-symbols-outlined" style="font-size:14px">edit_location_alt</span>
+                    <span id="btn-city-label">Şehir</span>
+                </button>
+            </div>
+        </div>
+        <!-- Şehir değiştirme paneli -->
+        <div id="city-change-panel" style="display:none" class="mb-3 glass-light dark:glass rounded-2xl p-3 flex items-center gap-2">
+            <span class="material-symbols-outlined text-primary text-lg">location_on</span>
+            <select id="city-change-select" class="flex-1 py-2 px-3 rounded-xl text-sm font-medium bg-white/10 dark:bg-white/5 border border-gray-200 dark:border-primary/20 text-gray-800 dark:text-[#E2D1C3] focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none" style="background-image:url('data:image/svg+xml;utf8,<svg fill=\&quot;%23C47C20\&quot; viewBox=\&quot;0 0 24 24\&quot; xmlns=\&quot;http://www.w3.org/2000/svg\&quot;><path d=\&quot;M7 10l5 5 5-5z\&quot;/></svg>');background-repeat:no-repeat;background-position:right 10px center;background-size:18px">
+                <option value="">— İl seçin —</option>
+            </select>
+            <button id="btn-save-city" class="px-3 py-2 rounded-xl text-xs font-bold text-white bg-primary transition active:scale-95">Kaydet</button>
+            <button id="btn-cancel-city" class="px-2 py-2 rounded-xl text-xs text-text-muted transition active:scale-95">
+                <span class="material-symbols-outlined" style="font-size:18px">close</span>
+            </button>
         </div>
         <div class="relative w-full rounded-3xl overflow-hidden shadow-lg border border-gray-200 dark:border-primary/20" style="height:220px">
             <div id="cosmic-map" style="width:100%;height:100%;z-index:1"></div>
@@ -905,7 +922,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Harita — Leaflet.js ile şehir bazlı
     var _cosmicMap = null;
+    var _lastDailyMatches = [];
     function renderMap(dailyMatches) {
+        _lastDailyMatches = dailyMatches || [];
         var mapEl = document.getElementById('cosmic-map');
         var mapEmpty = document.getElementById('map-empty');
         var mapInfo = document.getElementById('map-info');
@@ -1008,6 +1027,73 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (_cosmicMap) _cosmicMap.invalidateSize();
         }, 300);
     }
+
+    // ─── Şehir Değiştirme ─────────────────────────────────
+    (function() {
+        var changeBtn = document.getElementById('btn-change-city');
+        var panel = document.getElementById('city-change-panel');
+        var select = document.getElementById('city-change-select');
+        var saveBtn = document.getElementById('btn-save-city');
+        var cancelBtn = document.getElementById('btn-cancel-city');
+        var cityLabel = document.getElementById('btn-city-label');
+        if (!changeBtn || !panel || !select) return;
+
+        // Select'i doldur
+        if (window.TURKISH_CITIES) {
+            window.TURKISH_CITIES.forEach(function(c) {
+                var opt = document.createElement('option');
+                opt.value = c.name;
+                opt.textContent = c.name;
+                select.appendChild(opt);
+            });
+        }
+
+        // Mevcut şehri göster
+        function loadCurrentCity() {
+            window.supabaseClient.from('discovery_profiles')
+                .select('city')
+                .eq('user_id', userId)
+                .maybeSingle()
+                .then(function(res) {
+                    if (res.data && res.data.city) {
+                        cityLabel.textContent = res.data.city;
+                        select.value = res.data.city;
+                    }
+                });
+        }
+        loadCurrentCity();
+
+        // Panel aç/kapa
+        changeBtn.addEventListener('click', function() {
+            var isOpen = panel.style.display !== 'none';
+            panel.style.display = isOpen ? 'none' : 'flex';
+        });
+        cancelBtn.addEventListener('click', function() {
+            panel.style.display = 'none';
+        });
+
+        // Kaydet
+        saveBtn.addEventListener('click', async function() {
+            var newCity = select.value;
+            if (!newCity) return;
+            saveBtn.disabled = true;
+            saveBtn.textContent = '...';
+            var ok = await window.discovery.updateCity(userId, newCity);
+            if (ok) {
+                cityLabel.textContent = newCity;
+                panel.style.display = 'none';
+                // Haritayı yenile — kendi marker'ı güncellensin
+                if (_cosmicMap) {
+                    _cosmicMap.eachLayer(function(layer) {
+                        if (layer instanceof L.Marker) _cosmicMap.removeLayer(layer);
+                    });
+                }
+                renderMap(_lastDailyMatches || []);
+            }
+            saveBtn.disabled = false;
+            saveBtn.textContent = 'Kaydet';
+        });
+    })();
 
     // History — Sacred Transitions stili
     function addRevealedToHistory(item, m, isPrem) {
