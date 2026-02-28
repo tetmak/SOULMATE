@@ -571,7 +571,16 @@
         var nameEl = document.getElementById('home-user-name');
         if (nameEl) nameEl.textContent = firstName;
 
-        if (!ud || !ud.name || !ud.birthDate) return;
+        if (!ud || !ud.name || !ud.birthDate) {
+            // Profil eksik — birth form'a yönlendir (sonsuz döngü koruması)
+            var _rCount = parseInt(sessionStorage.getItem('_home_no_data_redir') || '0');
+            if (_rCount < 2) {
+                sessionStorage.setItem('_home_no_data_redir', String(_rCount + 1));
+                window.location.href = 'data-ready_birth_form.html';
+            }
+            return;
+        }
+        sessionStorage.removeItem('_home_no_data_redir');
 
         var lp = calcLP(ud.birthDate);
         var py = calcPersonalYear(ud.birthDate, today.getFullYear());

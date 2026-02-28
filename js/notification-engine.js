@@ -10,7 +10,7 @@
     // ─── Skip on excluded pages ────────────────────────────
     var currentPage = window.location.pathname.split('/').pop() || 'index.html';
     // Bildirim zili SADECE ana sayfada görünsün
-    var ALLOWED = ['mystic_numerology_home_1.html'];
+    var ALLOWED = ['mystic_numerology_home_1.html', 'connections_shared_readings.html'];
     if (ALLOWED.indexOf(currentPage) === -1) return;
 
     function sb() { return window.supabaseClient; }
@@ -343,6 +343,76 @@
     }
 
     // ═══════════════════════════════════════════════════════
+    // NATIVE LOCAL NOTIFICATIONS (Capacitor)
+    // ═══════════════════════════════════════════════════════
+
+    var _localNotifPlugin = null;
+    var _localNotifReady = false;
+
+    function initLocalNotifications() {
+        try {
+            if (typeof window.Capacitor !== 'undefined' &&
+                window.Capacitor.isNativePlatform &&
+                window.Capacitor.isNativePlatform() &&
+                window.Capacitor.Plugins &&
+                window.Capacitor.Plugins.LocalNotifications) {
+                _localNotifPlugin = window.Capacitor.Plugins.LocalNotifications;
+                _localNotifPlugin.requestPermissions().then(function(perm) {
+                    if (perm && perm.display === 'granted') {
+                        _localNotifReady = true;
+                        console.log('[Notif] Local notifications izni verildi');
+                    }
+                }).catch(function(e) {
+                    console.warn('[Notif] Local notifications izni hatası:', e);
+                });
+                // Bildirime tıklandığında ilgili sayfaya yönlendir
+                _localNotifPlugin.addListener('localNotificationActionPerformed', function(action) {
+                    try {
+                        var extra = action.notification && action.notification.extra;
+                        if (extra && extra.url) {
+                            window.location.href = extra.url;
+                        }
+                    } catch(e) {}
+                });
+            }
+        } catch(e) {
+            console.warn('[Notif] Local notifications init hatası:', e);
+        }
+    }
+
+    function fireNativeNotification(notif) {
+        if (!_localNotifReady || !_localNotifPlugin) return;
+        try {
+            var NATIVE_TEXT = {
+                'connection_request': 'Yeni bağlantı isteği geldi',
+                'connection_accepted': 'Bağlantı isteğiniz kabul edildi',
+                'new_message': 'Yeni mesaj geldi',
+                'limit_hit': 'Premium gerekli'
+            };
+            var title = 'Soulnum';
+            var body = NATIVE_TEXT[notif.type] || 'Yeni bildirim';
+            var p = notif.payload || {};
+            if (notif.type === 'new_message' && p.sender_name) {
+                body = p.sender_name + ' size mesaj gönderdi';
+            }
+            if (notif.type === 'connection_request' && p.sender_name) {
+                body = p.sender_name + ' bağlantı isteği gönderdi';
+            }
+            var url = getClickAction(notif);
+            _localNotifPlugin.schedule({
+                notifications: [{
+                    id: Date.now(),
+                    title: title,
+                    body: body,
+                    extra: { url: url, type: notif.type }
+                }]
+            });
+        } catch(e) {
+            console.warn('[Notif] Native bildirim hatası:', e);
+        }
+    }
+
+    // ═══════════════════════════════════════════════════════
     // REAL-TIME SUBSCRIPTION
     // ═══════════════════════════════════════════════════════
 
@@ -362,6 +432,8 @@
                 _notifications.unshift(notif);
                 updateBadge();
                 if (_panelOpen) renderNotifications();
+                // Native local notification (telefon bildirimi)
+                fireNativeNotification(notif);
                 // Fire registered external callbacks
                 for (var ci = 0; ci < _notifCallbacks.length; ci++) {
                     try { _notifCallbacks[ci](notif); } catch(cbErr) {}
@@ -385,6 +457,7 @@
         if (!_userId) return;
 
         injectBell();
+        initLocalNotifications();
         await loadNotifications();
         subscribeToNotifications();
     }

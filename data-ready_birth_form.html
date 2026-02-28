@@ -339,7 +339,7 @@
                     // Kayıt işlemi
                     try {
                         const existing = (() => { try { return JSON.parse(localStorage.getItem('numerael_user_data')); } catch(e) { return null; } })();
-                        const isFirstTime = !existing || !existing.name;
+                        const isFirstTime = !existing || !existing.birthDate;
 
                         const personData = {
                             name: name.trim(),

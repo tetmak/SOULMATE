@@ -96,15 +96,21 @@ var auth = {
                                 console.warn('[Auth] Refresh çağrısı başarısız (ağ?), session korunuyor:', re.message);
                             }
                         } else {
-                            // Gerçek auth hatası (user deleted/not found) → temizle
-                            console.warn('[Auth] Kullanıcı silinmiş:', userRes.error.message);
-                            try { await window.supabaseClient.auth.signOut(); } catch(so) {}
-                            localStorage.removeItem('numerael-auth-token');
-                            localStorage.removeItem('numerael_user_data');
-                            localStorage.removeItem('numerael_premium');
-                            localStorage.removeItem('numerael_gamification');
-                            localStorage.removeItem('numerael_discovery_opted_in');
-                            session = null;
+                            // Kullanıcı silinmiş olabilir — ama sadece kesin hatalarda temizle
+                            var isUserGone = errMsg.indexOf('not found') !== -1 || errMsg.indexOf('not_found') !== -1 || errMsg.indexOf('user_not_found') !== -1 || errMsg.indexOf('no user') !== -1 || errMsg.indexOf('user banned') !== -1;
+                            if (isUserGone) {
+                                console.warn('[Auth] Kullanıcı silinmiş:', userRes.error.message);
+                                try { await window.supabaseClient.auth.signOut(); } catch(so) {}
+                                localStorage.removeItem('numerael-auth-token');
+                                localStorage.removeItem('numerael_user_data');
+                                localStorage.removeItem('numerael_premium');
+                                localStorage.removeItem('numerael_gamification');
+                                localStorage.removeItem('numerael_discovery_opted_in');
+                                session = null;
+                            } else {
+                                // Bilinmeyen hata — session'ı koru, veriyi silme
+                                console.warn('[Auth] Bilinmeyen getUser hatası, session korunuyor:', userRes.error.message);
+                            }
                         }
                     }
                 } catch(ue) {

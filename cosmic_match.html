@@ -377,16 +377,21 @@
         </div>
     </div>
 
-    <!-- ═══ KOZMİK ANALİZ ═══ -->
+    <!-- ═══ KOZMİK ANALİZ (AI) ═══ -->
     <div id="insight-section" style="display:none" class="fade-up space-y-3" style="animation-delay:0.18s">
         <h2 class="text-xs font-bold text-text-muted uppercase tracking-widest px-1">Kozmik Analiz</h2>
         <div class="glass-light dark:glass rounded-2xl p-4">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400 mb-2">✦ Titreşim Uyumu</h4>
-            <p id="insight-vibration" class="text-sm leading-relaxed text-gray-600 dark:text-[#BCB1A8]">—</p>
-        </div>
-        <div class="glass-light dark:glass rounded-2xl p-4">
-            <h4 class="text-xs font-bold uppercase tracking-wider text-blue-400 mb-2">✦ Kaderin Bağı</h4>
-            <p id="insight-destiny" class="text-sm leading-relaxed text-gray-600 dark:text-[#BCB1A8]">—</p>
+            <div class="flex items-center gap-2 mb-3">
+                <span class="material-symbols-outlined text-primary text-base">auto_awesome</span>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-primary">Uyum Analizi</h4>
+            </div>
+            <div id="insight-loading" style="display:none" class="space-y-2">
+                <div class="h-3 w-full rounded shimmer-placeholder"></div>
+                <div class="h-3 w-5/6 rounded shimmer-placeholder"></div>
+                <div class="h-3 w-4/6 rounded shimmer-placeholder"></div>
+                <div class="h-3 w-5/6 rounded shimmer-placeholder"></div>
+            </div>
+            <p id="insight-ai" class="text-sm leading-relaxed text-gray-600 dark:text-[#BCB1A8]" style="white-space:pre-line">—</p>
         </div>
     </div>
 
@@ -682,7 +687,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     function selectRibbonItem(idx) {
-        if (idx === activeRibbonIdx || idx >= ribbonMatches.length) return;
+        if (idx >= ribbonMatches.length) return;
         activeRibbonIdx = idx;
         document.querySelectorAll('#match-ribbon .scroll-fragment').forEach(function(f, i) {
             if (i === idx) f.classList.add('ribbon-active'); else f.classList.remove('ribbon-active');
@@ -739,63 +744,99 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
-    // Kozmik analiz data + render
-    var NUM_ENERGY = {
-        1:{name:'Öncü',element:'ateş',quality:'bağımsız irade ve liderlik enerjisi',verb:'yön verir'},
-        2:{name:'Ayna',element:'su',quality:'sezgisel denge ve diplomasi enerjisi',verb:'birleştirir'},
-        3:{name:'Yaratıcı',element:'ışık',quality:'ifade gücü ve ilham enerjisi',verb:'dönüştürür'},
-        4:{name:'Çıpa',element:'toprak',quality:'yapı ve güvenilirlik enerjisi',verb:'inşa eder'},
-        5:{name:'Rüzgâr',element:'hava',quality:'özgürlük ve değişim enerjisi',verb:'genişletir'},
-        6:{name:'Şifacı',element:'su',quality:'sevgi ve sorumluluk enerjisi',verb:'iyileştirir'},
-        7:{name:'Mistik',element:'eter',quality:'derin bilgelik ve iç görü enerjisi',verb:'aydınlatır'},
-        8:{name:'Kral',element:'ateş',quality:'güç ve bolluk enerjisi',verb:'yönetir'},
-        9:{name:'Bilge',element:'ışık',quality:'evrensel sevgi ve tamamlanma enerjisi',verb:'aşar'},
-        11:{name:'İlhamcı',element:'eter',quality:'yüksek sezgi ve ruhsal aydınlanma enerjisi',verb:'ilham verir'},
-        22:{name:'Usta Mimar',element:'toprak',quality:'vizyoner inşa ve manifestasyon enerjisi',verb:'şekillendirir'},
-        33:{name:'Kozmik Öğretmen',element:'ışık',quality:'koşulsuz sevgi ve yükseltme enerjisi',verb:'yüceltir'}
-    };
-    var SOUL_DYNAMICS = {
-        same:'Ruhlarınız aynı frekansta titreşiyor — birbirinizi aynada görmek gibi.',
-        fire:'İki ateşli ruh yan yana geldiğinde enerjiniz katlanarak yükselir.',
-        water:'Su elementinin buluşması sezgisel bir akış yaratıyor.',
-        earth:'Toprak enerjileri bir araya gelince sarsılmaz bir güven zemini oluşuyor.',
-        light:'Işık enerjilerinin birleşimi yaratıcılığınızı sınırsız kılıyor.',
-        complement:'Ruh güdüleriniz birbirini tamamlayan elemanlarda — birinin eksik bıraktığını diğeri dolduruyor.',
-        contrast:'Ruhsal güdüleriniz farklı elementlerden besleniyor. Bu gerilim büyümeye itiyor.'
-    };
-    var ELEMENT_MATCH = {'ateş-ateş':'fire','su-su':'water','toprak-toprak':'earth','ışık-ışık':'light','eter-eter':'water','ateş-ışık':'complement','su-toprak':'complement','eter-ışık':'complement','ateş-hava':'complement','su-eter':'complement','toprak-ışık':'complement','hava-eter':'complement','hava-ışık':'complement'};
-    function getElementDynamic(el1,el2) { if(el1===el2) return ELEMENT_MATCH[el1+'-'+el2]||'same'; return ELEMENT_MATCH[el1+'-'+el2]||ELEMENT_MATCH[el2+'-'+el1]||'contrast'; }
-    var LP_PAIR_INSIGHTS = {
-        'same':'Aynı Kader Yolu üzerinde yürüyen iki ruh — ortak derslerin içindesiniz.',
-        'next':'Ardışık Kader Yolları — birlikte hızlanmış bir ruhsal büyüme döngüsü.',
-        'mirror':'Kader Yollarınız 10\'a tamamlanıyor — kozmik ayna çiftisiniz.',
-        'master_meets':'Bir Üstat Sayı ile buluşuyorsunuz — katalizör görevi görüyor.'
-    };
-    function getLPPairType(lp1,lp2) { if(lp1===lp2) return 'same'; if(lp1>=11||lp2>=11) return 'master_meets'; if(Math.abs(lp1-lp2)===1) return 'next'; if(lp1+lp2===10) return 'mirror'; return null; }
+    // Kozmik analiz — AI destekli
+    var _insightCache = {}; // { 'userId_matchUserId': 'AI text' }
+    var _insightAbort = null; // Aktif AI çağrısını iptal etmek için
 
     function generateInsights(matchProfile, score) {
         var section = document.getElementById('insight-section');
-        if (!matchProfile) { section.style.display='none'; return; }
-        section.style.display='block';
-        var uE=NUM_ENERGY[userProfile.soul_urge]||NUM_ENERGY[5]; var mE=NUM_ENERGY[matchProfile.soul_urge]||NUM_ENERGY[5];
-        var dynamic=(userProfile.soul_urge===matchProfile.soul_urge)?'same':getElementDynamic(uE.element,mE.element);
-        var persScore=window.discovery.getScore(userProfile.personality_num,matchProfile.personality_num);
-        var persLayer='';
-        if(persScore>=90) persLayer=' Dışa yansıttığınız enerjiler büyük uyum taşıyor.';
-        else if(persScore>=80) persLayer=' Sosyal kimlikleriniz birbirini destekliyor.';
-        else if(persScore>=70) persLayer=' Kişilik enerjileriniz farklı açılardan parlıyor.';
-        else persLayer=' Farklılıklarınız ikinizi de olgunlaştırıyor.';
-        document.getElementById('insight-vibration').textContent = uE.name+' ('+userProfile.soul_urge+') — '+mE.name+' ('+matchProfile.soul_urge+'). '+SOUL_DYNAMICS[dynamic]+persLayer;
+        var aiEl = document.getElementById('insight-ai');
+        var loadingEl = document.getElementById('insight-loading');
+        if (!matchProfile) { section.style.display = 'none'; return; }
+        section.style.display = 'block';
 
-        var uLPE=NUM_ENERGY[userProfile.life_path]||NUM_ENERGY[5]; var mLPE=NUM_ENERGY[matchProfile.life_path]||NUM_ENERGY[5];
-        var pairType=getLPPairType(userProfile.life_path,matchProfile.life_path);
-        var lpText=pairType?LP_PAIR_INSIGHTS[pairType]:(uLPE.name+' ('+userProfile.life_path+') ile '+mLPE.name+' ('+matchProfile.life_path+') kader yolları buluşuyor.');
-        var expScore=window.discovery.getScore(userProfile.expression_num,matchProfile.expression_num);
-        var expLayer='';
-        if(expScore>=85) expLayer=' İfade sayılarınız ortak bir yaşam misyonuna işaret ediyor.';
-        else if(expScore>=70) expLayer=' İfade enerjileriniz farklı yetenekleri bir araya getiriyor.';
-        else expLayer=' İfade yollarınız farklı misyonlara hizmet ediyor.';
-        document.getElementById('insight-destiny').textContent = lpText+expLayer;
+        // Önceki AI çağrısını iptal et
+        if (_insightAbort) { try { _insightAbort.abort(); } catch(e) {} }
+
+        var cacheKey = userProfile.user_id + '_' + (matchProfile.user_id || matchProfile.full_name);
+
+        // Cache'de varsa hemen göster
+        if (_insightCache[cacheKey]) {
+            loadingEl.style.display = 'none';
+            aiEl.style.display = 'block';
+            aiEl.textContent = _insightCache[cacheKey];
+            return;
+        }
+
+        // SessionStorage cache kontrolü
+        try {
+            var cached = sessionStorage.getItem('numatch_ai_' + cacheKey);
+            if (cached) {
+                _insightCache[cacheKey] = cached;
+                loadingEl.style.display = 'none';
+                aiEl.style.display = 'block';
+                aiEl.textContent = cached;
+                return;
+            }
+        } catch(e) {}
+
+        // Loading göster
+        aiEl.style.display = 'none';
+        loadingEl.style.display = 'block';
+
+        // AI çağrısı
+        var controller = new AbortController();
+        _insightAbort = controller;
+
+        var API_BASE = window.__NUMERAEL_API_BASE || '';
+        var prompt = 'Sen numeroloji ve uyumluluk uzmanısın. İki kişinin numerolojik profillerine bakarak neden eşleştiklerini 4-5 cümle ile açıkla. Samimi, sıcak ve spesifik ol. Genel kalıp cümleler yerine sayılara dayalı gerçek analiz yap. Türkçe yaz.\n\n' +
+            'Kişi 1: ' + (userProfile.full_name || 'Kullanıcı') + '\n' +
+            '- Kader Yolu (Life Path): ' + (userProfile.life_path || '?') + '\n' +
+            '- Ruh Güdüsü (Soul Urge): ' + (userProfile.soul_urge || '?') + '\n' +
+            '- Kişilik Sayısı: ' + (userProfile.personality_num || '?') + '\n' +
+            '- İfade Sayısı: ' + (userProfile.expression_num || '?') + '\n\n' +
+            'Kişi 2: ' + (matchProfile.full_name || 'Eşleşme') + '\n' +
+            '- Kader Yolu (Life Path): ' + (matchProfile.life_path || '?') + '\n' +
+            '- Ruh Güdüsü (Soul Urge): ' + (matchProfile.soul_urge || '?') + '\n' +
+            '- Kişilik Sayısı: ' + (matchProfile.personality_num || '?') + '\n' +
+            '- İfade Sayısı: ' + (matchProfile.expression_num || '?') + '\n\n' +
+            'Uyum Skoru: %' + score + '\n\n' +
+            'Bu iki kişinin neden eşleştiğini, hangi sayılarının uyum sağladığını ve birlikte nasıl bir enerji yarattıklarını kısaca anlat.';
+
+        fetch(API_BASE + '/api/openai', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'gpt-4o-mini',
+                messages: [
+                    { role: 'system', content: 'Sen bir numeroloji uyumluluk uzmanısın. Kısa, öz ve sıcak bir dille analiz yaparsın. Maksimum 5 cümle.' },
+                    { role: 'user', content: prompt }
+                ],
+                max_tokens: 300,
+                temperature: 0.7
+            }),
+            signal: controller.signal
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            var text = '';
+            if (data.choices && data.choices[0] && data.choices[0].message) {
+                text = data.choices[0].message.content.trim();
+            }
+            if (!text) text = 'Analiz şu an yüklenemiyor.';
+            _insightCache[cacheKey] = text;
+            try { sessionStorage.setItem('numatch_ai_' + cacheKey, text); } catch(e) {}
+            loadingEl.style.display = 'none';
+            aiEl.style.display = 'block';
+            aiEl.textContent = text;
+        })
+        .catch(function(err) {
+            if (err.name === 'AbortError') return;
+            console.warn('[CosmicMatch] AI analiz hatası:', err);
+            loadingEl.style.display = 'none';
+            aiEl.style.display = 'block';
+            aiEl.textContent = 'Uyum analizi yüklenirken bir hata oluştu.';
+        });
     }
 
     // Radar
@@ -855,11 +896,30 @@ document.addEventListener('DOMContentLoaded', async function() {
             var score=match.match_score||0; var date=match.match_date||'';
             var arch=m.life_path?(window.discovery.ARCHETYPES[m.life_path]||''):'';
             var card=document.createElement('div');
-            card.className='flex items-center gap-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-primary/20 rounded-2xl shadow-sm transition active:scale-[0.98]';
+            card.className='flex items-center gap-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-primary/20 rounded-2xl shadow-sm transition active:scale-[0.98] cursor-pointer';
             card.innerHTML=
                 '<div class="w-14 h-14 rounded-full border-2 border-primary/40 overflow-hidden flex-shrink-0 flex items-center justify-center bg-white/60 dark:bg-card-dark">'+(revealed?'<img src="'+getPhoto(m.full_name,m.gender,m.avatar_url)+'" class="w-full h-full object-cover" alt="">':'<span class="text-primary text-sm font-bold">'+initial(m.full_name)+'</span>')+'</div>'+
-                '<div class="flex-1 min-w-0"><h4 class="text-sm font-bold text-gray-800 dark:text-[#E2D1C3] truncate'+(revealed?' cursor-pointer conn-name-click':'')+'"'+(revealed&&m.user_id?' data-uid="'+m.user_id+'" data-name="'+(m.full_name||'')+'"':'')+'>'+displayName+'</h4><p class="text-[10px] text-text-muted uppercase tracking-tighter">LP '+(m.life_path||'?')+(arch?' · '+arch:'')+'</p></div>'+
+                '<div class="flex-1 min-w-0"><h4 class="text-sm font-bold text-gray-800 dark:text-[#E2D1C3] truncate'+(revealed?' conn-name-click':'')+'"'+(revealed&&m.user_id?' data-uid="'+m.user_id+'" data-name="'+(m.full_name||'')+'"':'')+'>'+displayName+'</h4><p class="text-[10px] text-text-muted uppercase tracking-tighter">LP '+(m.life_path||'?')+(arch?' · '+arch:'')+'</p></div>'+
                 '<div class="text-right shrink-0"><p class="copper-gradient-text text-sm font-bold">%'+score+'</p><p class="text-text-muted/50 text-[10px]">'+formatDate(date)+'</p></div>';
+            // Karta tıklayınca Sacred Match kartını güncelle
+            (function(matchData, profile, matchScore, isRevealed) {
+                card.addEventListener('click', function(e) {
+                    if (e.target.closest('.conn-name-click')) return; // İsim tıklaması popup açsın
+                    updateCardDisplay({ profile: profile, score: matchScore, revealed: isRevealed });
+                    // İlgili ribbon item'ı da seç (varsa)
+                    for (var ri = 0; ri < ribbonMatches.length; ri++) {
+                        if (ribbonMatches[ri].profile && ribbonMatches[ri].profile.user_id === profile.user_id) {
+                            activeRibbonIdx = ri;
+                            document.querySelectorAll('#match-ribbon .scroll-fragment').forEach(function(f, i) {
+                                if (i === ri) f.classList.add('ribbon-active'); else f.classList.remove('ribbon-active');
+                            });
+                            break;
+                        }
+                    }
+                    // Üste scroll
+                    document.getElementById('match-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                });
+            })(match, m, score, revealed);
             listEl.appendChild(card);
         });
     }
