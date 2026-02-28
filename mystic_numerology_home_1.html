@@ -10,6 +10,7 @@
     <meta http-equiv="Expires" content="0" />
     <title>Mystic Numerology Home</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
@@ -196,7 +197,7 @@
 
         <!-- Greeting -->
         <div class="px-6 pt-8 pb-4">
-            <p class="text-gold text-xs font-medium tracking-widest uppercase mb-1">Celestial Guidance</p>
+            <p class="text-gold text-xs font-medium tracking-widest uppercase mb-1" data-i18n="home.celestial_guidance">Celestial Guidance</p>
             <h1 class="text-slate-900 dark:text-white tracking-tight text-3xl font-bold leading-tight">The Universe is aligned, <span
                     id="home-user-name">Alex</span></h1>
         </div>
@@ -207,7 +208,7 @@
                 <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none">
                 </div>
                 <div class="p-8 flex flex-col items-center text-center">
-                    <p class="text-slate-500 dark:text-white/60 text-xs font-bold tracking-[0.3em] uppercase mb-6">Personal Vibration</p>
+                    <p class="text-slate-500 dark:text-white/60 text-xs font-bold tracking-[0.3em] uppercase mb-6" data-i18n="home.personal_vibration">Personal Vibration</p>
                     <div class="relative mb-6">
                         <div class="absolute inset-0 blur-3xl bg-primary/40 rounded-full scale-150"></div>
                         <span class="relative text-slate-900 dark:text-white text-8xl font-black leading-none drop-shadow-[0_0_20px_rgba(127,19,236,0.8)]"
@@ -218,7 +219,8 @@
                     <p class="text-slate-600 dark:text-white/70 text-sm max-w-[240px] leading-relaxed mb-8" id="vib-desc">Your energy today
                         attracts prosperity and material balance. Focus on manifestation.</p>
                     <button id="btn-deep-insight"
-                        class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-full h-12 px-8 bg-primary text-slate-900 text-sm font-bold tracking-widest uppercase shadow-lg shadow-primary/30 hover:brightness-110 active:scale-95 transition-all">
+                        class="flex min-w-[180px] cursor-pointer items-center justify-center rounded-full h-12 px-8 bg-primary text-slate-900 text-sm font-bold tracking-widest uppercase shadow-lg shadow-primary/30 hover:brightness-110 active:scale-95 transition-all"
+                        data-i18n="home.deep_insight">
                         Deep Insight
                     </button>
                 </div>
@@ -227,8 +229,8 @@
 
         <!-- Section Title -->
         <div class="flex items-center justify-between px-6 pt-6 pb-4">
-            <h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight">Personal Cosmic Navigator</h3>
-            <button id="btn-details" class="text-gold text-xs font-bold uppercase tracking-widest">Explore Map</button>
+            <h3 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight" data-i18n="home.cosmic_navigator">Personal Cosmic Navigator</h3>
+            <button id="btn-details" class="text-gold text-xs font-bold uppercase tracking-widest" data-i18n="home.explore_map">Explore Map</button>
         </div>
 
         <!-- Feature Cards -->
@@ -243,11 +245,11 @@
                         <div class="absolute inset-0 blur-2xl bg-purple-500/30 rounded-full scale-125"></div>
                         <span class="material-symbols-outlined relative text-primary text-5xl drop-shadow-[0_0_15px_rgba(250,198,56,0.5)]">join_inner</span>
                     </div>
-                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Soul Mate Analysis</h4>
-                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]">The stars are converging in a divine union of paths.</p>
+                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4" data-i18n="home.soul_mate_analysis">Soul Mate Analysis</h4>
+                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]" data-i18n="home.soul_mate_desc">The stars are converging in a divine union of paths.</p>
                     <div class="mt-8 flex items-center justify-center gap-4">
                         <div class="h-px w-8 bg-purple-400/30"></div>
-                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-purple-400/40 pb-1">Unveil Twin Flame</span>
+                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-purple-400/40 pb-1" data-i18n="home.unveil_twin">Unveil Twin Flame</span>
                         <div class="h-px w-8 bg-purple-400/30"></div>
                     </div>
                 </div>
@@ -261,11 +263,11 @@
                         <div class="absolute inset-0 blur-2xl bg-indigo-500/30 rounded-full scale-125"></div>
                         <span class="material-symbols-outlined relative text-indigo-500 dark:text-indigo-300 text-5xl drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]">settings_ethernet</span>
                     </div>
-                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Cosmic Match</h4>
-                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]">An analytical deep-dive into the frequency of your celestial resonance.</p>
+                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4" data-i18n="home.cosmic_match">Cosmic Match</h4>
+                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]" data-i18n="home.cosmic_match_desc">An analytical deep-dive into the frequency of your celestial resonance.</p>
                     <div class="mt-8 flex items-center justify-center gap-4">
                         <div class="h-px w-8 bg-indigo-400/30"></div>
-                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-indigo-400/40 pb-1">Measure Resonance</span>
+                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-indigo-400/40 pb-1" data-i18n="home.measure_resonance">Measure Resonance</span>
                         <div class="h-px w-8 bg-indigo-400/30"></div>
                     </div>
                 </div>
@@ -279,11 +281,11 @@
                         <div class="absolute inset-0 blur-2xl bg-blue-400/20 rounded-full scale-125"></div>
                         <span class="material-symbols-outlined relative text-slate-500 dark:text-slate-200 text-5xl drop-shadow-[0_0_15px_rgba(226,232,240,0.5)]">model_training</span>
                     </div>
-                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Decision Sphere</h4>
-                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]">Clarity for your future paths through the lens of divine probability.</p>
+                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4" data-i18n="home.decision_sphere">Decision Sphere</h4>
+                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]" data-i18n="home.decision_sphere_desc">Clarity for your future paths through the lens of divine probability.</p>
                     <div class="mt-8 flex items-center justify-center gap-4">
                         <div class="h-px w-8 bg-slate-400/30"></div>
-                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-slate-400/40 pb-1">Cast Your Inquiry</span>
+                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-slate-400/40 pb-1" data-i18n="home.cast_inquiry">Cast Your Inquiry</span>
                         <div class="h-px w-8 bg-slate-400/30"></div>
                     </div>
                 </div>
@@ -297,11 +299,11 @@
                         <div class="absolute inset-0 blur-2xl bg-blue-300/20 rounded-full scale-125"></div>
                         <span class="material-symbols-outlined relative text-blue-500 dark:text-white text-5xl drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">nights_stay</span>
                     </div>
-                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Lunar Insights</h4>
-                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]">The waning crescent invites introspection. Release what no longer serves your higher purpose.</p>
+                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4" data-i18n="home.lunar_insights">Lunar Insights</h4>
+                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]" data-i18n="home.lunar_desc">The waning crescent invites introspection. Release what no longer serves your higher purpose.</p>
                     <div class="mt-8 flex items-center justify-center gap-4">
                         <div class="h-px w-8 bg-blue-300/30"></div>
-                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-blue-300/40 pb-1">Explore Cycles</span>
+                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-blue-300/40 pb-1" data-i18n="home.explore_cycles">Explore Cycles</span>
                         <div class="h-px w-8 bg-blue-300/30"></div>
                     </div>
                 </div>
@@ -317,11 +319,11 @@
                         <span class="material-symbols-outlined relative text-primary text-5xl drop-shadow-[0_0_15px_rgba(250,198,56,0.6)]"
                             style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
                     </div>
-                    <h4 class="text-primary text-2xl font-extrabold tracking-widest uppercase mb-4">Celestial Forecast</h4>
-                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]">Align with the upcoming planetary shifts to maximize your spiritual growth and manifesting power this week.</p>
+                    <h4 class="text-primary text-2xl font-extrabold tracking-widest uppercase mb-4" data-i18n="home.celestial_forecast">Celestial Forecast</h4>
+                    <p class="text-slate-600 dark:text-white/80 text-sm leading-relaxed max-w-[280px]" data-i18n="home.celestial_desc">Align with the upcoming planetary shifts to maximize your spiritual growth and manifesting power this week.</p>
                     <div class="mt-8 flex items-center justify-center gap-4">
                         <div class="h-px w-8 bg-primary/30"></div>
-                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-primary/40 pb-1">View Trajectory</span>
+                        <span class="text-slate-700 dark:text-white text-[10px] font-bold tracking-[0.3em] uppercase border-b border-primary/40 pb-1" data-i18n="home.view_trajectory">View Trajectory</span>
                         <div class="h-px w-8 bg-primary/30"></div>
                     </div>
                 </div>
@@ -338,11 +340,11 @@
                         <span class="material-symbols-outlined relative text-indigo-500 dark:text-indigo-300 text-5xl drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]"
                             style="font-variation-settings: 'FILL' 1;">flare</span>
                     </div>
-                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4">Manifest Portal</h4>
-                    <p class="text-slate-600 dark:text-white/70 text-sm leading-relaxed max-w-[280px]">The Canvas of Space — Your intentions are the stars that light up your personal universe.</p>
+                    <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4" data-i18n="home.manifest_portal">Manifest Portal</h4>
+                    <p class="text-slate-600 dark:text-white/70 text-sm leading-relaxed max-w-[280px]" data-i18n="home.manifest_desc">The Canvas of Space — Your intentions are the stars that light up your personal universe.</p>
                     <div class="mt-8 flex items-center justify-center gap-4">
                         <div class="h-px w-8 bg-indigo-400/30"></div>
-                        <span class="text-indigo-500 dark:text-indigo-300 text-[10px] font-bold tracking-[0.3em] uppercase border-b border-indigo-400/40 pb-1">Enter Portal</span>
+                        <span class="text-indigo-500 dark:text-indigo-300 text-[10px] font-bold tracking-[0.3em] uppercase border-b border-indigo-400/40 pb-1" data-i18n="home.enter_portal">Enter Portal</span>
                         <div class="h-px w-8 bg-indigo-400/30"></div>
                     </div>
                 </div>
@@ -353,7 +355,7 @@
         <!-- Günlük Görevler Mini -->
         <div class="px-4 pb-4" id="home-quests-section">
             <div class="flex items-center justify-between mb-3">
-                <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Günlük Görevler</p>
+                <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest" data-i18n="home.daily_quests">Günlük Görevler</p>
                 <div id="quest-bonus" class="flex items-center gap-1">
                     <span class="material-symbols-outlined text-amber-400/50 text-xs">redeem</span>
                     <span class="text-slate-400 dark:text-white/20 text-[10px]">3/3 = Bonus Sandık</span>

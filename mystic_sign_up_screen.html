@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Mystic Sign Up</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -47,8 +48,11 @@
                 <span class="material-symbols-outlined">arrow_back_ios</span>
             </div>
             <h2 id="page-title"
-                class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Sign Up
+                class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center" data-i18n="signup.title">Sign Up
             </h2>
+            <button id="btn-lang-selector" class="flex size-12 shrink-0 items-center justify-center cursor-pointer rounded-full hover:bg-slate-100 dark:hover:bg-white/10 transition-colors" title="Language">
+                <span class="text-lg" id="lang-flag">🇹🇷</span>
+            </button>
         </div>
         <!-- Headline Section -->
         <div class="flex flex-col items-center px-6 pt-10 pb-6">
@@ -56,10 +60,10 @@
                 class="w-20 h-20 mb-6 bg-primary/10 rounded-full flex items-center justify-center border border-primary/30">
                 <span class="material-symbols-outlined text-primary text-4xl">auto_awesome</span>
             </div>
-            <h1 class="text-slate-900 dark:text-white tracking-light text-[32px] font-bold leading-tight text-center">
+            <h1 class="text-slate-900 dark:text-white tracking-light text-[32px] font-bold leading-tight text-center" data-i18n="signup.headline">
                 Begin your journey into the stars
             </h1>
-            <p class="text-slate-500 dark:text-[#bab29c] text-center mt-3 text-sm px-4">
+            <p class="text-slate-500 dark:text-[#bab29c] text-center mt-3 text-sm px-4" data-i18n="signup.subtitle">
                 Unlock your cosmic blueprint and discover the secrets hidden in your numbers.
             </p>
         </div>
@@ -68,16 +72,16 @@
             <!-- Full Name Field -->
             <div id="name-field" class="flex flex-wrap items-end gap-4 py-3">
                 <label class="flex flex-col min-w-40 flex-1">
-                    <p class="text-slate-900 dark:text-white text-base font-medium leading-normal pb-2 ml-1">Full Name</p>
+                    <p class="text-slate-900 dark:text-white text-base font-medium leading-normal pb-2 ml-1" data-i18n="signup.fullname">Full Name</p>
                     <input id="input-name"
                         class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-1 focus:ring-primary border border-slate-300 dark:border-[#544e3b] bg-white/80 dark:bg-[#27241b]/60 backdrop-blur-sm focus:border-primary h-14 placeholder:text-slate-400 dark:placeholder:text-[#bab29c]/50 p-[15px] text-base font-normal leading-normal"
-                        placeholder="Enter your birth name" value="" />
+                        placeholder="Enter your birth name" data-i18n-placeholder="signup.fullname_placeholder" value="" />
                 </label>
             </div>
             <!-- Email Field -->
             <div class="flex flex-wrap items-end gap-4 py-3">
                 <label class="flex flex-col min-w-40 flex-1">
-                    <p class="text-slate-900 dark:text-white text-base font-medium leading-normal pb-2 ml-1">Email</p>
+                    <p class="text-slate-900 dark:text-white text-base font-medium leading-normal pb-2 ml-1" data-i18n="signup.email">Email</p>
                     <input id="input-email"
                         class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-slate-900 dark:text-white focus:outline-0 focus:ring-1 focus:ring-primary border border-slate-300 dark:border-[#544e3b] bg-white/80 dark:bg-[#27241b]/60 backdrop-blur-sm focus:border-primary h-14 placeholder:text-slate-400 dark:placeholder:text-[#bab29c]/50 p-[15px] text-base font-normal leading-normal"
                         placeholder="your.soul@cosmos.com" value="" />
@@ -86,7 +90,7 @@
             <!-- Password Field -->
             <div class="flex flex-wrap items-end gap-4 py-3">
                 <label class="flex flex-col min-w-40 flex-1">
-                    <p id="password-label" class="text-slate-900 dark:text-white text-base font-medium leading-normal pb-2 ml-1">Create
+                    <p id="password-label" class="text-slate-900 dark:text-white text-base font-medium leading-normal pb-2 ml-1" data-i18n="signup.password">Create
                         Password</p>
                     <div class="flex w-full flex-1 items-stretch rounded-xl">
                         <input id="input-password"
@@ -104,13 +108,13 @@
         <div class="mt-auto px-4 pb-10 flex flex-col gap-4">
             <button id="btn-submit"
                 class="w-full bg-primary hover:bg-primary/90 text-background-dark font-bold text-lg h-16 rounded-xl transition-all shadow-[0_0_25px_rgba(244,192,37,0.3)] flex items-center justify-center gap-2">
-                <span id="btn-text">Create Soul Account</span>
+                <span id="btn-text" data-i18n="signup.btn_signup">Create Soul Account</span>
                 <span class="material-symbols-outlined">flare</span>
             </button>
             <p class="text-center text-slate-500 dark:text-[#bab29c] text-sm mt-4">
-                <span id="toggle-msg">Already have an account?</span>
+                <span id="toggle-msg" data-i18n="signup.toggle_login">Already have an account?</span>
                 <a id="btn-toggle"
-                    class="text-primary font-semibold hover:underline decoration-primary/50 underline-offset-4 cursor-pointer">Login</a>
+                    class="text-primary font-semibold hover:underline decoration-primary/50 underline-offset-4 cursor-pointer" data-i18n="signup.link_login">Login</a>
             </p>
         </div>
         <!-- Abstract Decoration -->
@@ -180,24 +184,28 @@
             const passwordLabel = document.getElementById('password-label');
 
             function updateUI() {
+                var _t = window.i18n ? window.i18n.t : function(k,f){return f||k;};
                 if (isLoginMode) {
-                    pageTitle.textContent = 'Login';
-                    btnText.textContent = 'Login to Numantic';
-                    toggleMsg.textContent = "Don't have an account?";
-                    btnToggle.textContent = 'Sign Up';
+                    pageTitle.textContent = _t('signup.login_title', 'Login');
+                    btnText.textContent = _t('signup.btn_login', 'Login to Numantic');
+                    toggleMsg.textContent = _t('signup.toggle_signup', "Don't have an account?");
+                    btnToggle.textContent = _t('signup.link_signup', 'Sign Up');
                     nameField.style.display = 'none';
-                    passwordLabel.textContent = 'Password';
+                    passwordLabel.textContent = _t('signup.password_login', 'Password');
                 } else {
-                    pageTitle.textContent = 'Sign Up';
-                    btnText.textContent = 'Create Soul Account';
-                    toggleMsg.textContent = 'Already have an account?';
-                    btnToggle.textContent = 'Login';
+                    pageTitle.textContent = _t('signup.title', 'Sign Up');
+                    btnText.textContent = _t('signup.btn_signup', 'Create Soul Account');
+                    toggleMsg.textContent = _t('signup.toggle_login', 'Already have an account?');
+                    btnToggle.textContent = _t('signup.link_login', 'Login');
                     nameField.style.display = 'flex';
-                    passwordLabel.textContent = 'Create Password';
+                    passwordLabel.textContent = _t('signup.password', 'Create Password');
                 }
             }
 
             updateUI();
+
+            // Re-apply when language changes
+            window.addEventListener('languagechange', function() { updateUI(); });
 
             if (btnToggle) {
                 btnToggle.addEventListener('click', function () {
@@ -211,16 +219,17 @@
                     const email = document.getElementById('input-email').value;
                     const password = document.getElementById('input-password').value;
                     const fullName = document.getElementById('input-name').value;
+                    var _t = window.i18n ? window.i18n.t : function(k,f){return f||k;};
 
                     if (!email || !password) {
-                        alert('Lütfen e-posta ve şifrenizi giriniz.');
+                        alert(_t('signup.alert_email_pass', 'Lütfen e-posta ve şifrenizi giriniz.'));
                         return;
                     }
 
                     try {
                         if (isLoginMode) {
                             await window.auth.signIn(email, password);
-                            
+
                             // Her zaman Supabase'den profil çek (localStorage cache eski olabilir)
                             var hasProfile = false;
                             try {
@@ -253,7 +262,7 @@
                             }
                         } else {
                             if (!fullName) {
-                                alert('Lütfen adınızı giriniz.');
+                                alert(_t('signup.alert_name', 'Lütfen adınızı giriniz.'));
                                 return;
                             }
                             await window.auth.signUp(email, password);
@@ -262,10 +271,84 @@
                             window.location.href = 'data-ready_birth_form.html';
                         }
                     } catch (e) {
-                        alert('Hata: ' + e.message);
+                        alert(_t('common.error', 'Hata') + ': ' + e.message);
                     }
                 });
             }
+        })();
+
+        // ─── Language Selector ────────────────────────────────────
+        (function() {
+            var langBtn = document.getElementById('btn-lang-selector');
+            var flagEl = document.getElementById('lang-flag');
+            if (!langBtn || !window.i18n) return;
+
+            // Set initial flag
+            var langs = window.i18n.languages();
+            function updateFlag() {
+                var cur = window.i18n.current();
+                for (var i = 0; i < langs.length; i++) {
+                    if (langs[i].code === cur) { flagEl.textContent = langs[i].flag; break; }
+                }
+            }
+            updateFlag();
+
+            langBtn.addEventListener('click', function() {
+                // Create language picker overlay
+                var overlay = document.createElement('div');
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)';
+                var isDark = document.documentElement.classList.contains('dark');
+                var bg = isDark ? '#1a1810' : '#ffffff';
+                var border = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+                var textColor = isDark ? '#fff' : '#1e293b';
+                var subColor = isDark ? 'rgba(255,255,255,0.5)' : '#64748b';
+                var hoverBg = isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)';
+                var activeBg = isDark ? 'rgba(250,198,56,0.15)' : 'rgba(250,198,56,0.1)';
+
+                var html = '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:20px;padding:24px;width:90%;max-width:340px;max-height:80vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,0.25)">';
+                html += '<h3 style="color:' + textColor + ';font-size:16px;font-weight:800;margin-bottom:16px;text-align:center;font-family:Plus Jakarta Sans,sans-serif">' + window.i18n.t('signup.select_language', 'Select Language') + '</h3>';
+                html += '<div style="display:flex;flex-direction:column;gap:4px">';
+
+                var current = window.i18n.current();
+                for (var i = 0; i < langs.length; i++) {
+                    var l = langs[i];
+                    var isActive = l.code === current;
+                    var itemBg = isActive ? activeBg : 'transparent';
+                    var itemBorder = isActive ? '2px solid #FAC638' : '2px solid transparent';
+                    html += '<div class="lang-option" data-lang="' + l.code + '" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;cursor:pointer;background:' + itemBg + ';border:' + itemBorder + ';transition:background 0.15s">';
+                    html += '<span style="font-size:24px">' + l.flag + '</span>';
+                    html += '<div style="flex:1"><p style="color:' + textColor + ';font-size:14px;font-weight:600;margin:0">' + l.native + '</p></div>';
+                    if (isActive) html += '<span class="material-symbols-outlined" style="color:#FAC638;font-size:20px">check_circle</span>';
+                    html += '</div>';
+                }
+
+                html += '</div></div>';
+                overlay.innerHTML = html;
+                document.body.appendChild(overlay);
+
+                // Close on overlay click
+                overlay.addEventListener('click', function(e) {
+                    if (e.target === overlay) overlay.remove();
+                });
+
+                // Language option clicks
+                var options = overlay.querySelectorAll('.lang-option');
+                for (var j = 0; j < options.length; j++) {
+                    options[j].addEventListener('click', function() {
+                        var lang = this.getAttribute('data-lang');
+                        window.i18n.set(lang);
+                        updateFlag();
+                        overlay.remove();
+                    });
+                    // Hover effect
+                    options[j].addEventListener('mouseenter', function() {
+                        if (!this.querySelector('.material-symbols-outlined')) this.style.background = hoverBg;
+                    });
+                    options[j].addEventListener('mouseleave', function() {
+                        if (!this.querySelector('.material-symbols-outlined')) this.style.background = 'transparent';
+                    });
+                }
+            });
         })();
     </script>
 

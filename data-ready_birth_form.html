@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Data-Ready Birth Form</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Spline+Sans:wght@300;400;500;600;700&amp;display=swap"
         rel="stylesheet" />
@@ -59,24 +60,24 @@
                 class="text-slate-900 dark:text-white flex size-12 shrink-0 items-center justify-start cursor-pointer">
                 <span class="material-symbols-outlined text-slate-900 dark:text-white text-2xl">arrow_back_ios</span>
             </div>
-            <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Birth
+            <h2 data-i18n="birth.title" class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Birth
                 Details</h2>
         </div>
         <div class="flex-1 overflow-y-auto pb-24">
             <!-- HeadlineText -->
-            <h3 class="text-slate-900 dark:text-white tracking-light text-2xl font-bold leading-tight px-4 text-left pb-2 pt-5">Enter Your
+            <h3 data-i18n="birth.headline" class="text-slate-900 dark:text-white tracking-light text-2xl font-bold leading-tight px-4 text-left pb-2 pt-5">Enter Your
                 Birth Details</h3>
             <!-- BodyText -->
-            <p class="text-slate-500 dark:text-[#b9b49d] text-base font-normal leading-normal pb-3 pt-1 px-4">Accurate data reveals your
+            <p data-i18n="birth.subtitle" class="text-slate-500 dark:text-[#b9b49d] text-base font-normal leading-normal pb-3 pt-1 px-4">Accurate data reveals your
                 spiritual blueprint. Every detail aligns you with the cosmos.</p>
             <!-- TextField: Full Name (Focused/Active State) -->
             <div class="flex flex-col gap-4 px-4 py-3">
                 <label class="flex flex-col min-w-40 flex-1">
-                    <p class="text-slate-900 dark:text-white text-sm font-medium leading-normal pb-2">Full Name</p>
+                    <p data-i18n="birth.fullname" class="text-slate-900 dark:text-white text-sm font-medium leading-normal pb-2">Full Name</p>
                     <div class="flex w-full flex-1 items-stretch rounded-lg ring-2 ring-primary/50 glow-active">
                         <input id="input-name"
                             class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border border-primary bg-white dark:bg-[#27251c] h-14 placeholder:text-slate-400 dark:placeholder:text-[#b9b49d] p-[15px] rounded-r-none border-r-0 pr-2 text-base font-normal leading-normal"
-                            placeholder="Your full name" value="" />
+                            placeholder="Your full name" data-i18n-placeholder="birth.fullname_placeholder" value="" />
                         <div
                             class="text-primary flex border border-primary bg-white dark:bg-[#27251c] items-center justify-center pr-[15px] rounded-r-lg border-l-0">
                             <span class="material-symbols-outlined fill-1">auto_awesome</span>
@@ -87,15 +88,15 @@
             <!-- TextField: Date of Birth (Gün / Ay / Yıl) -->
             <div class="flex flex-col gap-4 px-4 py-3">
                 <label class="flex flex-col min-w-40 flex-1">
-                    <p class="text-slate-900 dark:text-white text-sm font-medium leading-normal pb-2">Doğum Tarihi</p>
+                    <p data-i18n="birth.birthdate" class="text-slate-900 dark:text-white text-sm font-medium leading-normal pb-2">Doğum Tarihi</p>
                     <div class="flex w-full gap-2">
                         <select id="input-dob-day"
                             class="form-input flex-1 min-w-0 rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] focus:border-primary h-14 px-3 text-base font-normal leading-normal">
-                            <option value="" disabled selected>Gün</option>
+                            <option value="" disabled selected data-i18n="birth.day">Gün</option>
                         </select>
                         <select id="input-dob-month"
                             class="form-input flex-[1.3] min-w-0 rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] focus:border-primary h-14 px-3 text-base font-normal leading-normal">
-                            <option value="" disabled selected>Ay</option>
+                            <option value="" disabled selected data-i18n="birth.month">Ay</option>
                             <option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option>
                             <option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option>
                             <option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option>
@@ -103,7 +104,7 @@
                         </select>
                         <select id="input-dob-year"
                             class="form-input flex-1 min-w-0 rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] focus:border-primary h-14 px-3 text-base font-normal leading-normal">
-                            <option value="" disabled selected>Yıl</option>
+                            <option value="" disabled selected data-i18n="birth.year">Yıl</option>
                         </select>
                     </div>
                 </label>
@@ -112,8 +113,8 @@
             <div class="flex flex-col gap-4 px-4 py-3">
                 <label class="flex flex-col min-w-40 flex-1">
                     <div class="flex justify-between items-center pb-2">
-                        <p class="text-slate-900 dark:text-white text-sm font-medium leading-normal">Time of Birth</p>
-                        <span class="text-primary text-xs font-semibold uppercase tracking-wider">Recommended</span>
+                        <p data-i18n="birth.time" class="text-slate-900 dark:text-white text-sm font-medium leading-normal">Time of Birth</p>
+                        <span data-i18n="birth.recommended" class="text-primary text-xs font-semibold uppercase tracking-wider">Recommended</span>
                     </div>
                     <div class="flex w-full flex-1 items-stretch rounded-lg">
                         <input id="input-tob" type="time"
@@ -124,11 +125,11 @@
             <!-- Select: Country of Birth -->
             <div class="flex flex-col gap-4 px-4 py-3">
                 <label class="flex flex-col min-w-40 flex-1">
-                    <p class="text-slate-900 dark:text-white text-sm font-medium leading-normal pb-2">Birth Country</p>
+                    <p data-i18n="birth.country" class="text-slate-900 dark:text-white text-sm font-medium leading-normal pb-2">Birth Country</p>
                     <div class="flex w-full flex-1 items-stretch rounded-lg">
                         <select id="input-pob"
                             class="form-select flex w-full min-w-0 flex-1 rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] focus:border-primary h-14 p-[15px] text-base font-normal leading-normal">
-                            <option value="">Select Country</option>
+                            <option value="" data-i18n="birth.select_country">Select Country</option>
                             <option value="Turkey">Turkey</option>
                             <option value="USA">USA</option>
                             <option value="UK">UK</option>
@@ -145,14 +146,14 @@
             </div>
             <!-- Selection: Gender -->
             <div class="flex flex-col gap-4 px-4 py-3">
-                <p class="text-slate-900 dark:text-white text-sm font-medium leading-normal">Cinsiyet</p>
+                <p data-i18n="birth.gender" class="text-slate-900 dark:text-white text-sm font-medium leading-normal">Cinsiyet</p>
                 <div class="flex gap-4">
                     <label class="flex-1 cursor-pointer group">
                         <input type="radio" name="gender" value="male" class="hidden peer" checked />
                         <div
                             class="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] text-slate-900 dark:text-white peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary transition-all shadow-lg">
                             <span class="material-symbols-outlined text-4xl mb-1">male</span>
-                            <span class="text-sm font-bold uppercase tracking-wider">Erkek</span>
+                            <span data-i18n="birth.male" class="text-sm font-bold uppercase tracking-wider">Erkek</span>
                         </div>
                     </label>
                     <label class="flex-1 cursor-pointer group">
@@ -160,7 +161,7 @@
                         <div
                             class="flex flex-col items-center justify-center p-4 rounded-xl border-2 border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] text-slate-900 dark:text-white peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:text-primary transition-all shadow-lg">
                             <span class="material-symbols-outlined text-4xl mb-1">female</span>
-                            <span class="text-sm font-bold uppercase tracking-wider">Kadın</span>
+                            <span data-i18n="birth.female" class="text-sm font-bold uppercase tracking-wider">Kadın</span>
                         </div>
                     </label>
                 </div>
@@ -170,7 +171,7 @@
         <div class="fixed bottom-0 left-0 right-0 max-w-md mx-auto p-4 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md">
             <button id="btn-calculate"
                 class="w-full bg-primary hover:bg-primary/90 text-[#181711] font-bold py-4 rounded-xl shadow-[0_0_20px_rgba(238,205,43,0.3)] flex items-center justify-center gap-2 transition-all">
-                <span class="text-lg">Calculate Blueprint</span>
+                <span data-i18n="birth.calculate" class="text-lg">Calculate Blueprint</span>
                 <span class="material-symbols-outlined font-bold">arrow_forward</span>
             </button>
         </div>
@@ -332,7 +333,8 @@
                     const gender = genderEl ? genderEl.value : 'male';
 
                     if (!name || !dob) {
-                        alert('Lütfen isim ve doğum tarihini giriniz.');
+                        var _t = window.i18n ? window.i18n.t : function(k,f){return f||k;};
+                        alert(_t('birth.alert_required', 'Lütfen isim ve doğum tarihini giriniz.'));
                         return;
                     }
 

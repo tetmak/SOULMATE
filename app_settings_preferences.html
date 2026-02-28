@@ -7,6 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>App Settings &amp; Preferences</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap"
         rel="stylesheet" />
@@ -120,14 +121,16 @@
                 <span class="material-symbols-outlined text-[24px]">arrow_back_ios</span>
             </div>
             <h2
-                class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12 font-display">
+                class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12 font-display"
+                data-i18n="settings.title">
                 Settings</h2>
         </div>
         <div class="flex-1 overflow-y-auto pb-10 relative z-0">
             <!-- Personal Information Section -->
             <div class="mt-4">
                 <h3
-                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display">
+                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display"
+                    data-i18n="settings.personal_info">
                     Personal Information</h3>
                 <div
                     class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-[72px] py-2 justify-between cursor-pointer border-b border-slate-100 dark:border-border-dark">
@@ -137,7 +140,8 @@
                             <span class="material-symbols-outlined">person</span>
                         </div>
                         <div class="flex flex-col justify-center">
-                            <p class="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
+                            <p class="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1"
+                                data-i18n="settings.fullname">
                                 Full Name</p>
                             <p id="settings-fullname"
                                 class="text-slate-500 dark:text-[#b9b29d] text-sm font-normal leading-normal line-clamp-1">
@@ -156,7 +160,8 @@
                             <span class="material-symbols-outlined">auto_awesome</span>
                         </div>
                         <div class="flex flex-col justify-center">
-                            <p class="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1">
+                            <p class="text-slate-900 dark:text-white text-base font-medium leading-normal line-clamp-1"
+                                data-i18n="settings.birthdate">
                                 Birthdate</p>
                             <p id="settings-birthdate"
                                 class="text-slate-500 dark:text-[#b9b29d] text-sm font-normal leading-normal line-clamp-1">
@@ -171,7 +176,8 @@
             <!-- Notifications Section -->
             <div class="mt-6">
                 <h3
-                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display">
+                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display"
+                    data-i18n="settings.notifications">
                     Notification Preferences</h3>
                 <!-- Daily Insight Toggle -->
                 <div
@@ -181,7 +187,8 @@
                             class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
                             <span class="material-symbols-outlined">light_mode</span>
                         </div>
-                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate">
+                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate"
+                            data-i18n="settings.daily_insight">
                             Daily Numerology Insight</p>
                     </div>
                     <label class="custom-toggle">
@@ -197,7 +204,8 @@
                             class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
                             <span class="material-symbols-outlined">dark_mode</span>
                         </div>
-                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate">
+                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate"
+                            data-i18n="settings.lunar_alerts">
                             Lunar Phase Alerts</p>
                     </div>
                     <label class="custom-toggle">
@@ -213,7 +221,8 @@
                             class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
                             <span class="material-symbols-outlined">notifications_active</span>
                         </div>
-                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate">
+                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate"
+                            data-i18n="settings.system_notif">
                             System Notifications</p>
                     </div>
                     <div class="shrink-0">
@@ -224,7 +233,8 @@
             <!-- Appearance Section -->
             <div class="mt-6">
                 <h3
-                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display">
+                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display"
+                    data-i18n="settings.appearance">
                     Görünüm</h3>
                 <!-- Theme Toggle -->
                 <div
@@ -235,7 +245,8 @@
                             <span id="theme-icon" class="material-symbols-outlined">dark_mode</span>
                         </div>
                         <div class="flex flex-col">
-                            <p class="text-slate-900 dark:text-white text-base font-normal leading-normal">
+                            <p class="text-slate-900 dark:text-white text-base font-normal leading-normal"
+                                data-i18n="settings.dark_mode">
                                 Karanlık Mod</p>
                             <p id="theme-label" class="text-slate-500 dark:text-[#b9b29d] text-xs">
                                 Aktif</p>
@@ -246,11 +257,32 @@
                         <span class="slider"></span>
                     </label>
                 </div>
+                <!-- Language Selector -->
+                <div id="btn-language-selector"
+                    class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-16 justify-between cursor-pointer">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
+                            <span class="material-symbols-outlined">language</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <p class="text-slate-900 dark:text-white text-base font-normal leading-normal" data-i18n="settings.language">
+                                Dil</p>
+                            <p id="current-lang-label" class="text-slate-500 dark:text-[#b9b29d] text-xs">
+                                Türkçe</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="current-lang-flag" class="text-lg">&#x1F1F9;&#x1F1F7;</span>
+                        <span class="material-symbols-outlined text-slate-400 dark:text-white">chevron_right</span>
+                    </div>
+                </div>
             </div>
             <!-- Subscription & Billing Section -->
             <div class="mt-6" id="sec-subscription">
                 <h3
-                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display">
+                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display"
+                    data-i18n="settings.subscription">
                     Abonelik & Faturalandırma</h3>
                 <!-- Plan Status Card -->
                 <div id="sub-card" class="mx-4 rounded-xl overflow-hidden" style="background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(236,72,153,0.04));border:1px solid rgba(139,92,246,0.12)">
@@ -317,7 +349,8 @@
             <!-- Security & Privacy Section -->
             <div class="mt-6">
                 <h3
-                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display">
+                    class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display"
+                    data-i18n="settings.security">
                     Security &amp; Legal</h3>
                 <div id="btn-change-password"
                     class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-14 justify-between border-b border-slate-100 dark:border-border-dark cursor-pointer">
@@ -326,7 +359,8 @@
                             class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
                             <span class="material-symbols-outlined">lock</span>
                         </div>
-                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate">
+                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate"
+                            data-i18n="settings.change_password">
                             Change Password</p>
                     </div>
                     <div class="shrink-0"><span
@@ -339,7 +373,8 @@
                             class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
                             <span class="material-symbols-outlined">verified_user</span>
                         </div>
-                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate">
+                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate"
+                            data-i18n="settings.privacy_policy">
                             Privacy Policy</p>
                     </div>
                     <div class="shrink-0"><span
@@ -352,7 +387,8 @@
                             class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
                             <span class="material-symbols-outlined">description</span>
                         </div>
-                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate">
+                        <p class="text-slate-900 dark:text-white text-base font-normal leading-normal flex-1 truncate"
+                            data-i18n="settings.terms">
                             Terms of Service</p>
                     </div>
                     <div class="shrink-0"><span
@@ -364,17 +400,17 @@
                 <button id="btn-logout"
                     class="w-full h-14 rounded-xl border border-slate-200 dark:border-border-dark text-slate-900 dark:text-white font-semibold flex items-center justify-center gap-2 hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
                     <span class="material-symbols-outlined">logout</span>
-                    Log Out
+                    <span data-i18n="settings.logout">Log Out</span>
                 </button>
                 <button
                     class="w-full h-14 rounded-xl text-red-500 font-semibold flex items-center justify-center gap-2 hover:bg-red-500/5 transition-colors">
                     <span class="material-symbols-outlined">delete_forever</span>
-                    Delete Account
+                    <span data-i18n="settings.delete_account">Delete Account</span>
                 </button>
             </div>
             <!-- Version Footer -->
             <div class="mt-8 text-center px-4">
-                <p class="text-slate-400 dark:text-[#b9b29d] text-xs font-normal">Your spiritual data is encrypted using
+                <p class="text-slate-400 dark:text-[#b9b29d] text-xs font-normal" data-i18n="settings.version_footer">Your spiritual data is encrypted using
                     256-bit AES protection.</p>
                 <p class="text-slate-400 dark:text-[#b9b29d] text-xs font-normal mt-2">V 2.4.1 — Made with stardust</p>
             </div>
@@ -777,6 +813,73 @@
     </script>
 <script src="js/notification-engine.js"></script>
 <script src="js/bottom-nav.js"></script>
+<script>
+// ─── Language Selector Logic ─────────────────────────────
+(function() {
+    var langBtn = document.getElementById('btn-language-selector');
+    var langLabel = document.getElementById('current-lang-label');
+    var langFlag = document.getElementById('current-lang-flag');
+    if (!langBtn || !window.i18n) return;
+
+    function updateLangUI() {
+        var cur = window.i18n.current();
+        var langs = window.i18n.languages();
+        for (var i = 0; i < langs.length; i++) {
+            if (langs[i].code === cur) {
+                if (langLabel) langLabel.textContent = langs[i].native;
+                if (langFlag) langFlag.textContent = langs[i].flag;
+                break;
+            }
+        }
+    }
+    updateLangUI();
+
+    langBtn.addEventListener('click', function() {
+        var langs = window.i18n.languages();
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)';
+        var isDark = document.documentElement.classList.contains('dark');
+        var bg = isDark ? '#221d10' : '#ffffff';
+        var border = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+        var textColor = isDark ? '#fff' : '#1e293b';
+        var activeBg = isDark ? 'rgba(236,182,19,0.15)' : 'rgba(236,182,19,0.1)';
+
+        var html = '<div style="background:' + bg + ';border:1px solid ' + border + ';border-radius:20px;padding:24px;width:90%;max-width:340px;max-height:80vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,0.25)">';
+        html += '<h3 style="color:' + textColor + ';font-size:16px;font-weight:800;margin-bottom:16px;text-align:center;font-family:Manrope,sans-serif">' + window.i18n.t('signup.select_language', 'Select Language') + '</h3>';
+        html += '<div style="display:flex;flex-direction:column;gap:4px">';
+
+        var current = window.i18n.current();
+        for (var i = 0; i < langs.length; i++) {
+            var l = langs[i];
+            var isActive = l.code === current;
+            var itemBg = isActive ? activeBg : 'transparent';
+            var itemBorder = isActive ? '2px solid #ecb613' : '2px solid transparent';
+            html += '<div class="lang-opt" data-lang="' + l.code + '" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;cursor:pointer;background:' + itemBg + ';border:' + itemBorder + ';transition:background 0.15s">';
+            html += '<span style="font-size:24px">' + l.flag + '</span>';
+            html += '<div style="flex:1"><p style="color:' + textColor + ';font-size:14px;font-weight:600;margin:0">' + l.native + '</p></div>';
+            if (isActive) html += '<span class="material-symbols-outlined" style="color:#ecb613;font-size:20px">check_circle</span>';
+            html += '</div>';
+        }
+        html += '</div></div>';
+        overlay.innerHTML = html;
+        document.body.appendChild(overlay);
+
+        overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.remove(); });
+
+        var opts = overlay.querySelectorAll('.lang-opt');
+        for (var j = 0; j < opts.length; j++) {
+            opts[j].addEventListener('click', function() {
+                var lang = this.getAttribute('data-lang');
+                window.i18n.set(lang);
+                updateLangUI();
+                overlay.remove();
+            });
+        }
+    });
+
+    window.addEventListener('languagechange', updateLangUI);
+})();
+</script>
 </body>
 
 </html>

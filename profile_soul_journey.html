@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Profile &amp; Soul Journey</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -51,7 +52,7 @@
             class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Soul Journey</h2>
+        <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center" data-i18n="profile.title">Soul Journey</h2>
         <div class="flex items-center gap-1">
             <button id="btn-theme-profile"
                 class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
@@ -111,19 +112,19 @@
     <!-- Numerology Stats -->
     <div class="grid grid-cols-2 gap-3 px-4 pb-4">
         <div class="flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Life Path</p>
+            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.life_path">Life Path</p>
             <p id="stat-lifepath" class="text-primary text-3xl font-black">—</p>
         </div>
         <div class="flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Expression</p>
+            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.expression">Expression</p>
             <p id="stat-expression" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
         </div>
         <div class="flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Soul Urge</p>
+            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.soul_urge">Soul Urge</p>
             <p id="stat-soul" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
         </div>
         <div class="flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Personality</p>
+            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.personality">Personality</p>
             <p id="stat-pers" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
         </div>
     </div>
@@ -133,7 +134,7 @@
 
         <!-- İsim Analizi -->
         <div class="fade-in" style="animation-delay:0.1s">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3">Name Analysis</p>
+            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3" data-i18n="profile.name_analysis">Name Analysis</p>
             <div onclick="window.location.href='name_numerology_breakdown_1.html'"
                 class="card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-primary/25 cursor-pointer">
                 <div class="size-12 shrink-0 rounded-full bg-primary/15 flex items-center justify-center">
@@ -153,7 +154,7 @@
         <!-- Uyumluluk Geçmişi -->
         <div class="fade-in" style="animation-delay:0.2s">
             <div class="flex items-center justify-between mb-3">
-                <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Compatibility Readings</p>
+                <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.compat_readings">Compatibility Readings</p>
             </div>
             <div id="compat-history-list" class="space-y-3"></div>
             <div id="compat-empty" style="display:none"
@@ -166,26 +167,26 @@
         <!-- Connection Requests Inbox -->
         <div class="fade-in" style="animation-delay:0.22s">
             <div class="flex items-center justify-between mb-3">
-                <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Connection Requests</p>
+                <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.connection_requests">Connection Requests</p>
                 <span id="req-count-badge" style="display:none" class="text-xs font-bold text-white bg-cosmic-violet/80 px-2 py-0.5 rounded-full"></span>
             </div>
             <div id="conn-requests-list" class="space-y-3"></div>
             <div id="conn-requests-empty" style="display:none"
                 class="text-center py-6 text-slate-400 dark:text-white/25 text-sm italic rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card-dark">
-                No pending requests
+                <span data-i18n="profile.no_requests">No pending requests</span>
             </div>
         </div>
 
         <!-- Cosmic Match Keşfedilebilirlik -->
         <div class="fade-in" style="animation-delay:0.25s">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3">Cosmic Match</p>
+            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3" data-i18n="profile.cosmic_match">Cosmic Match</p>
             <div class="flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-white/5">
                 <div class="size-12 shrink-0 rounded-full flex items-center justify-center" style="background:rgba(139,92,246,0.12)">
                     <span class="material-symbols-outlined" style="color:#8b5cf6">auto_awesome</span>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-slate-900 dark:text-white font-bold text-sm">Keşfedilebilir Ol</p>
-                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Diğer kullanıcılar seni eşleşme radarında görsün</p>
+                    <p class="text-slate-900 dark:text-white font-bold text-sm" data-i18n="profile.discoverable">Keşfedilebilir Ol</p>
+                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5" data-i18n="profile.discoverable_desc">Diğer kullanıcılar seni eşleşme radarında görsün</p>
                 </div>
                 <label class="relative inline-flex items-center cursor-pointer shrink-0">
                     <input type="checkbox" id="toggle-discoverable" class="sr-only peer">
@@ -199,19 +200,19 @@
             <button id="btn-refresh-soul"
                 class="w-full bg-primary text-[#181711] py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
                 <span class="material-symbols-outlined">refresh</span>
-                Ruh Analizimi Yenile
+                <span data-i18n="profile.refresh">Ruh Analizimi Yenile</span>
             </button>
             <button id="btn-premium"
                 class="w-full py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform"
                 style="background:linear-gradient(135deg,#bf953f,#fcf6ba,#b38728,#fbf5b7,#aa771c);color:#181711;"
                 onclick="window.location.href='premium_crystal_store.html'">
                 <span class="material-symbols-outlined">workspace_premium</span>
-                Premium'a Geç
+                <span data-i18n="profile.go_premium">Premium'a Geç</span>
             </button>
             <button id="btn-logout"
                 class="w-full bg-red-50 dark:bg-white/5 text-red-400 py-3 rounded-full font-semibold text-sm border border-red-500/15 flex items-center justify-center gap-2 active:scale-95 transition-transform">
                 <span class="material-symbols-outlined text-base">logout</span>
-                Sign Out
+                <span data-i18n="profile.sign_out">Sign Out</span>
             </button>
         </div>
     </div>
