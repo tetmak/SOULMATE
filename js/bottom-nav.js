@@ -130,7 +130,11 @@
         } else {
             var btn = document.createElement('button');
             btn.className = 'nav-tab' + (tab.active ? ' active' : '');
-            btn.innerHTML = '<span class="material-symbols-outlined">' + tab.icon + '</span><span>' + tab.label + '</span>';
+            if (tab.label === 'Bağlantılar') {
+                btn.innerHTML = '<div style="position:relative;display:inline-flex"><span class="material-symbols-outlined">' + tab.icon + '</span><span id="nav-conn-badge" style="display:none;position:absolute;top:-6px;right:-12px;color:#ef4444;font-size:10px;font-weight:800;font-family:Space Grotesk,sans-serif;white-space:nowrap"></span></div><span>' + tab.label + '</span>';
+            } else {
+                btn.innerHTML = '<span class="material-symbols-outlined">' + tab.icon + '</span><span>' + tab.label + '</span>';
+            }
             btn.addEventListener('click', function() {
                 window.location.href = tab.href;
             });
@@ -166,5 +170,64 @@
 
     // Global export (bazı sayfalar kullanabilir)
     window.numeraelNav = { toggle: toggleBubble, close: closeBubble };
+
+    // ─── BAĞLANTILAR BADGE: Okunmamış bildirim sayısı ──────
+    var _badgeChannel = null;
+    var _badgeUpdating = false;
+
+    async function updateConnBadge() {
+        if (_badgeUpdating) return;
+        _badgeUpdating = true;
+        try {
+            if (!window.supabaseClient) return;
+            if (window.auth && window.auth.whenReady) await window.auth.whenReady();
+            var session = null;
+            try { session = await window.auth.getSession(); } catch(e) {}
+            if (!session || !session.user) return;
+            var userId = session.user.id;
+
+            var res = await window.supabaseClient.from('notifications')
+                .select('id')
+                .eq('user_id', userId)
+                .eq('is_read', false)
+                .in('type', ['new_message', 'connection_request']);
+
+            var count = (res.data || []).length;
+            var badge = document.getElementById('nav-conn-badge');
+            if (badge) {
+                if (count > 0) {
+                    badge.textContent = '+' + count;
+                    badge.style.display = 'inline';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            // Realtime: bildirim değişince otomatik güncelle
+            if (!_badgeChannel) {
+                _badgeChannel = window.supabaseClient.channel('nav-badge-' + userId)
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'notifications',
+                        filter: 'user_id=eq.' + userId
+                    }, function() {
+                        updateConnBadge();
+                    })
+                    .subscribe();
+            }
+        } catch(e) {
+            console.warn('[Nav] Badge error:', e);
+        } finally {
+            _badgeUpdating = false;
+        }
+    }
+
+    // Badge güncellemeyi başlat
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() { setTimeout(updateConnBadge, 500); });
+    } else {
+        setTimeout(updateConnBadge, 500);
+    }
 
 })();
