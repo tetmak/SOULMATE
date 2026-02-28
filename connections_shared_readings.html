@@ -38,6 +38,17 @@
         .fade-in{animation:fade-in 0.35s ease forwards}
         .card-hover{transition:transform 0.15s ease}
         .card-hover:active{transform:scale(0.97)}
+        /* Notification inbox */
+        .notif-inbox-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:16px;cursor:pointer;transition:background 0.15s,transform 0.1s}
+        .notif-inbox-item:active{transform:scale(0.97)}
+        html.dark .notif-inbox-item{background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.12)}
+        html:not(.dark) .notif-inbox-item{background:rgba(139,92,246,0.04);border:1px solid rgba(139,92,246,0.1)}
+        html.dark .notif-inbox-item:hover{background:rgba(139,92,246,0.1)}
+        html:not(.dark) .notif-inbox-item:hover{background:rgba(139,92,246,0.08)}
+        .notif-inbox-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        html.dark .notif-inbox-icon{background:rgba(139,92,246,0.15)}
+        html:not(.dark) .notif-inbox-icon{background:rgba(139,92,246,0.1)}
+        .notif-inbox-dot{width:10px;height:10px;border-radius:50%;background:#8b5cf6;flex-shrink:0}
         @keyframes card-unread-pulse{
             0%,100%{box-shadow:0 0 0 0 transparent;border-color:var(--glow)}
             50%{box-shadow:0 0 22px 4px var(--glow);border-color:var(--glow-solid)}
@@ -60,6 +71,20 @@
             <span class="material-symbols-outlined">person_add</span>
         </button>
     </header>
+
+    <!-- Notification Inbox -->
+    <div id="notif-inbox-section" style="display:none" class="px-4 pt-4">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-slate-900 dark:text-white text-sm font-bold tracking-tight flex items-center gap-2">
+                <span class="material-symbols-outlined text-base" style="color:#8b5cf6">notifications_active</span>
+                Bildirimler
+            </h3>
+            <button id="notif-inbox-mark-all" class="text-slate-400 dark:text-white/30 text-[10px] font-bold uppercase tracking-wider hover:text-slate-600 dark:hover:text-white/50 transition-colors">
+                Tümünü okundu işaretle
+            </button>
+        </div>
+        <div id="notif-inbox-list" class="flex flex-col gap-2"></div>
+    </div>
 
     <!-- Soul Connections Yatay Scroll -->
     <div class="flex flex-col gap-2 pt-6 pb-2">
@@ -426,6 +451,155 @@ document.addEventListener('DOMContentLoaded', async function() {
         setTimeout(refreshChatBlinks, 4000);
     }
     setTimeout(initBlinks, 300);
+
+    // ─── Bildirim Kutucukları (Notification Inbox) ─────────
+    (function() {
+        if (!currentUserId || !window.supabaseClient) return;
+
+        var NOTIF_ICON_MAP = {
+            'connection_request': 'person_add',
+            'connection_accepted': 'how_to_reg',
+            'new_message': 'chat'
+        };
+        var NOTIF_TYPES = ['connection_request', 'connection_accepted', 'new_message'];
+
+        function formatAgo(ts) {
+            try {
+                var diff = Math.floor((Date.now() - new Date(ts).getTime()) / 1000);
+                if (diff < 60) return 'şimdi';
+                if (diff < 3600) return Math.floor(diff / 60) + 'dk';
+                if (diff < 86400) return Math.floor(diff / 3600) + 'sa';
+                return Math.floor(diff / 86400) + 'g';
+            } catch(e) { return ''; }
+        }
+
+        function getNotifText(n) {
+            var p = n.payload || {};
+            if (n.type === 'connection_request' && p.sender_name && p.sender_name !== 'User')
+                return p.sender_name + ' bağlantı isteği gönderdi';
+            if (n.type === 'connection_accepted' && p.accepter_name && p.accepter_name !== 'User')
+                return p.accepter_name + ' isteğinizi kabul etti';
+            if (n.type === 'new_message' && p.sender_name && p.sender_name !== 'User')
+                return p.sender_name + ' mesaj gönderdi';
+            if (n.type === 'connection_request') return 'Yeni bağlantı isteği';
+            if (n.type === 'connection_accepted') return 'Bağlantı kabul edildi';
+            if (n.type === 'new_message') return 'Yeni mesaj';
+            return 'Bildirim';
+        }
+
+        function getNotifHref(n) {
+            var p = n.payload || {};
+            if (n.type === 'connection_request') return 'profile_soul_journey.html';
+            if (n.type === 'connection_accepted') return null; // zaten bu sayfadayız
+            if (n.type === 'new_message' && p.sender_id) return 'messaging.html?uid=' + encodeURIComponent(p.sender_id);
+            return null;
+        }
+
+        function renderInbox(notifications) {
+            var section = document.getElementById('notif-inbox-section');
+            var list = document.getElementById('notif-inbox-list');
+            if (!section || !list) return;
+
+            list.innerHTML = '';
+            if (!notifications || notifications.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            section.style.display = 'block';
+
+            notifications.forEach(function(n) {
+                var icon = NOTIF_ICON_MAP[n.type] || 'notifications';
+                var text = getNotifText(n);
+                var time = formatAgo(n.created_at);
+                var isUnread = !n.is_read;
+
+                var item = document.createElement('div');
+                item.className = 'notif-inbox-item fade-in';
+                item.setAttribute('data-notif-id', n.id);
+                item.innerHTML =
+                    '<div class="notif-inbox-icon">' +
+                        '<span class="material-symbols-outlined" style="font-size:20px;color:#8b5cf6">' + icon + '</span>' +
+                    '</div>' +
+                    '<div class="flex-1 min-w-0">' +
+                        '<p class="text-sm leading-snug ' + (isUnread ? 'text-slate-900 dark:text-white font-bold' : 'text-slate-600 dark:text-white/60') + '">' + text + '</p>' +
+                        '<p class="text-[10px] mt-1 text-slate-400 dark:text-white/25">' + time + '</p>' +
+                    '</div>' +
+                    (isUnread ? '<div class="notif-inbox-dot"></div>' : '');
+
+                item.addEventListener('click', function() {
+                    // Okundu işaretle
+                    if (isUnread && window.notificationEngine && window.notificationEngine.markAsRead) {
+                        window.notificationEngine.markAsRead(n.id);
+                        var dot = item.querySelector('.notif-inbox-dot');
+                        if (dot) dot.remove();
+                        var txt = item.querySelector('p');
+                        if (txt) { txt.className = txt.className.replace('text-slate-900 dark:text-white font-bold', 'text-slate-600 dark:text-white/60'); }
+                    }
+                    var href = getNotifHref(n);
+                    if (href) window.location.href = href;
+                });
+
+                list.appendChild(item);
+            });
+        }
+
+        // Bildirimleri yükle
+        async function loadInboxNotifs() {
+            try {
+                var res = await window.supabaseClient.from('notifications')
+                    .select('*')
+                    .eq('user_id', currentUserId)
+                    .in('type', NOTIF_TYPES)
+                    .order('created_at', { ascending: false })
+                    .limit(20);
+                renderInbox(res.data || []);
+            } catch(e) {
+                console.warn('[ConnPage] Inbox load error:', e);
+            }
+        }
+
+        // Tümünü okundu işaretle
+        var markAllBtn = document.getElementById('notif-inbox-mark-all');
+        if (markAllBtn) {
+            markAllBtn.addEventListener('click', async function() {
+                try {
+                    await window.supabaseClient.from('notifications')
+                        .update({ is_read: true })
+                        .eq('user_id', currentUserId)
+                        .eq('is_read', false)
+                        .in('type', NOTIF_TYPES);
+                    // UI güncelle
+                    var dots = document.querySelectorAll('.notif-inbox-dot');
+                    for (var d = 0; d < dots.length; d++) dots[d].remove();
+                    var txts = document.querySelectorAll('#notif-inbox-list .notif-inbox-item p:first-child');
+                    for (var t = 0; t < txts.length; t++) {
+                        txts[t].className = txts[t].className
+                            .replace('text-slate-900', 'text-slate-600')
+                            .replace('dark:text-white font-bold', 'dark:text-white/60');
+                    }
+                } catch(e) { console.warn('[ConnPage] Mark all error:', e); }
+            });
+        }
+
+        // Realtime: yeni bildirim gelince inbox'ı yenile
+        function initRealtimeInbox() {
+            try {
+                window.supabaseClient.channel('conn-inbox-' + currentUserId)
+                    .on('postgres_changes', {
+                        event: '*',
+                        schema: 'public',
+                        table: 'notifications',
+                        filter: 'user_id=eq.' + currentUserId
+                    }, function() {
+                        loadInboxNotifs();
+                    })
+                    .subscribe();
+            } catch(e) {}
+        }
+
+        loadInboxNotifs();
+        initRealtimeInbox();
+    })();
 
     // ─── Silme fonksiyonu ──────────────────────────────────
     async function deleteConnection(fullName) {
