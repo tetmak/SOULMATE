@@ -131,7 +131,7 @@
             var btn = document.createElement('button');
             btn.className = 'nav-tab' + (tab.active ? ' active' : '');
             if (tab.label === 'Bağlantılar') {
-                btn.innerHTML = '<div style="position:relative;display:inline-flex"><span class="material-symbols-outlined">' + tab.icon + '</span><span id="nav-conn-badge" style="display:none;position:absolute;top:-6px;right:-12px;color:#ef4444;font-size:10px;font-weight:800;font-family:Space Grotesk,sans-serif;white-space:nowrap"></span></div><span>' + tab.label + '</span>';
+                btn.innerHTML = '<div style="position:relative;display:inline-flex"><span class="material-symbols-outlined">' + tab.icon + '</span><span id="nav-conn-badge" style="display:none;position:absolute;top:-6px;right:-12px;color:#ef4444;font-size:11px;font-weight:900;text-shadow:0 0 4px rgba(239,68,68,0.4);font-family:Space Grotesk,sans-serif;white-space:nowrap"></span></div><span>' + tab.label + '</span>';
             } else {
                 btn.innerHTML = '<span class="material-symbols-outlined">' + tab.icon + '</span><span>' + tab.label + '</span>';
             }
