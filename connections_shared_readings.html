@@ -407,16 +407,25 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         }
     }
-    // İlk yükleme: bildirimler yüklendikten sonra kontrol et
-    setTimeout(refreshChatBlinks, 500);
-    // Realtime: yeni bildirim geldiğinde güncelle
-    if (window.notificationEngine && window.notificationEngine.onNewNotification) {
+    // notification-engine.js bu script'ten SONRA yükleniyor,
+    // bu yüzden retry ile beklememiz gerekiyor
+    function initBlinks() {
+        if (!window.notificationEngine || !window.notificationEngine.onNewNotification) {
+            setTimeout(initBlinks, 500);
+            return;
+        }
+        // Realtime: yeni bildirim geldiğinde kartı yanıp söndür
         window.notificationEngine.onNewNotification(function(notif) {
             if (notif && notif.type === 'new_message') {
                 refreshChatBlinks();
             }
         });
+        // İlk yükleme: bildirimlerin Supabase'den yüklenmesini bekle
+        refreshChatBlinks();
+        setTimeout(refreshChatBlinks, 1500);
+        setTimeout(refreshChatBlinks, 4000);
     }
+    setTimeout(initBlinks, 300);
 
     // ─── Silme fonksiyonu ──────────────────────────────────
     async function deleteConnection(fullName) {
