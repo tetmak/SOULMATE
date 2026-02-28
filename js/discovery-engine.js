@@ -135,7 +135,17 @@
     }
 
     // ─── OPT-IN: Profili Supabase'e kaydet ──────────────────
-    async function optIn(userId) {
+    // ─── Şehir lookup helper ──────────────────────────────
+    function lookupCity(cityName) {
+        if (!cityName || !window.TURKISH_CITIES) return null;
+        var name = cityName.trim();
+        for (var i = 0; i < window.TURKISH_CITIES.length; i++) {
+            if (window.TURKISH_CITIES[i].name === name) return window.TURKISH_CITIES[i];
+        }
+        return null;
+    }
+
+    async function optIn(userId, cityName) {
         var ud = null;
         try { ud = JSON.parse(localStorage.getItem('numerael_user_data')||'null'); } catch(e){}
         if (!ud || !ud.name) return false;
@@ -151,7 +161,7 @@
             }
         } catch(e) { console.warn('[Discovery] Opt-in: profiles gender fetch hatası:', e); }
 
-        console.log('[Discovery] Opt-in: userId=' + userId + ', name=' + ud.name + ', gender=' + freshGender);
+        console.log('[Discovery] Opt-in: userId=' + userId + ', name=' + ud.name + ', gender=' + freshGender + ', city=' + (cityName || 'none'));
 
         // Gender'ı normalize et (Supabase case-sensitive .in() filtresi için)
         freshGender = (freshGender || 'unknown').toLowerCase().trim();
@@ -169,13 +179,42 @@
             updated_at: new Date().toISOString()
         };
 
+        // Şehir bilgisi ekle
+        if (cityName) {
+            var cityInfo = lookupCity(cityName);
+            data.city = cityName;
+            if (cityInfo) {
+                data.city_lat = cityInfo.lat;
+                data.city_lng = cityInfo.lng;
+            }
+        }
+
         try {
             await window.supabaseClient.from('discovery_profiles').upsert(data);
             localStorage.setItem('numerael_discovery_opted_in', 'true');
-            console.log('[Discovery] Opt-in başarılı — gender:', freshGender);
+            console.log('[Discovery] Opt-in başarılı — gender:', freshGender, 'city:', cityName || 'yok');
             return true;
         } catch(e) {
             console.error('[Discovery] Opt-in error:', e);
+            return false;
+        }
+    }
+
+    async function updateCity(userId, cityName) {
+        if (!cityName) return false;
+        var cityInfo = lookupCity(cityName);
+        var updateData = { city: cityName, updated_at: new Date().toISOString() };
+        if (cityInfo) {
+            updateData.city_lat = cityInfo.lat;
+            updateData.city_lng = cityInfo.lng;
+        }
+        try {
+            await window.supabaseClient.from('discovery_profiles')
+                .update(updateData).eq('user_id', userId);
+            console.log('[Discovery] Şehir güncellendi:', cityName);
+            return true;
+        } catch(e) {
+            console.error('[Discovery] Şehir güncelleme hatası:', e);
             return false;
         }
     }
@@ -619,9 +658,10 @@
         updateStreak: updateStreak,
         todayStr: todayStr,
 
-        // Opt-in/out
+        // Opt-in/out + şehir
         optIn: optIn,
         optOut: optOut,
+        updateCity: updateCity,
         refreshOwnProfile: refreshOwnProfile,
 
         // Eşleşme (çoklu günlük)

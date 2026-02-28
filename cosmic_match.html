@@ -18,6 +18,9 @@
 <script src="js/discovery-engine.js"></script>
 <script src="js/connection-engine.js"></script>
 <script src="js/avatar.js"></script>
+<script src="js/turkish-cities.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     tailwind.config = {
         darkMode: "class",
@@ -94,15 +97,24 @@
     @keyframes streak-fire{0%,100%{text-shadow:0 0 8px rgba(196,124,32,0.5)}50%{text-shadow:0 0 16px rgba(196,124,32,0.8)}}
     @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
     @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-    @keyframes radar-ping{0%{transform:scale(1);opacity:0.6}100%{transform:scale(2.5);opacity:0}}
     .fade-up{animation:fade-up 0.5s ease forwards;opacity:0}
     .pulse-glow{animation:pulse-glow 3s ease-in-out infinite}
     .streak-fire{animation:streak-fire 2s ease-in-out infinite}
     .shimmer-placeholder{background:linear-gradient(90deg,rgba(196,124,32,0.08) 25%,rgba(229,163,84,0.15) 50%,rgba(196,124,32,0.08) 75%);background-size:200% 100%;animation:shimmer 2s ease-in-out infinite}
-    .radar-ring{position:absolute;border-radius:50%;border:1px solid rgba(196,124,32,0.1);top:50%;left:50%;transform:translate(-50%,-50%)}
-    .radar-ping{position:absolute;border-radius:50%;background:rgba(196,124,32,0.12);top:50%;left:50%;transform:translate(-50%,-50%);animation:radar-ping 3s ease-out infinite}
-    .radar-dot{position:absolute;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;cursor:pointer;transition:all 0.3s;border:2px solid}
-    .radar-dot:hover{transform:scale(1.3);z-index:10}
+    /* Leaflet harita dark tema */
+    .dark #cosmic-map .leaflet-tile-pane{filter:brightness(0.7) invert(1) contrast(1.1) hue-rotate(200deg) saturate(0.3)}
+    .dark #cosmic-map .leaflet-control-zoom a{background:rgba(36,24,18,0.9);color:#C47C20;border-color:rgba(196,124,32,0.3)}
+    .dark #cosmic-map .leaflet-control-attribution{background:rgba(36,24,18,0.8)!important;color:rgba(255,255,255,0.4)!important;font-size:8px}
+    .dark #cosmic-map .leaflet-control-attribution a{color:rgba(196,124,32,0.6)!important}
+    #cosmic-map .leaflet-control-attribution{font-size:8px}
+    #cosmic-map .cosmic-marker{display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;font-size:11px;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:transform 0.2s;border:2px solid;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+    #cosmic-map .cosmic-marker:hover{transform:scale(1.3);z-index:100!important}
+    #cosmic-map .cosmic-marker-self{width:36px;height:36px;background:linear-gradient(135deg,#C47C20,#E5A354);border-color:#fff;color:#fff;box-shadow:0 0 16px rgba(196,124,32,0.5)}
+    #cosmic-map .cosmic-marker-match{width:32px;height:32px;background:rgba(196,124,32,0.15);border-color:rgba(196,124,32,0.5);color:#C47C20}
+    .leaflet-popup-content-wrapper{background:rgba(36,24,18,0.95)!important;color:#E2D1C3!important;border-radius:12px!important;border:1px solid rgba(196,124,32,0.3)!important;box-shadow:0 4px 20px rgba(0,0,0,0.4)!important}
+    .leaflet-popup-tip{background:rgba(36,24,18,0.95)!important}
+    .leaflet-popup-content{margin:8px 12px!important;font-family:'Space Grotesk',sans-serif!important;font-size:12px!important}
+    html:not(.dark) .leaflet-popup-content-wrapper{background:rgba(255,255,255,0.95)!important;color:#333!important;border-color:rgba(0,0,0,0.1)!important}
     .scroll-fragment{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all 0.3s ease}
     .scroll-fragment.ribbon-active .frag-ring{background:linear-gradient(135deg,var(--primary-copper),#E5A354);box-shadow:0 0 16px rgba(196,124,32,0.4);transform:scale(1.05)}
 </style>
@@ -159,6 +171,16 @@
                 <p class="text-text-muted text-xs">Profil ayarlarından keşfedilebilirliğini kapat</p>
             </div>
         </div>
+    </div>
+    <!-- Şehir Seçici -->
+    <div class="w-full max-w-[320px] mb-6">
+        <label class="text-xs font-bold text-text-muted uppercase tracking-wider mb-2 block text-left">
+            <span class="material-symbols-outlined text-sm align-middle mr-1">location_on</span>
+            Şehrini Seç
+        </label>
+        <select id="city-select" class="w-full py-3 px-4 rounded-xl text-sm font-medium bg-white/5 dark:bg-white/5 border border-gray-200 dark:border-primary/20 text-gray-800 dark:text-[#E2D1C3] focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none" style="background-image:url('data:image/svg+xml;utf8,<svg fill=\&quot;%23C47C20\&quot; viewBox=\&quot;0 0 24 24\&quot; xmlns=\&quot;http://www.w3.org/2000/svg\&quot;><path d=\&quot;M7 10l5 5 5-5z\&quot;/></svg>');background-repeat:no-repeat;background-position:right 12px center;background-size:20px">
+            <option value="">— İl seçin —</option>
+        </select>
     </div>
     <button id="btn-optin" class="w-full max-w-[320px] py-4 rounded-2xl text-sm font-bold uppercase tracking-[0.15em] flex items-center justify-center gap-3 text-white transition active:scale-95 bg-gradient-to-r from-primary/80 to-primary shadow-lg shadow-primary/20 border border-white/10">
         <span class="material-symbols-outlined">rocket_launch</span>
@@ -344,36 +366,20 @@
         </div>
     </div>
 
-    <!-- ═══ NEARBY SPIRITS — referanstaki harita bölümü, radar olarak ═══ -->
+    <!-- ═══ NEARBY SPIRITS — Şehir Bazlı Harita ═══ -->
     <div class="pt-4 fade-up" style="animation-delay:0.15s">
         <div class="flex justify-between items-center mb-3 px-1">
-            <h2 class="text-base font-bold text-gray-800 dark:text-[#E2D1C3]">Yakındaki Ruhlar</h2>
+            <h2 class="text-base font-bold text-gray-800 dark:text-[#E2D1C3]">Kozmik Harita</h2>
+            <span class="text-text-muted text-xs" id="map-info"></span>
         </div>
-        <div class="relative w-full h-48 rounded-3xl overflow-hidden shadow-lg border border-gray-200 dark:border-primary/20">
-            <div class="absolute inset-0 bg-[#241812]">
-                <div class="w-full h-full flex items-center justify-center relative" style="background:radial-gradient(circle at center,rgba(196,124,32,0.06) 0%,rgba(24,15,10,0.95) 100%)">
-                    <div class="radar-ring" style="width:160px;height:160px"></div>
-                    <div class="radar-ring" style="width:100px;height:100px"></div>
-                    <div class="radar-ring" style="width:50px;height:50px"></div>
-                    <div class="radar-ping" style="width:50px;height:50px"></div>
-                    <div class="absolute z-20">
-                        <div class="size-10 rounded-full cosmic-gradient flex items-center justify-center border-2" style="border-color:var(--bg-sacred);box-shadow:0 0 20px rgba(196,124,32,0.3)">
-                            <span class="text-white text-xs font-black">✦</span>
-                        </div>
-                    </div>
-                    <div id="radar-dots" class="absolute inset-0"></div>
-                </div>
-                <div class="absolute inset-0 bg-primary/5 mix-blend-overlay pointer-events-none"></div>
-            </div>
-            <div class="absolute top-3 right-3 bg-black/60 backdrop-blur-md p-2 rounded-full text-white">
-                <span class="material-icons-outlined text-sm block">radar</span>
+        <div class="relative w-full rounded-3xl overflow-hidden shadow-lg border border-gray-200 dark:border-primary/20" style="height:220px">
+            <div id="cosmic-map" style="width:100%;height:100%;z-index:1"></div>
+            <div class="absolute top-3 right-3 z-[500] bg-black/60 backdrop-filter backdrop-blur-md p-2 rounded-full text-white pointer-events-none">
+                <span class="material-icons-outlined text-sm block">map</span>
             </div>
         </div>
-        <div id="radar-empty" style="display:none" class="text-center mt-2">
-            <p class="text-text-muted text-xs">Radar etrafında henüz ruh yok...</p>
-        </div>
-        <div id="radar-info" style="display:none" class="text-center mt-2">
-            <p class="text-text-muted text-xs"><span id="radar-count">0</span> uyumlu ruh etrafında ✦</p>
+        <div id="map-empty" style="display:none" class="text-center mt-2">
+            <p class="text-text-muted text-xs">Haritada henüz ruh yok...</p>
         </div>
     </div>
 
@@ -475,15 +481,32 @@ document.addEventListener('DOMContentLoaded', async function() {
         window.gamification.trackAction('cosmic_match_view');
     }
 
+    // Şehir seçici doldur
+    var citySelect = document.getElementById('city-select');
+    if (citySelect && window.TURKISH_CITIES) {
+        window.TURKISH_CITIES.forEach(function(c) {
+            var opt = document.createElement('option');
+            opt.value = c.name;
+            opt.textContent = c.name;
+            citySelect.appendChild(opt);
+        });
+    }
+
     // Opt-in
     var optedIn = localStorage.getItem('numerael_discovery_opted_in') === 'true';
     if (!optedIn) {
         document.getElementById('optin-screen').style.display = 'flex';
         document.getElementById('main-content').style.display = 'none';
         document.getElementById('btn-optin').addEventListener('click', async function() {
+            var selectedCity = citySelect ? citySelect.value : '';
+            if (!selectedCity) {
+                citySelect.style.borderColor = '#ef4444';
+                citySelect.focus();
+                return;
+            }
             this.disabled = true;
             this.innerHTML = '<span class="material-symbols-outlined animate-spin">progress_activity</span> Katılınıyor...';
-            var success = await window.discovery.optIn(userId);
+            var success = await window.discovery.optIn(userId, selectedCity);
             if (success) {
                 optedIn = true;
                 document.getElementById('optin-screen').style.display = 'none';
@@ -610,7 +633,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('credits-label').textContent = isPrem ? 'Bugün' : 'Premium';
 
         populateRibbon(dailyMatches);
-        renderRadar(dailyMatches);
+        renderMap(dailyMatches);
 
         if (dailyMatches.length > 0) {
             document.getElementById('match-loading').style.display = 'none';
@@ -880,28 +903,110 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
-    // Radar
-    function renderRadar(dailyMatches) {
-        var dotsEl=document.getElementById('radar-dots'); dotsEl.innerHTML='';
-        var matches=(dailyMatches||[]).filter(function(m){return m&&m.matched;});
-        if(!matches.length){document.getElementById('radar-empty').style.display='block';document.getElementById('radar-info').style.display='none';return;}
-        document.getElementById('radar-empty').style.display='none';document.getElementById('radar-info').style.display='block';
-        document.getElementById('radar-count').textContent=matches.length;
-        var colors=['#C47C20','#E5A354','#8B5716','#D4956B','#B8834A','#E8B471','#A06D2E','#C9944F'];
-        matches.forEach(function(match,idx){
-            var p=match.matched; var score=match.match_score||0;
-            var distance=70-(score-65)*0.8; distance=Math.max(30,Math.min(75,distance));
-            var angle=(idx/matches.length)*2*Math.PI-Math.PI/2;
-            var cw=192; var ch=96;
-            var x=cw+distance*Math.cos(angle)-18; var y=ch+distance*Math.sin(angle)-18;
-            var color=colors[idx%colors.length];
-            var dot=document.createElement('div'); dot.className='radar-dot';
-            dot.style.cssText='left:'+x+'px;top:'+y+'px;background:'+color+'22;border-color:'+color+'66;animation:float '+(2.5+idx*0.3)+'s ease-in-out infinite;animation-delay:'+(idx*0.2)+'s';
-            dot.innerHTML='<span style="color:'+color+'">'+(p.life_path||'?')+'</span>';
-            dot.title=maskName(p.full_name)+' · %'+score;
-            (function(i){dot.addEventListener('click',function(){selectRibbonItem(i);});})(idx);
-            dotsEl.appendChild(dot);
+    // Harita — Leaflet.js ile şehir bazlı
+    var _cosmicMap = null;
+    function renderMap(dailyMatches) {
+        var mapEl = document.getElementById('cosmic-map');
+        var mapEmpty = document.getElementById('map-empty');
+        var mapInfo = document.getElementById('map-info');
+        var matches = (dailyMatches || []).filter(function(m) { return m && m.matched; });
+
+        if (!matches.length) {
+            if (mapEmpty) mapEmpty.style.display = 'block';
+            if (mapInfo) mapInfo.textContent = '';
+        } else {
+            if (mapEmpty) mapEmpty.style.display = 'none';
+            if (mapInfo) mapInfo.textContent = matches.length + ' uyumlu ruh ✦';
+        }
+
+        // Leaflet haritası oluştur
+        if (!_cosmicMap) {
+            try {
+                _cosmicMap = L.map('cosmic-map', {
+                    center: [39.0, 35.0],
+                    zoom: 6,
+                    zoomControl: true,
+                    attributionControl: true,
+                    scrollWheelZoom: false,
+                    dragging: true,
+                    doubleClickZoom: false
+                });
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OSM',
+                    maxZoom: 10,
+                    minZoom: 5
+                }).addTo(_cosmicMap);
+            } catch(e) {
+                console.warn('[CosmicMatch] Harita yükleme hatası:', e);
+                return;
+            }
+        }
+
+        // Mevcut marker'ları temizle
+        _cosmicMap.eachLayer(function(layer) {
+            if (layer instanceof L.Marker) _cosmicMap.removeLayer(layer);
         });
+
+        // Kullanıcının kendi şehrini göster
+        try {
+            window.supabaseClient.from('discovery_profiles')
+                .select('city, city_lat, city_lng')
+                .eq('user_id', userId)
+                .maybeSingle()
+                .then(function(res) {
+                    if (res.data && res.data.city_lat && res.data.city_lng) {
+                        var selfIcon = L.divIcon({
+                            className: '',
+                            html: '<div class="cosmic-marker cosmic-marker-self">✦</div>',
+                            iconSize: [36, 36],
+                            iconAnchor: [18, 18]
+                        });
+                        L.marker([res.data.city_lat, res.data.city_lng], { icon: selfIcon, zIndexOffset: 1000 })
+                            .addTo(_cosmicMap)
+                            .bindPopup('<div style="text-align:center"><b>Sen</b><br><span style="opacity:0.7">' + (res.data.city || '') + '</span></div>');
+                    }
+                });
+        } catch(e) {}
+
+        // Eşleşmelerin şehirlerini göster
+        var colors = ['#C47C20', '#E5A354', '#8B5716', '#D4956B', '#B8834A', '#E8B471', '#A06D2E', '#C9944F'];
+        var bounds = [];
+        matches.forEach(function(match, idx) {
+            var p = match.matched;
+            if (!p || !p.city_lat || !p.city_lng) return;
+            var color = colors[idx % colors.length];
+            var score = match.match_score || 0;
+            var lp = p.life_path || '?';
+
+            var markerIcon = L.divIcon({
+                className: '',
+                html: '<div class="cosmic-marker cosmic-marker-match" style="border-color:' + color + '88;background:' + color + '22;color:' + color + '">' + lp + '</div>',
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+
+            var marker = L.marker([p.city_lat, p.city_lng], { icon: markerIcon })
+                .addTo(_cosmicMap)
+                .bindPopup('<div style="text-align:center"><b>' + maskName(p.full_name) + '</b><br><span style="opacity:0.7">Yaşam Yolu: ' + lp + ' · %' + score + '</span><br><span style="opacity:0.5;font-size:10px">' + (p.city || '') + '</span></div>');
+
+            (function(i) {
+                marker.on('click', function() { selectRibbonItem(i); });
+            })(idx);
+
+            bounds.push([p.city_lat, p.city_lng]);
+        });
+
+        // Fit bounds — tüm marker'ları göster
+        if (bounds.length > 0) {
+            try {
+                _cosmicMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 8 });
+            } catch(e) {}
+        }
+
+        // Harita boyutunu düzelt (gizli container'dan açılınca)
+        setTimeout(function() {
+            if (_cosmicMap) _cosmicMap.invalidateSize();
+        }, 300);
     }
 
     // History — Sacred Transitions stili
