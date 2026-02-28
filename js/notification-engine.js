@@ -7,13 +7,38 @@
 (function() {
     'use strict';
 
-    // ─── Skip on excluded pages ────────────────────────────
+    function sb() { return window.supabaseClient; }
+
+    // ═══════════════════════════════════════════════════════
+    // NOTIFICATION CREATION — Available on ALL pages
+    // (connection-engine.js calls this from cosmic_match, messaging, etc.)
+    // ═══════════════════════════════════════════════════════
+
+    async function createNotification(targetUserId, type, payload) {
+        try {
+            await sb().from('notifications').insert({
+                user_id: targetUserId,
+                type: type,
+                payload: payload || {}
+            });
+        } catch(e) {
+            console.warn('[Notif] Create error:', e);
+        }
+    }
+
+    // Export immediately so createNotification is available on ALL pages
+    window.notificationEngine = {
+        createNotification: createNotification
+    };
+
+    // ─── Bell UI + Panel only on allowed pages ───────────
     var currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    // Bildirim zili SADECE ana sayfada görünsün
     var ALLOWED = ['mystic_numerology_home_1.html', 'connections_shared_readings.html'];
     if (ALLOWED.indexOf(currentPage) === -1) return;
 
-    function sb() { return window.supabaseClient; }
+    // ═══════════════════════════════════════════════════════
+    // INTERNAL STATE (only on ALLOWED pages)
+    // ═══════════════════════════════════════════════════════
 
     var _userId = null;
     var _channel = null;
@@ -112,13 +137,13 @@
     panel.id = 'numerael-notif-panel';
     panel.innerHTML =
         '<div class="notif-header">' +
-            '<h3>Notifications</h3>' +
-            '<button id="notif-mark-all">Mark all as read</button>' +
+            '<h3>Bildirimler</h3>' +
+            '<button id="notif-mark-all">Tümünü okundu işaretle</button>' +
         '</div>' +
         '<div class="notif-list" id="notif-list">' +
             '<div class="notif-empty" id="notif-empty">' +
                 '<span class="material-symbols-outlined" style="font-size:32px;margin-bottom:8px;opacity:0.4">notifications_off</span>' +
-                'No notifications' +
+                'Bildirim yok' +
             '</div>' +
         '</div>';
 
@@ -202,10 +227,10 @@
             var now = Date.now();
             var d = new Date(ts).getTime();
             var diff = Math.floor((now - d) / 1000);
-            if (diff < 60) return 'now';
-            if (diff < 3600) return Math.floor(diff / 60) + 'm';
-            if (diff < 86400) return Math.floor(diff / 3600) + 'h';
-            if (diff < 604800) return Math.floor(diff / 86400) + 'd';
+            if (diff < 60) return 'şimdi';
+            if (diff < 3600) return Math.floor(diff / 60) + 'dk';
+            if (diff < 86400) return Math.floor(diff / 3600) + 'sa';
+            if (diff < 604800) return Math.floor(diff / 86400) + 'g';
             return new Date(ts).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
         } catch(e) { return ''; }
     }
@@ -336,22 +361,6 @@
     }
 
     // ═══════════════════════════════════════════════════════
-    // NOTIFICATION CREATION (called from connection-engine)
-    // ═══════════════════════════════════════════════════════
-
-    async function createNotification(targetUserId, type, payload) {
-        try {
-            await sb().from('notifications').insert({
-                user_id: targetUserId,
-                type: type,
-                payload: payload || {}
-            });
-        } catch(e) {
-            console.warn('[Notif] Create error:', e);
-        }
-    }
-
-    // ═══════════════════════════════════════════════════════
     // NATIVE LOCAL NOTIFICATIONS (Capacitor)
     // ═══════════════════════════════════════════════════════
 
@@ -452,18 +461,27 @@
     }
 
     // ═══════════════════════════════════════════════════════
-    // INIT
+    // INIT (with auth.whenReady() to ensure session is loaded)
     // ═══════════════════════════════════════════════════════
 
     async function init() {
         try {
+            // Auth hazır olana kadar bekle (session recovery tamamlansın)
+            if (window.auth && window.auth.whenReady) {
+                await window.auth.whenReady();
+            }
             var session = await window.auth.getSession();
             if (session && session.user) {
                 _userId = session.user.id;
             }
-        } catch(e) {}
+        } catch(e) {
+            console.warn('[Notif] Auth session error:', e);
+        }
 
-        if (!_userId) return;
+        if (!_userId) {
+            console.warn('[Notif] userId bulunamadı, bell inject edilmeyecek');
+            return;
+        }
 
         injectBell();
         initLocalNotifications();
@@ -481,22 +499,19 @@
     }
 
     // ═══════════════════════════════════════════════════════
-    // GLOBAL EXPORT
+    // EXTEND GLOBAL EXPORT (add UI methods for ALLOWED pages)
     // ═══════════════════════════════════════════════════════
 
-    window.notificationEngine = {
-        createNotification: createNotification,
-        loadNotifications: loadNotifications,
-        markAsRead: markAsRead,
-        markAllAsRead: markAllAsRead,
-        getUnreadMessageSenders: function() {
-            return _notifications
-                .filter(function(n) { return n.type === 'new_message' && !n.is_read && n.payload && n.payload.sender_id; })
-                .map(function(n) { return n.payload.sender_id; });
-        },
-        onNewNotification: function(cb) {
-            if (typeof cb === 'function') _notifCallbacks.push(cb);
-        }
+    window.notificationEngine.loadNotifications = loadNotifications;
+    window.notificationEngine.markAsRead = markAsRead;
+    window.notificationEngine.markAllAsRead = markAllAsRead;
+    window.notificationEngine.getUnreadMessageSenders = function() {
+        return _notifications
+            .filter(function(n) { return n.type === 'new_message' && !n.is_read && n.payload && n.payload.sender_id; })
+            .map(function(n) { return n.payload.sender_id; });
+    };
+    window.notificationEngine.onNewNotification = function(cb) {
+        if (typeof cb === 'function') _notifCallbacks.push(cb);
     };
 
 })();
