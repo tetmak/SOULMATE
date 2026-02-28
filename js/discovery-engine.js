@@ -330,6 +330,13 @@
                                 });
                                 existing.data.push({ user_id: userId, matched_user_id: addP.user_id, match_score: addScore, match_date: today, revealed: false });
                             } catch(ae) {}
+                            // Karşılıklı eşleşme
+                            try {
+                                await sb.from('daily_matches').insert({
+                                    user_id: addP.user_id, matched_user_id: userId,
+                                    match_score: Math.min(99, addScore), match_date: today, revealed: false
+                                });
+                            } catch(re2) {}
                         }
                     }
 
@@ -391,7 +398,7 @@
         var dailyPicks = scored.slice(0, MAX_DAILY_MATCHES);
         console.log('[Match] ' + dailyPicks.length + ' yeni günlük eşleşme oluşturuluyor');
 
-        // Hepsini DB'ye kaydet
+        // Hepsini DB'ye kaydet + karşılıklı eşleşme oluştur
         var results = [];
         for (var i = 0; i < dailyPicks.length; i++) {
             var pick = dailyPicks[i];
@@ -404,6 +411,20 @@
                     revealed: false
                 });
             } catch(e) { console.warn('[Match] Insert error for ' + pick.profile.full_name + ':', e); }
+
+            // ─── Karşılıklı eşleşme: B → A kaydı da oluştur ───
+            try {
+                await sb.from('daily_matches').insert({
+                    user_id: pick.profile.user_id,
+                    matched_user_id: userId,
+                    match_score: pick.score,
+                    match_date: today,
+                    revealed: false
+                });
+                console.log('[Match] Karşılıklı eşleşme oluşturuldu: ' + pick.profile.full_name + ' → currentUser');
+            } catch(re) {
+                // Zaten varsa (UNIQUE constraint) sessizce geç
+            }
 
             results.push({
                 matched_user_id: pick.profile.user_id,
