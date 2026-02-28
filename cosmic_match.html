@@ -697,51 +697,63 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function updateCardDisplay(item) {
         var m = item.profile; var score = item.score;
-        document.getElementById('match-loading').style.display = 'none';
-        document.getElementById('match-empty').style.display = 'none';
-        document.getElementById('match-content').style.display = 'block';
-        document.getElementById('match-lp').textContent = m.life_path || '?';
-        document.getElementById('match-score').textContent = score + '%';
-        document.getElementById('match-bar').style.width = '0%';
-        setTimeout(function() { document.getElementById('match-bar').style.width = score + '%'; }, 50);
-        document.getElementById('match-bond').textContent = window.discovery.bondLabel(score);
-        var arch = window.discovery.ARCHETYPES[m.life_path] || 'Ruh';
-        document.getElementById('match-archetype').textContent = 'Life Path ' + (m.life_path||'?') + ' · ' + arch;
-        var tagsEl = document.getElementById('soul-tags');
-        tagsEl.innerHTML =
-            '<span class="px-3 py-1 rounded-full bg-primary/10 dark:bg-white/5 text-xs font-medium text-primary dark:text-primary/90 border border-primary/20">LP ' + (m.life_path||'?') + ' · ' + arch + '</span>' +
-            '<span class="px-3 py-1 rounded-full bg-primary/10 dark:bg-white/5 text-xs font-medium text-primary dark:text-primary/90 border border-primary/20">%' + score + ' Uyum</span>';
-        generateInsights(m, score);
+        var isRevealed = item.revealed || storedIsPrem;
 
-        if (item.revealed) {
-            document.getElementById('match-card').classList.remove('match-card-blur');
-            document.getElementById('match-card').classList.add('match-card-revealed');
-            document.getElementById('match-name').textContent = m.full_name || '???';
-            document.getElementById('match-avatar').innerHTML = '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover rounded-full" alt="">';
-            document.getElementById('btn-reveal').style.display = 'none';
-            document.getElementById('no-credits-msg').style.display = 'none';
-            document.getElementById('premium-paywall').style.display = 'none';
-            document.getElementById('revealed-info').style.display = 'flex';
-        } else {
-            document.getElementById('match-card').classList.add('match-card-blur');
-            document.getElementById('match-card').classList.remove('match-card-revealed');
-            document.getElementById('match-name').textContent = maskName(m.full_name);
-            document.getElementById('match-avatar').innerHTML = '<span class="text-primary text-2xl font-bold">' + initial(m.full_name) + '</span>';
-            document.getElementById('revealed-info').style.display = 'none';
-            if (!storedIsPrem) {
+        // ─── 1. ÖNCE isim, avatar, skor güncelle (kullanıcı hemen görsün) ───
+        try {
+            document.getElementById('match-loading').style.display = 'none';
+            document.getElementById('match-empty').style.display = 'none';
+            document.getElementById('match-content').style.display = 'block';
+            document.getElementById('match-score').textContent = score + '%';
+            document.getElementById('match-bar').style.width = '0%';
+            setTimeout(function() { document.getElementById('match-bar').style.width = score + '%'; }, 50);
+
+            // İsim ve avatar — revealed durumuna göre
+            if (isRevealed) {
+                document.getElementById('match-card').classList.remove('match-card-blur');
+                document.getElementById('match-card').classList.add('match-card-revealed');
+                document.getElementById('match-name').textContent = m.full_name || '???';
+                document.getElementById('match-avatar').innerHTML = '<img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover rounded-full" alt="">';
                 document.getElementById('btn-reveal').style.display = 'none';
                 document.getElementById('no-credits-msg').style.display = 'none';
-                document.getElementById('premium-paywall').style.display = 'flex';
-            } else if (storedRemaining > 0) {
-                document.getElementById('btn-reveal').style.display = 'flex';
-                document.getElementById('no-credits-msg').style.display = 'none';
                 document.getElementById('premium-paywall').style.display = 'none';
+                document.getElementById('revealed-info').style.display = 'flex';
             } else {
-                document.getElementById('btn-reveal').style.display = 'none';
-                document.getElementById('no-credits-msg').style.display = 'block';
-                document.getElementById('premium-paywall').style.display = 'none';
+                document.getElementById('match-card').classList.add('match-card-blur');
+                document.getElementById('match-card').classList.remove('match-card-revealed');
+                document.getElementById('match-name').textContent = maskName(m.full_name);
+                document.getElementById('match-avatar').innerHTML = '<span class="text-primary text-2xl font-bold">' + initial(m.full_name) + '</span>';
+                document.getElementById('revealed-info').style.display = 'none';
+                if (!storedIsPrem) {
+                    document.getElementById('btn-reveal').style.display = 'none';
+                    document.getElementById('no-credits-msg').style.display = 'none';
+                    document.getElementById('premium-paywall').style.display = 'flex';
+                } else if (storedRemaining > 0) {
+                    document.getElementById('btn-reveal').style.display = 'flex';
+                    document.getElementById('no-credits-msg').style.display = 'none';
+                    document.getElementById('premium-paywall').style.display = 'none';
+                } else {
+                    document.getElementById('btn-reveal').style.display = 'none';
+                    document.getElementById('no-credits-msg').style.display = 'block';
+                    document.getElementById('premium-paywall').style.display = 'none';
+                }
             }
-        }
+        } catch(e) { console.error('[CosmicMatch] updateCardDisplay avatar/name hatası:', e); }
+
+        // ─── 2. Etiketler ve bağ bilgisi ───
+        try {
+            document.getElementById('match-lp').textContent = m.life_path || '?';
+            document.getElementById('match-bond').textContent = window.discovery.bondLabel(score);
+            var arch = window.discovery.ARCHETYPES[m.life_path] || 'Ruh';
+            document.getElementById('match-archetype').textContent = 'Life Path ' + (m.life_path||'?') + ' · ' + arch;
+            var tagsEl = document.getElementById('soul-tags');
+            tagsEl.innerHTML =
+                '<span class="px-3 py-1 rounded-full bg-primary/10 dark:bg-white/5 text-xs font-medium text-primary dark:text-primary/90 border border-primary/20">LP ' + (m.life_path||'?') + ' · ' + arch + '</span>' +
+                '<span class="px-3 py-1 rounded-full bg-primary/10 dark:bg-white/5 text-xs font-medium text-primary dark:text-primary/90 border border-primary/20">%' + score + ' Uyum</span>';
+        } catch(e) { console.error('[CosmicMatch] updateCardDisplay tags hatası:', e); }
+
+        // ─── 3. AI analiz (en son — hata olursa üst kısmı etkilemesin) ───
+        try { generateInsights(m, score); } catch(e) { console.error('[CosmicMatch] generateInsights hatası:', e); }
     }
 
     // Kozmik analiz — AI destekli
