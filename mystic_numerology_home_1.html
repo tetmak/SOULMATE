@@ -391,8 +391,9 @@
         document.getElementById('card-manifest-portal').onclick = function () { window.location.href = 'manifest_portal.html'; };
         // Gamification home entegrasyonu
         if (window.gamification) {
+            var rp = window.gamification.getRankProgress ? window.gamification.getRankProgress() : null;
             var badge = document.getElementById('home-rank-badge');
-            if (badge) badge.style.borderColor = rp.current.color + '40';
+            if (badge && rp && rp.current) badge.style.borderColor = rp.current.color + '40';
 
             // Günlük görevler
             var quests = window.gamification.getQuests();

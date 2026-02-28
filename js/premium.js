@@ -277,11 +277,20 @@
         if (isPremium()) return { allowed: true };
         switch (feature) {
             case 'add_connection':
-                // Bağlantı sayısını Supabase'den hesapla (senkron çağrı yapılamaz — localStorage cache kullan ama Supabase'den güncellenmiş olmalı)
+                // Bağlantı sayısını localStorage cache'den hesapla
                 var cc = 0;
                 try {
                     var session2 = null;
-                    try { session2 = window.auth ? window.auth._lastSession : null; } catch(e2) {}
+                    try {
+                        if (window.auth && window.auth.getSession) {
+                            // Senkron erişim: localStorage'dan session oku
+                            var rawSession = localStorage.getItem('numerael-auth-token');
+                            if (rawSession) {
+                                var parsed = JSON.parse(rawSession);
+                                session2 = parsed && parsed.user ? parsed : (parsed && parsed.session ? parsed.session : null);
+                            }
+                        }
+                    } catch(e2) {}
                     var connKey = 'numerael_connections_' + ((session2 && session2.user) ? session2.user.id : 'guest');
                     cc = JSON.parse(localStorage.getItem(connKey) || '[]').length;
                 } catch(e) {}
