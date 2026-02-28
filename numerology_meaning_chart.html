@@ -7,6 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="js/theme-engine.js"></script>
+<script src="js/i18n-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <script id="tailwind-config">
         tailwind.config = {
@@ -46,17 +47,17 @@
 <div onclick="window.location.href='mystic_numerology_home_1.html'" class="text-slate-700 dark:text-white flex size-12 shrink-0 items-center justify-center rounded-full active:bg-slate-100 dark:active:bg-white/10 transition-colors cursor-pointer">
 <span class="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
 </div>
-<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Numerology Meanings</h2>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center" data-i18n="meaning.header_title">Numerology Meanings</h2>
 <div class="flex w-12 items-center justify-end">
-<button class="text-slate-500 dark:text-[#bbb29b] hover:text-primary text-base font-bold leading-normal tracking-[0.015em] shrink-0 transition-colors">Close</button>
+<button class="text-slate-500 dark:text-[#bbb29b] hover:text-primary text-base font-bold leading-normal tracking-[0.015em] shrink-0 transition-colors" data-i18n="meaning.close">Close</button>
 </div>
 </div>
 <!-- Content Container -->
 <div class="flex-1 flex flex-col px-4 pb-8">
 <!-- HeadlineText -->
 <div class="py-6">
-<h3 class="tracking-tight text-3xl font-bold leading-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-primary via-slate-800 to-primary dark:from-primary dark:via-white dark:to-primary">Core Vibrations 1-9</h3>
-<p class="text-slate-500 dark:text-[#bbb29b] text-center mt-2 text-sm font-medium opacity-80">Discover the fundamental energy of each digit</p>
+<h3 class="tracking-tight text-3xl font-bold leading-tight text-center bg-clip-text text-transparent bg-gradient-to-r from-primary via-slate-800 to-primary dark:from-primary dark:via-white dark:to-primary" data-i18n="meaning.core_vibrations">Core Vibrations 1-9</h3>
+<p class="text-slate-500 dark:text-[#bbb29b] text-center mt-2 text-sm font-medium opacity-80" data-i18n="meaning.core_subtitle">Discover the fundamental energy of each digit</p>
 </div>
 <!-- List Items Container with Glassmorphism -->
 <div class="flex flex-col gap-3">
@@ -66,8 +67,8 @@
 <span class="text-2xl font-bold text-primary drop-shadow-sm">1</span>
 </div>
 <div class="flex flex-col justify-center flex-1">
-<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5">The Pioneer</p>
-<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed">Leadership, independence, beginnings, ambition, drive, uniqueness</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5" data-i18n="meaning.num1_title">The Pioneer</p>
+<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed" data-i18n="meaning.num1_desc">Leadership, independence, beginnings, ambition, drive, uniqueness</p>
 </div>
 </div>
 <!-- Number 2 -->
@@ -76,8 +77,8 @@
 <span class="text-2xl font-bold text-primary drop-shadow-sm">2</span>
 </div>
 <div class="flex flex-col justify-center flex-1">
-<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5">The Peacemaker</p>
-<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed">Partnership, duality, diplomacy, intuition, balance, harmony</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5" data-i18n="meaning.num2_title">The Peacemaker</p>
+<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed" data-i18n="meaning.num2_desc">Partnership, duality, diplomacy, intuition, balance, harmony</p>
 </div>
 </div>
 <!-- Number 3 -->
@@ -86,8 +87,8 @@
 <span class="text-2xl font-bold text-primary drop-shadow-sm">3</span>
 </div>
 <div class="flex flex-col justify-center flex-1">
-<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5">The Creative</p>
-<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed">Expression, creativity, communication, optimism, imagination</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5" data-i18n="meaning.num3_title">The Creative</p>
+<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed" data-i18n="meaning.num3_desc">Expression, creativity, communication, optimism, imagination</p>
 </div>
 </div>
 <!-- Number 4 -->
@@ -96,8 +97,8 @@
 <span class="text-2xl font-bold text-primary drop-shadow-sm">4</span>
 </div>
 <div class="flex flex-col justify-center flex-1">
-<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5">The Builder</p>
-<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed">Stability, structure, hard work, practicality, organization</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5" data-i18n="meaning.num4_title">The Builder</p>
+<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed" data-i18n="meaning.num4_desc">Stability, structure, hard work, practicality, organization</p>
 </div>
 </div>
 <!-- Number 5 -->
@@ -106,8 +107,8 @@
 <span class="text-2xl font-bold text-primary drop-shadow-sm">5</span>
 </div>
 <div class="flex flex-col justify-center flex-1">
-<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5">The Adventurer</p>
-<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed">Freedom, change, adventure, versatility, adaptability</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5" data-i18n="meaning.num5_title">The Adventurer</p>
+<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed" data-i18n="meaning.num5_desc">Freedom, change, adventure, versatility, adaptability</p>
 </div>
 </div>
 <!-- Number 6 -->
@@ -116,8 +117,8 @@
 <span class="text-2xl font-bold text-primary drop-shadow-sm">6</span>
 </div>
 <div class="flex flex-col justify-center flex-1">
-<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5">The Nurturer</p>
-<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed">Responsibility, protection, nurturing, community, balance, sympathy</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5" data-i18n="meaning.num6_title">The Nurturer</p>
+<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed" data-i18n="meaning.num6_desc">Responsibility, protection, nurturing, community, balance, sympathy</p>
 </div>
 </div>
 <!-- Number 7 -->
@@ -126,8 +127,8 @@
 <span class="text-2xl font-bold text-primary drop-shadow-sm">7</span>
 </div>
 <div class="flex flex-col justify-center flex-1">
-<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5">The Seeker</p>
-<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed">Knowledge, contemplation, spirit, analysis, solitude, understanding</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5" data-i18n="meaning.num7_title">The Seeker</p>
+<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed" data-i18n="meaning.num7_desc">Knowledge, contemplation, spirit, analysis, solitude, understanding</p>
 </div>
 </div>
 <!-- Number 8 -->
@@ -136,8 +137,8 @@
 <span class="text-2xl font-bold text-primary drop-shadow-sm">8</span>
 </div>
 <div class="flex flex-col justify-center flex-1">
-<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5">The Executive</p>
-<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed">Power, abundance, finance, management, material freedom</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5" data-i18n="meaning.num8_title">The Executive</p>
+<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed" data-i18n="meaning.num8_desc">Power, abundance, finance, management, material freedom</p>
 </div>
 </div>
 <!-- Number 9 -->
@@ -146,8 +147,8 @@
 <span class="text-2xl font-bold text-primary drop-shadow-sm">9</span>
 </div>
 <div class="flex flex-col justify-center flex-1">
-<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5">The Humanitarian</p>
-<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed">Selflessness, completion, compassion, idealism, tolerance</p>
+<p class="text-slate-900 dark:text-white text-lg font-bold leading-normal mb-0.5" data-i18n="meaning.num9_title">The Humanitarian</p>
+<p class="text-slate-500 dark:text-[#bbb29b] text-sm font-normal leading-relaxed" data-i18n="meaning.num9_desc">Selflessness, completion, compassion, idealism, tolerance</p>
 </div>
 </div>
 </div>
@@ -155,7 +156,7 @@
 <div class="mt-8 flex justify-center pb-6">
 <button class="flex items-center gap-2 px-6 py-3 bg-primary text-background-dark font-bold rounded-full hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
 <span class="material-symbols-outlined text-xl">auto_awesome</span>
-<span>Get Your Full Chart</span>
+<span data-i18n="meaning.get_full_chart">Get Your Full Chart</span>
 </button>
 </div>
 </div>

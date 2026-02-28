@@ -6,6 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Karar Takvimi</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap"
@@ -98,7 +99,7 @@
         id="sidebar">
         <div class="flex flex-col h-full p-6">
             <div class="flex items-center justify-between mb-10">
-                <h2 class="text-xl font-bold text-slate-900 dark:text-white">Menü</h2>
+                <h2 data-i18n="calendar.menu_title" class="text-xl font-bold text-slate-900 dark:text-white">Menü</h2>
                 <label class="text-slate-500 dark:text-white/60 cursor-pointer" for="menu-toggle">
                     <span class="material-symbols-outlined"
                         onclick="window.location.href='mystic_numerology_home_1.html'"
@@ -109,43 +110,43 @@
                 <a class="flex items-center gap-4 text-primary font-bold" href="#">
                     <span class="material-symbols-outlined"
                         style="font-variation-settings: 'FILL' 1">calendar_month</span>
-                    <span>Takvim</span>
+                    <span data-i18n="calendar.menu_calendar">Takvim</span>
                 </a>
                 <a onclick="window.location.href='cosmic_manifest_portal.html'"
                     class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">explore</span>
-                    <span>Planlayıcı</span>
+                    <span data-i18n="calendar.menu_planner">Planlayıcı</span>
                 </a>
                 <a class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium"
                     href="#">
                     <div class="size-8 bg-primary rounded-full flex items-center justify-center">
                         <span class="material-symbols-outlined text-white text-sm">add</span>
                     </div>
-                    <span>Ritüel</span>
+                    <span data-i18n="calendar.menu_ritual">Ritüel</span>
                 </a>
                 <a onclick="window.location.href='daily_spiritual_guide.html'"
                     class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">auto_graph</span>
-                    <span>Günlük Rehber</span>
+                    <span data-i18n="calendar.menu_daily_guide">Günlük Rehber</span>
                 </a>
                 <a onclick="window.location.href='wheel_of_destiny.html'"
                     class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium border-t border-slate-200 dark:border-white/10 pt-6 mt-2 cursor-pointer"
                     href="#">
                     <span class="material-symbols-outlined">account_circle</span>
-                    <span>Profil</span>
+                    <span data-i18n="calendar.menu_profile">Profil</span>
                 </a>
                 <a class="flex items-center gap-4 text-slate-600 dark:text-white/70 hover:text-slate-900 dark:hover:text-white transition-colors font-medium"
                     href="#">
                     <span class="material-symbols-outlined">settings</span>
-                    <span>Ayarlar</span>
+                    <span data-i18n="calendar.menu_settings">Ayarlar</span>
                 </a>
             </nav>
             <div class="mt-auto">
                 <div class="bg-primary/10 rounded-xl p-4 border border-primary/20">
-                    <p class="text-xs text-cosmic-gold font-bold uppercase mb-2">Günlük Durum</p>
-                    <p class="text-sm text-slate-600 dark:text-white/80 italic">"Sayısal analiz aktif."</p>
+                    <p data-i18n="calendar.sidebar_status_label" class="text-xs text-cosmic-gold font-bold uppercase mb-2">Günlük Durum</p>
+                    <p data-i18n="calendar.sidebar_status_text" class="text-sm text-slate-600 dark:text-white/80 italic">"Sayısal analiz aktif."</p>
                 </div>
             </div>
         </div>
@@ -157,7 +158,7 @@
                 class="bg-slate-100 dark:bg-white/[0.08] border border-slate-200 dark:border-white/[0.15] text-slate-900 dark:text-white">
                 <span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">arrow_back_ios</span>
             </button>
-            <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Karar Takvimi
+            <h2 data-i18n="calendar.header_title" class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">Karar Takvimi
             </h2>
             <div class="text-slate-900 dark:text-white flex size-12 shrink-0 items-center justify-end">
                 <span class="material-symbols-outlined">account_circle</span>
@@ -177,30 +178,30 @@
                 </button>
             </div>
             <div class="grid grid-cols-7 text-center mb-2">
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Pz</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Pt</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Sa</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Ça</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Pe</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Cu</p>
-                <p class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Ct</p>
+                <p data-i18n="calendar.day_sun" class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Pz</p>
+                <p data-i18n="calendar.day_mon" class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Pt</p>
+                <p data-i18n="calendar.day_tue" class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Sa</p>
+                <p data-i18n="calendar.day_wed" class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Ça</p>
+                <p data-i18n="calendar.day_thu" class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Pe</p>
+                <p data-i18n="calendar.day_fri" class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Cu</p>
+                <p data-i18n="calendar.day_sat" class="text-[#ab9db9] text-[11px] font-bold uppercase tracking-widest">Ct</p>
             </div>
             <div class="grid grid-cols-7 gap-y-2" id="calendar-grid">
                 <!-- dinamik günler JS ile doldurulacak -->
             </div>
         </section>
         <div class="flex items-center justify-between px-2">
-            <h2 class="text-slate-900 dark:text-white text-2xl font-bold tracking-tight">Günlük Analiz</h2>
+            <h2 data-i18n="calendar.daily_analysis" class="text-slate-900 dark:text-white text-2xl font-bold tracking-tight">Günlük Analiz</h2>
             <div class="flex items-center gap-1 bg-primary/20 px-3 py-1 rounded-full">
                 <span class="material-symbols-outlined text-cosmic-gold text-sm"
                     style="font-variation-settings: 'FILL' 1">analytics</span>
-                <span class="text-xs font-bold text-cosmic-gold" id="alignment-label">Aktif Döngü</span>
+                <span data-i18n="calendar.active_cycle" class="text-xs font-bold text-cosmic-gold" id="alignment-label">Aktif Döngü</span>
             </div>
         </div>
         <div class="glass-card rounded-xl overflow-hidden shadow-2xl">
             <div class="p-6 space-y-5">
                 <div>
-                    <p class="text-cosmic-gold text-xs font-bold uppercase tracking-[0.2em] mb-2"
+                    <p data-i18n="calendar.today_vibration" class="text-cosmic-gold text-xs font-bold uppercase tracking-[0.2em] mb-2"
                         id="selected-date-label">Bugünün Titreşimi</p>
                     <h3 class="text-2xl font-bold text-slate-900 dark:text-white leading-tight mb-3" id="vibration-title">—</h3>
                     <p id="day-description" class="text-[#ab9db9] text-base leading-relaxed"></p>
@@ -209,23 +210,23 @@
                     <div class="bg-primary/10 rounded-lg p-3 border border-primary/20">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="material-symbols-outlined text-primary text-sm">check_circle</span>
-                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Desteklenen</span>
+                            <span data-i18n="calendar.supported_label" class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Desteklenen</span>
                         </div>
                         <div id="supported-actions" class="space-y-1"></div>
                     </div>
                     <div class="bg-primary/10 rounded-lg p-3 border border-primary/20">
                         <div class="flex items-center gap-2 mb-2">
                             <span class="material-symbols-outlined text-primary text-sm">warning</span>
-                            <span class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Zorlayıcı</span>
+                            <span data-i18n="calendar.challenging_label" class="text-xs font-bold text-[#ab9db9] uppercase tracking-wider">Zorlayıcı</span>
                         </div>
                         <div id="challenging-actions" class="space-y-1"></div>
                     </div>
                 </div>
-                <p class="text-[#ab9db9] text-xs text-center mb-3">Saatlik sayısal akışı inceleyerek kararlarınız için en uygun zaman dilimini görebilirsiniz.</p>
+                <p data-i18n="calendar.timing_hint" class="text-[#ab9db9] text-xs text-center mb-3">Saatlik sayısal akışı inceleyerek kararlarınız için en uygun zaman dilimini görebilirsiniz.</p>
                 <button id="decision-timing-cta"
                     class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg transition-transform active:scale-[0.98]"
                     style="position:relative;z-index:10;cursor:pointer;">
-                    Bu Günün Karar Zamanlamasını Gör
+                    <span data-i18n="calendar.timing_cta">Bu Günün Karar Zamanlamasını Gör</span>
                 </button>
             </div>
         </div>
@@ -477,29 +478,29 @@
             class="flex flex-col items-center gap-1 text-primary py-1">
             <span class="material-symbols-outlined text-lg"
                 style="font-variation-settings:'FILL' 1">calendar_month</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Takvim</span>
+            <span data-i18n="calendar.nav_calendar" class="text-[9px] font-bold uppercase tracking-tight">Takvim</span>
         </button>
         <button onclick="window.location.href='cosmic_manifest_portal.html'"
             class="flex flex-col items-center gap-1 text-slate-400 dark:text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">explore</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Planlayıcı</span>
+            <span data-i18n="calendar.nav_planner" class="text-[9px] font-bold uppercase tracking-tight">Planlayıcı</span>
         </button>
         <div class="relative -top-4">
             <button
                 class="size-14 rounded-full bg-primary flex items-center justify-center text-white shadow-lg border-4 border-background-light dark:border-background-dark">
                 <span class="material-symbols-outlined text-2xl">add</span>
             </button>
-            <span class="text-[9px] font-bold uppercase text-slate-400 dark:text-white/40 block text-center mt-1">Ritüel</span>
+            <span data-i18n="calendar.nav_ritual" class="text-[9px] font-bold uppercase text-slate-400 dark:text-white/40 block text-center mt-1">Ritüel</span>
         </div>
         <button onclick="window.location.href='daily_spiritual_guide.html'"
             class="flex flex-col items-center gap-1 text-slate-400 dark:text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">auto_graph</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Günlük Rehber</span>
+            <span data-i18n="calendar.nav_daily_guide" class="text-[9px] font-bold uppercase tracking-tight">Günlük Rehber</span>
         </button>
         <button onclick="window.location.href='wheel_of_destiny.html'"
             class="flex flex-col items-center gap-1 text-slate-400 dark:text-white/40 py-1">
             <span class="material-symbols-outlined text-lg">casino</span>
-            <span class="text-[9px] font-bold uppercase tracking-tight">Profil</span>
+            <span data-i18n="calendar.nav_profile" class="text-[9px] font-bold uppercase tracking-tight">Profil</span>
         </button>
     </nav>
     <script src="js/numerology-context-engine.js"></script>

@@ -6,6 +6,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Cosmic Manifestation Portal</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
@@ -306,19 +307,19 @@
         <!-- Category Selector -->
         <div id="cat-selector" class="flex flex-wrap justify-center gap-2 mb-6" style="position:relative;z-index:100;">
             <button class="cat-btn active" data-cat="love" onclick="selectCat(this)">
-                <span class="cat-dot" style="background:#ff6b8a"></span> Aşk
+                <span class="cat-dot" style="background:#ff6b8a"></span> <span data-i18n="manifest.cat_love">Aşk</span>
             </button>
             <button class="cat-btn" data-cat="money" onclick="selectCat(this)">
-                <span class="cat-dot" style="background:#6ee7b7"></span> Para
+                <span class="cat-dot" style="background:#6ee7b7"></span> <span data-i18n="manifest.cat_money">Para</span>
             </button>
             <button class="cat-btn" data-cat="health" onclick="selectCat(this)">
-                <span class="cat-dot" style="background:#fbbf24"></span> Sağlık
+                <span class="cat-dot" style="background:#fbbf24"></span> <span data-i18n="manifest.cat_health">Sağlık</span>
             </button>
             <button class="cat-btn" data-cat="career" onclick="selectCat(this)">
-                <span class="cat-dot" style="background:#fcd34d"></span> Kariyer
+                <span class="cat-dot" style="background:#fcd34d"></span> <span data-i18n="manifest.cat_career">Kariyer</span>
             </button>
             <button class="cat-btn" data-cat="spiritual" onclick="selectCat(this)">
-                <span class="cat-dot" style="background:#c084fc"></span> Ruh
+                <span class="cat-dot" style="background:#c084fc"></span> <span data-i18n="manifest.cat_spiritual">Ruh</span>
             </button>
         </div>
 
@@ -410,6 +411,9 @@
             return { phase: phase, illum: illum, age: age };
         }
 
+        // ── i18n helper ─────────────────────────────────
+        var _t = function(k, fb) { return (window.i18n && window.i18n.t) ? window.i18n.t(k) : fb; };
+
         // ── Tema konfigürasyonları ───────────────────────
         function getTheme(phase, illum) {
             var isFullMoon = phase === 'Full Moon';
@@ -425,29 +429,29 @@
                 phasePillBorder: 'rgba(226,232,240,0.4)',
                 phaseIcon: 'brightness_high',
                 phaseIconColor: '#e2e8f0',
-                phaseLabel: 'Full Moon Phase',
-                phaseSub: 'Energy: Release & Completion',
-                title: 'Release & Let Go',
+                phaseLabel: _t('manifest.phase_full', 'Full Moon Phase'),
+                phaseSub: _t('manifest.energy_release', 'Energy: Release & Completion'),
+                title: _t('manifest.title_release', 'Release & Let Go'),
                 titleColor: '#e2e8f0',
-                sub: 'Surrender what no longer serves your highest path to the silver moonlight.',
+                sub: _t('manifest.sub_release', 'Surrender what no longer serves your highest path to the silver moonlight.'),
                 inputGlow: 'rgba(226,232,240,0.1)',
                 inputBg: 'rgba(0,0,0,0.6)',
                 inputClass: 'input-full',
-                placeholder: 'What are you ready to release into the universe?',
+                placeholder: _t('manifest.placeholder_release', 'What are you ready to release into the universe?'),
                 hintColor: '#e2e8f0',
                 hintLineColor: 'rgba(226,232,240,0.3)',
-                hintMsg: 'Release. Surrender. Be free.',
+                hintMsg: _t('manifest.hint_release', 'Release. Surrender. Be free.'),
                 btnClass: 'btn-full',
-                btnText: 'Release to Universe',
+                btnText: _t('manifest.btn_release', 'Release to Universe'),
                 btnIcon: 'send',
                 btnTextColor: '#0f0f0f',
                 spark1Color: '#e2e8f0',
                 spark2Color: 'rgba(226,232,240,0.5)',
                 dotColor: '#e2e8f0',
                 sentIcon: '🌕',
-                sentTitle: 'Released to the Universe',
+                sentTitle: _t('manifest.sent_release', 'Released to the Universe'),
                 sentTitleColor: '#e2e8f0',
-                sentSub: 'Your intention is now weaving into the cosmic tapestry',
+                sentSub: _t('manifest.sent_sub_release', 'Your intention is now weaving into the cosmic tapestry'),
                 particleColors: ['#ffffff', '#e2e8f0', '#94a3b8', '#cbd5e1', '#f1f5f9'],
                 flashColor: 'rgba(255,255,255,0.9)'
             };
@@ -460,29 +464,29 @@
                 phasePillBorder: 'rgba(242,185,13,0.3)',
                 phaseIcon: 'brightness_3',
                 phaseIconColor: '#f2b90d',
-                phaseLabel: 'New Moon Phase',
-                phaseSub: 'Energy: New Intentions',
-                title: 'New Intentions',
+                phaseLabel: _t('manifest.phase_new', 'New Moon Phase'),
+                phaseSub: _t('manifest.energy_new', 'Energy: New Intentions'),
+                title: _t('manifest.title_new', 'New Intentions'),
                 titleColor: '#f2b90d',
-                sub: 'Plant your cosmic desires in the fertile darkness of the new cycle.',
+                sub: _t('manifest.sub_new', 'Plant your cosmic desires in the fertile darkness of the new cycle.'),
                 inputGlow: 'rgba(242,185,13,0.08)',
                 inputBg: 'rgba(15,12,41,0.7)',
                 inputClass: 'input-new',
-                placeholder: 'What seeds are you ready to plant today?',
+                placeholder: _t('manifest.placeholder_new', 'What seeds are you ready to plant today?'),
                 hintColor: '#f2b90d',
                 hintLineColor: 'rgba(242,185,13,0.25)',
-                hintMsg: 'Plant the seed. Trust the cosmos.',
+                hintMsg: _t('manifest.hint_new', 'Plant the seed. Trust the cosmos.'),
                 btnClass: 'btn-new',
-                btnText: 'Plant My Seed',
+                btnText: _t('manifest.btn_new', 'Plant My Seed'),
                 btnIcon: 'local_florist',
                 btnTextColor: '#0f0f0f',
                 spark1Color: '#f2b90d',
                 spark2Color: 'rgba(242,185,13,0.6)',
                 dotColor: '#f2b90d',
                 sentIcon: '🌑',
-                sentTitle: 'Seed Planted in the Cosmos',
+                sentTitle: _t('manifest.sent_new', 'Seed Planted in the Cosmos'),
                 sentTitleColor: '#f2b90d',
-                sentSub: 'Your intention takes root in the fertile darkness',
+                sentSub: _t('manifest.sent_sub_new', 'Your intention takes root in the fertile darkness'),
                 particleColors: ['#f2b90d', '#ffd700', '#f59e0b', '#fbbf24', '#ffffff'],
                 flashColor: 'rgba(242,185,13,0.7)'
             };
@@ -498,28 +502,28 @@
                 phaseIcon: isRelease ? 'brightness_4' : 'auto_awesome',
                 phaseIconColor: '#f23694',
                 phaseLabel: phase,
-                phaseSub: isRelease ? 'Energy: Waning & Releasing' : 'Energy: Growing & Building',
-                title: isRelease ? 'Cosmic Portal' : 'Cosmic Portal',
+                phaseSub: isRelease ? _t('manifest.energy_waning', 'Energy: Waning & Releasing') : _t('manifest.energy_waxing', 'Energy: Growing & Building'),
+                title: _t('manifest.title_cosmic', 'Cosmic Portal'),
                 titleColor: '#ffffff',
-                sub: 'Vibrate at the frequency of your desires.',
+                sub: _t('manifest.sub_cosmic', 'Vibrate at the frequency of your desires.'),
                 inputGlow: 'rgba(242,54,148,0.15)',
                 inputBg: 'rgba(34,16,25,0.8)',
                 inputClass: 'input-full',
-                placeholder: 'Write your intention to the universe...',
+                placeholder: _t('manifest.placeholder_cosmic', 'Write your intention to the universe...'),
                 hintColor: '#f2b90d',
                 hintLineColor: 'rgba(242,185,13,0.2)',
-                hintMsg: 'Be specific. Feel the vibration.',
+                hintMsg: _t('manifest.hint_cosmic', 'Be specific. Feel the vibration.'),
                 btnClass: 'btn-wax',
-                btnText: 'Send to Universe',
+                btnText: _t('manifest.btn_cosmic', 'Send to Universe'),
                 btnIcon: 'send',
                 btnTextColor: '#ffffff',
                 spark1Color: '#f2b90d',
                 spark2Color: 'rgba(242,185,13,0.5)',
                 dotColor: '#f23694',
                 sentIcon: '✨',
-                sentTitle: 'Sent to Universe',
+                sentTitle: _t('manifest.sent_cosmic', 'Sent to Universe'),
                 sentTitleColor: '#f23694',
-                sentSub: 'Your intention is now cosmic energy',
+                sentSub: _t('manifest.sent_sub_cosmic', 'Your intention is now cosmic energy'),
                 particleColors: ['#f23694', '#ffd700', '#ff8ab3', '#ffffff', '#c084fc'],
                 flashColor: 'rgba(255,255,255,0.85)'
             };

@@ -5,6 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Compatibility Input Form</title>
 <script src="js/theme-engine.js"></script>
+<script src="js/i18n-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -43,13 +44,13 @@
 <div onclick="window.location.href='mystic_numerology_home_1.html'" class="text-primary flex size-12 shrink-0 items-center justify-start cursor-pointer">
 <span class="material-symbols-outlined">arrow_back_ios</span>
 </div>
-<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-12">Relationship Compatibility</h2>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-12" data-i18n="compat_form.header_title">Relationship Compatibility</h2>
 </div>
 <div class="flex-1 px-4 pb-12 flex flex-col max-w-lg mx-auto w-full">
 <!-- Headline -->
 <div class="pt-8 pb-4">
-<h3 class="text-slate-900 dark:text-white tracking-tight text-3xl font-bold leading-tight text-center">Discover your cosmic alignment</h3>
-<p class="text-slate-500 dark:text-[#b09db9] text-center mt-2 text-sm">Enter details below to reveal the spiritual bond between two souls.</p>
+<h3 class="text-slate-900 dark:text-white tracking-tight text-3xl font-bold leading-tight text-center" data-i18n="compat_form.headline">Discover your cosmic alignment</h3>
+<p class="text-slate-500 dark:text-[#b09db9] text-center mt-2 text-sm" data-i18n="compat_form.subheadline">Enter details below to reveal the spiritual bond between two souls.</p>
 </div>
 <!-- Main Input Container -->
 <div class="space-y-6 mt-4">
@@ -60,26 +61,26 @@
 </div>
 <!-- Kilit rozeti -->
 <div class="flex items-center justify-between mb-4">
-<h4 class="text-primary text-xs font-bold leading-normal tracking-[0.2em] uppercase">You</h4>
+<h4 class="text-primary text-xs font-bold leading-normal tracking-[0.2em] uppercase" data-i18n="compat_form.you_label">You</h4>
 <div class="flex items-center gap-1.5 bg-primary/10 border border-primary/20 rounded-full px-3 py-1">
 <span class="material-symbols-outlined text-primary text-sm">lock</span>
-<span class="text-primary text-[10px] font-bold uppercase tracking-wider">Ana Hesap</span>
+<span class="text-primary text-[10px] font-bold uppercase tracking-wider" data-i18n="compat_form.main_account">Ana Hesap</span>
 </div>
 </div>
 <div class="space-y-4">
 <!-- Name (readonly) -->
 <div class="flex flex-col w-full">
-<p class="text-slate-700 dark:text-white/60 text-sm font-medium leading-normal pb-2 ml-1">Your Name</p>
+<p class="text-slate-700 dark:text-white/60 text-sm font-medium leading-normal pb-2 ml-1" data-i18n="compat_form.your_name_label">Your Name</p>
 <div class="relative">
 <input id="p1-name" readonly
   class="form-input flex w-full rounded-2xl text-slate-900 dark:text-white/70 border border-primary/20 bg-primary/5 dark:bg-primary/5 h-14 px-4 text-base font-bold leading-normal cursor-not-allowed select-none"
-  placeholder="Profil bilgisi yükleniyor..." value=""/>
+  placeholder="Profil bilgisi yükleniyor..." data-i18n-placeholder="compat_form.profile_loading_placeholder" value=""/>
 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-primary/40 text-lg pointer-events-none">lock</span>
 </div>
 </div>
 <!-- Date (readonly - Gün / Ay / Yıl) -->
 <div class="flex flex-col w-full">
-<p class="text-slate-700 dark:text-white/60 text-sm font-medium leading-normal pb-2 ml-1">Doğum Tarihiniz</p>
+<p class="text-slate-700 dark:text-white/60 text-sm font-medium leading-normal pb-2 ml-1" data-i18n="compat_form.your_birthdate_label">Doğum Tarihiniz</p>
 <div class="flex w-full gap-2">
   <select id="p1-date-day" disabled
     class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white/70 border border-primary/20 bg-primary/5 dark:bg-primary/5 h-14 px-3 text-base font-bold leading-normal cursor-not-allowed">
@@ -114,16 +115,16 @@
 <div class="absolute top-0 right-0 p-4 opacity-10">
 <span class="material-symbols-outlined text-6xl">favorite</span>
 </div>
-<h4 class="text-romantic-pink text-xs font-bold leading-normal tracking-[0.2em] mb-4 uppercase">Partner</h4>
+<h4 class="text-romantic-pink text-xs font-bold leading-normal tracking-[0.2em] mb-4 uppercase" data-i18n="compat_form.partner_label">Partner</h4>
 <div class="space-y-4">
 <!-- TextField Name -->
 <div class="flex flex-col w-full">
-<p class="text-slate-700 dark:text-white text-sm font-medium leading-normal pb-2 ml-1">Partner's Name</p>
-<input id="p2-name" class="form-input flex w-full rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 placeholder:text-slate-400 dark:placeholder:text-[#b09db9] px-4 text-base font-normal leading-normal" placeholder="Enter their full name"/>
+<p class="text-slate-700 dark:text-white text-sm font-medium leading-normal pb-2 ml-1" data-i18n="compat_form.partner_name_label">Partner's Name</p>
+<input id="p2-name" class="form-input flex w-full rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 placeholder:text-slate-400 dark:placeholder:text-[#b09db9] px-4 text-base font-normal leading-normal" placeholder="Enter their full name" data-i18n-placeholder="compat_form.partner_name_placeholder"/>
 </div>
 <!-- TextField Date (Gün / Ay / Yıl) -->
 <div class="flex flex-col w-full">
-<p class="text-slate-700 dark:text-white text-sm font-medium leading-normal pb-2 ml-1">Partnerin Doğum Tarihi</p>
+<p class="text-slate-700 dark:text-white text-sm font-medium leading-normal pb-2 ml-1" data-i18n="compat_form.partner_birthdate_label">Partnerin Doğum Tarihi</p>
 <div class="flex w-full gap-2">
   <select id="p2-date-day"
     class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 px-3 text-base font-normal leading-normal">
@@ -147,14 +148,14 @@
 </div>
 </div>
 <!-- Footer Note -->
-<p class="text-slate-400 dark:text-[#b09db9]/60 text-xs text-center mt-8 px-8">
+<p class="text-slate-400 dark:text-[#b09db9]/60 text-xs text-center mt-8 px-8" data-i18n="compat_form.footer_note">
                 Calculations are based on numerological principles and astrological alignments. Data is processed locally.
             </p>
 <!-- Bottom CTA -->
 <div class="mt-10 px-4 pb-6">
 <button class="glow-pulse w-full bg-primary hover:bg-primary/90 text-white font-bold py-5 rounded-full flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-primary/40">
 <span class="material-symbols-outlined">auto_awesome</span>
-                    Check Compatibility
+                    <span data-i18n="compat_form.check_btn">Check Compatibility</span>
                 </button>
 </div>
 </div>

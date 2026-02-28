@@ -5,6 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Daily Number Deep Dive</title>
 <script src="js/theme-engine.js"></script>
+<script src="js/i18n-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&amp;family=Plus+Jakarta+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -50,7 +51,7 @@
 <button class="flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
 <span onclick="window.location.href='mystic_numerology_home_1.html'" style="cursor:pointer" class="material-symbols-outlined text-primary">arrow_back_ios_new</span>
 </button>
-<h2 class="text-lg font-bold tracking-tight font-display">Daily Deep Dive</h2>
+<h2 data-i18n="deep_dive.header_title" class="text-lg font-bold tracking-tight font-display">Daily Deep Dive</h2>
 <button class="flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
 <span class="material-symbols-outlined text-primary">share</span>
 </button>
@@ -62,19 +63,19 @@
 <div class="absolute inset-0 rounded-full border border-primary/10 animate-pulse"></div>
 <h1 class="text-primary text-[72px] font-bold leading-none select-none">7</h1>
 </div>
-<h1 class="text-2xl md:text-3xl font-bold tracking-tight text-center font-display mb-2">The Day of Intuition</h1>
+<h1 data-i18n="deep_dive.day_title" class="text-2xl md:text-3xl font-bold tracking-tight text-center font-display mb-2">The Day of Intuition</h1>
 <div class="flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full">
 <span class="material-symbols-outlined text-primary text-sm">auto_awesome</span>
-<span class="text-xs font-bold uppercase tracking-widest text-primary">Spiritual Vibration</span>
+<span data-i18n="deep_dive.vibration_badge" class="text-xs font-bold uppercase tracking-widest text-primary">Spiritual Vibration</span>
 </div>
 </header>
 <!-- Energy Narrative -->
 <section class="px-6 mb-8">
-<p class="text-base leading-relaxed text-slate-600 dark:text-slate-400 font-sans">
+<p data-i18n="deep_dive.narrative_1" class="text-base leading-relaxed text-slate-600 dark:text-slate-400 font-sans">
                 Today’s vibration is centered around the internal landscape. The number 7 acts as a bridge between the physical realm and the spiritual subconscious. You may find yourself
                 more sensitive to the energies of others, making it a perfect day for solitude and deep reflection.
             </p>
-<p class="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-400 font-sans">
+<p data-i18n="deep_dive.narrative_2" class="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-400 font-sans">
                 The celestial alignment suggests that hidden truths will surface if you remain still enough to hear them. Trust your gut instincts today—they are tuned to a higher frequency than usual.
             </p>
 </section>
@@ -86,21 +87,21 @@
 <div class="size-8 rounded-full bg-primary/20 flex items-center justify-center">
 <span class="material-symbols-outlined text-primary text-lg">lightbulb</span>
 </div>
-<h3 class="text-lg font-bold tracking-tight font-display">What to Focus On</h3>
+<h3 data-i18n="deep_dive.focus_title" class="text-lg font-bold tracking-tight font-display">What to Focus On</h3>
 </div>
 <ul class="space-y-4">
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-primary mt-1">check_circle</span>
 <div class="font-sans">
-<p class="font-bold text-sm">Solitary Reflection</p>
-<p class="text-xs text-slate-500">Dedicate at least 20 minutes to silent meditation or journaling.</p>
+<p data-i18n="deep_dive.focus_1_title" class="font-bold text-sm">Solitary Reflection</p>
+<p data-i18n="deep_dive.focus_1_desc" class="text-xs text-slate-500">Dedicate at least 20 minutes to silent meditation or journaling.</p>
 </div>
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-primary mt-1">check_circle</span>
 <div class="font-sans">
-<p class="font-bold text-sm">Intellectual Pursuit</p>
-<p class="text-xs text-slate-500">It's a powerful day for studying complex subjects or deep research.</p>
+<p data-i18n="deep_dive.focus_2_title" class="font-bold text-sm">Intellectual Pursuit</p>
+<p data-i18n="deep_dive.focus_2_desc" class="text-xs text-slate-500">It's a powerful day for studying complex subjects or deep research.</p>
 </div>
 </li>
 </ul>
@@ -111,21 +112,21 @@
 <div class="size-8 rounded-full bg-rose-500/10 flex items-center justify-center">
 <span class="material-symbols-outlined text-rose-500 text-lg">block</span>
 </div>
-<h3 class="text-lg font-bold tracking-tight font-display">What to Avoid</h3>
+<h3 data-i18n="deep_dive.avoid_title" class="text-lg font-bold tracking-tight font-display">What to Avoid</h3>
 </div>
 <ul class="space-y-4">
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-rose-500 mt-1">cancel</span>
 <div class="font-sans">
-<p class="font-bold text-sm">Large Social Gatherings</p>
-<p class="text-xs text-slate-500">Crowded spaces may feel overwhelming and drain your spiritual battery.</p>
+<p data-i18n="deep_dive.avoid_1_title" class="font-bold text-sm">Large Social Gatherings</p>
+<p data-i18n="deep_dive.avoid_1_desc" class="text-xs text-slate-500">Crowded spaces may feel overwhelming and drain your spiritual battery.</p>
 </div>
 </li>
 <li class="flex items-start gap-3">
 <span class="material-symbols-outlined text-rose-500 mt-1">cancel</span>
 <div class="font-sans">
-<p class="font-bold text-sm">Superficial Decisions</p>
-<p class="text-xs text-slate-500">Wait for clarity before committing to major financial or social contracts.</p>
+<p data-i18n="deep_dive.avoid_2_title" class="font-bold text-sm">Superficial Decisions</p>
+<p data-i18n="deep_dive.avoid_2_desc" class="text-xs text-slate-500">Wait for clarity before committing to major financial or social contracts.</p>
 </div>
 </li>
 </ul>
@@ -137,19 +138,19 @@
 <img alt="Celestial nebula with golden stars" class="w-full h-full object-cover opacity-60" data-alt="Abstract deep space nebula with golden cosmic dust" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBostVvSKi6SXLATVe3-8yKKqcyC7MUnmA2Tn-ykEnUjPVb-_aCzp9obbButKvexzCqxk0csSvb3SVS6By-TRLbh7TcD6ldUZQEyhkajJtTVRkxephHOvVcqM7k_J2yu_Ozd2PUTRk0RaL0GU3fXg8cuicmJMhgh2tBvpjxAte3X87keC9p--JBkueSB_jxMpQ56-vmekI7AtL_yB6Vm49wKQShPZ0BtBMkh_VA687j8PJEx7dG9A-1F_Y78IrMsbwDStc_sSNG_nqX"/>
 <div class="absolute inset-0 bg-gradient-to-t from-background-light dark:from-background-dark via-transparent to-transparent"></div>
 <div class="absolute bottom-4 left-4 right-4">
-<p class="text-xs uppercase tracking-widest text-primary font-bold">Planetary Alignment</p>
-<p class="text-sm italic text-slate-700 dark:text-white/90">Venus in the 7th House</p>
+<p data-i18n="deep_dive.planetary_label" class="text-xs uppercase tracking-widest text-primary font-bold">Planetary Alignment</p>
+<p data-i18n="deep_dive.planetary_value" class="text-sm italic text-slate-700 dark:text-white/90">Venus in the 7th House</p>
 </div>
 </div>
 </section>
 <!-- Daily Affirmation Footer -->
 <section class="mt-12 px-6 pb-12 text-center">
 <div class="h-px w-24 bg-primary/30 mx-auto mb-8"></div>
-<h4 class="text-sm font-bold text-primary uppercase tracking-[0.2em] mb-4">Daily Mantra</h4>
-<p class="text-xl italic font-display leading-relaxed">
+<h4 data-i18n="deep_dive.mantra_label" class="text-sm font-bold text-primary uppercase tracking-[0.2em] mb-4">Daily Mantra</h4>
+<p data-i18n="deep_dive.mantra_text" class="text-xl italic font-display leading-relaxed">
                 "I trust the whispers of the universe and find wisdom in the silence."
             </p>
-<button class="mt-10 w-full py-4 bg-primary text-background-dark font-bold rounded-full shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
+<button data-i18n="deep_dive.reminder_btn" class="mt-10 w-full py-4 bg-primary text-background-dark font-bold rounded-full shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform">
                 Set as Daily Reminder
             </button>
 </section>

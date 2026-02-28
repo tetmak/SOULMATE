@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport" />
     <title>Manifest Portal</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -548,7 +549,7 @@
         <div class="flex items-center gap-2">
             <button class="my-manifests-btn" onclick="openMyManifests()">
                 <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
-                My Manifests
+                <span data-i18n="manifest_community.my_manifests_btn">My Manifests</span>
             </button>
             <button onclick="showInfoModal()" class="w-9 h-9 rounded-full flex items-center justify-center bg-slate-100 dark:bg-white/5">
                 <span class="material-symbols-outlined text-slate-400" style="font-size:20px;">info</span>
@@ -559,19 +560,19 @@
     <div class="px-4 pt-6 pb-2">
         <!-- Sort Tabs -->
         <div class="sort-tabs mb-6">
-            <button class="sort-tab active" data-sort="newest" onclick="switchSort(this)">Newest</button>
-            <button class="sort-tab" data-sort="top_rated" onclick="switchSort(this)">Top Rated</button>
-            <button class="sort-tab" data-sort="weekly" onclick="switchSort(this)">Weekly</button>
+            <button class="sort-tab active" data-sort="newest" onclick="switchSort(this)" data-i18n="manifest_community.sort_newest">Newest</button>
+            <button class="sort-tab" data-sort="top_rated" onclick="switchSort(this)" data-i18n="manifest_community.sort_top_rated">Top Rated</button>
+            <button class="sort-tab" data-sort="weekly" onclick="switchSort(this)" data-i18n="manifest_community.sort_weekly">Weekly</button>
         </div>
 
         <!-- Category Chips -->
         <div class="cat-row no-scrollbar pb-3">
-            <button class="cat-chip active" data-cat="all" onclick="switchCat(this)">All</button>
-            <button class="cat-chip" data-cat="money" onclick="switchCat(this)">Money</button>
-            <button class="cat-chip" data-cat="love" onclick="switchCat(this)">Love</button>
-            <button class="cat-chip" data-cat="health" onclick="switchCat(this)">Health</button>
-            <button class="cat-chip" data-cat="career" onclick="switchCat(this)">Career</button>
-            <button class="cat-chip" data-cat="spiritual" onclick="switchCat(this)">Soul</button>
+            <button class="cat-chip active" data-cat="all" onclick="switchCat(this)" data-i18n="manifest_community.cat_all">All</button>
+            <button class="cat-chip" data-cat="money" onclick="switchCat(this)" data-i18n="manifest_community.cat_money">Money</button>
+            <button class="cat-chip" data-cat="love" onclick="switchCat(this)" data-i18n="manifest_community.cat_love">Love</button>
+            <button class="cat-chip" data-cat="health" onclick="switchCat(this)" data-i18n="manifest_community.cat_health">Health</button>
+            <button class="cat-chip" data-cat="career" onclick="switchCat(this)" data-i18n="manifest_community.cat_career">Career</button>
+            <button class="cat-chip" data-cat="spiritual" onclick="switchCat(this)" data-i18n="manifest_community.cat_soul">Soul</button>
         </div>
     </div>
 
@@ -582,9 +583,9 @@
     <div id="info-modal" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(0,0,0,0.7); backdrop-filter:blur(6px); align-items:center; justify-content:center;">
         <div class="bg-white dark:bg-[rgba(22,16,42,0.98)] border border-slate-200 dark:border-[rgba(127,19,236,0.3)]" style="border-radius:20px; padding:28px; max-width:320px; width:90%; text-align:center;">
             <span class="material-symbols-outlined text-4xl mb-3" style="font-variation-settings:'FILL' 1;color:#a78bfa;">auto_awesome</span>
-            <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">Manifest Portal</h3>
-            <p class="text-slate-500 dark:text-white/50 text-sm leading-relaxed mb-5">Topluluk manifestlerini keşfet, ilham al ve kendi niyetlerini evrene gönder. Birlikte manifest oluşturmak enerjinizi katlar!</p>
-            <button onclick="closeInfoModal()" class="w-full py-3 rounded-full text-white font-semibold text-sm cursor-pointer" style="background:#7f13ec;">Anladım</button>
+            <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white" data-i18n="manifest_community.info_title">Manifest Portal</h3>
+            <p class="text-slate-500 dark:text-white/50 text-sm leading-relaxed mb-5" data-i18n="manifest_community.info_desc">Topluluk manifestlerini keşfet, ilham al ve kendi niyetlerini evrene gönder. Birlikte manifest oluşturmak enerjinizi katlar!</p>
+            <button onclick="closeInfoModal()" class="w-full py-3 rounded-full text-white font-semibold text-sm cursor-pointer" style="background:#7f13ec;" data-i18n="manifest_community.info_ok_btn">Anladım</button>
         </div>
     </div>
 
@@ -593,7 +594,7 @@
         <div class="my-modal-panel">
             <div class="my-modal-header">
                 <div>
-                    <span class="my-modal-title">My Manifests</span>
+                    <span class="my-modal-title" data-i18n="manifest_community.my_manifests_title">My Manifests</span>
                     <span id="my-manifests-count" class="my-modal-count" style="margin-left:8px;"></span>
                 </div>
                 <button class="my-modal-close" onclick="closeMyManifests()">

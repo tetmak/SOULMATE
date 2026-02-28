@@ -4,6 +4,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <script src="js/theme-engine.js"></script>
+<script src="js/i18n-engine.js"></script>
 <script src="js/tailwind.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -68,13 +69,13 @@
 </div>
 <!-- Header Text -->
 <div class="space-y-2">
-<h3 class="text-white tracking-tight text-3xl font-bold leading-tight">Calculating your vibrations...</h3>
-<p class="text-white/60 text-lg font-normal leading-normal">Consulting the stars and aligning cosmic paths</p>
+<h3 class="text-white tracking-tight text-3xl font-bold leading-tight" data-i18n="calc_loading.title">Calculating your vibrations...</h3>
+<p class="text-white/60 text-lg font-normal leading-normal" data-i18n="calc_loading.subtitle">Consulting the stars and aligning cosmic paths</p>
 </div>
 <!-- Loading Indicator / Progress -->
 <div class="w-full max-w-xs mt-12 flex flex-col gap-4">
 <div class="flex gap-6 justify-between items-end">
-<p class="text-mystic-gold text-sm font-medium uppercase tracking-widest" id="calc-text">Syncing with the universe</p>
+<p class="text-mystic-gold text-sm font-medium uppercase tracking-widest" id="calc-text" data-i18n="calc_loading.msg_syncing">Syncing with the universe</p>
 <p class="text-white/40 text-xs" id="calc-pct">0%</p>
 </div>
 <div class="rounded-full bg-white/5 h-1.5 w-full overflow-hidden">
@@ -86,7 +87,7 @@
 <div class="pb-12 flex flex-col items-center">
 <div class="flex gap-2 items-center opacity-40">
 <span class="material-symbols-outlined text-sm">auto_awesome</span>
-<span class="text-xs font-medium uppercase tracking-[0.2em]">Numerology Engine v2.0</span>
+<span class="text-xs font-medium uppercase tracking-[0.2em]" data-i18n="calc_loading.engine_label">Numerology Engine v2.0</span>
 </div>
 </div>
 <!-- Subtle Background Elements -->
@@ -96,7 +97,8 @@
 
 <script>
 // Progress bar animasyonu
-var calcMessages = ['Syncing with the universe', 'Calculating your vibrations', 'Aligning cosmic paths', 'Reading sacred numbers', 'Almost there...'];
+var _t = function(k, fb) { return (window.i18n && window.i18n.t) ? window.i18n.t(k) : fb; };
+var calcMessages = [_t('calc_loading.msg_syncing','Syncing with the universe'), _t('calc_loading.msg_calculating','Calculating your vibrations'), _t('calc_loading.msg_aligning','Aligning cosmic paths'), _t('calc_loading.msg_reading','Reading sacred numbers'), _t('calc_loading.msg_almost','Almost there...')];
 var calcProgress = 0;
 var calcMsgIdx = 0;
 var calcBar = document.getElementById('calc-bar');

@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Kozmik Lig</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -39,7 +40,7 @@
         <div onclick="history.back()" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 class="text-slate-900 dark:text-white text-lg font-black flex-1 text-center">Kozmik Lig</h2>
+        <h2 data-i18n="leaderboard.title" class="text-slate-900 dark:text-white text-lg font-black flex-1 text-center">Kozmik Lig</h2>
         <div onclick="window.location.href='numerology_quiz.html'" class="w-12 flex items-center justify-end cursor-pointer">
             <span class="material-symbols-outlined text-slate-500 dark:text-white/40">quiz</span>
         </div>
@@ -52,25 +53,25 @@
 
     <!-- Haftalık Ödüller -->
     <div class="px-5 pb-4 fade-up" style="animation-delay:0.06s">
-        <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Haftalık Ödüller</p>
+        <p data-i18n="leaderboard.weekly_rewards" class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Haftalık Ödüller</p>
         <div class="flex gap-2">
             <div class="prize-card glass">
                 <p class="text-2xl mb-1">🥇</p>
                 <p class="text-amber-400 text-xs font-bold">1.</p>
-                <p class="text-slate-600 dark:text-white/40 text-[10px]">2 Gün Premium</p>
-                <p class="text-slate-400 dark:text-white/25 text-[10px]">+ Şampiyon Tacı</p>
+                <p data-i18n="leaderboard.prize_1_premium" class="text-slate-600 dark:text-white/40 text-[10px]">2 Gün Premium</p>
+                <p data-i18n="leaderboard.prize_1_bonus" class="text-slate-400 dark:text-white/25 text-[10px]">+ Şampiyon Tacı</p>
             </div>
             <div class="prize-card glass">
                 <p class="text-2xl mb-1">🥈</p>
                 <p class="text-gray-300 text-xs font-bold">2.</p>
-                <p class="text-slate-600 dark:text-white/40 text-[10px]">1 Gün Premium</p>
-                <p class="text-slate-400 dark:text-white/25 text-[10px]">+ Gümüş Taç</p>
+                <p data-i18n="leaderboard.prize_2_premium" class="text-slate-600 dark:text-white/40 text-[10px]">1 Gün Premium</p>
+                <p data-i18n="leaderboard.prize_2_bonus" class="text-slate-400 dark:text-white/25 text-[10px]">+ Gümüş Taç</p>
             </div>
             <div class="prize-card glass">
                 <p class="text-2xl mb-1">🥉</p>
                 <p class="text-amber-700 text-xs font-bold">3.</p>
-                <p class="text-slate-600 dark:text-white/40 text-[10px]">Nadir Kart</p>
-                <p class="text-slate-400 dark:text-white/25 text-[10px]">+ Bronz Taç</p>
+                <p data-i18n="leaderboard.prize_3_premium" class="text-slate-600 dark:text-white/40 text-[10px]">Nadir Kart</p>
+                <p data-i18n="leaderboard.prize_3_bonus" class="text-slate-400 dark:text-white/25 text-[10px]">+ Bronz Taç</p>
             </div>
         </div>
     </div>
@@ -80,7 +81,7 @@
         <div class="flex items-center justify-between glass rounded-xl px-4 py-3">
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-slate-400 dark:text-white/30 text-base">timer</span>
-                <span class="text-slate-600 dark:text-white/40 text-xs font-bold">Lig Kapanış:</span>
+                <span data-i18n="leaderboard.league_closing" class="text-slate-600 dark:text-white/40 text-xs font-bold">Lig Kapanış:</span>
             </div>
             <span id="countdown" class="text-slate-700 dark:text-white/60 text-xs font-black">--:--:--</span>
         </div>
@@ -88,7 +89,7 @@
 
     <!-- Sıralama -->
     <div class="px-5 pb-4 fade-up" style="animation-delay:0.1s">
-        <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Haftalık Sıralama</p>
+        <p data-i18n="leaderboard.weekly_ranking" class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Haftalık Sıralama</p>
         <div id="leaderboard-list" class="space-y-2"></div>
     </div>
 
@@ -98,14 +99,14 @@
             <div class="flex items-center gap-3 mb-2">
                 <div class="flex items-center gap-1">
                     <span class="material-symbols-outlined text-green-400 text-sm">arrow_upward</span>
-                    <span class="text-green-400 text-xs font-bold">Üst 3 = Terfi</span>
+                    <span data-i18n="leaderboard.top3_promotion" class="text-green-400 text-xs font-bold">Üst 3 = Terfi</span>
                 </div>
                 <div class="flex items-center gap-1">
                     <span class="material-symbols-outlined text-red-400 text-sm">arrow_downward</span>
-                    <span class="text-red-400 text-xs font-bold">Alt 3 = Düşme</span>
+                    <span data-i18n="leaderboard.bottom3_relegation" class="text-red-400 text-xs font-bold">Alt 3 = Düşme</span>
                 </div>
             </div>
-            <p class="text-slate-500 dark:text-white/25 text-xs">Hafta sonunda üst 3 bir üst lige çıkar, alt 3 bir alt lige düşer. XP kazanmak için quiz çöz, düello yap ve günlük görevleri tamamla!</p>
+            <p data-i18n="leaderboard.promotion_info" class="text-slate-500 dark:text-white/25 text-xs">Hafta sonunda üst 3 bir üst lige çıkar, alt 3 bir alt lige düşer. XP kazanmak için quiz çöz, düello yap ve günlük görevleri tamamla!</p>
         </div>
     </div>
 
@@ -115,7 +116,7 @@
             class="w-full py-4 rounded-full font-bold text-base flex items-center justify-center gap-2 active:scale-95 transition-transform"
             style="background:linear-gradient(135deg,#22c55e,#16a34a);color:white;box-shadow:0 0 20px rgba(34,197,94,0.3)">
             <span class="material-symbols-outlined">swords</span>
-            Quiz Çöz & Sıralama Yüksel
+            <span data-i18n="leaderboard.quiz_cta">Quiz Çöz & Sıralama Yüksel</span>
         </button>
     </div>
 

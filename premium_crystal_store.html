@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Numantic Premium</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -46,7 +47,7 @@
         <div onclick="history.back()" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 class="pm-text text-lg font-black flex-1 text-center">Numantic Premium</h2>
+        <h2 class="pm-text text-lg font-black flex-1 text-center" data-i18n="store.header_title">Numantic Premium</h2>
         <div class="w-12"></div>
     </header>
 
@@ -56,16 +57,16 @@
             <div class="size-20 rounded-full pm-grad flex items-center justify-center mx-auto mb-4 pm-glow">
                 <span class="material-symbols-outlined text-white text-4xl" style="font-variation-settings:'FILL' 1">workspace_premium</span>
             </div>
-            <h3 class="text-slate-900 dark:text-white text-xl font-black mb-2">Premium Aktif</h3>
+            <h3 class="text-slate-900 dark:text-white text-xl font-black mb-2" data-i18n="store.premium_active">Premium Aktif</h3>
             <p id="plan-info" class="text-slate-500 dark:text-white/40 text-sm mb-1">--</p>
             <p id="exp-info" class="text-slate-400 dark:text-white/25 text-xs">--</p>
         </div>
         <div class="mt-6 space-y-3 px-2">
-            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm">Sınırsız AI Analiz</span></div>
-            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm">Sınırsız Arkadaş & Uyumluluk</span></div>
-            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm">Cosmic Match Reveal</span></div>
-            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm">Tam Deep Insight (3 sayfa)</span></div>
-            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm">AI Günlük Rehber & Kozmik Takvim</span></div>
+            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm" data-i18n="store.feature_ai">Sınırsız AI Analiz</span></div>
+            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm" data-i18n="store.feature_friends">Sınırsız Arkadaş & Uyumluluk</span></div>
+            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm" data-i18n="store.feature_cosmic">Cosmic Match Reveal</span></div>
+            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm" data-i18n="store.feature_deep">Tam Deep Insight (3 sayfa)</span></div>
+            <div class="flex items-center gap-3 py-2"><span class="material-symbols-outlined ci">check_circle</span><span class="text-slate-600 dark:text-white/70 text-sm" data-i18n="store.feature_guide">AI Günlük Rehber & Kozmik Takvim</span></div>
         </div>
     </div>
 
@@ -77,23 +78,23 @@
             <div class="size-24 rounded-full pm-grad flex items-center justify-center mb-6 pm-glow float-anim">
                 <span class="material-symbols-outlined text-white text-5xl" style="font-variation-settings:'FILL' 1">workspace_premium</span>
             </div>
-            <h2 class="text-slate-900 dark:text-white text-2xl font-black mb-3 leading-tight">Numerolojinin Tam<br/>Gücünü Aç</h2>
-            <p class="text-slate-500 dark:text-white/40 text-sm leading-relaxed max-w-[300px]">Sınırsız AI analiz, Cosmic Match reveal, tam uyumluluk raporları ve çok daha fazlası.</p>
+            <h2 class="text-slate-900 dark:text-white text-2xl font-black mb-3 leading-tight" data-i18n="store.hero_title">Numerolojinin Tam<br/>Gücünü Aç</h2>
+            <p class="text-slate-500 dark:text-white/40 text-sm leading-relaxed max-w-[300px]" data-i18n="store.hero_desc">Sınırsız AI analiz, Cosmic Match reveal, tam uyumluluk raporları ve çok daha fazlası.</p>
         </div>
 
         <!-- Plan Seçimi -->
         <div class="px-5 pb-4 fade-up" style="animation-delay:0.08s">
             <div class="flex gap-3" id="plans">
                 <div class="plan-card flex-1 glass" data-plan="monthly">
-                    <p class="text-slate-400 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-2">Aylık</p>
+                    <p class="text-slate-400 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-2" data-i18n="store.monthly">Aylık</p>
                     <p class="text-slate-900 dark:text-white text-3xl font-black">₺79<span class="text-base text-slate-400 dark:text-white/30 font-semibold">.99</span></p>
                     <p class="text-slate-400 dark:text-white/25 text-xs mt-1">/ ay</p>
                 </div>
                 <div class="plan-card flex-1 glass sel" data-plan="yearly" style="position:relative">
                     <div style="position:absolute;top:-10px;right:10px;background:linear-gradient(135deg,#f59e0b,#ef4444);border-radius:8px;padding:3px 10px">
-                        <span style="color:white;font-size:9px;font-weight:800;letter-spacing:0.05em">%37 TASARRUF</span>
+                        <span style="color:white;font-size:9px;font-weight:800;letter-spacing:0.05em" data-i18n="store.save_badge">%37 TASARRUF</span>
                     </div>
-                    <p class="text-slate-400 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-2">Yıllık</p>
+                    <p class="text-slate-400 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-2" data-i18n="store.yearly">Yıllık</p>
                     <p class="text-slate-900 dark:text-white text-3xl font-black">₺49<span class="text-base text-slate-400 dark:text-white/30 font-semibold">.99</span></p>
                     <p class="text-slate-400 dark:text-white/25 text-xs mt-1">/ ay <span class="text-slate-300 dark:text-white/15">(₺599.99/yıl)</span></p>
                 </div>
@@ -103,17 +104,17 @@
         <!-- CTA -->
         <div class="px-5 pb-6 fade-up" style="animation-delay:0.12s">
             <button id="btn-sub" class="w-full pm-grad text-white py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform pm-glow">
-                <span class="material-symbols-outlined">rocket_launch</span>Premium'a Geç
+                <span class="material-symbols-outlined">rocket_launch</span><span data-i18n="store.go_premium">Premium'a Geç</span>
             </button>
-            <p class="text-slate-400 dark:text-white/20 text-xs text-center mt-3">İstediğin zaman iptal et · 3 gün ücretsiz deneme</p>
+            <p class="text-slate-400 dark:text-white/20 text-xs text-center mt-3" data-i18n="store.cancel_info">İstediğin zaman iptal et · 3 gün ücretsiz deneme</p>
         </div>
 
         <!-- Karşılaştırma -->
         <div class="px-5 pb-6 fade-up" style="animation-delay:0.16s">
-            <p class="text-slate-400 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-4 text-center">Free vs Premium</p>
+            <p class="text-slate-400 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-4 text-center" data-i18n="store.comparison_title">Free vs Premium</p>
             <div class="glass rounded-2xl overflow-hidden">
                 <div class="flex items-center px-4 py-3 border-b border-slate-200 dark:border-white/5">
-                    <div class="flex-1 text-slate-400 dark:text-white/30 text-xs font-bold">Özellik</div>
+                    <div class="flex-1 text-slate-400 dark:text-white/30 text-xs font-bold" data-i18n="store.feature_col">Özellik</div>
                     <div class="w-16 text-center text-slate-400 dark:text-white/30 text-xs font-bold">Free</div>
                     <div class="w-16 text-center pm-text text-xs font-bold">Premium</div>
                 </div>
@@ -123,14 +124,14 @@
 
         <!-- Özellikler -->
         <div class="px-5 pb-6 fade-up" style="animation-delay:0.2s">
-            <p class="text-slate-400 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-4 text-center">Premium Ayrıcalıkları</p>
+            <p class="text-slate-400 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-4 text-center" data-i18n="store.perks_title">Premium Ayrıcalıkları</p>
             <div class="space-y-3" id="perks"></div>
         </div>
 
         <!-- Alt CTA -->
         <div class="px-5 pb-8 fade-up" style="animation-delay:0.24s">
             <button id="btn-sub2" class="w-full pm-grad text-white py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform pm-glow">
-                <span class="material-symbols-outlined">workspace_premium</span>3 Gün Ücretsiz Dene
+                <span class="material-symbols-outlined">workspace_premium</span><span data-i18n="store.try_free">3 Gün Ücretsiz Dene</span>
             </button>
         </div>
     </div>

@@ -5,6 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Numeroloji Quiz</title>
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
@@ -55,7 +56,7 @@
         <div onclick="history.back()" class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
-        <h2 id="page-title" class="text-slate-900 dark:text-white text-lg font-black flex-1 text-center">Numeroloji Quiz</h2>
+        <h2 id="page-title" data-i18n="quiz.title" class="text-slate-900 dark:text-white text-lg font-black flex-1 text-center">Numeroloji Quiz</h2>
         <div id="header-rank" class="w-12 flex items-center justify-end"></div>
     </header>
 
@@ -69,11 +70,11 @@
         <div class="flex gap-3 mb-6 fade-up" style="animation-delay:0.06s">
             <div class="glass rounded-xl p-3 flex-1 text-center">
                 <p id="stat-correct" class="text-slate-900 dark:text-white text-2xl font-black">0</p>
-                <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Doğru</p>
+                <p data-i18n="quiz.correct" class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Doğru</p>
             </div>
             <div class="glass rounded-xl p-3 flex-1 text-center">
                 <p id="stat-streak" class="text-slate-900 dark:text-white text-2xl font-black">0</p>
-                <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Win Streak</p>
+                <p data-i18n="quiz.win_streak" class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest">Win Streak</p>
             </div>
             <div class="glass rounded-xl p-3 flex-1 text-center">
                 <p id="stat-nbp" class="text-slate-900 dark:text-white text-2xl font-black">0</p>
@@ -87,8 +88,8 @@
                 <span class="material-symbols-outlined text-green-400 text-2xl">quiz</span>
             </div>
             <div class="flex-1">
-                <p class="text-slate-900 dark:text-white font-bold text-base">Hızlı Quiz</p>
-                <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">10 soru · Bilgini test et · XP kazan</p>
+                <p data-i18n="quiz.quick_quiz" class="text-slate-900 dark:text-white font-bold text-base">Hızlı Quiz</p>
+                <p data-i18n="quiz.quick_quiz_desc" class="text-slate-500 dark:text-white/35 text-xs mt-0.5">10 soru · Bilgini test et · XP kazan</p>
             </div>
             <span class="material-symbols-outlined text-slate-400 dark:text-white/20">chevron_right</span>
         </div>
@@ -99,8 +100,8 @@
                 <span class="material-symbols-outlined text-red-400 text-2xl">swords</span>
             </div>
             <div class="flex-1">
-                <p class="text-slate-900 dark:text-white font-bold text-base">Düello <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#ef4444;background:rgba(239,68,68,0.15)">VS</span></p>
-                <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">5 soru · Rakibe karşı · 2x XP ödülü</p>
+                <p class="text-slate-900 dark:text-white font-bold text-base"><span data-i18n="quiz.duel">Düello</span> <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#ef4444;background:rgba(239,68,68,0.15)">VS</span></p>
+                <p data-i18n="quiz.duel_desc" class="text-slate-500 dark:text-white/35 text-xs mt-0.5">5 soru · Rakibe karşı · 2x XP ödülü</p>
             </div>
             <span class="material-symbols-outlined text-slate-400 dark:text-white/20">chevron_right</span>
         </div>
@@ -111,15 +112,15 @@
                 <span class="material-symbols-outlined text-amber-400 text-2xl">leaderboard</span>
             </div>
             <div class="flex-1">
-                <p class="text-slate-900 dark:text-white font-bold text-base">Kozmik Lig</p>
-                <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Haftalık sıralama · Lig sistemi · Ödüller</p>
+                <p data-i18n="quiz.cosmic_league" class="text-slate-900 dark:text-white font-bold text-base">Kozmik Lig</p>
+                <p data-i18n="quiz.cosmic_league_desc" class="text-slate-500 dark:text-white/35 text-xs mt-0.5">Haftalık sıralama · Lig sistemi · Ödüller</p>
             </div>
             <span class="material-symbols-outlined text-slate-400 dark:text-white/20">chevron_right</span>
         </div>
 
         <!-- Rozetler -->
         <div class="mt-6 fade-up" style="animation-delay:0.22s">
-            <p class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Rozetlerin</p>
+            <p data-i18n="quiz.your_badges" class="text-slate-500 dark:text-white/30 text-[10px] font-bold uppercase tracking-widest mb-3">Rozetlerin</p>
             <div id="badge-grid" class="flex flex-wrap gap-2"></div>
         </div>
     </div>
@@ -133,19 +134,19 @@
         <div id="duel-scores" style="display:none" class="flex items-center justify-center gap-4 mb-4">
             <div class="text-center">
                 <p class="text-green-400 text-2xl font-black" id="player-score">0</p>
-                <p class="text-slate-500 dark:text-white/30 text-xs">Sen</p>
+                <p data-i18n="quiz.you" class="text-slate-500 dark:text-white/30 text-xs">Sen</p>
             </div>
             <div class="vs-badge">VS</div>
             <div class="text-center">
                 <p class="text-red-400 text-2xl font-black" id="opp-score">0</p>
-                <p class="text-slate-500 dark:text-white/30 text-xs">Rakip</p>
+                <p data-i18n="quiz.opponent" class="text-slate-500 dark:text-white/30 text-xs">Rakip</p>
             </div>
         </div>
 
         <!-- Soru -->
         <div id="question-container" class="mb-4">
             <div class="glass rounded-2xl p-5 mb-1">
-                <p class="text-slate-500 dark:text-white/30 text-xs font-bold mb-2">Soru <span id="q-num">1</span>/<span id="q-total">10</span></p>
+                <p class="text-slate-500 dark:text-white/30 text-xs font-bold mb-2"><span data-i18n="quiz.question_label">Soru</span> <span id="q-num">1</span>/<span id="q-total">10</span></p>
                 <p id="q-text" class="text-slate-900 dark:text-white font-bold text-base leading-relaxed">—</p>
             </div>
             <div class="flex items-center gap-2 px-2 mt-2">
@@ -163,7 +164,7 @@
         <!-- Açıklama (cevap sonrası) -->
         <div id="answer-feedback" style="display:none" class="mt-4 glass rounded-xl p-4 text-center">
             <p id="feedback-text" class="text-sm font-bold">—</p>
-            <button id="btn-next" class="mt-3 px-6 py-2 rounded-full bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white text-sm font-bold active:scale-95 transition-transform">Sonraki →</button>
+            <button id="btn-next" data-i18n="quiz.next" class="mt-3 px-6 py-2 rounded-full bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white text-sm font-bold active:scale-95 transition-transform">Sonraki →</button>
         </div>
     </div>
 
@@ -178,7 +179,7 @@
         <div class="flex gap-3 mb-6 w-full max-w-[300px]">
             <div class="glass rounded-xl p-3 flex-1 text-center">
                 <p id="res-correct" class="text-green-400 text-2xl font-black">0</p>
-                <p class="text-slate-500 dark:text-white/30 text-xs">Doğru</p>
+                <p data-i18n="quiz.correct" class="text-slate-500 dark:text-white/30 text-xs">Doğru</p>
             </div>
             <div class="glass rounded-xl p-3 flex-1 text-center">
                 <p id="res-xp" class="text-amber-400 text-2xl font-black">+0</p>
@@ -204,8 +205,8 @@
         <div id="result-rewards" class="w-full max-w-[300px] space-y-2 mb-6"></div>
 
         <div class="flex gap-3 w-full max-w-[300px]">
-            <button onclick="showMenu()" class="flex-1 py-3 rounded-full glass text-slate-900 dark:text-white font-bold text-sm active:scale-95 transition-transform">← Menü</button>
-            <button id="btn-retry" class="flex-1 py-3 rounded-full text-white font-bold text-sm active:scale-95 transition-transform" style="background:linear-gradient(135deg,#22c55e,#16a34a)">Tekrar Oyna</button>
+            <button onclick="showMenu()" data-i18n="quiz.menu" class="flex-1 py-3 rounded-full glass text-slate-900 dark:text-white font-bold text-sm active:scale-95 transition-transform">← Menü</button>
+            <button id="btn-retry" data-i18n="quiz.play_again" class="flex-1 py-3 rounded-full text-white font-bold text-sm active:scale-95 transition-transform" style="background:linear-gradient(135deg,#22c55e,#16a34a)">Tekrar Oyna</button>
         </div>
     </div>
 

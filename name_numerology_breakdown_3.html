@@ -5,6 +5,7 @@
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
   <title>Soulmate Compatibility Home</title>
   <script src="js/theme-engine.js"></script>
+  <script src="js/i18n-engine.js"></script>
   <script src="js/api-base.js"></script>
   <script src="js/tailwind.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -67,7 +68,7 @@
     <div id="btn-back" class="text-slate-900 dark:text-white flex size-12 shrink-0 items-center cursor-pointer">
       <span class="material-symbols-outlined">arrow_back_ios</span>
     </div>
-    <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">İlişki Analizi</h2>
+    <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center" data-i18n="breakdown3.header_title">İlişki Analizi</h2>
     <div class="flex w-12 items-center justify-end">
       <button onclick="openSoulmateShare()" class="flex size-12 cursor-pointer items-center justify-center rounded-xl bg-transparent text-slate-900 dark:text-white">
         <span class="material-symbols-outlined" style="pointer-events:none">share</span>
@@ -92,7 +93,7 @@
           <circle id="score-arc" class="drop-shadow-[0_0_15px_rgba(242,204,13,0.4)]" cx="128" cy="128" fill="transparent" r="110" stroke="#f2cc0d" stroke-dasharray="691" stroke-dashoffset="691" stroke-linecap="round" stroke-width="12"></circle>
         </svg>
         <div class="text-center z-10">
-          <p class="text-slate-500 dark:text-primary/70 text-xs font-bold tracking-[0.2em] uppercase mb-1">Kozmik Rezonans</p>
+          <p class="text-slate-500 dark:text-primary/70 text-xs font-bold tracking-[0.2em] uppercase mb-1" data-i18n="breakdown3.cosmic_resonance">Kozmik Rezonans</p>
           <h3 id="compat-score" class="text-slate-900 dark:text-white text-7xl font-bold tracking-tighter">—</h3>
           <div id="compat-bond" class="bg-primary/20 mt-2 px-3 py-1 rounded-full text-primary text-xs font-bold border border-primary/20 inline-block">—</div>
         </div>
@@ -112,11 +113,11 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Karmik İlişki Bağı</h2>
-                <span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Karma</span>
-                <span class="archetype-display px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px] font-bold leading-none uppercase tracking-tight border border-red-500/20 shrink-0">ANALİZ ET</span>
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate" data-i18n="breakdown3.karmic_title">Karmik İlişki Bağı</h2>
+                <span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown3.karmic_badge">Karma</span>
+                <span class="archetype-display px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px] font-bold leading-none uppercase tracking-tight border border-red-500/20 shrink-0" data-i18n="breakdown3.karmic_analyze">ANALİZ ET</span>
               </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İki ruh arasındaki karmik bağın ve geçmiş yaşam izlerinin analizi.</p>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1" data-i18n="breakdown3.karmic_desc">İki ruh arasındaki karmik bağın ve geçmiş yaşam izlerinin analizi.</p>
             </div>
           </div>
           <div class="flex items-center gap-3 ml-2 shrink-0">
@@ -130,7 +131,7 @@
             <div id="karmic-guide-btn-wrap" style="margin-top:16px;display:none;">
               <button id="btn-relationship-guide" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#7f1313,#c0392b);color:white;border:none;border-radius:12px;padding:14px;font-size:13px;font-weight:800;letter-spacing:0.05em;cursor:pointer;text-transform:uppercase;">
                 <span class="material-symbols-outlined" style="font-size:18px;">psychology</span>
-                İlişki Rehberine Sor
+                <span data-i18n="breakdown3.ask_guide_btn">İlişki Rehberine Sor</span>
               </button>
             </div>
           </div>
@@ -146,11 +147,11 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Ruh Dürtüsü Uyumu</h2>
-                <span class="px-1.5 py-0.5 rounded bg-primary text-background-dark text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Kalp</span>
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate" data-i18n="breakdown3.soul_urge_title">Ruh Dürtüsü Uyumu</h2>
+                <span class="px-1.5 py-0.5 rounded bg-primary text-background-dark text-[9px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown3.soul_urge_badge">Kalp</span>
                 <span class="archetype-display px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">—</span>
               </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İçsel arzularınızın ve duygusal ihtiyaçlarınızın uyumu.</p>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1" data-i18n="breakdown3.soul_urge_desc">İçsel arzularınızın ve duygusal ihtiyaçlarınızın uyumu.</p>
             </div>
           </div>
           <div class="flex items-center gap-3 ml-2 shrink-0">
@@ -169,11 +170,11 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Kişilik Ahengi</h2>
-                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Dış</span>
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate" data-i18n="breakdown3.personality_title">Kişilik Ahengi</h2>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown3.personality_badge">Dış</span>
                 <span class="archetype-display px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">—</span>
               </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">Sosyal dinamikleriniz ve dış dünyaya yansımanız.</p>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1" data-i18n="breakdown3.personality_desc">Sosyal dinamikleriniz ve dış dünyaya yansımanız.</p>
             </div>
           </div>
           <div class="flex items-center gap-3 ml-2 shrink-0">
@@ -192,11 +193,11 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Kader Yolu Birliği</h2>
-                <span class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Kader</span>
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate" data-i18n="breakdown3.life_path_title">Kader Yolu Birliği</h2>
+                <span class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[9px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown3.life_path_badge">Kader</span>
                 <span class="archetype-display px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">—</span>
               </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">Kader yollarınızın birleşim noktası ve ortak yolculuğunuz.</p>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1" data-i18n="breakdown3.life_path_desc">Kader yollarınızın birleşim noktası ve ortak yolculuğunuz.</p>
             </div>
           </div>
           <div class="flex items-center gap-3 ml-2 shrink-0">
@@ -215,11 +216,11 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">İfade Uyumu</h2>
-                <span class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">İfade</span>
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate" data-i18n="breakdown3.expression_title">İfade Uyumu</h2>
+                <span class="px-1.5 py-0.5 rounded bg-primary/20 text-primary text-[9px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown3.expression_badge">İfade</span>
                 <span class="archetype-display px-2 py-0.5 rounded bg-primary/10 text-primary text-[10px] font-bold leading-none uppercase tracking-tight border border-primary/20 shrink-0">—</span>
               </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İsim enerjilerinizin uyumu ve birbirini tamamlama biçimi.</p>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1" data-i18n="breakdown3.expression_desc">İsim enerjilerinizin uyumu ve birbirini tamamlama biçimi.</p>
             </div>
           </div>
           <div class="flex items-center gap-3 ml-2 shrink-0">
@@ -238,10 +239,10 @@
             </div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">İletişim Uyumu</h2>
-                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">İletişim</span>
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate" data-i18n="breakdown3.communication_title">İletişim Uyumu</h2>
+                <span class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-white/10 text-slate-400 dark:text-white/60 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0" data-i18n="breakdown3.communication_badge">İletişim</span>
               </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İletişim tarzlarınız ve birbirinizi anlama biçiminiz.</p>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1" data-i18n="breakdown3.communication_desc">İletişim tarzlarınız ve birbirinizi anlama biçiminiz.</p>
             </div>
           </div>
           <div class="flex items-center gap-3 ml-2 shrink-0">
@@ -257,12 +258,12 @@
     <div class="grid grid-cols-2 gap-3 p-4">
       <div class="flex flex-col gap-2 rounded-xl bg-primary/5 border border-primary/10 p-4">
         <span class="material-symbols-outlined text-primary">auto_awesome</span>
-        <p class="text-xs font-bold text-primary tracking-widest uppercase">Bağ Niteliği</p>
+        <p class="text-xs font-bold text-primary tracking-widest uppercase" data-i18n="breakdown3.bond_quality_label">Bağ Niteliği</p>
         <p id="stat-bond" class="text-slate-900 dark:text-white text-base font-bold">—</p>
       </div>
       <div class="flex flex-col gap-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5 p-4">
         <span class="material-symbols-outlined text-slate-400">psychology</span>
-        <p class="text-xs font-bold text-slate-400 tracking-widest uppercase">Gelişim Alanı</p>
+        <p class="text-xs font-bold text-slate-400 tracking-widest uppercase" data-i18n="breakdown3.growth_area_label">Gelişim Alanı</p>
         <p id="stat-growth" class="text-slate-900 dark:text-white text-base font-bold">—</p>
       </div>
     </div>
@@ -271,7 +272,7 @@
     <div class="px-4 py-6">
       <button id="btn-full-analysis" class="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-background-dark py-4 rounded-xl font-bold text-lg transition-transform active:scale-95">
         <span class="material-symbols-outlined">visibility</span>
-        Tam Analizi Gör
+        <span data-i18n="breakdown3.full_analysis_btn">Tam Analizi Gör</span>
       </button>
     </div>
   </main>
@@ -291,8 +292,8 @@
             <span class="material-symbols-outlined" style="color:white;font-size:20px;">psychology</span>
           </div>
           <div>
-            <p style="color:white;font-weight:800;font-size:14px;letter-spacing:0.05em;">İLİŞKİ REHBERİ</p>
-            <p style="color:rgba(255,255,255,0.4);font-size:11px;">İlişki sorularınızı yanıtlıyor</p>
+            <p style="color:white;font-weight:800;font-size:14px;letter-spacing:0.05em;" data-i18n="breakdown3.guide_modal_title">İLİŞKİ REHBERİ</p>
+            <p style="color:rgba(255,255,255,0.4);font-size:11px;" data-i18n="breakdown3.guide_modal_subtitle">İlişki sorularınızı yanıtlıyor</p>
           </div>
         </div>
         <button onclick="closeGuideModal()" style="background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;">
@@ -301,7 +302,7 @@
       </div>
       <div id="guide-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;"></div>
       <div style="padding:12px 16px;background:#1a1711;border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;display:flex;gap:8px;">
-        <input id="guide-input" type="text" placeholder="İlişkiniz hakkında sorun..." style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 16px;color:white;font-size:14px;outline:none;" />
+        <input id="guide-input" type="text" placeholder="İlişkiniz hakkında sorun..." data-i18n-placeholder="breakdown3.guide_input_placeholder" style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 16px;color:white;font-size:14px;outline:none;" />
         <button id="guide-send" style="background:linear-gradient(135deg,#7f1313,#c0392b);border:none;border-radius:12px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
           <span class="material-symbols-outlined" style="color:white;font-size:20px;">send</span>
         </button>
@@ -314,7 +315,7 @@
     <div id="sm-sheet" style="width:100%;max-width:480px;background:#0a0907;border-radius:28px 28px 0 0;padding:20px 20px 48px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.34,1.2,0.64,1);overflow-y:auto;max-height:94vh">
       <div style="width:40px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin:0 auto 16px"></div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding:0 4px">
-        <h3 style="font-size:17px;font-weight:800;color:white;font-family:Manrope,sans-serif">Ruh Eşi Kartını Paylaş</h3>
+        <h3 style="font-size:17px;font-weight:800;color:white;font-family:Manrope,sans-serif" data-i18n="breakdown3.share_title">Ruh Eşi Kartını Paylaş</h3>
         <button onclick="smClose()" style="width:32px;height:32px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:rgba(255,255,255,0.5);cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
       </div>
       <div style="width:100%;max-width:300px;margin:0 auto 16px;aspect-ratio:1/1;border-radius:1.5rem;position:relative;overflow:hidden;background:linear-gradient(135deg,#fce4ec 0%,#f8bbd0 20%,#f48fb1 40%,#fff0f3 55%,#e1bee7 70%,#f8bbd0 85%,#fce4ec 100%);box-shadow:0 20px 50px rgba(233,30,99,0.2);border:1px solid rgba(233,30,99,0.15)">
@@ -335,7 +336,7 @@
           </div>
         </div>
       </div>
-      <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:13px;margin-bottom:20px;font-family:Manrope,sans-serif">Bu kartı sevdiklerinle paylaş ❤️</p>
+      <p style="text-align:center;color:rgba(255,255,255,0.35);font-size:13px;margin-bottom:20px;font-family:Manrope,sans-serif" data-i18n="breakdown3.share_cta">Bu kartı sevdiklerinle paylaş</p>
       <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
         <button onclick="smAction('instagram')" style="width:100%;height:52px;background:#E1306C;border:none;border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:white;font-family:Manrope,sans-serif">
           <div style="display:flex;align-items:center;gap:12px"><span class="material-symbols-outlined" style="font-size:22px;pointer-events:none">photo_camera</span><span style="font-weight:700;font-size:15px">Instagram Stories</span></div>
@@ -346,18 +347,18 @@
           <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
         </button>
         <button onclick="smAction('save')" style="width:100%;height:52px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.08);border-radius:16px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;cursor:pointer;color:white;font-family:Manrope,sans-serif">
-          <div style="display:flex;align-items:center;gap:12px"><span class="material-symbols-outlined" style="font-size:22px;opacity:0.7;pointer-events:none">download</span><span style="font-weight:700;font-size:15px">Galeriye Kaydet</span></div>
+          <div style="display:flex;align-items:center;gap:12px"><span class="material-symbols-outlined" style="font-size:22px;opacity:0.7;pointer-events:none">download</span><span style="font-weight:700;font-size:15px" data-i18n="breakdown3.save_to_gallery">Galeriye Kaydet</span></div>
           <span class="material-symbols-outlined" style="font-size:20px;opacity:0.7">chevron_right</span>
         </button>
       </div>
       <div style="display:flex;justify-content:center;gap:40px">
         <button onclick="smAction('copy')" style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer">
           <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.5)">content_copy</span></div>
-          <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">Kopyala</span>
+          <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif" data-i18n="breakdown3.copy_link">Kopyala</span>
         </button>
         <button onclick="smAction('other')" style="display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:none;cursor:pointer">
           <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined" style="font-size:20px;color:rgba(255,255,255,0.5)">more_horiz</span></div>
-          <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif">Diğer</span>
+          <span style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.1em;font-family:Manrope,sans-serif" data-i18n="breakdown3.other">Diğer</span>
         </button>
       </div>
     </div>

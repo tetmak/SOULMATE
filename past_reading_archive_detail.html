@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script src="js/theme-engine.js"></script>
+    <script src="js/i18n-engine.js"></script>
     <script src="js/api-base.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
@@ -101,7 +102,7 @@
                 class="flex size-12 items-center cursor-pointer">
                 <span class="material-symbols-outlined text-gray-700 dark:text-white">arrow_back_ios</span>
             </div>
-            <h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">
+            <h2 class="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center" data-i18n="archive.header_title">
                 Sacred Archive</h2>
             <div class="flex w-12 items-center justify-end">
                 <button
@@ -116,20 +117,20 @@
             <div class="archive-hero bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-t-3xl min-h-[200px] border-x border-t border-primary/20 relative"
                 style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDoQZy9HVvAnjH7jiTRvGRM2iclMUDK29JStgLw4Pq-JCabmjlzNp2-mJFSYw6uvD3Ol-O4lCldbhZ2OCDCKo8UC-N5YHeTGZBWr1tKAr0fyayNLDcgy6xVCjoBmIxrtVXvjJ_csZTUQ5yyVv55STSo4gHu8XOs7t9C5fz5wcT-2EQVpp-irGbaDOb2wWjuCT3JB4mwiIhxl-cBpJs8oE_tyZA2UVgXKnbgYhYzPkOOd39cUdXJlPJ52pdZbx5OhPe7YtVGiqJcKZlG"); background-color: #181611;'>
                 <div class="flex p-6 flex-col gap-2">
-                    <span class="text-primary text-xs font-bold uppercase tracking-[0.3em]">Eternal Archive
+                    <span class="text-primary text-xs font-bold uppercase tracking-[0.3em]" data-i18n="archive.eternal_record">Eternal Archive
                         Record</span>
-                    <h1 id="person-name-title" class="text-white tracking-tight text-3xl font-bold leading-tight">Full Destiny Analysis</h1>
+                    <h1 id="person-name-title" class="text-white tracking-tight text-3xl font-bold leading-tight" data-i18n="archive.destiny_analysis">Full Destiny Analysis</h1>
                     <div class="flex items-center gap-6 mt-4 pt-4 border-t border-primary/20">
                         <div class="flex flex-col">
-                            <span class="text-[10px] text-primary uppercase font-bold tracking-widest">Life Path</span>
+                            <span class="text-[10px] text-primary uppercase font-bold tracking-widest" data-i18n="archive.life_path_label">Life Path</span>
                             <span id="life-path-value" class="text-2xl font-bold text-white">—</span>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-[10px] text-primary uppercase font-bold tracking-widest">Soul Urge</span>
+                            <span class="text-[10px] text-primary uppercase font-bold tracking-widest" data-i18n="archive.soul_urge_label">Soul Urge</span>
                             <span id="soul-urge-value" class="text-2xl font-bold text-white">—</span>
                         </div>
                         <div class="flex flex-col">
-                            <span class="text-[10px] text-primary uppercase font-bold tracking-widest">Destiny</span>
+                            <span class="text-[10px] text-primary uppercase font-bold tracking-widest" data-i18n="archive.destiny_label">Destiny</span>
                             <span id="destiny-value" class="text-2xl font-bold text-white">—</span>
                         </div>
                     </div>
@@ -137,7 +138,7 @@
             </div>
         </div>
         <div class="archive-date-bar border-x border-primary/20">
-            <p class="text-primary/60 text-[10px] font-medium uppercase tracking-[0.2em] py-2 text-center">
+            <p class="text-primary/60 text-[10px] font-medium uppercase tracking-[0.2em] py-2 text-center" data-i18n="archive.inscribed_date">
                 Inscribed on October 14, 2023 • 11:11 PM
             </p>
         </div>
@@ -187,7 +188,7 @@
                 </p>
                 <div class="pt-12 pb-8 text-center">
                     <div class="h-px w-16 bg-primary/30 mx-auto mb-8"></div>
-                    <p class="text-primary font-medium italic text-xl tracking-tight">
+                    <p class="text-primary font-medium italic text-xl tracking-tight" data-i18n="archive.closing_question">
                         How has this wisdom shaped your journey since?
                     </p>
                     <div class="flex justify-center gap-4 mt-8 opacity-40">
