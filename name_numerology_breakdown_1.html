@@ -511,23 +511,72 @@
             if (window.auth && window.auth.whenReady) { await window.auth.whenReady(); }
             // 1. Veri Hazırlığı
             var params = new URLSearchParams(window.location.search);
-
-            // Kişi profili (Deep Insight) kontrolü — numerael_kisi_temp öncelikli
-            var tempKisi = null;
-            try { tempKisi = JSON.parse(localStorage.getItem('numerael_kisi_temp') || 'null'); } catch (e) {}
-            var isKisiView = tempKisi && tempKisi.isTemp && params.get('kisi');
-
-            var userData = {};
-            try { userData = JSON.parse(localStorage.getItem('numerael_user_data') || '{}'); } catch (e) { }
-
+            var kisiParam = params.get('kisi');
             var name, birthDate;
-            if (isKisiView) {
-                name = tempKisi.name || tempKisi.fullName || params.get('kisi') || 'Alexander';
-                birthDate = tempKisi.birthDate || params.get('dt') || '1990-01-01';
-                console.log('[Breakdown] Kişi profili yükleniyor:', name, birthDate);
+
+            if (kisiParam) {
+                // ═══ BAŞKA BİRİNİN PROFİLİ ═══
+                name = kisiParam;
+                birthDate = params.get('dt') || '';
+
+                // Kaynak 1: numerael_kisi_temp (kisi_profil.html'den geliyorsa)
+                try {
+                    var tempKisi = JSON.parse(localStorage.getItem('numerael_kisi_temp') || 'null');
+                    if (tempKisi && tempKisi.isTemp && tempKisi.birthDate) {
+                        name = tempKisi.name || tempKisi.fullName || kisiParam;
+                        birthDate = tempKisi.birthDate;
+                        console.log('[Breakdown] Kişi temp verisi bulundu:', name, birthDate);
+                    }
+                } catch(e) {}
+
+                // Kaynak 2: Supabase discovery_profiles
+                if (!birthDate && window.supabaseClient) {
+                    try {
+                        var dpRes = await window.supabaseClient.from('discovery_profiles')
+                            .select('full_name, birth_date, gender')
+                            .ilike('full_name', '%' + kisiParam + '%')
+                            .limit(1).maybeSingle();
+                        if (dpRes.data && dpRes.data.birth_date) {
+                            name = dpRes.data.full_name || kisiParam;
+                            birthDate = dpRes.data.birth_date;
+                            console.log('[Breakdown] Supabase discovery_profiles:', name, birthDate);
+                        }
+                    } catch(e) {}
+                }
+
+                // Kaynak 3: Supabase profiles tablosu
+                if (!birthDate && window.supabaseClient) {
+                    try {
+                        var profRes = await window.supabaseClient.from('profiles')
+                            .select('full_name, birth_date, gender')
+                            .ilike('full_name', '%' + kisiParam + '%')
+                            .limit(1).maybeSingle();
+                        if (profRes.data && profRes.data.birth_date) {
+                            name = profRes.data.full_name || kisiParam;
+                            birthDate = profRes.data.birth_date;
+                            console.log('[Breakdown] Supabase profiles:', name, birthDate);
+                        }
+                    } catch(e) {}
+                }
+
+                // Kaynak 4: localStorage connections
+                if (!birthDate && window.profile) {
+                    try {
+                        var conn = await window.profile.getConnectionDetail(kisiParam);
+                        if (conn && conn.birthDate) {
+                            name = conn.fullName || kisiParam;
+                            birthDate = conn.birthDate;
+                        }
+                    } catch(e) {}
+                }
+
+                if (!birthDate) birthDate = '1990-01-01';
             } else {
-                name = params.get('kisi') || userData.name || 'Alexander';
-                birthDate = params.get('dt') || userData.birthDate || '1990-01-01';
+                // ═══ ANA KULLANICININ PROFİLİ ═══
+                var userData = {};
+                try { userData = JSON.parse(localStorage.getItem('numerael_user_data') || '{}'); } catch (e) {}
+                name = userData.name || 'Alexander';
+                birthDate = userData.birthDate || '1990-01-01';
             }
             
             console.log('[Main Debug] Name:', name);
@@ -824,20 +873,58 @@
             var kisiName = params.get('kisi');
 
             if (kisiName) {
-                // Başkasının profili — önce numerael_kisi_temp kontrol et
-                var tempKisi2 = null;
-                try { tempKisi2 = JSON.parse(localStorage.getItem('numerael_kisi_temp') || 'null'); } catch(e) {}
-                if (tempKisi2 && tempKisi2.isTemp && tempKisi2.birthDate) {
-                    initKarmic({ name: tempKisi2.name || tempKisi2.fullName || kisiName, birthDate: tempKisi2.birthDate });
-                    return;
-                }
-                // Fallback: connections'dan çek
-                if (window.profile) {
+                // Başkasının profili — çoklu kaynak
+                var karmicName = kisiName, karmicBD = '';
+
+                // Kaynak 1: numerael_kisi_temp
+                try {
+                    var tempKisi2 = JSON.parse(localStorage.getItem('numerael_kisi_temp') || 'null');
+                    if (tempKisi2 && tempKisi2.isTemp && tempKisi2.birthDate) {
+                        karmicName = tempKisi2.name || tempKisi2.fullName || kisiName;
+                        karmicBD = tempKisi2.birthDate;
+                    }
+                } catch(e) {}
+
+                // Kaynak 2: Supabase discovery_profiles
+                if (!karmicBD && window.supabaseClient) {
                     try {
-                        var conn = await window.profile.getConnectionDetail(kisiName);
-                        if (conn) initKarmic({ name: conn.fullName, birthDate: conn.birthDate });
+                        var dpRes2 = await window.supabaseClient.from('discovery_profiles')
+                            .select('full_name, birth_date')
+                            .ilike('full_name', '%' + kisiName + '%')
+                            .limit(1).maybeSingle();
+                        if (dpRes2.data && dpRes2.data.birth_date) {
+                            karmicName = dpRes2.data.full_name || kisiName;
+                            karmicBD = dpRes2.data.birth_date;
+                        }
                     } catch(e) {}
                 }
+
+                // Kaynak 3: Supabase profiles
+                if (!karmicBD && window.supabaseClient) {
+                    try {
+                        var profRes2 = await window.supabaseClient.from('profiles')
+                            .select('full_name, birth_date')
+                            .ilike('full_name', '%' + kisiName + '%')
+                            .limit(1).maybeSingle();
+                        if (profRes2.data && profRes2.data.birth_date) {
+                            karmicName = profRes2.data.full_name || kisiName;
+                            karmicBD = profRes2.data.birth_date;
+                        }
+                    } catch(e) {}
+                }
+
+                // Kaynak 4: localStorage connections
+                if (!karmicBD && window.profile) {
+                    try {
+                        var conn2 = await window.profile.getConnectionDetail(kisiName);
+                        if (conn2 && conn2.birthDate) {
+                            karmicName = conn2.fullName || kisiName;
+                            karmicBD = conn2.birthDate;
+                        }
+                    } catch(e) {}
+                }
+
+                if (karmicBD) initKarmic({ name: karmicName, birthDate: karmicBD });
                 return;
             }
 
@@ -1244,11 +1331,51 @@ SAĞLIK BAŞLIĞI İSTENİRSE sağlık ve psikoloji odaklı analiz yap.` });
             var kisiName = params.get('kisi');
             var data = null;
 
-            if (kisiName && window.profile) {
+            if (kisiName) {
+                // Başkasının profili — çoklu kaynak
+                // Kaynak 1: numerael_kisi_temp
                 try {
-                    var conn = await window.profile.getConnectionDetail(kisiName);
-                    if (conn) data = { name: conn.fullName, birthDate: conn.birthDate };
+                    var tempCtx = JSON.parse(localStorage.getItem('numerael_kisi_temp') || 'null');
+                    if (tempCtx && tempCtx.isTemp && tempCtx.birthDate) {
+                        data = { name: tempCtx.name || tempCtx.fullName || kisiName, birthDate: tempCtx.birthDate };
+                    }
                 } catch(e) {}
+
+                // Kaynak 2: Supabase discovery_profiles
+                if (!data && window.supabaseClient) {
+                    try {
+                        var dpCtx = await window.supabaseClient.from('discovery_profiles')
+                            .select('full_name, birth_date')
+                            .ilike('full_name', '%' + kisiName + '%')
+                            .limit(1).maybeSingle();
+                        if (dpCtx.data && dpCtx.data.birth_date) {
+                            data = { name: dpCtx.data.full_name || kisiName, birthDate: dpCtx.data.birth_date };
+                        }
+                    } catch(e) {}
+                }
+
+                // Kaynak 3: Supabase profiles
+                if (!data && window.supabaseClient) {
+                    try {
+                        var profCtx = await window.supabaseClient.from('profiles')
+                            .select('full_name, birth_date')
+                            .ilike('full_name', '%' + kisiName + '%')
+                            .limit(1).maybeSingle();
+                        if (profCtx.data && profCtx.data.birth_date) {
+                            data = { name: profCtx.data.full_name || kisiName, birthDate: profCtx.data.birth_date };
+                        }
+                    } catch(e) {}
+                }
+
+                // Kaynak 4: localStorage connections
+                if (!data && window.profile) {
+                    try {
+                        var connCtx = await window.profile.getConnectionDetail(kisiName);
+                        if (connCtx && connCtx.birthDate) {
+                            data = { name: connCtx.fullName || kisiName, birthDate: connCtx.birthDate };
+                        }
+                    } catch(e) {}
+                }
             }
             if (!data) {
                 try { data = JSON.parse(localStorage.getItem('numerael_user_data')); } catch(e) {}
