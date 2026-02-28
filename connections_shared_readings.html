@@ -178,9 +178,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             mcCount.textContent = matchConns.length + ' connected';
 
             matchConns.forEach(function(mc, idx) {
-                var p = mc.profile;
-                if (!p) return;
-                var name = p.full_name || 'Unknown';
+                var p = mc.profile || {};
+                var name = p.full_name || 'Kullanıcı';
                 var lp = p.life_path || calcLP(p.birth_date) || '?';
                 var photo = getPhoto(name, p.gender, p.avatar_url);
                 var firstName = name.split(' ')[0];

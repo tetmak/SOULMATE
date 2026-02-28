@@ -15,13 +15,23 @@
      * Helper: get user's display name from discovery_profiles.
      */
     async function getUserName(userId) {
+        // 1. discovery_profiles tablosu
         try {
             var res = await sb().from('discovery_profiles')
                 .select('full_name')
                 .eq('user_id', userId)
                 .maybeSingle();
-            return (res.data && res.data.full_name) ? res.data.full_name : 'User';
-        } catch(e) { return 'User'; }
+            if (res.data && res.data.full_name) return res.data.full_name;
+        } catch(e) {}
+        // 2. profiles tablosu (fallback)
+        try {
+            var profRes = await sb().from('profiles')
+                .select('full_name')
+                .eq('id', userId)
+                .maybeSingle();
+            if (profRes.data && profRes.data.full_name) return profRes.data.full_name;
+        } catch(e) {}
+        return 'User';
     }
 
     /**
@@ -279,16 +289,17 @@
                     .select('id, full_name, gender, birth_date, avatar_url')
                     .in('id', missingConnIds);
                 (fallbackConnRes.data || []).forEach(function(p) {
+                    var disc = window.discovery || {};
                     profileMap[p.id] = {
                         user_id: p.id,
                         full_name: p.full_name,
                         gender: p.gender,
                         avatar_url: p.avatar_url || profAvatarMap[p.id] || null,
-                        life_path: p.birth_date ? window.discovery.calcLP(p.birth_date) : null,
+                        life_path: (p.birth_date && disc.calcLP) ? disc.calcLP(p.birth_date) : null,
                         birth_date: p.birth_date,
-                        expression_num: p.full_name ? window.discovery.calcExp(p.full_name) : null,
-                        soul_urge: p.full_name ? window.discovery.calcSoul(p.full_name) : null,
-                        personality_num: p.full_name ? window.discovery.calcPers(p.full_name) : null
+                        expression_num: (p.full_name && disc.calcExp) ? disc.calcExp(p.full_name) : null,
+                        soul_urge: (p.full_name && disc.calcSoul) ? disc.calcSoul(p.full_name) : null,
+                        personality_num: (p.full_name && disc.calcPers) ? disc.calcPers(p.full_name) : null
                     };
                 });
             }

@@ -26,10 +26,10 @@
     // ═══════════════════════════════════════════════════════
 
     var NOTIF_TEXT = {
-        'connection_request': 'New connection request received',
-        'connection_accepted': 'Your connection request was accepted',
-        'new_message': 'New message received',
-        'limit_hit': 'Premium required to continue'
+        'connection_request': 'Yeni bağlantı isteği',
+        'connection_accepted': 'Bağlantı isteğiniz kabul edildi',
+        'new_message': 'Yeni mesaj',
+        'limit_hit': 'Devam etmek için Premium gerekli'
     };
 
     var NOTIF_ICON = {
@@ -231,7 +231,16 @@
             item.setAttribute('data-notif-id', notif.id);
 
             var icon = NOTIF_ICON[notif.type] || 'notifications';
-            var text = NOTIF_TEXT[notif.type] || 'Notification';
+            var text = NOTIF_TEXT[notif.type] || 'Bildirim';
+            var p = notif.payload || {};
+            // Kişi adını bildirime ekle
+            if (notif.type === 'connection_request' && p.sender_name && p.sender_name !== 'User') {
+                text = p.sender_name + ' bağlantı isteği gönderdi';
+            } else if (notif.type === 'connection_accepted' && p.accepter_name && p.accepter_name !== 'User') {
+                text = p.accepter_name + ' isteğinizi kabul etti';
+            } else if (notif.type === 'new_message' && p.sender_name && p.sender_name !== 'User') {
+                text = p.sender_name + ' mesaj gönderdi';
+            }
 
             item.innerHTML =
                 '<div class="notif-icon"><span class="material-symbols-outlined">' + icon + '</span></div>' +
