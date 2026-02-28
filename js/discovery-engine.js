@@ -340,6 +340,42 @@
                         }
                     }
 
+                    // ─── Karşılıklı eşleşme senkronizasyonu ───
+                    // Başka kullanıcılar beni bugün eşleştirdiyse ama bende kayıt yoksa,
+                    // kendi adıma kayıt oluştur (RLS: auth.uid() = user_id geçer)
+                    try {
+                        var incomingRes = await sb.from('daily_matches')
+                            .select('user_id, match_score')
+                            .eq('matched_user_id', userId)
+                            .eq('match_date', today);
+
+                        if (incomingRes.data && incomingRes.data.length > 0) {
+                            var myMatchedIds2 = existing.data.map(function(m) { return m.matched_user_id; });
+                            for (var ii = 0; ii < incomingRes.data.length; ii++) {
+                                var inc = incomingRes.data[ii];
+                                if (myMatchedIds2.indexOf(inc.user_id) === -1) {
+                                    console.log('[Match] Gelen eşleşme senkronize ediliyor: ' + inc.user_id);
+                                    try {
+                                        await sb.from('daily_matches').insert({
+                                            user_id: userId,
+                                            matched_user_id: inc.user_id,
+                                            match_score: inc.match_score,
+                                            match_date: today,
+                                            revealed: false
+                                        });
+                                        existing.data.push({
+                                            user_id: userId,
+                                            matched_user_id: inc.user_id,
+                                            match_score: inc.match_score,
+                                            match_date: today,
+                                            revealed: false
+                                        });
+                                    } catch(ie) { console.warn('[Match] Reciprocal sync insert error:', ie); }
+                                }
+                            }
+                        }
+                    } catch(incErr) { console.warn('[Match] Incoming match sync error:', incErr); }
+
                     console.log('[Match] Bugün ' + existing.data.length + ' eşleşme (gender OK)');
                     return await attachProfilesToMatches(existing.data);
                 }
