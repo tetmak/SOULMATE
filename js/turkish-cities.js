@@ -1,7 +1,10 @@
 /**
- * NUMERAEL — Türkiye 81 İl Koordinatları
+ * NUMERAEL — Türkiye 81 İl + İstanbul/Ankara/İzmir İlçe Koordinatları
  * Cosmic Match harita özelliği için kullanılır.
  * Export: window.TURKISH_CITIES
+ *
+ * Yapı: { name, lat, lng } veya { name, districts: [{ name, lat, lng }] }
+ * İlçeli şehirler doğrudan seçilemez, ilçe seçilir.
  */
 (function() {
     'use strict';
@@ -13,7 +16,17 @@
         { name: 'Ağrı', lat: 39.7191, lng: 43.0503 },
         { name: 'Aksaray', lat: 38.3687, lng: 34.0370 },
         { name: 'Amasya', lat: 40.6499, lng: 35.8353 },
-        { name: 'Ankara', lat: 39.9334, lng: 32.8597 },
+        { name: 'Ankara', districts: [
+            { name: 'Altındağ', lat: 39.9597, lng: 32.8742 },
+            { name: 'Çankaya', lat: 39.8900, lng: 32.8600 },
+            { name: 'Etimesgut', lat: 39.9500, lng: 32.6700 },
+            { name: 'Gölbaşı', lat: 39.7800, lng: 32.8000 },
+            { name: 'Keçiören', lat: 39.9700, lng: 32.8600 },
+            { name: 'Mamak', lat: 39.9300, lng: 32.9100 },
+            { name: 'Pursaklar', lat: 40.0500, lng: 32.9000 },
+            { name: 'Sincan', lat: 39.9700, lng: 32.5800 },
+            { name: 'Yenimahalle', lat: 39.9700, lng: 32.8100 }
+        ]},
         { name: 'Antalya', lat: 36.8969, lng: 30.7133 },
         { name: 'Ardahan', lat: 41.1105, lng: 42.7022 },
         { name: 'Artvin', lat: 41.1828, lng: 41.8183 },
@@ -46,8 +59,59 @@
         { name: 'Hatay', lat: 36.4018, lng: 36.3498 },
         { name: 'Iğdır', lat: 39.9167, lng: 44.0500 },
         { name: 'Isparta', lat: 37.7648, lng: 30.5566 },
-        { name: 'İstanbul', lat: 41.0082, lng: 28.9784 },
-        { name: 'İzmir', lat: 38.4192, lng: 27.1287 },
+        { name: 'İstanbul', districts: [
+            { name: 'Adalar', lat: 40.8761, lng: 29.0906 },
+            { name: 'Arnavutköy', lat: 41.1853, lng: 28.7394 },
+            { name: 'Ataşehir', lat: 40.9833, lng: 29.1167 },
+            { name: 'Avcılar', lat: 40.9794, lng: 28.7217 },
+            { name: 'Bağcılar', lat: 41.0386, lng: 28.8572 },
+            { name: 'Bahçelievler', lat: 41.0000, lng: 28.8617 },
+            { name: 'Bakırköy', lat: 40.9819, lng: 28.8772 },
+            { name: 'Başakşehir', lat: 41.0933, lng: 28.8000 },
+            { name: 'Bayrampaşa', lat: 41.0464, lng: 28.9117 },
+            { name: 'Beşiktaş', lat: 41.0422, lng: 29.0083 },
+            { name: 'Beykoz', lat: 41.1167, lng: 29.0833 },
+            { name: 'Beylikdüzü', lat: 41.0039, lng: 28.6428 },
+            { name: 'Beyoğlu', lat: 41.0370, lng: 28.9769 },
+            { name: 'Büyükçekmece', lat: 41.0217, lng: 28.5900 },
+            { name: 'Çatalca', lat: 41.1433, lng: 28.4600 },
+            { name: 'Çekmeköy', lat: 41.0333, lng: 29.1833 },
+            { name: 'Esenler', lat: 41.0439, lng: 28.8756 },
+            { name: 'Esenyurt', lat: 41.0333, lng: 28.6833 },
+            { name: 'Eyüpsultan', lat: 41.0483, lng: 28.9339 },
+            { name: 'Fatih', lat: 41.0186, lng: 28.9397 },
+            { name: 'Gaziosmanpaşa', lat: 41.0633, lng: 28.9117 },
+            { name: 'Güngören', lat: 41.0200, lng: 28.8833 },
+            { name: 'Kadıköy', lat: 40.9927, lng: 29.0230 },
+            { name: 'Kağıthane', lat: 41.0833, lng: 28.9667 },
+            { name: 'Kartal', lat: 40.9000, lng: 29.1833 },
+            { name: 'Küçükçekmece', lat: 41.0042, lng: 28.7694 },
+            { name: 'Maltepe', lat: 40.9333, lng: 29.1333 },
+            { name: 'Pendik', lat: 40.8781, lng: 29.2321 },
+            { name: 'Sancaktepe', lat: 41.0028, lng: 29.2333 },
+            { name: 'Sarıyer', lat: 41.1667, lng: 29.0500 },
+            { name: 'Silivri', lat: 41.0736, lng: 28.2464 },
+            { name: 'Sultanbeyli', lat: 40.9622, lng: 29.2622 },
+            { name: 'Sultangazi', lat: 41.1069, lng: 28.8672 },
+            { name: 'Şile', lat: 41.1756, lng: 29.6128 },
+            { name: 'Şişli', lat: 41.0602, lng: 28.9877 },
+            { name: 'Tuzla', lat: 40.8167, lng: 29.3000 },
+            { name: 'Ümraniye', lat: 41.0167, lng: 29.1167 },
+            { name: 'Üsküdar', lat: 41.0236, lng: 29.0153 },
+            { name: 'Zeytinburnu', lat: 41.0042, lng: 28.9028 }
+        ]},
+        { name: 'İzmir', districts: [
+            { name: 'Bayraklı', lat: 38.4628, lng: 27.1639 },
+            { name: 'Bornova', lat: 38.4700, lng: 27.2200 },
+            { name: 'Buca', lat: 38.3886, lng: 27.1750 },
+            { name: 'Çiğli', lat: 38.5000, lng: 27.0600 },
+            { name: 'Gaziemir', lat: 38.3200, lng: 27.1300 },
+            { name: 'Karabağlar', lat: 38.3800, lng: 27.1200 },
+            { name: 'Karşıyaka', lat: 38.4600, lng: 27.1100 },
+            { name: 'Konak', lat: 38.4192, lng: 27.1287 },
+            { name: 'Menemen', lat: 38.6100, lng: 27.0700 },
+            { name: 'Torbalı', lat: 38.1600, lng: 27.3600 }
+        ]},
         { name: 'Kahramanmaraş', lat: 37.5858, lng: 36.9371 },
         { name: 'Karabük', lat: 41.2061, lng: 32.6204 },
         { name: 'Karaman', lat: 37.1759, lng: 33.2287 },
@@ -89,5 +153,45 @@
         { name: 'Yozgat', lat: 39.8181, lng: 34.8147 },
         { name: 'Zonguldak', lat: 41.4564, lng: 31.7987 }
     ];
+
+    // Yardımcı: şehir adından koordinat bul (ilçeli şehirler dahil)
+    window.lookupTurkishCity = function(cityName) {
+        if (!cityName) return null;
+        var name = cityName.trim();
+        for (var i = 0; i < window.TURKISH_CITIES.length; i++) {
+            var c = window.TURKISH_CITIES[i];
+            if (c.districts) {
+                for (var j = 0; j < c.districts.length; j++) {
+                    if (c.name + ' - ' + c.districts[j].name === name) return c.districts[j];
+                }
+            } else {
+                if (c.name === name) return c;
+            }
+        }
+        return null;
+    };
+
+    // Yardımcı: select elementi doldur (optgroup ile)
+    window.populateCitySelect = function(selectEl) {
+        if (!selectEl || !window.TURKISH_CITIES) return;
+        window.TURKISH_CITIES.forEach(function(c) {
+            if (c.districts) {
+                var group = document.createElement('optgroup');
+                group.label = c.name;
+                c.districts.forEach(function(d) {
+                    var opt = document.createElement('option');
+                    opt.value = c.name + ' - ' + d.name;
+                    opt.textContent = d.name;
+                    group.appendChild(opt);
+                });
+                selectEl.appendChild(group);
+            } else {
+                var opt = document.createElement('option');
+                opt.value = c.name;
+                opt.textContent = c.name;
+                selectEl.appendChild(opt);
+            }
+        });
+    };
 
 })();

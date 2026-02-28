@@ -107,10 +107,13 @@
     .dark #cosmic-map .leaflet-control-attribution{background:rgba(36,24,18,0.8)!important;color:rgba(255,255,255,0.4)!important;font-size:8px}
     .dark #cosmic-map .leaflet-control-attribution a{color:rgba(196,124,32,0.6)!important}
     #cosmic-map .leaflet-control-attribution{font-size:8px}
-    #cosmic-map .cosmic-marker{display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:900;font-size:11px;font-family:'Space Grotesk',sans-serif;cursor:pointer;transition:transform 0.2s;border:2px solid;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
-    #cosmic-map .cosmic-marker:hover{transform:scale(1.3);z-index:100!important}
-    #cosmic-map .cosmic-marker-self{width:36px;height:36px;background:linear-gradient(135deg,#C47C20,#E5A354);border-color:#fff;color:#fff;box-shadow:0 0 16px rgba(196,124,32,0.5)}
-    #cosmic-map .cosmic-marker-match{width:32px;height:32px;background:rgba(196,124,32,0.15);border-color:rgba(196,124,32,0.5);color:#C47C20}
+    #cosmic-map .cosmic-marker{position:relative;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;transition:transform 0.2s;border:3px solid;box-shadow:0 2px 10px rgba(0,0,0,0.4);overflow:hidden}
+    #cosmic-map .cosmic-marker:hover{transform:scale(1.2);z-index:100!important}
+    #cosmic-map .cosmic-marker img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+    #cosmic-map .cosmic-marker-self{width:40px;height:40px;border-color:#C47C20;box-shadow:0 0 16px rgba(196,124,32,0.5)}
+    #cosmic-map .cosmic-marker-match{width:38px;height:38px;border-color:#E5A354;box-shadow:0 2px 12px rgba(0,0,0,0.3)}
+    #cosmic-map .cosmic-pin{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid #E5A354;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.3))}
+    #cosmic-map .cosmic-pin-self{border-top-color:#C47C20}
     .leaflet-popup-content-wrapper{background:rgba(36,24,18,0.95)!important;color:#E2D1C3!important;border-radius:12px!important;border:1px solid rgba(196,124,32,0.3)!important;box-shadow:0 4px 20px rgba(0,0,0,0.4)!important}
     .leaflet-popup-tip{background:rgba(36,24,18,0.95)!important}
     .leaflet-popup-content{margin:8px 12px!important;font-family:'Space Grotesk',sans-serif!important;font-size:12px!important}
@@ -498,15 +501,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         window.gamification.trackAction('cosmic_match_view');
     }
 
-    // Şehir seçici doldur
+    // Şehir seçici doldur (ilçeli şehirler optgroup ile)
     var citySelect = document.getElementById('city-select');
-    if (citySelect && window.TURKISH_CITIES) {
-        window.TURKISH_CITIES.forEach(function(c) {
-            var opt = document.createElement('option');
-            opt.value = c.name;
-            opt.textContent = c.name;
-            citySelect.appendChild(opt);
-        });
+    if (citySelect && window.populateCitySelect) {
+        window.populateCitySelect(citySelect);
     }
 
     // Opt-in
@@ -966,19 +964,20 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (layer instanceof L.Marker) _cosmicMap.removeLayer(layer);
         });
 
-        // Kullanıcının kendi şehrini göster
+        // Kullanıcının kendi şehrini + avatarını göster
         try {
             window.supabaseClient.from('discovery_profiles')
-                .select('city, city_lat, city_lng')
+                .select('city, city_lat, city_lng, avatar_url, gender, full_name')
                 .eq('user_id', userId)
                 .maybeSingle()
                 .then(function(res) {
                     if (res.data && res.data.city_lat && res.data.city_lng) {
+                        var selfAvatar = getPhoto(res.data.full_name || '', res.data.gender || '', res.data.avatar_url || '');
                         var selfIcon = L.divIcon({
                             className: '',
-                            html: '<div class="cosmic-marker cosmic-marker-self">✦</div>',
-                            iconSize: [36, 36],
-                            iconAnchor: [18, 18]
+                            html: '<div style="position:relative"><div class="cosmic-marker cosmic-marker-self"><img src="' + selfAvatar + '" alt=""></div><div class="cosmic-pin cosmic-pin-self"></div></div>',
+                            iconSize: [40, 50],
+                            iconAnchor: [20, 50]
                         });
                         L.marker([res.data.city_lat, res.data.city_lng], { icon: selfIcon, zIndexOffset: 1000 })
                             .addTo(_cosmicMap)
@@ -987,21 +986,20 @@ document.addEventListener('DOMContentLoaded', async function() {
                 });
         } catch(e) {}
 
-        // Eşleşmelerin şehirlerini göster
-        var colors = ['#C47C20', '#E5A354', '#8B5716', '#D4956B', '#B8834A', '#E8B471', '#A06D2E', '#C9944F'];
+        // Eşleşmelerin avatarlarını haritada göster
         var bounds = [];
         matches.forEach(function(match, idx) {
             var p = match.matched;
             if (!p || !p.city_lat || !p.city_lng) return;
-            var color = colors[idx % colors.length];
             var score = match.match_score || 0;
             var lp = p.life_path || '?';
+            var avatarUrl = getPhoto(p.full_name || '', p.gender || '', p.avatar_url || '');
 
             var markerIcon = L.divIcon({
                 className: '',
-                html: '<div class="cosmic-marker cosmic-marker-match" style="border-color:' + color + '88;background:' + color + '22;color:' + color + '">' + lp + '</div>',
-                iconSize: [32, 32],
-                iconAnchor: [16, 16]
+                html: '<div style="position:relative"><div class="cosmic-marker cosmic-marker-match"><img src="' + avatarUrl + '" alt=""></div><div class="cosmic-pin"></div></div>',
+                iconSize: [38, 48],
+                iconAnchor: [19, 48]
             });
 
             var marker = L.marker([p.city_lat, p.city_lng], { icon: markerIcon })
@@ -1038,14 +1036,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         var cityLabel = document.getElementById('btn-city-label');
         if (!changeBtn || !panel || !select) return;
 
-        // Select'i doldur
-        if (window.TURKISH_CITIES) {
-            window.TURKISH_CITIES.forEach(function(c) {
-                var opt = document.createElement('option');
-                opt.value = c.name;
-                opt.textContent = c.name;
-                select.appendChild(opt);
-            });
+        // Select'i doldur (ilçeli şehirler optgroup ile)
+        if (window.populateCitySelect) {
+            window.populateCitySelect(select);
         }
 
         // Mevcut şehri göster

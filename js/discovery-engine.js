@@ -137,10 +137,18 @@
     // ─── OPT-IN: Profili Supabase'e kaydet ──────────────────
     // ─── Şehir lookup helper ──────────────────────────────
     function lookupCity(cityName) {
+        if (window.lookupTurkishCity) return window.lookupTurkishCity(cityName);
         if (!cityName || !window.TURKISH_CITIES) return null;
         var name = cityName.trim();
         for (var i = 0; i < window.TURKISH_CITIES.length; i++) {
-            if (window.TURKISH_CITIES[i].name === name) return window.TURKISH_CITIES[i];
+            var c = window.TURKISH_CITIES[i];
+            if (c.districts) {
+                for (var j = 0; j < c.districts.length; j++) {
+                    if (c.name + ' - ' + c.districts[j].name === name) return c.districts[j];
+                }
+            } else {
+                if (c.name === name) return c;
+            }
         }
         return null;
     }
