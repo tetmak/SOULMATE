@@ -30,24 +30,26 @@
         return false;
     }
 
+    var _t = window.i18n ? window.i18n.t : function(k,f){return f||k;};
+
     var tabs = [
-        { icon: 'home', label: 'Home', href: 'mystic_numerology_home_1.html', active: isActive(['mystic_numerology_home_1', 'cosmic_energy_calendar', 'daily_spiritual_guide', 'daily_number_deep_dive', 'numerology_meaning_chart', 'kader_app_ui_design_system']) },
-        { icon: 'diversity_3', label: 'NuConnect', href: 'connections_shared_readings.html', active: isActive(['connections', 'kisi_profil', 'friendship_dynamics', 'name_numerology_breakdown', 'past_reading_archive', 'letter_vibration']) },
+        { icon: 'home', label: _t('nav.home', 'Home'), href: 'mystic_numerology_home_1.html', active: isActive(['mystic_numerology_home_1', 'cosmic_energy_calendar', 'daily_spiritual_guide', 'daily_number_deep_dive', 'numerology_meaning_chart', 'kader_app_ui_design_system']) },
+        { icon: 'diversity_3', label: _t('nav.nuconnect', 'NuConnect'), href: 'connections_shared_readings.html', active: isActive(['connections', 'kisi_profil', 'friendship_dynamics', 'name_numerology_breakdown', 'past_reading_archive', 'letter_vibration']) },
         { icon: 'ADD_BUTTON', label: '', href: '', active: false },
-        { icon: 'auto_awesome', label: 'NuFest', href: 'manifest_community.html', active: isActive(['manifest_community']) },
-        { icon: 'mystery', label: 'NuMatch', href: 'cosmic_match.html', active: isActive(['cosmic_match']) }
+        { icon: 'auto_awesome', label: _t('nav.nufest', 'NuFest'), href: 'manifest_community.html', active: isActive(['manifest_community']) },
+        { icon: 'mystery', label: _t('nav.numatch', 'NuMatch'), href: 'cosmic_match.html', active: isActive(['cosmic_match']) }
     ];
 
     // ─── BUBBLE MENU İTEMLERİ ───────────────────────────────
     var bubbleItems = [
-        { icon: 'favorite',      label: 'Uyum Analizi',   href: 'compatibility_input_form.html', color: '#fb7185', bg: 'rgba(225,29,72,0.25)', border: 'rgba(225,29,72,0.5)' },
-        { icon: 'calculate',     label: 'Yeni Analiz',     href: 'data-ready_birth_form.html?newperson=1',    color: '#fac638', bg: 'rgba(250,198,56,0.2)',  border: 'rgba(250,198,56,0.5)' },
-        { icon: 'self_improvement', label: 'Günlük Rehber', href: 'daily_spiritual_guide.html',   color: '#a78bfa', bg: 'rgba(139,92,246,0.2)',  border: 'rgba(139,92,246,0.5)' },
-        { icon: 'nights_stay',   label: 'Ay Fazı',         href: 'lunar_phase_energy_tracker.html',color: '#93c5fd', bg: 'rgba(59,130,246,0.2)',  border: 'rgba(59,130,246,0.5)' },
-        { icon: 'casino',        label: 'Karar Çarkı',     href: 'wheel_of_destiny.html',         color: '#fb923c', bg: 'rgba(251,146,60,0.2)',  border: 'rgba(251,146,60,0.5)' },
-        { icon: 'calendar_month',label: 'Karar Takvimi',   href: 'cosmic_energy_calendar_2.html', color: '#60a5fa', bg: 'rgba(96,165,250,0.2)',  border: 'rgba(96,165,250,0.5)' },
-        { icon: 'flare',         label: 'NuFest',           href: 'manifest_portal.html',          color: '#fbbf24', bg: 'rgba(251,191,36,0.2)',  border: 'rgba(251,191,36,0.5)' },
-        { icon: 'account_circle',label: 'Profil',          href: 'profile_soul_journey.html',     color: '#94a3b8', bg: 'rgba(148,163,184,0.15)', border: 'rgba(148,163,184,0.4)' }
+        { icon: 'favorite',      label: _t('bubble.compatibility', 'Uyum Analizi'),   href: 'compatibility_input_form.html', color: '#fb7185', bg: 'rgba(225,29,72,0.25)', border: 'rgba(225,29,72,0.5)' },
+        { icon: 'calculate',     label: _t('bubble.new_analysis', 'Yeni Analiz'),     href: 'data-ready_birth_form.html?newperson=1',    color: '#fac638', bg: 'rgba(250,198,56,0.2)',  border: 'rgba(250,198,56,0.5)' },
+        { icon: 'self_improvement', label: _t('bubble.daily_guide', 'Günlük Rehber'), href: 'daily_spiritual_guide.html',   color: '#a78bfa', bg: 'rgba(139,92,246,0.2)',  border: 'rgba(139,92,246,0.5)' },
+        { icon: 'nights_stay',   label: _t('bubble.moon_phase', 'Ay Fazı'),         href: 'lunar_phase_energy_tracker.html',color: '#93c5fd', bg: 'rgba(59,130,246,0.2)',  border: 'rgba(59,130,246,0.5)' },
+        { icon: 'casino',        label: _t('bubble.decision_wheel', 'Karar Çarkı'),     href: 'wheel_of_destiny.html',         color: '#fb923c', bg: 'rgba(251,146,60,0.2)',  border: 'rgba(251,146,60,0.5)' },
+        { icon: 'calendar_month',label: _t('bubble.decision_calendar', 'Karar Takvimi'),   href: 'cosmic_energy_calendar_2.html', color: '#60a5fa', bg: 'rgba(96,165,250,0.2)',  border: 'rgba(96,165,250,0.5)' },
+        { icon: 'flare',         label: _t('bubble.nufest', 'NuFest'),           href: 'manifest_portal.html',          color: '#fbbf24', bg: 'rgba(251,191,36,0.2)',  border: 'rgba(251,191,36,0.5)' },
+        { icon: 'account_circle',label: _t('bubble.profile', 'Profil'),          href: 'profile_soul_journey.html',     color: '#94a3b8', bg: 'rgba(148,163,184,0.15)', border: 'rgba(148,163,184,0.4)' }
     ];
 
     // ─── CSS ─────────────────────────────────────────────────

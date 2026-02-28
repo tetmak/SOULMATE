@@ -103,7 +103,41 @@
     <!-- ═══ ACCORDION KARTLARI ═══ -->
     <section id="compat-cards" class="px-4 space-y-3">
 
-      <!-- 1. Ruh Dürtüsü Uyumu -->
+      <!-- 1. Karmik İlişki Bağı (kırmızı tema — EN ÜSTE taşındı) -->
+      <div id="card-karmic" class="flex flex-col rounded-xl border border-red-500/30 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
+        <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
+          <div class="flex items-center gap-4 flex-1 min-w-0">
+            <div class="p-2.5 rounded-lg bg-red-500/15 text-red-400 flex items-center justify-center shrink-0">
+              <span class="material-symbols-outlined text-2xl">cycle</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Karmik İlişki Bağı</h2>
+                <span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Karma</span>
+                <span class="archetype-display px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px] font-bold leading-none uppercase tracking-tight border border-red-500/20 shrink-0">ANALİZ ET</span>
+              </div>
+              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İki ruh arasındaki karmik bağın ve geçmiş yaşam izlerinin analizi.</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 ml-2 shrink-0">
+            <div class="text-red-400 text-2xl font-black">✦</div>
+            <span class="expand-icon material-symbols-outlined text-slate-400">expand_more</span>
+          </div>
+        </button>
+        <div id="karmic-content" style="display:none;">
+          <div style="padding:0 20px 20px;">
+            <div id="karmic-ai-text" style="color:rgba(186,181,156,0.9);font-size:14px;line-height:1.75;"></div>
+            <div id="karmic-guide-btn-wrap" style="margin-top:16px;display:none;">
+              <button id="btn-relationship-guide" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#7f1313,#c0392b);color:white;border:none;border-radius:12px;padding:14px;font-size:13px;font-weight:800;letter-spacing:0.05em;cursor:pointer;text-transform:uppercase;">
+                <span class="material-symbols-outlined" style="font-size:18px;">psychology</span>
+                İlişki Rehberine Sor
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Ruh Dürtüsü Uyumu -->
       <div id="card-soul-urge" class="flex flex-col rounded-xl border border-primary/20 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
         <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
           <div class="flex items-center gap-4 flex-1 min-w-0">
@@ -193,40 +227,6 @@
             <span class="expand-icon material-symbols-outlined text-slate-400">expand_more</span>
           </div>
         </button>
-      </div>
-
-      <!-- 5. Karmik İlişki Bağı (kırmızı tema) -->
-      <div id="card-karmic" class="flex flex-col rounded-xl border border-red-500/30 bg-white dark:bg-card-dark shadow-sm overflow-hidden">
-        <button class="w-full flex items-center justify-between p-5 text-left active:bg-slate-50 dark:active:bg-white/5 transition-colors">
-          <div class="flex items-center gap-4 flex-1 min-w-0">
-            <div class="p-2.5 rounded-lg bg-red-500/15 text-red-400 flex items-center justify-center shrink-0">
-              <span class="material-symbols-outlined text-2xl">cycle</span>
-            </div>
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-1.5 flex-wrap">
-                <h2 class="text-slate-900 dark:text-white text-base font-bold truncate">Karmik İlişki Bağı</h2>
-                <span class="px-1.5 py-0.5 rounded bg-red-500/20 text-red-400 text-[9px] font-black leading-none uppercase tracking-tighter shrink-0">Karma</span>
-                <span class="archetype-display px-1.5 py-0.5 rounded bg-red-500/10 text-red-400 text-[10px] font-bold leading-none uppercase tracking-tight border border-red-500/20 shrink-0">ANALİZ ET</span>
-              </div>
-              <p class="text-slate-500 dark:text-[#bab59c] text-xs mt-1 line-clamp-1">İki ruh arasındaki karmik bağın ve geçmiş yaşam izlerinin analizi.</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3 ml-2 shrink-0">
-            <div class="text-red-400 text-2xl font-black">✦</div>
-            <span class="expand-icon material-symbols-outlined text-slate-400">expand_more</span>
-          </div>
-        </button>
-        <div id="karmic-content" style="display:none;">
-          <div style="padding:0 20px 20px;">
-            <div id="karmic-ai-text" style="color:rgba(186,181,156,0.9);font-size:14px;line-height:1.75;"></div>
-            <div id="karmic-guide-btn-wrap" style="margin-top:16px;display:none;">
-              <button id="btn-relationship-guide" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#7f1313,#c0392b);color:white;border:none;border-radius:12px;padding:14px;font-size:13px;font-weight:800;letter-spacing:0.05em;cursor:pointer;text-transform:uppercase;">
-                <span class="material-symbols-outlined" style="font-size:18px;">psychology</span>
-                İlişki Rehberine Sor
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
 
       <!-- 6. İletişim Uyumu -->

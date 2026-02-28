@@ -7,6 +7,11 @@
 (function() {
     'use strict';
 
+    // i18n helper — falls back to default text when i18n is not loaded
+    var _t = function(k, f) {
+        return window.i18n && window.i18n.t ? window.i18n.t(k, f) : (f || k);
+    };
+
     function sb() { return window.supabaseClient; }
 
     // ═══════════════════════════════════════════════════════
@@ -61,12 +66,14 @@
     // NOTIFICATION TEXTS & ACTIONS
     // ═══════════════════════════════════════════════════════
 
-    var NOTIF_TEXT = {
-        'connection_request': 'Yeni bağlantı isteği',
-        'connection_accepted': 'Bağlantı isteğiniz kabul edildi',
-        'new_message': 'Yeni mesaj',
-        'limit_hit': 'Devam etmek için Premium gerekli'
-    };
+    function getNotifText() {
+        return {
+            'connection_request': _t('notif.connection_request', 'Yeni bağlantı isteği'),
+            'connection_accepted': _t('notif.connection_accepted', 'Bağlantı isteğiniz kabul edildi'),
+            'new_message': _t('notif.new_message', 'Yeni mesaj'),
+            'limit_hit': _t('notif.limit_hit', 'Devam etmek için Premium gerekli')
+        };
+    }
 
     var NOTIF_ICON = {
         'connection_request': 'person_add',
@@ -169,17 +176,19 @@
     // Panel
     var panel = document.createElement('div');
     panel.id = 'numerael-notif-panel';
-    panel.innerHTML =
-        '<div class="notif-header">' +
-            '<h3>Bildirimler</h3>' +
-            '<button id="notif-mark-all">Tümünü okundu işaretle</button>' +
+    function buildPanelHTML() {
+        return '<div class="notif-header">' +
+            '<h3>' + _t('notif.title', 'Bildirimler') + '</h3>' +
+            '<button id="notif-mark-all">' + _t('notif.mark_all', 'Tümünü Okundu İşaretle') + '</button>' +
         '</div>' +
         '<div class="notif-list" id="notif-list">' +
             '<div class="notif-empty" id="notif-empty">' +
                 '<span class="material-symbols-outlined" style="font-size:32px;margin-bottom:8px;opacity:0.4">notifications_off</span>' +
-                'Bildirim yok' +
+                _t('notif.empty', 'Bildirim yok') +
             '</div>' +
         '</div>';
+    }
+    panel.innerHTML = buildPanelHTML();
 
     // ═══════════════════════════════════════════════════════
     // INJECT INTO PAGE
@@ -261,11 +270,12 @@
             var now = Date.now();
             var d = new Date(ts).getTime();
             var diff = Math.floor((now - d) / 1000);
-            if (diff < 60) return 'şimdi';
-            if (diff < 3600) return Math.floor(diff / 60) + 'dk';
-            if (diff < 86400) return Math.floor(diff / 3600) + 'sa';
-            if (diff < 604800) return Math.floor(diff / 86400) + 'g';
-            return new Date(ts).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
+            if (diff < 60) return _t('notif.time_now', 'şimdi');
+            if (diff < 3600) return Math.floor(diff / 60) + _t('notif.time_min', 'dk');
+            if (diff < 86400) return Math.floor(diff / 3600) + _t('notif.time_hour', 'sa');
+            if (diff < 604800) return Math.floor(diff / 86400) + _t('notif.time_day', 'g');
+            var locale = _t('notif.locale', 'tr-TR');
+            return new Date(ts).toLocaleDateString(locale, { day: 'numeric', month: 'short' });
         } catch(e) { return ''; }
     }
 
@@ -290,15 +300,16 @@
             item.setAttribute('data-notif-id', notif.id);
 
             var icon = NOTIF_ICON[notif.type] || 'notifications';
-            var text = NOTIF_TEXT[notif.type] || 'Bildirim';
+            var texts = getNotifText();
+            var text = texts[notif.type] || _t('notif.generic', 'Bildirim');
             var p = notif.payload || {};
             // Kişi adını bildirime ekle
             if (notif.type === 'connection_request' && p.sender_name && p.sender_name !== 'User') {
-                text = p.sender_name + ' bağlantı isteği gönderdi';
+                text = p.sender_name + ' ' + _t('notif.sent_connection', 'bağlantı isteği gönderdi');
             } else if (notif.type === 'connection_accepted' && p.accepter_name && p.accepter_name !== 'User') {
-                text = p.accepter_name + ' isteğinizi kabul etti';
+                text = p.accepter_name + ' ' + _t('notif.accepted_request', 'isteğinizi kabul etti');
             } else if (notif.type === 'new_message' && p.sender_name && p.sender_name !== 'User') {
-                text = p.sender_name + ' mesaj gönderdi';
+                text = p.sender_name + ' ' + _t('notif.sent_message', 'mesaj gönderdi');
             }
 
             item.innerHTML =
@@ -334,7 +345,7 @@
 
         if (action === '__paywall__') {
             if (window.premium && window.premium.showPaywall) {
-                window.premium.showPaywall('Premium required to continue');
+                window.premium.showPaywall(_t('notif.premium_required', 'Premium required to continue'));
             }
             return;
         }
@@ -435,20 +446,20 @@
     function fireNativeNotification(notif) {
         if (!_localNotifReady || !_localNotifPlugin) return;
         try {
-            var NATIVE_TEXT = {
-                'connection_request': 'Yeni bağlantı isteği geldi',
-                'connection_accepted': 'Bağlantı isteğiniz kabul edildi',
-                'new_message': 'Yeni mesaj geldi',
-                'limit_hit': 'Premium gerekli'
+            var nativeTexts = {
+                'connection_request': _t('notif.native_connection_request', 'Yeni bağlantı isteği geldi'),
+                'connection_accepted': _t('notif.native_connection_accepted', 'Bağlantı isteğiniz kabul edildi'),
+                'new_message': _t('notif.native_new_message', 'Yeni mesaj geldi'),
+                'limit_hit': _t('notif.native_limit_hit', 'Premium gerekli')
             };
             var title = 'Soulnum';
-            var body = NATIVE_TEXT[notif.type] || 'Yeni bildirim';
+            var body = nativeTexts[notif.type] || _t('notif.native_generic', 'Yeni bildirim');
             var p = notif.payload || {};
             if (notif.type === 'new_message' && p.sender_name) {
-                body = p.sender_name + ' size mesaj gönderdi';
+                body = p.sender_name + ' ' + _t('notif.native_sent_message', 'size mesaj gönderdi');
             }
             if (notif.type === 'connection_request' && p.sender_name) {
-                body = p.sender_name + ' bağlantı isteği gönderdi';
+                body = p.sender_name + ' ' + _t('notif.native_sent_connection', 'bağlantı isteği gönderdi');
             }
             var url = getClickAction(notif);
             _localNotifPlugin.schedule({
