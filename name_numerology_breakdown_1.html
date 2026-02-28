@@ -511,11 +511,24 @@
             if (window.auth && window.auth.whenReady) { await window.auth.whenReady(); }
             // 1. Veri Hazırlığı
             var params = new URLSearchParams(window.location.search);
+
+            // Kişi profili (Deep Insight) kontrolü — numerael_kisi_temp öncelikli
+            var tempKisi = null;
+            try { tempKisi = JSON.parse(localStorage.getItem('numerael_kisi_temp') || 'null'); } catch (e) {}
+            var isKisiView = tempKisi && tempKisi.isTemp && params.get('kisi');
+
             var userData = {};
             try { userData = JSON.parse(localStorage.getItem('numerael_user_data') || '{}'); } catch (e) { }
 
-            var name = params.get('kisi') || userData.name || 'Alexander';
-            var birthDate = params.get('dt') || userData.birthDate || '1990-01-01';
+            var name, birthDate;
+            if (isKisiView) {
+                name = tempKisi.name || tempKisi.fullName || params.get('kisi') || 'Alexander';
+                birthDate = tempKisi.birthDate || params.get('dt') || '1990-01-01';
+                console.log('[Breakdown] Kişi profili yükleniyor:', name, birthDate);
+            } else {
+                name = params.get('kisi') || userData.name || 'Alexander';
+                birthDate = params.get('dt') || userData.birthDate || '1990-01-01';
+            }
             
             console.log('[Main Debug] Name:', name);
             console.log('[Main Debug] BirthDate:', birthDate);
@@ -811,7 +824,14 @@
             var kisiName = params.get('kisi');
 
             if (kisiName) {
-                // Başkasının profili
+                // Başkasının profili — önce numerael_kisi_temp kontrol et
+                var tempKisi2 = null;
+                try { tempKisi2 = JSON.parse(localStorage.getItem('numerael_kisi_temp') || 'null'); } catch(e) {}
+                if (tempKisi2 && tempKisi2.isTemp && tempKisi2.birthDate) {
+                    initKarmic({ name: tempKisi2.name || tempKisi2.fullName || kisiName, birthDate: tempKisi2.birthDate });
+                    return;
+                }
+                // Fallback: connections'dan çek
                 if (window.profile) {
                     try {
                         var conn = await window.profile.getConnectionDetail(kisiName);
