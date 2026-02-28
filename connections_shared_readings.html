@@ -527,16 +527,23 @@ document.addEventListener('DOMContentLoaded', async function() {
                     (isUnread ? '<div class="notif-inbox-dot"></div>' : '');
 
                 item.addEventListener('click', function() {
-                    // Okundu işaretle
-                    if (isUnread && window.notificationEngine && window.notificationEngine.markAsRead) {
+                    // Okundu işaretle ve kartı kaldır
+                    if (window.notificationEngine && window.notificationEngine.markAsRead) {
                         window.notificationEngine.markAsRead(n.id);
-                        var dot = item.querySelector('.notif-inbox-dot');
-                        if (dot) dot.remove();
-                        var txt = item.querySelector('p');
-                        if (txt) { txt.className = txt.className.replace('text-slate-900 dark:text-white font-bold', 'text-slate-600 dark:text-white/60'); }
                     }
+                    item.style.transition = 'opacity 0.25s, transform 0.25s';
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateX(20px)';
+                    setTimeout(function() {
+                        item.remove();
+                        // Hiç bildirim kalmadıysa bölümü gizle
+                        var remaining = document.querySelectorAll('#notif-inbox-list .notif-inbox-item');
+                        if (remaining.length === 0) {
+                            document.getElementById('notif-inbox-section').style.display = 'none';
+                        }
+                    }, 250);
                     var href = getNotifHref(n);
-                    if (href) window.location.href = href;
+                    if (href) setTimeout(function() { window.location.href = href; }, 150);
                 });
 
                 list.appendChild(item);
@@ -549,6 +556,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 var res = await window.supabaseClient.from('notifications')
                     .select('*')
                     .eq('user_id', currentUserId)
+                    .eq('is_read', false)
                     .in('type', NOTIF_TYPES)
                     .order('created_at', { ascending: false })
                     .limit(20);
@@ -568,15 +576,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                         .eq('user_id', currentUserId)
                         .eq('is_read', false)
                         .in('type', NOTIF_TYPES);
-                    // UI güncelle
-                    var dots = document.querySelectorAll('.notif-inbox-dot');
-                    for (var d = 0; d < dots.length; d++) dots[d].remove();
-                    var txts = document.querySelectorAll('#notif-inbox-list .notif-inbox-item p:first-child');
-                    for (var t = 0; t < txts.length; t++) {
-                        txts[t].className = txts[t].className
-                            .replace('text-slate-900', 'text-slate-600')
-                            .replace('dark:text-white font-bold', 'dark:text-white/60');
-                    }
+                    // Tüm kartları kaldır ve bölümü gizle
+                    document.getElementById('notif-inbox-list').innerHTML = '';
+                    document.getElementById('notif-inbox-section').style.display = 'none';
                 } catch(e) { console.warn('[ConnPage] Mark all error:', e); }
             });
         }
