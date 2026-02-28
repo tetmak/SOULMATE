@@ -33,7 +33,18 @@
 
     // ─── Bell UI + Panel only on allowed pages ───────────
     var currentPage = window.location.pathname.split('/').pop() || 'index.html';
-    var ALLOWED = ['mystic_numerology_home_1.html', 'connections_shared_readings.html'];
+    var ALLOWED = [
+        'mystic_numerology_home_1.html',
+        'connections_shared_readings.html',
+        'cosmic_match.html',
+        'profile_soul_journey.html',
+        'manifest_portal.html',
+        'manifest_community.html',
+        'messaging.html',
+        'daily_spiritual_guide.html',
+        'daily_number_deep_dive.html',
+        'leaderboard.html'
+    ];
     if (ALLOWED.indexOf(currentPage) === -1) return;
 
     // ═══════════════════════════════════════════════════════

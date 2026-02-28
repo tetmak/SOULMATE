@@ -3,43 +3,45 @@
  * Profile loading/saving and Life Path Number calculations
  */
 
-const profile = {
+var profile = {
     // Load user profile
-    async getProfile(userId) {
-        const { data, error } = await window.supabaseClient
+    getProfile: async function(userId) {
+        var result = await window.supabaseClient
             .from('profiles')
             .select('*')
             .eq('id', userId)
             .single();
 
-        if (error && error.code !== 'PGRST116') throw error; // PGRST116 is code for no rows found
-        return data;
+        if (result.error && result.error.code !== 'PGRST116') throw result.error; // PGRST116 is code for no rows found
+        return result.data;
     },
 
     // Save or update profile (full_name, birth_date)
-    async updateProfile(userId, updates) {
-        const { data, error } = await window.supabaseClient
-            .from('profiles')
-            .upsert({
-                id: userId,
-                ...updates,
-                updated_at: new Date().toISOString(),
-            });
+    updateProfile: async function(userId, updates) {
+        var upsertData = { id: userId, updated_at: new Date().toISOString() };
+        var keys = Object.keys(updates);
+        for (var k = 0; k < keys.length; k++) {
+            upsertData[keys[k]] = updates[keys[k]];
+        }
 
-        if (error) throw error;
-        return data;
+        var result = await window.supabaseClient
+            .from('profiles')
+            .upsert(upsertData);
+
+        if (result.error) throw result.error;
+        return result.data;
     },
 
     // Calculate Life Path Number
     // Sum all digits of the birth date until a single digit (or master number 11, 22) is reached
-    calculateLifePathNumber(birthDateStr) {
+    calculateLifePathNumber: function(birthDateStr) {
         if (!birthDateStr) return null;
 
-        const digits = birthDateStr.replace(/\D/g, '');
-        let sum = digits.split('').reduce((acc, digit) => acc + parseInt(digit), 0);
+        var digits = birthDateStr.replace(/\D/g, '');
+        var sum = digits.split('').reduce(function(acc, digit) { return acc + parseInt(digit); }, 0);
 
         while (sum > 9 && sum !== 11 && sum !== 22 && sum !== 33) {
-            sum = sum.toString().split('').reduce((acc, digit) => acc + parseInt(digit), 0);
+            sum = sum.toString().split('').reduce(function(acc, digit) { return acc + parseInt(digit); }, 0);
         }
 
         return sum;
@@ -48,19 +50,19 @@ const profile = {
     // ─── CONNECTIONS (Saved Contacts — Supabase) ──────────────────
 
     // Helper: get userId
-    async _getUserId() {
+    _getUserId: async function() {
         var session = await window.auth.getSession();
         return session && session.user ? session.user.id : null;
     },
 
     // Helper: localStorage key (fallback/cache)
-    async getStorageKey() {
+    getStorageKey: async function() {
         var userId = await this._getUserId();
         return 'numerael_connections_' + (userId || 'guest');
     },
 
     // Save a new connection (another person) — Supabase + localStorage cache
-    async saveConnection(data) {
+    saveConnection: async function(data) {
         var userId = await this._getUserId();
         var lp = this.calculateLifePathNumber(data.birthDate);
         var newConn = {
@@ -98,7 +100,7 @@ const profile = {
     },
 
     // Get all connections — Supabase first, localStorage fallback
-    async getConnections() {
+    getConnections: async function() {
         var userId = await this._getUserId();
 
         // Supabase'den çek (tek doğru kaynak)
@@ -135,7 +137,7 @@ const profile = {
     },
 
     // Get connection by name (slugified or simple match)
-    async getConnectionDetail(name) {
+    getConnectionDetail: async function(name) {
         var connections = await this.getConnections();
         var lowerName = name.toLowerCase();
         for (var i = 0; i < connections.length; i++) {
@@ -147,7 +149,7 @@ const profile = {
     },
 
     // Delete connection by name — Supabase + localStorage
-    async deleteConnection(fullName) {
+    deleteConnection: async function(fullName) {
         var userId = await this._getUserId();
 
         // Supabase'den sil
@@ -170,17 +172,15 @@ const profile = {
     },
 
     // Show loading spinner
-    toggleLoading(show) {
-        let loader = document.getElementById('supabase-loader');
+    toggleLoading: function(show) {
+        var loader = document.getElementById('supabase-loader');
         if (!loader && show) {
             loader = document.createElement('div');
             loader.id = 'supabase-loader';
-            loader.innerHTML = `
-                <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:9999;">
-                    <div style="width:50px;height:50px;border:5px solid #fff;border-top:5px solid #6366f1;border-radius:50%;animation:spin 1s linear infinite;"></div>
-                </div>
-                <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
-            `;
+            loader.innerHTML = '<div style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;z-index:9999;">' +
+                '<div style="width:50px;height:50px;border:5px solid #fff;border-top:5px solid #6366f1;border-radius:50%;animation:spin 1s linear infinite;"></div>' +
+                '</div>' +
+                '<style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>';
             document.body.appendChild(loader);
         } else if (loader && !show) {
             loader.remove();

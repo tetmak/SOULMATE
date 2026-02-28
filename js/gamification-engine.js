@@ -69,7 +69,9 @@
         { id: 'share_card',      name: 'Analiz Kartını Paylaş',   icon: 'share',          xp: 20, action: 'share_card' },
         { id: 'spin_wheel',      name: 'Kader Çarkını Çevir',     icon: 'casino',         xp: 10, action: 'wheel_spin' },
         { id: 'add_friend',      name: 'Yeni Arkadaş Ekle',       icon: 'person_add',     xp: 25, action: 'add_connection' },
-        { id: 'visit_calendar',  name: 'Karar Takvimini Ziyaret Et', icon: 'calendar_month', xp: 10, action: 'calendar_visit' }
+        { id: 'visit_calendar',  name: 'Karar Takvimini Ziyaret Et', icon: 'calendar_month', xp: 10, action: 'calendar_visit' },
+        { id: 'visit_manifest_portal',    name: 'NuFest Portalını Ziyaret Et',    icon: 'flare',  xp: 10, action: 'manifest_portal_visit' },
+        { id: 'visit_manifest_community', name: 'NuFest Topluluğunu Ziyaret Et',  icon: 'groups', xp: 10, action: 'manifest_community_visit' }
     ];
 
     // ═══════════════════════════════════════════════════════════
