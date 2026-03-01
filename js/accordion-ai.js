@@ -99,7 +99,7 @@
 
     var system = [
       'Sen bir numeroloji üstadısın.',
-      'Türkçe yaz. Tam olarak 150-160 kelime — ne eksik ne fazla.',
+      (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ' Tam olarak 150-160 kelime — ne eksik ne fazla.',
       'SADECE 4 kısa paragraf. Başlık yok, liste yok, madde işareti yok.',
       'BİRİNCİ KELİMELER ZORUNLU: Analizin ilk kelimesi "' + opening + '" olacak — başka türlü başlamak yasak.',
       '"Yaşam yolun" ifadesiyle veya herhangi bir sayı adıyla başlamak KESİNLİKLE yasak.',

@@ -275,16 +275,18 @@
                   (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
   var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
-  var CONTEXT_SYSTEM_PROMPT =
-    'Sen bir Numeroloji Bağlam Analiz Uzmanısın. Pisagor sistemini kullanıyorsun.\n\n' +
-    'KURALLAR:\n' +
-    '- Türkçe yaz. Doğrudan "sen" diye hitap et.\n' +
-    '- Nötr, ayakları yere basan, mistik olmayan ton.\n' +
-    '- "Evren diyor ki" veya "Özelsin" gibi klişe kullanma.\n' +
-    '- Her cümlede sayısal bir neden göster (örn: "4 baskın olduğu için…").\n' +
-    '- Her modül en fazla 3-4 cümle.\n' +
-    '- Başlık ekleme. Sadece düz paragraflar yaz.\n' +
-    '- İstenen modülü yaz, diğerlerine bulaşma.';
+  function getContextSystemPrompt() {
+    var _aiLang = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
+    return 'Sen bir Numeroloji Bağlam Analiz Uzmanısın. Pisagor sistemini kullanıyorsun.\n\n' +
+      'KURALLAR:\n' +
+      '- ' + _aiLang + ' Doğrudan "sen" diye hitap et.\n' +
+      '- Nötr, ayakları yere basan, mistik olmayan ton.\n' +
+      '- "Evren diyor ki" veya "Özelsin" gibi klişe kullanma.\n' +
+      '- Her cümlede sayısal bir neden göster (örn: "4 baskın olduğu için…").\n' +
+      '- Her modül en fazla 3-4 cümle.\n' +
+      '- Başlık ekleme. Sadece düz paragraflar yaz.\n' +
+      '- İstenen modülü yaz, diğerlerine bulaşma.';
+  }
 
   /**
    * Tek bir modül için AI çağrısı yapar
@@ -297,7 +299,7 @@
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: CONTEXT_SYSTEM_PROMPT },
+            { role: 'system', content: getContextSystemPrompt() },
             { role: 'user', content: modulePrompt }
           ],
           temperature: 0.75,

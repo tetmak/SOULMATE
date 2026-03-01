@@ -47,13 +47,15 @@
 
   // ─── OpenAI çağrısı ───────────────────────────────────────────────
   async function askAI(prompt, systemMsg) {
-    var system = systemMsg || `Sen Numantic uygulamasının Numeroloji Üstadısın. 
-Türkçe, mistik, etkileyici ve kişisel bir dilde yaz. 
-Sayılar, kozmik bağlantılar ve ruhsal anlamlar konusunda derin bilgeliğe sahipsin.
-Kısa ve çarpıcı yaz — gereksiz tekrar yapma.
-Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
+    var _aiLang = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
+    var _langCode = window.i18n ? window.i18n.current() : 'tr';
+    var system = systemMsg || 'Sen Numantic uygulamasının Numeroloji Üstadısın. ' +
+        _aiLang + ' Mistik, etkileyici ve kişisel bir dilde yaz. ' +
+        'Sayılar, kozmik bağlantılar ve ruhsal anlamlar konusunda derin bilgeliğe sahipsin. ' +
+        'Kısa ve çarpıcı yaz — gereksiz tekrar yapma. ' +
+        'Sadece istenen metni yaz, başlık veya açıklama ekleme.';
 
-    var cached = sessionStorage.getItem(CACHE_PREFIX + btoa(prompt).slice(0,40));
+    var cached = sessionStorage.getItem(CACHE_PREFIX + _langCode + '_' + btoa(prompt).slice(0,40));
     if (cached) return cached;
 
     var r = await fetch(API_BASE + '/api/openai', {
@@ -73,7 +75,7 @@ Sadece istenen metni yaz, başlık veya açıklama ekleme.`;
     });
     var data = await r.json();
     var text = data.choices && data.choices[0] ? data.choices[0].message.content : null;
-    if (text) sessionStorage.setItem(CACHE_PREFIX + btoa(prompt).slice(0,40), text);
+    if (text) sessionStorage.setItem(CACHE_PREFIX + _langCode + '_' + btoa(prompt).slice(0,40), text);
     return text;
   }
 
