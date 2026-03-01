@@ -619,7 +619,8 @@
         });
 
         var theme = VIB_THEMES[pd] || VIB_THEMES[8];
-        var cacheKey = 'numerael_daily_vib__' + todayStr + '__lp' + lp + '__pd' + pd;
+        var _vibLang = window.i18n ? window.i18n.current() : 'tr';
+        var cacheKey = 'numerael_daily_vib__' + _vibLang + '__' + todayStr + '__lp' + lp + '__pd' + pd;
 
         console.log('[VIBRATION DEBUG] Cache key:', cacheKey);
         console.log('[VIBRATION DEBUG] Theme:', theme.title);
@@ -651,7 +652,8 @@
         if (dscEl) dscEl.textContent = VIB_DESC[pd] || VIB_DESC[8];
 
         // ─── AI ile kişiselleştirilmiş içerik ────────────────
-        var prompt = 'Sen Numantic uygulamasının numeroloji yorumcususun. Türkçe yaz, 2 kısa cümle (max 25 kelime), mistik ve kişisel ton.' +
+        var _aiLang = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
+        var prompt = 'Sen Numantic uygulamasının numeroloji yorumcususun. ' + _aiLang + ' 2 kısa cümle (max 25 kelime), mistik ve kişisel ton.' +
             ' Kullanıcı: ' + ud.name +
             '. Life Path: ' + lp +
             '. Kişisel Yıl: ' + py +

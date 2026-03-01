@@ -857,8 +857,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         // SessionStorage cache kontrolü
+        var _matchLang = window.i18n ? window.i18n.current() : 'tr';
         try {
-            var cached = sessionStorage.getItem('numatch_ai_' + cacheKey);
+            var cached = sessionStorage.getItem('numatch_ai_' + _matchLang + '_' + cacheKey);
             if (cached) {
                 _insightCache[cacheKey] = cached;
                 loadingEl.style.display = 'none';
@@ -877,7 +878,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         _insightAbort = controller;
 
         var API_BASE = window.__NUMERAEL_API_BASE || '';
-        var prompt = 'Sen numeroloji ve uyumluluk uzmanısın. İki kişinin numerolojik profillerine bakarak neden eşleştiklerini 4-5 cümle ile açıkla. Samimi, sıcak ve spesifik ol. Genel kalıp cümleler yerine sayılara dayalı gerçek analiz yap. Türkçe yaz.\n\n' +
+        var _aiLang = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
+        var prompt = 'Sen numeroloji ve uyumluluk uzmanısın. İki kişinin numerolojik profillerine bakarak neden eşleştiklerini 4-5 cümle ile açıkla. Samimi, sıcak ve spesifik ol. Genel kalıp cümleler yerine sayılara dayalı gerçek analiz yap. ' + _aiLang + '\n\n' +
             'Kişi 1: ' + (userProfile.full_name || 'Kullanıcı') + '\n' +
             '- Kader Yolu (Life Path): ' + (userProfile.life_path || '?') + '\n' +
             '- Ruh Güdüsü (Soul Urge): ' + (userProfile.soul_urge || '?') + '\n' +
@@ -913,7 +915,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             if (!text) text = 'Analiz şu an yüklenemiyor.';
             _insightCache[cacheKey] = text;
-            try { sessionStorage.setItem('numatch_ai_' + cacheKey, text); } catch(e) {}
+            try { sessionStorage.setItem('numatch_ai_' + _matchLang + '_' + cacheKey, text); } catch(e) {}
             loadingEl.style.display = 'none';
             aiEl.style.display = 'block';
             aiEl.textContent = text;

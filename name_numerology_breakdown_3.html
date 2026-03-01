@@ -755,7 +755,8 @@
 
       addGuideMessage('assistant', openingMsg);
 
-      guideChatHistory.push({role:'system', content:'Sen Pisagor numerolojisi ili\u015Fki uyum uzman\u0131s\u0131n. T\u00FCrk\u00E7e yaz, net ve pratik ol.\n\nAnaliz etti\u011Fin \u00E7ift:\n- '+name1+': Kader='+ctx.p1.lifePath+', Ruh='+ctx.p1.soulUrge+', Ki\u015Filik='+ctx.p1.personality+', \u0130fade='+ctx.p1.expression+'\n- '+name2+': Kader='+ctx.p2.lifePath+', Ruh='+ctx.p2.soulUrge+', Ki\u015Filik='+ctx.p2.personality+', \u0130fade='+ctx.p2.expression+'\n- Genel uyum: '+ctx.overall+'%\n- Ba\u011F: '+ctx.bond+'\n\nKURALLAR:\n- Mistik dil yok, astroloji yok.\n- Her zaman \u00C7\u0130FT\u0130 analiz et.\n- Somut, keskin, ger\u00E7ek\u00E7i.\n- Kullan\u0131c\u0131 konu belirtirse o konuda derinlemesine analiz yap.\n- Her yan\u0131t\u0131n sonunda ba\u015Fka bir konu \u00F6ner.\n- Max 200 kelime per yan\u0131t.'});
+      var _aiLangGuide = window.i18n ? window.i18n.getAILang() : 'T\u00FCrk\u00E7e yaz.';
+      guideChatHistory.push({role:'system', content:'Sen Pisagor numerolojisi ili\u015Fki uyum uzman\u0131s\u0131n. ' + _aiLangGuide + ' Net ve pratik ol.\n\nAnaliz etti\u011Fin \u00E7ift:\n- '+name1+': Kader='+ctx.p1.lifePath+', Ruh='+ctx.p1.soulUrge+', Ki\u015Filik='+ctx.p1.personality+', \u0130fade='+ctx.p1.expression+'\n- '+name2+': Kader='+ctx.p2.lifePath+', Ruh='+ctx.p2.soulUrge+', Ki\u015Filik='+ctx.p2.personality+', \u0130fade='+ctx.p2.expression+'\n- Genel uyum: '+ctx.overall+'%\n- Ba\u011F: '+ctx.bond+'\n\nKURALLAR:\n- Mistik dil yok, astroloji yok.\n- Her zaman \u00C7\u0130FT\u0130 analiz et.\n- Somut, keskin, ger\u00E7ek\u00E7i.\n- Kullan\u0131c\u0131 konu belirtirse o konuda derinlemesine analiz yap.\n- Her yan\u0131t\u0131n sonunda ba\u015Fka bir konu \u00F6ner.\n- Max 200 kelime per yan\u0131t.'});
       guideChatHistory.push({role:'assistant', content:openingMsg});
       document.getElementById('guide-input').focus();
     }

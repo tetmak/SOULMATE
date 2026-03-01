@@ -703,8 +703,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     // ─── AI İÇERİK SİSTEMİ ───────────────────────────────────
     // API key /api/openai proxy'si tarafından server-side ekleniyor
 
+    var _aiLangFriend = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
     var FRIENDSHIP_SYSTEM = 'Sen bir Numeroloji Arkadaşlık Uzmanısın. Pisagor sistemini kullanarak iki kişinin arkadaşlık dinamiğini, uyumunu ve büyüme potansiyelini analiz edersin.\n\n' +
-        'KURAL:\n- Türkçe yaz.\n- Doğrudan çifte hitap et (siz/ikiniz/aranızdaki).\n- Romantik ilişki analizi YAPMA — bu sadece ARKADASLIK.\n- Vaaz yok. Başlık yok. Sadece düz paragraflar.\n- Somut, keskin, gerçekçi.\n- Her zaman İKİ KİŞİNİN ARASINDAKİ arkadaşlık dinamiğini analiz et.';
+        'KURAL:\n- ' + _aiLangFriend + '\n- Doğrudan çifte hitap et (siz/ikiniz/aranızdaki).\n- Romantik ilişki analizi YAPMA — bu sadece ARKADASLIK.\n- Vaaz yok. Başlık yok. Sadece düz paragraflar.\n- Somut, keskin, gerçekçi.\n- Her zaman İKİ KİŞİNİN ARASINDAKİ arkadaşlık dinamiğini analiz et.';
 
     var FRIENDSHIP_PROMPTS = {
         friendship_overview: function() {

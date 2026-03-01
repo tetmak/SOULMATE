@@ -449,8 +449,9 @@
 
   function getCacheKey(input) {
     var d = new Date();
-    // Gün bazlı cache — personal_day her gün değişir
-    return CACHE_PREFIX + input.life_path + '_' + input.soul_urge + '_' +
+    var _lang = window.i18n ? window.i18n.current() : 'tr';
+    // Gün bazlı cache — personal_day her gün değişir, dil kodu dahil
+    return CACHE_PREFIX + _lang + '_' + input.life_path + '_' + input.soul_urge + '_' +
            input.expression_number + '_' + input.personality_number + '_' +
            (input.karmic_debt || 0) + '_' + d.getFullYear() + d.getMonth() + d.getDate();
   }

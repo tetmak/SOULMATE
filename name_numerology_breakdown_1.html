@@ -1084,7 +1084,7 @@
                             body: JSON.stringify({
                                 model: 'gpt-4o-mini',
                                 messages: [
-                                    { role: 'system', content: 'Sen Pisagor numerolojisi karmik borç uzmanısın. Türkçe yaz, net ve pratik ol. Karmik borç sayıları SADECE 13,14,16,19. Gün sayısını ASLA indirgeme.\n\nZORUNLU FORMAT — her yanıtta aşağıdaki 5 başlığı **kalın** işaretiyle (**) ve tam bu sırayla kullan. Başlıkları DEĞİŞTİRME, aynen yaz:\n\n**Karmik Borç Tespiti**\n[Tespit edilen borç sayısı ve 1-2 cümle açıklama]\n\n**Neden Bu Karma?**\n[Numerolojik sebep — neden bu sayı, neyin işareti]\n\n**Pratik Etkileri**\n* [en az 4, en fazla 6 madde]\n\n**Bu Karmanın Dersi**\n* [en az 3, en fazla 4 madde]\n\n**Net Gerçek**\n[Tek cümle, sert ve gerçekçi]\n\nBaşlıklar HER KULLANICI İÇİN AYNI olmalı. Sadece içerikler kişiye göre değişmeli.' },
+                                    { role: 'system', content: 'Sen Pisagor numerolojisi karmik borç uzmanısın. ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ' Net ve pratik ol. Karmik borç sayıları SADECE 13,14,16,19. Gün sayısını ASLA indirgeme.\n\nZORUNLU FORMAT — her yanıtta aşağıdaki 5 başlığı **kalın** işaretiyle (**) ve tam bu sırayla kullan. Başlıkları DEĞİŞTİRME, aynen yaz:\n\n**Karmik Borç Tespiti**\n[Tespit edilen borç sayısı ve 1-2 cümle açıklama]\n\n**Neden Bu Karma?**\n[Numerolojik sebep — neden bu sayı, neyin işareti]\n\n**Pratik Etkileri**\n* [en az 4, en fazla 6 madde]\n\n**Bu Karmanın Dersi**\n* [en az 3, en fazla 4 madde]\n\n**Net Gerçek**\n[Tek cümle, sert ve gerçekçi]\n\nBaşlıklar HER KULLANICI İÇİN AYNI olmalı. Sadece içerikler kişiye göre değişmeli.' },
                                     { role: 'user', content: '19/10/1997 için en baskın ve yorucu karma' },
                                     { role: 'assistant', content: '**Karmik Borç Tespiti**\n19/1 karmik borcu tespit edildi. Doğum tarihindeki 19 sayısı, güç ve otoritenin yanlış kullanımına işaret eden klasik bir karmik borç sayısıdır.\n\n**Neden Bu Karma?**\nNumerolojide 19; güçün, otoritenin ve bireyselliğin yanlış kullanımıyla ilişkilendirilen karmik borç sayısıdır. Geçmiş yaşamda bencil liderlik ve başkalarını yok sayma kalıpları bu borca yol açmıştır.\n\n**Pratik Etkileri**\n* Yalnız ilerlemek zorunda kalma\n* Ego-tevazu çatışması\n* Otoriteyle sürtüşme\n* Erken sorumluluk yüklenme\n* Başarı gecikmesi\n\n**Bu Karmanın Dersi**\n* Gücü başkalarıyla paylaşarak kullanmak\n* Yardım istemeyi zayıflık görmemek\n* Liderliği örnek olarak göstermek\n\n**Net Gerçek**\nBu karma şanssızlık değil; yanlış güç kullanımını düzeltmeye zorlayan bir mekanizma.' },
                                     { role: 'user', content: prompt }
@@ -1191,7 +1191,8 @@
                 : 'Doğum tarihinizde klasik karmik borç sayısı tespit edilmedi. Yaşam Yolu ' + lp + ' derslerinizi konuşabiliriz. Ne sormak istersiniz?');
 
             addMessage('assistant', openingMsg);
-            chatHistory.push({ role: 'system', content: `Sen Pisagor numerolojisi karmik borç uzmanısın. Türkçe yaz, net ve pratik ol.
+            var _aiLangChat = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
+            chatHistory.push({ role: 'system', content: `Sen Pisagor numerolojisi karmik borç uzmanısın. ${_aiLangChat} Net ve pratik ol.
 
 Analiz ettiğin kişi:
 - İsim: ${name}
