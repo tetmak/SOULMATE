@@ -11,17 +11,19 @@
 (function() {
     'use strict';
 
+    var _t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k,f){return f||k;};
+
     // ═══════════════════════════════════════════════════════════
-    // RÜTBE SİSTEMİ
+    // RANK SYSTEM
     // ═══════════════════════════════════════════════════════════
     var RANKS = [
-        { id: 'novice',     name: 'Çaylak Kaşif',      minNBP: 0,    color: '#9ca3af', icon: 'explore',        visibility: 1, radarSize: 6,  premiumDays: 0, frame: null },
-        { id: 'student',    name: 'Yıldız Öğrencisi',  minNBP: 100,  color: '#22c55e', icon: 'school',         visibility: 2, radarSize: 8,  premiumDays: 0, frame: 'glow-green' },
-        { id: 'warrior',    name: 'Sayı Savaşçısı',    minNBP: 300,  color: '#3b82f6', icon: 'shield',         visibility: 3, radarSize: 10, premiumDays: 0, frame: 'glow-blue' },
-        { id: 'guide',      name: 'Sayısal Rehber',      minNBP: 600,  color: '#a855f7', icon: 'assistant_navigation', visibility: 4, radarSize: 12, premiumDays: 0, frame: 'glow-purple' },
-        { id: 'master',     name: 'Usta Numerolog',     minNBP: 1000, color: '#f59e0b', icon: 'auto_awesome',   visibility: 5, radarSize: 14, premiumDays: 1, frame: 'glow-gold' },
-        { id: 'sage',       name: 'Yıldız Bilgesi',    minNBP: 2000, color: '#e2e8f0', icon: 'diamond',        visibility: 7, radarSize: 16, premiumDays: 1, frame: 'glow-platinum' },
-        { id: 'oracle',     name: 'Sayısal Kahin',       minNBP: 3500, color: '#ec4899', icon: 'blur_on',        visibility: 10, radarSize: 20, premiumDays: 3, frame: 'glow-galaxy' }
+        { id: 'novice',     name: _t('gamif.rank_novice', 'Novice Explorer'),      minNBP: 0,    color: '#9ca3af', icon: 'explore',        visibility: 1, radarSize: 6,  premiumDays: 0, frame: null },
+        { id: 'student',    name: _t('gamif.rank_student', 'Star Student'),  minNBP: 100,  color: '#22c55e', icon: 'school',         visibility: 2, radarSize: 8,  premiumDays: 0, frame: 'glow-green' },
+        { id: 'warrior',    name: _t('gamif.rank_warrior', 'Number Warrior'),    minNBP: 300,  color: '#3b82f6', icon: 'shield',         visibility: 3, radarSize: 10, premiumDays: 0, frame: 'glow-blue' },
+        { id: 'guide',      name: _t('gamif.rank_guide', 'Numerical Guide'),      minNBP: 600,  color: '#a855f7', icon: 'assistant_navigation', visibility: 4, radarSize: 12, premiumDays: 0, frame: 'glow-purple' },
+        { id: 'master',     name: _t('gamif.rank_master', 'Master Numerologist'),     minNBP: 1000, color: '#f59e0b', icon: 'auto_awesome',   visibility: 5, radarSize: 14, premiumDays: 1, frame: 'glow-gold' },
+        { id: 'sage',       name: _t('gamif.rank_sage', 'Star Sage'),    minNBP: 2000, color: '#e2e8f0', icon: 'diamond',        visibility: 7, radarSize: 16, premiumDays: 1, frame: 'glow-platinum' },
+        { id: 'oracle',     name: _t('gamif.rank_oracle', 'Numerical Oracle'),       minNBP: 3500, color: '#ec4899', icon: 'blur_on',        visibility: 10, radarSize: 20, premiumDays: 3, frame: 'glow-galaxy' }
     ];
 
     // ═══════════════════════════════════════════════════════════
@@ -48,30 +50,30 @@
     // BAŞARIM ROZETLERİ
     // ═══════════════════════════════════════════════════════════
     var BADGES = [
-        { id: 'first_step',     name: 'İlk Adım',           desc: 'İlk analizini yap',            icon: 'footprint',        condition: function(s) { return s.total_analyses >= 1; } },
-        { id: 'connector',      name: 'Bağ Kurucusu',        desc: '5 arkadaş ekle',                icon: 'group_add',        condition: function(s) { return s.connections >= 5; } },
-        { id: 'streak_fire',    name: 'Streak Ateşi',        desc: '7 gün üst üste giriş',         icon: 'local_fire_department', condition: function(s) { return s.max_streak >= 7; } },
-        { id: 'streak_blaze',   name: 'Söndürülmez Alev',    desc: '30 gün streak',                 icon: 'whatshot',         condition: function(s) { return s.max_streak >= 30; } },
-        { id: 'streak_eternal', name: 'Sonsuz Ateş',         desc: '100 gün streak',                icon: 'emergency_heat',         condition: function(s) { return s.max_streak >= 100; } },
-        { id: 'soul_hunter',    name: 'Uyum Avcısı',   desc: '10 Eşleşme reveal',        icon: 'favorite',         condition: function(s) { return s.reveals >= 10; } },
-        { id: 'all_quests_7',   name: 'Görev Avcısı',        desc: '7 gün üst üste tüm görevleri tamamla', icon: 'task_alt', condition: function(s) { return s.all_quests_streak >= 7; } },
-        { id: 'oracle_rank',    name: 'Sayısal Uyanış',       desc: 'Sayısal Kahin rütbesine ulaş',  icon: 'blur_on',          condition: function(s) { return s.nbp >= 3500; } }
+        { id: 'first_step',     name: _t('gamif.badge_first_step', 'First Step'),           desc: _t('gamif.badge_first_step_desc', 'Complete your first analysis'),            icon: 'footprint',        condition: function(s) { return s.total_analyses >= 1; } },
+        { id: 'connector',      name: _t('gamif.badge_connector', 'Bond Builder'),        desc: _t('gamif.badge_connector_desc', 'Add 5 friends'),                icon: 'group_add',        condition: function(s) { return s.connections >= 5; } },
+        { id: 'streak_fire',    name: _t('gamif.badge_streak_fire', 'Streak Fire'),        desc: _t('gamif.badge_streak_fire_desc', '7 day login streak'),         icon: 'local_fire_department', condition: function(s) { return s.max_streak >= 7; } },
+        { id: 'streak_blaze',   name: _t('gamif.badge_streak_blaze', 'Unquenchable Flame'),    desc: _t('gamif.badge_streak_blaze_desc', '30 day streak'),                 icon: 'whatshot',         condition: function(s) { return s.max_streak >= 30; } },
+        { id: 'streak_eternal', name: _t('gamif.badge_streak_eternal', 'Eternal Fire'),         desc: _t('gamif.badge_streak_eternal_desc', '100 day streak'),                icon: 'emergency_heat',         condition: function(s) { return s.max_streak >= 100; } },
+        { id: 'soul_hunter',    name: _t('gamif.badge_soul_hunter', 'Harmony Hunter'),   desc: _t('gamif.badge_soul_hunter_desc', '10 match reveals'),        icon: 'favorite',         condition: function(s) { return s.reveals >= 10; } },
+        { id: 'all_quests_7',   name: _t('gamif.badge_all_quests', 'Quest Hunter'),        desc: _t('gamif.badge_all_quests_desc', 'Complete all quests 7 days in a row'), icon: 'task_alt', condition: function(s) { return s.all_quests_streak >= 7; } },
+        { id: 'oracle_rank',    name: _t('gamif.badge_oracle', 'Numerical Awakening'),       desc: _t('gamif.badge_oracle_desc', 'Reach Oracle rank'),  icon: 'blur_on',          condition: function(s) { return s.nbp >= 3500; } }
     ];
 
     // ═══════════════════════════════════════════════════════════
     // GÜNLÜK GÖREVLER
     // ═══════════════════════════════════════════════════════════
     var QUEST_TEMPLATES = [
-        { id: 'read_daily',      name: 'Günlük Titreşimini Oku',  icon: 'auto_stories',  xp: 10, action: 'daily_reading' },
-        { id: 'view_match',      name: 'Eşleşmene Bak',   icon: 'favorite',       xp: 10, action: 'cosmic_match_view' },
-        { id: 'check_compat',    name: 'Uyumluluk Analizi Yap',   icon: 'compare_arrows', xp: 20, action: 'compatibility' },
-        { id: 'set_manifest',    name: 'Bir Niyet Belirle',       icon: 'self_improvement',xp: 10, action: 'manifest_set' },
-        { id: 'share_card',      name: 'Analiz Kartını Paylaş',   icon: 'share',          xp: 20, action: 'share_card' },
-        { id: 'spin_wheel',      name: 'Kader Çarkını Çevir',     icon: 'casino',         xp: 10, action: 'wheel_spin' },
-        { id: 'add_friend',      name: 'Yeni Arkadaş Ekle',       icon: 'person_add',     xp: 25, action: 'add_connection' },
-        { id: 'visit_calendar',  name: 'Karar Takvimini Ziyaret Et', icon: 'calendar_month', xp: 10, action: 'calendar_visit' },
-        { id: 'visit_manifest_portal',    name: 'NuFest Portalını Ziyaret Et',    icon: 'flare',  xp: 10, action: 'manifest_portal_visit' },
-        { id: 'visit_manifest_community', name: 'NuFest Topluluğunu Ziyaret Et',  icon: 'groups', xp: 10, action: 'manifest_community_visit' }
+        { id: 'read_daily',      name: _t('gamif.quest_read_daily', 'Read Your Daily Vibration'),  icon: 'auto_stories',  xp: 10, action: 'daily_reading' },
+        { id: 'view_match',      name: _t('gamif.quest_view_match', 'Check Your Match'),   icon: 'favorite',       xp: 10, action: 'cosmic_match_view' },
+        { id: 'check_compat',    name: _t('gamif.quest_check_compat', 'Run Compatibility Analysis'),   icon: 'compare_arrows', xp: 20, action: 'compatibility' },
+        { id: 'set_manifest',    name: _t('gamif.quest_set_manifest', 'Set an Intention'),       icon: 'self_improvement',xp: 10, action: 'manifest_set' },
+        { id: 'share_card',      name: _t('gamif.quest_share_card', 'Share Analysis Card'),   icon: 'share',          xp: 20, action: 'share_card' },
+        { id: 'spin_wheel',      name: _t('gamif.quest_spin_wheel', 'Spin the Wheel of Destiny'),     icon: 'casino',         xp: 10, action: 'wheel_spin' },
+        { id: 'add_friend',      name: _t('gamif.quest_add_friend', 'Add a New Friend'),       icon: 'person_add',     xp: 25, action: 'add_connection' },
+        { id: 'visit_calendar',  name: _t('gamif.quest_visit_calendar', 'Visit Decision Calendar'), icon: 'calendar_month', xp: 10, action: 'calendar_visit' },
+        { id: 'visit_manifest_portal',    name: _t('gamif.quest_visit_portal', 'Visit NuFest Portal'),    icon: 'flare',  xp: 10, action: 'manifest_portal_visit' },
+        { id: 'visit_manifest_community', name: _t('gamif.quest_visit_community', 'Visit NuFest Community'),  icon: 'groups', xp: 10, action: 'manifest_community_visit' }
     ];
 
     // ═══════════════════════════════════════════════════════════
@@ -484,16 +486,16 @@
         var title = '';
         var subtitle = '';
         if (reward.type === 'chest') {
-            title = '🎁 Bonus Sandık!';
+            title = '🎁 ' + _t('gamif.reward_chest', 'Bonus Chest!');
             subtitle = reward.label;
         } else if (reward.type === 'rank_up') {
-            title = '⭐ Rütbe Yükseldi!';
+            title = '⭐ ' + _t('gamif.reward_rank_up', 'Rank Up!');
             subtitle = reward.name;
         } else if (reward.type === 'badge_unlock') {
-            title = '🏆 Rozet Kazandın!';
+            title = '🏆 ' + _t('gamif.reward_badge', 'Badge Earned!');
             subtitle = reward.badge.name;
         } else {
-            title = '🎉 Ödül!';
+            title = '🎉 ' + _t('gamif.reward_generic', 'Reward!');
             subtitle = reward.label || reward.name || '';
         }
 
@@ -503,7 +505,7 @@
             '</div>' +
             '<h3 style="color:white;font-size:22px;font-weight:800;font-family:Space Grotesk,sans-serif;margin-bottom:8px">' + title + '</h3>' +
             '<p style="color:rgba(255,255,255,0.6);font-size:16px;font-family:Space Grotesk,sans-serif;font-weight:600">' + subtitle + '</p>' +
-            '<button style="margin-top:24px;padding:12px 40px;border-radius:9999px;background:' + bgColor + ';color:white;font-weight:700;font-family:Space Grotesk,sans-serif;border:none;cursor:pointer;font-size:14px" onclick="this.closest(\'div[style*=fixed]\').remove()">Harika!</button>';
+            '<button style="margin-top:24px;padding:12px 40px;border-radius:9999px;background:' + bgColor + ';color:white;font-weight:700;font-family:Space Grotesk,sans-serif;border:none;cursor:pointer;font-size:14px" onclick="this.closest(\'div[style*=fixed]\').remove()">' + _t('gamif.reward_dismiss', 'Awesome!') + '</button>';
 
         overlay.appendChild(card);
         document.body.appendChild(overlay);
