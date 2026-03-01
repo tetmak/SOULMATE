@@ -861,7 +861,7 @@
       '- "Evren", "ruhsal", "kozmik", "kader", "manifestasyon", "enerji" (metafiziksel) gibi ifadeler YASAK.\n' +
       '- Bunların yerine "sayısal etki", "olasılık eğilimi", "karar zamanlaması", "analitik eğilim" kullan.\n' +
       '- Açıklamaları SAYISAL nedenlere dayandır (ör: "Kişisel Gün 8 olduğu için...").\n' +
-      '- Türkçe yaz.\n' +
+      '- ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + '\n' +
       '- Motivasyonel dil KULLANMA. Sadece analitik açıklama yap.\n' +
       '- Metafor, spiritüel çerçeveleme, gelecek vaadi YASAK.\n' +
       '- Zamanlama mantığı dışında tavsiye verme.\n' +

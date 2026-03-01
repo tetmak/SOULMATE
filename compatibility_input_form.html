@@ -84,19 +84,19 @@
 <div class="flex w-full gap-2">
   <select id="p1-date-day" disabled
     class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white/70 border border-primary/20 bg-primary/5 dark:bg-primary/5 h-14 px-3 text-base font-bold leading-normal cursor-not-allowed">
-    <option value="" disabled selected>Gün</option>
+    <option value="" disabled selected data-i18n="months.day_label">Gün</option>
   </select>
   <select id="p1-date-month" disabled
     class="form-input flex-[1.3] min-w-0 rounded-2xl text-slate-900 dark:text-white/70 border border-primary/20 bg-primary/5 dark:bg-primary/5 h-14 px-3 text-base font-bold leading-normal cursor-not-allowed">
-    <option value="" disabled selected>Ay</option>
-    <option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option>
-    <option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option>
-    <option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option>
-    <option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
+    <option value="" disabled selected data-i18n="months.label">Ay</option>
+    <option value="01" data-i18n="months.jan">Ocak</option><option value="02" data-i18n="months.feb">Şubat</option><option value="03" data-i18n="months.mar">Mart</option>
+    <option value="04" data-i18n="months.apr">Nisan</option><option value="05" data-i18n="months.may">Mayıs</option><option value="06" data-i18n="months.jun">Haziran</option>
+    <option value="07" data-i18n="months.jul">Temmuz</option><option value="08" data-i18n="months.aug">Ağustos</option><option value="09" data-i18n="months.sep">Eylül</option>
+    <option value="10" data-i18n="months.oct">Ekim</option><option value="11" data-i18n="months.nov">Kasım</option><option value="12" data-i18n="months.dec">Aralık</option>
   </select>
   <select id="p1-date-year" disabled
     class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white/70 border border-primary/20 bg-primary/5 dark:bg-primary/5 h-14 px-3 text-base font-bold leading-normal cursor-not-allowed">
-    <option value="" disabled selected>Yıl</option>
+    <option value="" disabled selected data-i18n="months.year_label">Yıl</option>
   </select>
 </div>
 </div>
@@ -128,19 +128,19 @@
 <div class="flex w-full gap-2">
   <select id="p2-date-day"
     class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 px-3 text-base font-normal leading-normal">
-    <option value="" disabled selected>Gün</option>
+    <option value="" disabled selected data-i18n="months.day_label">Gün</option>
   </select>
   <select id="p2-date-month"
     class="form-input flex-[1.3] min-w-0 rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 px-3 text-base font-normal leading-normal">
-    <option value="" disabled selected>Ay</option>
-    <option value="01">Ocak</option><option value="02">Şubat</option><option value="03">Mart</option>
-    <option value="04">Nisan</option><option value="05">Mayıs</option><option value="06">Haziran</option>
-    <option value="07">Temmuz</option><option value="08">Ağustos</option><option value="09">Eylül</option>
-    <option value="10">Ekim</option><option value="11">Kasım</option><option value="12">Aralık</option>
+    <option value="" disabled selected data-i18n="months.label">Ay</option>
+    <option value="01" data-i18n="months.jan">Ocak</option><option value="02" data-i18n="months.feb">Şubat</option><option value="03" data-i18n="months.mar">Mart</option>
+    <option value="04" data-i18n="months.apr">Nisan</option><option value="05" data-i18n="months.may">Mayıs</option><option value="06" data-i18n="months.jun">Haziran</option>
+    <option value="07" data-i18n="months.jul">Temmuz</option><option value="08" data-i18n="months.aug">Ağustos</option><option value="09" data-i18n="months.sep">Eylül</option>
+    <option value="10" data-i18n="months.oct">Ekim</option><option value="11" data-i18n="months.nov">Kasım</option><option value="12" data-i18n="months.dec">Aralık</option>
   </select>
   <select id="p2-date-year"
     class="form-input flex-1 min-w-0 rounded-2xl text-slate-900 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-200 dark:border-[#4b3b54] bg-white dark:bg-[#1c1022] h-14 px-3 text-base font-normal leading-normal">
-    <option value="" disabled selected>Yıl</option>
+    <option value="" disabled selected data-i18n="months.year_label">Yıl</option>
   </select>
 </div>
 </div>
@@ -153,7 +153,7 @@
             </p>
 <!-- Bottom CTA -->
 <div class="mt-10 px-4 pb-6">
-<button class="glow-pulse w-full bg-primary hover:bg-primary/90 text-white font-bold py-5 rounded-full flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-primary/40">
+<button id="btn-check-compat" class="glow-pulse w-full bg-primary hover:bg-primary/90 text-white font-bold py-5 rounded-full flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-primary/40">
 <span class="material-symbols-outlined">auto_awesome</span>
                     <span data-i18n="compat_form.check_btn">Check Compatibility</span>
                 </button>
@@ -274,10 +274,9 @@ function setDateValue(prefix, dateStr) {
   // *** PARTNER ALANLARI HER ZAMAN BOŞ - ön doldurma yok ***
 
   // Butona tıklandığında localStorage'a kaydet
-  document.addEventListener('click', async function(e) {
+  var _compatBtn = document.getElementById('btn-check-compat');
+  if (_compatBtn) _compatBtn.addEventListener('click', async function(e) {
     var el = e.target;
-    var txt = (el.textContent || '') + (el.innerHTML || '');
-    if (!txt.includes('Check Compatibility') && !txt.includes('Calculate')) return;
 
     // CRITICAL: stopPropagation HEMEN çağrılmalı — await'ten önce!
     // Aksi halde async handler await'te durduğunda event bubble phase'e geçer
@@ -300,7 +299,8 @@ function setDateValue(prefix, dateStr) {
         var btn = document.querySelector('button.glow-pulse') || document.querySelector('button');
         if (btn && btn.parentNode) btn.parentNode.insertBefore(err, btn);
       }
-      err.textContent = '✦ Lütfen tüm alanları doldurun.';
+      var _t = window.i18n ? window.i18n.t : function(k,f){return f||k;};
+      err.textContent = '✦ ' + _t('compat_form.error_fill_all', 'Lütfen tüm alanları doldurun.');
       setTimeout(function(){ err.textContent = ''; }, 3000);
       e.stopPropagation();
       e.preventDefault();
@@ -398,7 +398,7 @@ function setDateValue(prefix, dateStr) {
       // Hata olsa bile navigate et
       window.location.href = 'soul_mate_loading.html';
     }
-  }, true); // capture phase — navigasyon JS'inden önce çalışsın
+  }); // doğrudan buton event listener — text-based matching yerine id ile
 })();
 </script>
 <script>
@@ -449,29 +449,8 @@ function setDateValue(prefix, dateStr) {
 
     setTimeout(function() {
 
-    // Check Compatibility → relationship_compatibility_analysis.html
-    document.querySelectorAll('button, a, [class*="cursor"]').forEach(function(el) {
-        var txt = (el.textContent || '') + (el.innerHTML || '');
-        if (txt.includes('Check Compatibility')) {
-            el.style.cursor = 'pointer';
-            el.addEventListener('click', function(e) {
-                e.stopPropagation();
-                window.location.href = 'soul_mate_loading.html';
-            });
-        }
-    });
-
-    // Calculate → relationship_compatibility_analysis.html
-    document.querySelectorAll('button, a, [class*="cursor"]').forEach(function(el) {
-        var txt = (el.textContent || '') + (el.innerHTML || '');
-        if (txt.includes('Calculate')) {
-            el.style.cursor = 'pointer';
-            el.addEventListener('click', function(e) {
-                e.stopPropagation();
-                window.location.href = 'soul_mate_loading.html';
-            });
-        }
-    });
+    // Check Compatibility butonu artık id="btn-check-compat" ile doğrudan bağlı
+    // text-based matching kaldırıldı (i18n ile uyumsuzdu)
 
     // arrow_back → mystic_numerology_home_1.html
     document.querySelectorAll('button, a, [class*="cursor"]').forEach(function(el) {

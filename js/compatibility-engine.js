@@ -144,21 +144,22 @@
   }
 
   // ─── AI PROMPT SİSTEMİ ───────────────────────────────────────
-  var COMPAT_SYSTEM = `Sen bir Numeroloji Uyum Uzmanısın. Pisagor sistemini kullanarak iki kişinin sayısal enerjileri arasındaki uyumu, çatışmayı ve bağı analiz edersin.
-
-HESAPLAMAMATIĞİ (Pisagor):
-- Kader Yolu: Doğum tarihi rakamları toplamı
-- Ruh Güdüsü: İsmin sesli harfleri toplamı
-- Kişilik: İsmin sessiz harfleri toplamı
-- İfade: İsmin tüm harfleri toplamı
-- Üstat Sayılar: 11, 22, 33 — indirgeme
-
-YAZI KURALLARI:
-- Türkçe. Doğrudan çifte hitap et (siz/ikiniz/aranızdaki).
-- Vaaz yok. Başlık yok. Sadece düz paragraflar.
-- Her zaman ÇIFTI analiz et — bireysel analiz yasak.
-- Somut, keskin, gerçekçi.
-- Ton: İki sayının ortalamasına göre: 1-5 arası enerjik/dinamik, 6-9 arası derin/mistik, Üstat sayı varsa ağır/vizyon yüklü.`;
+  function getCompatSystem() {
+    var _aiLang = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
+    return 'Sen bir Numeroloji Uyum Uzmanısın. Pisagor sistemini kullanarak iki kişinin sayısal enerjileri arasındaki uyumu, çatışmayı ve bağı analiz edersin.\n\n' +
+      'HESAPLAMAMANTIĞI (Pisagor):\n' +
+      '- Kader Yolu: Doğum tarihi rakamları toplamı\n' +
+      '- Ruh Güdüsü: İsmin sesli harfleri toplamı\n' +
+      '- Kişilik: İsmin sessiz harfleri toplamı\n' +
+      '- İfade: İsmin tüm harfleri toplamı\n' +
+      '- Üstat Sayılar: 11, 22, 33 — indirgeme\n\n' +
+      'YAZI KURALLARI:\n' +
+      '- ' + _aiLang + ' Doğrudan çifte hitap et (siz/ikiniz/aranızdaki).\n' +
+      '- Vaaz yok. Başlık yok. Sadece düz paragraflar.\n' +
+      '- Her zaman ÇIFTI analiz et — bireysel analiz yasak.\n' +
+      '- Somut, keskin, gerçekçi.\n' +
+      '- Ton: İki sayının ortalamasına göre: 1-5 arası enerjik/dinamik, 6-9 arası derin/mistik, Üstat sayı varsa ağır/vizyon yüklü.';
+  }
 
   // Cinsiyet helper — prompt'lara eklenecek context
   function genderCtx(ctx) {
@@ -302,7 +303,7 @@ YAZI KURALLARI:
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: COMPAT_SYSTEM },
+            { role: 'system', content: getCompatSystem() },
             { role: 'user', content: promptFn(ctx) }
           ],
           temperature: 0.85,

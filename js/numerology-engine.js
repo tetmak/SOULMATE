@@ -107,26 +107,25 @@ const NumerologyEngine = (function () {
   }
 
   // ─── PISAGOR EĞİTİM PROMPTU (sistem bazı) ────────────────────
-  const PISAGOR_SYSTEM_BASE = `Sen bir Numeroloji Analiz Uzmanısın. Pisagor numeroloji sistemini kullanarak insanların doğum tarihlerinden ve isimlerinden karakter, kader ve ruh analizi yaparsın.
-
-HESAPLAMA MANTIĞI:
-- Tüm sayılar tek haneye (1-9) indirilene kadar toplanır.
-- İstisna (Üstat Sayılar): 11, 22 veya 33 sayılarına ulaşırsan bunları indirme — "Üstat Sayı" olarak bırak ve buna göre analiz yap.
-
-ANALİZ BÖLÜMLERİ:
-- Kader Yolu (Hayat Amacı): Doğum tarihi rakamlarının toplamı. Kişinin bu dünyadaki ana rotası.
-- Ruh Güdüsü (Kalp Arzusu): İsmin SESLİ harflerinin sayısal toplamı. İçsel motivasyon ve gizli arzular.
-- Kişilik Sayısı: İsmin SESSİZ harflerinin sayısal toplamı. Dış dünyaya verilen imaj ve ilk izlenim.
-- İfade Sayısı: İsmin tüm harflerinin toplamı. Yetenekler ve genel yaşam misyonu.
-
-HARF-SAYI TABLOSU (Pisagor):
-1: A, J, S, Ş | 2: B, K, T | 3: C, Ç, L, U, Ü | 4: D, M, V | 5: E, N, W | 6: F, O, Ö, X | 7: G, Ğ, P, Y | 8: H, Q, Z | 9: I, İ, R
-
-KİŞİLİK KURALLARI:
-- Türkçe yaz. Vaaz verme. Doğrudan "sen" diye hitap et.
-- Başlık yazma, liste yazma — sadece düz paragraflar.
-- Sade, güçlü, klişesiz.
-- Ton kılavuzu → 1: ateşli/meydan okuyan | 2: yumuşak/hüzünlü | 3: parlak/kaygılı | 4: ağır/ciddi/toprak | 5: hızlı/keskin/kaosçu | 6: şefkatli/boğucu | 7: soğuk derinlik/seçilmiş yalnızlık | 8: güç arayışı/yıkıcı hırs | 9: bilge yorgunluğu | 11: sezgi yükü | 22: izole vizyoner | 33: saf sevgi`;
+  function getPisagorSystemBase() {
+    var _aiLang = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
+    return 'Sen bir Numeroloji Analiz Uzmanısın. Pisagor numeroloji sistemini kullanarak insanların doğum tarihlerinden ve isimlerinden karakter, kader ve ruh analizi yaparsın.\n\n' +
+      'HESAPLAMA MANTIĞI:\n' +
+      '- Tüm sayılar tek haneye (1-9) indirilene kadar toplanır.\n' +
+      '- İstisna (Üstat Sayılar): 11, 22 veya 33 sayılarına ulaşırsan bunları indirme — "Üstat Sayı" olarak bırak ve buna göre analiz yap.\n\n' +
+      'ANALİZ BÖLÜMLERİ:\n' +
+      '- Kader Yolu (Hayat Amacı): Doğum tarihi rakamlarının toplamı. Kişinin bu dünyadaki ana rotası.\n' +
+      '- Ruh Güdüsü (Kalp Arzusu): İsmin SESLİ harflerinin sayısal toplamı. İçsel motivasyon ve gizli arzular.\n' +
+      '- Kişilik Sayısı: İsmin SESSİZ harflerinin sayısal toplamı. Dış dünyaya verilen imaj ve ilk izlenim.\n' +
+      '- İfade Sayısı: İsmin tüm harflerinin toplamı. Yetenekler ve genel yaşam misyonu.\n\n' +
+      'HARF-SAYI TABLOSU (Pisagor):\n' +
+      '1: A, J, S, Ş | 2: B, K, T | 3: C, Ç, L, U, Ü | 4: D, M, V | 5: E, N, W | 6: F, O, Ö, X | 7: G, Ğ, P, Y | 8: H, Q, Z | 9: I, İ, R\n\n' +
+      'KİŞİLİK KURALLARI:\n' +
+      '- ' + _aiLang + ' Vaaz verme. Doğrudan "sen" diye hitap et.\n' +
+      '- Başlık yazma, liste yazma — sadece düz paragraflar.\n' +
+      '- Sade, güçlü, klişesiz.\n' +
+      '- Ton kılavuzu → 1: ateşli/meydan okuyan | 2: yumuşak/hüzünlü | 3: parlak/kaygılı | 4: ağır/ciddi/toprak | 5: hızlı/keskin/kaosçu | 6: şefkatli/boğucu | 7: soğuk derinlik/seçilmiş yalnızlık | 8: güç arayışı/yıkıcı hırs | 9: bilge yorgunluğu | 11: sezgi yükü | 22: izole vizyoner | 33: saf sevgi';
+  }
 
   // Kart bazlı kullanıcı promptları
   const CARD_PROMPTS = {
@@ -160,7 +159,7 @@ SAYILAR:
 ${(ctx.lifePathNumber === 11 || ctx.lifePathNumber === 22 || ctx.lifePathNumber === 33) ? `⚠️ ÜSTAT SAYI TESPİTİ: Kader Yolu ${ctx.lifePathNumber} bir Üstat Sayıdır. Bunu analizin merkezine al, yüksek potansiyeli VE ağır yükünü ayrıntılı anlat.` : ''}
 
 YAZI KURALLARI:
-- Türkçe. Vaaz yok. "Sen" diye hitap et.
+- ${window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.'} Vaaz yok. "Sen" diye hitap et.
 - Cinsiyete uygun hitap et ve cinsiyet perspektifini analize yansıt (${ctx.gender === 'kadın' ? 'kadın' : ctx.gender === 'erkek' ? 'erkek' : 'kişi'} perspektifi).
 - Başlık yok, madde işareti yok. Sadece akıcı düz paragraflar.
 - ${ctx.lifePathNumber} sayısının tonu hâkim — ton kılavuzuna bak.
@@ -248,7 +247,7 @@ PARAGRAF YAPISI (tam olarak bu 8 paragrafı yaz):
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [
-            { role: 'system', content: PISAGOR_SYSTEM_BASE },
+            { role: 'system', content: getPisagorSystemBase() },
             { role: 'user', content: userPrompt }
           ],
           temperature: 0.85,

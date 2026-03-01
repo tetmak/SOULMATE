@@ -232,7 +232,7 @@
 
       <!-- CTA -->
       <div class="mt-8 px-5">
-        <button
+        <button id="btn-unlock-love-guide"
           class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-2xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 shadow-lg shadow-primary/25">
           <span class="material-symbols-outlined text-xl">auto_fix_high</span>
           <span data-i18n="compat_analysis.unlock_love_guide">Tam Aşk Rehberini Aç</span>
@@ -272,28 +272,27 @@
     })();
 
     setTimeout(function () {
-      document.querySelectorAll('button, a, [class*="cursor"]').forEach(function (el) {
-        var txt = (el.textContent || '');
-        if (txt.includes('Unlock Full Ritual') || txt.includes('Unlock Full Love Guide') || txt.includes('Tam Aşk Rehberini Aç')) {
-          el.style.cursor = 'pointer';
-          el.addEventListener('click', function (e) {
-            e.stopPropagation();
-            e.preventDefault();
-            if (window.premium && window.premium.isPremium()) {
-              var partnerName = '';
-              try {
-                var cd = JSON.parse(localStorage.getItem('numerael_compat_data') || '{}');
-                partnerName = (cd.person2 && cd.person2.name) ? cd.person2.name : '';
-              } catch(ex) {}
-              var url = 'name_numerology_breakdown_3.html';
-              if (partnerName) url += '?kisi=' + encodeURIComponent(partnerName);
-              window.location.href = url;
-            } else if (window.premium) {
-              window.premium.showPaywall('Bu icerik Premium ozelligi.');
-            }
-          });
-        }
-      });
+      // Unlock Love Guide — id ile bağla (text-based matching i18n ile bozuluyordu)
+      var unlockBtn = document.getElementById('btn-unlock-love-guide');
+      if (unlockBtn) {
+        unlockBtn.style.cursor = 'pointer';
+        unlockBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          if (window.premium && window.premium.isPremium()) {
+            var partnerName = '';
+            try {
+              var cd = JSON.parse(localStorage.getItem('numerael_compat_data') || '{}');
+              partnerName = (cd.person2 && cd.person2.name) ? cd.person2.name : '';
+            } catch(ex) {}
+            var url = 'name_numerology_breakdown_3.html';
+            if (partnerName) url += '?kisi=' + encodeURIComponent(partnerName);
+            window.location.href = url;
+          } else if (window.premium) {
+            window.premium.showPaywall('Bu icerik Premium ozelligi.');
+          }
+        });
+      }
 
       document.querySelectorAll('button, a, [class*="cursor"]').forEach(function (el) {
         var txt = (el.textContent || '') + (el.innerHTML || '');
@@ -401,27 +400,26 @@
   <script src="js/soulmate-share.js"></script>
 
   <script>
+    // Unlock Love Guide — ikinci handler da id ile (text-based matching kaldırıldı)
     setTimeout(function () {
-      document.querySelectorAll('button').forEach(function (btn) {
-        var txt = btn.textContent || '';
-        if (txt.includes('Unlock Full Ritual') || txt.includes('Unlock Full Love Guide') || txt.includes('Tam Aşk Rehberini Aç')) {
-          btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            if (window.premium && window.premium.isPremium()) {
-              var partnerName = '';
-              try {
-                var cd = JSON.parse(localStorage.getItem('numerael_compat_data') || '{}');
-                partnerName = (cd.person2 && cd.person2.name) ? cd.person2.name : '';
-              } catch(ex) {}
-              var url = 'name_numerology_breakdown_3.html';
-              if (partnerName) url += '?kisi=' + encodeURIComponent(partnerName);
-              window.location.href = url;
-            } else if (window.premium) {
-              window.premium.showPaywall('Bu icerik Premium ozelligi.');
-            }
-          });
-        }
-      });
+      var unlockBtn2 = document.getElementById('btn-unlock-love-guide');
+      if (unlockBtn2) {
+        unlockBtn2.addEventListener('click', function (e) {
+          e.preventDefault();
+          if (window.premium && window.premium.isPremium()) {
+            var partnerName = '';
+            try {
+              var cd = JSON.parse(localStorage.getItem('numerael_compat_data') || '{}');
+              partnerName = (cd.person2 && cd.person2.name) ? cd.person2.name : '';
+            } catch(ex) {}
+            var url = 'name_numerology_breakdown_3.html';
+            if (partnerName) url += '?kisi=' + encodeURIComponent(partnerName);
+            window.location.href = url;
+          } else if (window.premium) {
+            window.premium.showPaywall('Bu icerik Premium ozelligi.');
+          }
+        });
+      }
     }, 300);
   </script>
   <script src="js/numerology-context-engine.js?v=2"></script>
