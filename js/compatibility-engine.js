@@ -16,6 +16,9 @@
                   (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
   var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
+  // ─── i18n HELPER ────────────────────────────────────────────
+  var _t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k,f){return f||k;};
+
   var TABLE = {
     A:1, B:2, C:3, D:4, E:5, F:6, G:7, H:8, I:9,
     J:1, K:2, L:3, M:4, N:5, O:6, P:7, Q:8, R:9,
@@ -118,21 +121,21 @@
   // ─── BAĞLANTI ETİKETLERİ ─────────────────────────────────────
   // Eşikler 70-98 ölçeklenmiş aralığa göre ayarlandı
   function bondLabel(score) {
-    if (score >= 94) return 'Kozmik Ruh İkizi';
-    if (score >= 89) return 'İlahi Ruh Eşi';
-    if (score >= 84) return 'Göksel Birliktelik';
-    if (score >= 79) return 'Karmik Bağ';
-    if (score >= 74) return 'Büyüme Katalizörü';
-    return 'Kozmik Sınav';
+    if (score >= 94) return _t('compat.bond_cosmic_twin', 'Kozmik Ruh İkizi');
+    if (score >= 89) return _t('compat.bond_soul_mate', 'İlahi Ruh Eşi');
+    if (score >= 84) return _t('compat.bond_celestial', 'Göksel Birliktelik');
+    if (score >= 79) return _t('compat.bond_karmic', 'Karmik Bağ');
+    if (score >= 74) return _t('compat.bond_growth', 'Büyüme Katalizörü');
+    return _t('compat.bond_cosmic_test', 'Kozmik Sınav');
   }
 
   function bondSubLabel(score) {
-    if (score >= 94) return 'Sonsuz Bağ · Kader · Aşk';
-    if (score >= 89) return 'Ruh Eşi · Kader · Uyum';
-    if (score >= 84) return 'Göksel Eşleşme · Uyum';
-    if (score >= 79) return 'Karmik Ders · Dönüşüm';
-    if (score >= 74) return 'Keşif · Potansiyel · Gelişim';
-    return 'Zorluk · Ders · Uyanış';
+    if (score >= 94) return _t('compat.bond_desc_1', 'Sonsuz Bağ · Kader · Aşk');
+    if (score >= 89) return _t('compat.bond_desc_2', 'Ruh Eşi · Kader · Uyum');
+    if (score >= 84) return _t('compat.bond_desc_3', 'Göksel Eşleşme · Uyum');
+    if (score >= 79) return _t('compat.bond_desc_4', 'Karmik Ders · Dönüşüm');
+    if (score >= 74) return _t('compat.bond_desc_5', 'Keşif · Potansiyel · Gelişim');
+    return _t('compat.bond_desc_6', 'Zorluk · Ders · Uyanış');
   }
 
   function starCount(score) {
@@ -381,7 +384,7 @@
 
   // ─── LOADING HTML ────────────────────────────────────────────
   function loadingHTML(msg) {
-    return '<div style="padding:20px;text-align:center;color:rgba(207,161,23,0.6);font-style:italic;font-size:13px;animation:compat-pulse 1.5s infinite;">✦ ' + (msg || 'Uyum analizi hazırlanıyor...') + '</div>';
+    return '<div style="padding:20px;text-align:center;color:rgba(207,161,23,0.6);font-style:italic;font-size:13px;animation:compat-pulse 1.5s infinite;">✦ ' + (msg || _t('compat.loading_default', 'Uyum analizi hazırlanıyor...')) + '</div>';
   }
 
   function renderText(text) {
@@ -568,18 +571,18 @@
     var insightCard = document.getElementById('compat-insight-card');
     if (insightCard) {
       var _cosmicCached = getCachedAnalysis('cosmic', ctx);
-      insightCard.innerHTML = '<div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary">auto_awesome</span><h3 class="text-lg font-bold">Kozmik Bağ</h3></div>' +
+      insightCard.innerHTML = '<div class="flex items-center gap-2 mb-4"><span class="material-symbols-outlined text-primary">auto_awesome</span><h3 class="text-lg font-bold">' + _t('compat_analysis.cosmic_bond_title', 'Kozmik Bağ') + '</h3></div>' +
         '<div id="cosmic-ai-content">' +
           (_cosmicCached
             ? '<div style="animation:compat-in 0.5s ease;color:' + _textMuted() + ';">' + renderText(_cosmicCached) + '</div>'
-            : loadingHTML('Kozmik bağ hesaplanıyor...'))
+            : loadingHTML(_t('compat_analysis.cosmic_bond_loading', 'Kozmik bağ hesaplanıyor...')))
         + '</div>';
       if (!_cosmicCached) {
         fetchCompatAnalysis('cosmic', ctx).then(function(text){
           var el = document.getElementById('cosmic-ai-content');
           if (!el) return;
           if (text) el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:' + _textMuted() + ';">' + renderText(text) + '</div>';
-          else el.innerHTML = '<p style="color:#ef4444;font-size:13px;">Analiz yüklenemedi.</p>';
+          else el.innerHTML = '<p style="color:#ef4444;font-size:13px;">' + _t('compat.analysis_error', 'Analiz yüklenemedi.') + '</p>';
         });
       }
     }
@@ -602,7 +605,7 @@
     if (badge) badge.textContent = ctx.bond;
 
     var quote = document.querySelector('p.mt-6.text-center.italic');
-    if (quote) quote.textContent = '"' + ctx.p1.name + ' ve ' + ctx.p2.name + ' — sayıların birbirine yazdığı kader."';
+    if (quote) quote.textContent = '"' + ctx.p1.name + ' ' + _t('compat.and_connector', 've') + ' ' + ctx.p2.name + ' — ' + _t('compat.destiny_quote', 'sayıların birbirine yazdığı kader.') + '"';
 
     // Soulmate share
     var smNames = document.getElementById('sm-names');
@@ -663,7 +666,7 @@
                 if (text) {
                   contentDiv.innerHTML = '<div style="padding:16px 20px;animation:compat-in 0.5s ease;">' + renderText(text) + '</div>';
                 } else {
-                  contentDiv.innerHTML = '<p style="padding:16px;color:#ef4444;font-size:13px;">Analiz yüklenemedi.</p>';
+                  contentDiv.innerHTML = '<p style="padding:16px;color:#ef4444;font-size:13px;">' + _t('compat.analysis_error', 'Analiz yüklenemedi.') + '</p>';
                 }
               });
             }
@@ -715,19 +718,19 @@
       if (_b2Cached) {
         target.innerHTML = '<div style="animation:compat-in 0.5s ease;">' + renderText(_b2Cached) + '</div>';
       } else {
-        target.innerHTML = loadingHTML(loadMsg || 'Analiz hazırlanıyor...');
+        target.innerHTML = loadingHTML(loadMsg || _t('compat.loading_preparing', 'Analiz hazırlanıyor...'));
         fetchCompatAnalysis(promptType, ctx).then(function(text) {
           if (text) {
             target.innerHTML = '<div style="animation:compat-in 0.5s ease;">' + renderText(text) + '</div>';
           } else {
-            target.innerHTML = '<p style="color:#ef4444;font-size:13px;">Analiz yüklenemedi.</p>';
+            target.innerHTML = '<p style="color:#ef4444;font-size:13px;">' + _t('compat.analysis_error', 'Analiz yüklenemedi.') + '</p>';
           }
         });
       }
     }
 
     // section[0]: The Karmic Bond → karmic prompt
-    fillSection(sections[0], 'karmic', 'Karmik bağ okunuyor...');
+    fillSection(sections[0], 'karmic', _t('breakdown2.karmic_bond_loading', 'Karmik bağ okunuyor...'));
 
     // section[1]: Communication Harmony → communication prompt
     // Bar grafiğinden sonrası için ek div ekle
@@ -737,7 +740,7 @@
       commDiv.id = 'comm-ai-content';
       var _commCached = getCachedAnalysis('communication', ctx);
       if (_commCached) { commDiv.innerHTML = '<div style="animation:compat-in 0.5s ease;">' + renderText(_commCached) + '</div>'; }
-      else { commDiv.innerHTML = loadingHTML('İletişim uyumu analiz ediliyor...'); }
+      else { commDiv.innerHTML = loadingHTML(_t('breakdown2.communication_loading', 'İletişim uyumu analiz ediliyor...')); }
       commDiv.style.marginTop = '12px';
       if (bar) bar.parentNode.insertBefore(commDiv, bar.nextSibling);
 
@@ -747,7 +750,7 @@
         if (text) {
           el.innerHTML = '<div style="animation:compat-in 0.5s ease;color:' + _textColor() + ';">' + renderText(text) + '</div>';
         } else {
-          el.innerHTML = '<p style="color:#ef4444;font-size:13px;">Analiz yüklenemedi.</p>';
+          el.innerHTML = '<p style="color:#ef4444;font-size:13px;">' + _t('compat.analysis_error', 'Analiz yüklenemedi.') + '</p>';
         }
       });
 
@@ -764,11 +767,11 @@
       // Soul urge archetypes
       var SOUL_ARCHETYPES = {1:'THE LEADERS',2:'THE DIPLOMATS',3:'THE CREATORS',4:'THE BUILDERS',5:'THE ADVENTURERS',6:'THE NURTURERS',7:'THE MYSTICS',8:'THE POWERHOUSES',9:'THE HUMANITARIANS',11:'THE ILLUMINATORS',22:'THE MASTER BUILDERS',33:'THE TEACHERS'};
       if (archetypeEl) archetypeEl.textContent = (SOUL_ARCHETYPES[ctx.p1.soulUrge] || 'THE SOULS') + ' & ' + (SOUL_ARCHETYPES[ctx.p2.soulUrge] || 'SOULS');
-      fillSection(sections[2], 'soul_urge', 'Duygusal uyum hesaplanıyor...');
+      fillSection(sections[2], 'soul_urge', _t('breakdown2.emotional_loading', 'Duygusal uyum hesaplanıyor...'));
     }
 
     // section[3]: The Shared Destiny → life_path prompt
-    fillSection(sections[3], 'life_path', 'Ortak kader okunuyor...');
+    fillSection(sections[3], 'life_path', _t('breakdown2.shared_destiny_loading', 'Ortak kader okunuyor...'));
   }
 
   // ─── AUTO-INIT ────────────────────────────────────────────────
