@@ -27,8 +27,7 @@
     var PREMIUM_PRICE = { monthly: 79.99, yearly: 599.99, currency: 'TRY' };
 
     // ─── PREMIUM DURUMU ──────────────────────────────────────
-    // ⚠️ GEÇICI: Tüm kullanıcılar premium — Google Developer onayı sonrası false yap
-    var EVERYONE_IS_PREMIUM = true;
+    var EVERYONE_IS_PREMIUM = false;
 
     function isPremium() {
         if (EVERYONE_IS_PREMIUM) return true;
