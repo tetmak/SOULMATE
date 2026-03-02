@@ -67,12 +67,12 @@
 
     <!-- Profile Hero -->
     <div class="flex p-6 pt-8 flex-col items-center fade-in">
-        <div class="relative">
+        <div class="relative" style="touch-action:manipulation">
             <div id="profile-avatar" class="h-32 w-32 rounded-full border-4 border-primary/40 glow-border overflow-hidden bg-primary/20 flex items-center justify-center cursor-pointer" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
                 <span id="profile-initial" class="text-primary text-5xl font-bold">?</span>
             </div>
-            <div id="avatar-edit-badge" class="absolute bottom-0 left-0 bg-white dark:bg-card-dark text-slate-700 dark:text-white h-9 w-9 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711] cursor-pointer shadow-lg z-10" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
-                <span class="material-symbols-outlined text-base">photo_camera</span>
+            <div id="avatar-edit-badge" class="absolute -bottom-1 -left-1 bg-white dark:bg-card-dark text-slate-700 dark:text-white h-11 w-11 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711] cursor-pointer shadow-lg z-10" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-width:44px;min-height:44px" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
+                <span class="material-symbols-outlined text-lg">photo_camera</span>
             </div>
             <div class="absolute -bottom-2 -right-2 bg-primary text-[#181711] h-12 w-12 rounded-full flex flex-col items-center justify-center border-4 border-background-light dark:border-[#181711] font-bold shadow-lg">
                 <span class="text-[9px] leading-none uppercase tracking-tighter">Path</span>
