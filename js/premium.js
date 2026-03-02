@@ -19,7 +19,7 @@
         deep_insight_full: false,
         cosmic_match_reveal: false,
         friendship_dynamics: false,
-        manifest_per_month: 5,           // ayda 5 niyet (free)
+        manifest_per_month: 0,           // free kullanıcılar manifest oluşturamaz
         manifest_per_day: 1,             // günde 1 niyet (herkes)
         breakdown_pages: 1
     };
@@ -172,7 +172,7 @@
                 var monthlyUsed = getUsageCount('manifest');
                 var monthlyLeft = FREE_LIMITS.manifest_per_month - monthlyUsed;
                 if (monthlyLeft <= 0) {
-                    return { allowed: false, reason: 'Bu ay ' + FREE_LIMITS.manifest_per_month + ' niyet hakkını kullandın. Premium ile her gün manifest oluştur!' };
+                    return { allowed: false, reason: 'Manifest oluşturma premium özelliğidir. Premium\'a geçerek her gün niyet belirleyebilirsin!' };
                 }
                 return { allowed: true, monthlyLeft: monthlyLeft, dailyLeft: FREE_LIMITS.manifest_per_day - dailyUsed };
             }
