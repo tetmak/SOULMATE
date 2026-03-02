@@ -326,17 +326,26 @@
     window.avatarUtil.setAvatar(avatarEl, { avatarUrl: ud.avatarUrl || null, name: name, gender: gender });
 
     // Avatar yükleme handler
+    // KRİTİK: pickPhoto() DOĞRUDAN user gesture içinde çağrılmalı!
+    // getSession().then() async olduğu için gesture zincirini kırar → mobil tarayıcıda dosya seçici açılmaz.
+    // Bu yüzden ÖNCE fotoğrafı seç, SONRA auth kontrolü yap ve yükle.
     window._triggerAvatarUpload = function() {
         if (!window.avatarUpload) return;
-        window.supabaseClient.auth.getSession().then(function(res) {
-            var session = res && res.data && res.data.session;
-            if (!session || !session.user) return;
-            window.avatarUpload.changeAvatar(session.user.id).then(function(newUrl) {
-                if (newUrl) {
-                    window.avatarUtil.setAvatar(avatarEl, { avatarUrl: newUrl, name: name, gender: gender });
-                }
-            }).catch(function(e) { console.error('[Avatar] Upload hatası:', e); });
-        });
+        // 1. HEMEN fotoğraf seç (user gesture zinciri korunsun)
+        window.avatarUpload.pickPhoto().then(function(dataUrl) {
+            if (!dataUrl) return;
+            // 2. Auth kontrolü (artık async olması sorun değil — fotoğraf zaten seçildi)
+            window.supabaseClient.auth.getSession().then(function(res) {
+                var session = res && res.data && res.data.session;
+                if (!session || !session.user) { console.warn('[Avatar] Oturum yok'); return; }
+                // 3. Yükle
+                window.avatarUpload.uploadAvatar(session.user.id, dataUrl).then(function(newUrl) {
+                    if (newUrl) {
+                        window.avatarUtil.setAvatar(avatarEl, { avatarUrl: newUrl, name: name, gender: gender });
+                    }
+                }).catch(function(e) { console.error('[Avatar] Upload hatası:', e); });
+            });
+        }).catch(function(e) { console.log('[Avatar] Fotoğraf seçilmedi:', e.message); });
     };
 
     document.getElementById('profile-name').textContent = name;
