@@ -480,85 +480,113 @@
       barsContainer.appendChild(detailDiv);
     }
 
-    // Avatarlar — önce localStorage'daki cached data, sonra Supabase'den gerçek profil fotoğrafları
-    (async function loadCompatAvatars() {
-      try {
-        var av1El = document.getElementById('compat-avatar-1');
-        var av2El = document.getElementById('compat-avatar-2');
-        if (!av1El && !av2El) return;
+    // Avatarlar — önce hemen default/cache koy, sonra async olarak Supabase'den güncelle
+    (function loadCompatAvatars() {
+      var av1El = document.getElementById('compat-avatar-1');
+      var av2El = document.getElementById('compat-avatar-2');
+      if (!av1El && !av2El) return;
 
-        // 1. Ana kullanıcı (person1) avatarı
-        // Önce compat_data'daki cached avatarUrl (kisi_profil.html'den geliyor)
-        var p1AvatarUrl = ctx.p1.avatarUrl || null;
-        // Yoksa Supabase profiles'dan (en güncel fotoğraf)
-        if (!p1AvatarUrl && window.supabaseClient) {
-          try {
-            var session = null;
-            if (window.auth && window.auth.getSession) session = await window.auth.getSession();
-            if (session && session.user) {
-              var profRes = await window.supabaseClient.from('profiles')
+      // Yardımcı: avatar URL'ini elemente uygula
+      function setAv(el, url) {
+        if (el && url) el.style.backgroundImage = 'url("' + url + '")';
+      }
+
+      // ── ADIM 1: Hemen default/cache avatarları koy (senkron) ──
+      var p1AvatarUrl = ctx.p1.avatarUrl || null;
+      var p2AvatarUrl = ctx.p2.avatarUrl || null;
+
+      // p1: localStorage cache (hızlı)
+      if (!p1AvatarUrl) {
+        try {
+          var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
+          if (ud && ud.avatarUrl) p1AvatarUrl = ud.avatarUrl;
+        } catch(e) {}
+      }
+
+      // avatarUtil fallback (cinsiyet bazlı default) — HER ZAMAN çalışır
+      // Partner cinsiyeti yoksa ana kullanıcının tersini kullan (kadın→erkek, erkek→kadın)
+      if (window.avatarUtil) {
+        if (!p1AvatarUrl) p1AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p1.name, gender: ctx.p1.gender });
+        var p2Gender = ctx.p2.gender;
+        if (!p2Gender && ctx.p1.gender) {
+          p2Gender = (ctx.p1.gender === 'female') ? 'male' : 'female';
+        }
+        if (!p2AvatarUrl) p2AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p2.name, gender: p2Gender });
+      }
+
+      // Hemen uygula (placeholder yerine doğru default görünsün)
+      setAv(av1El, p1AvatarUrl);
+      setAv(av2El, p2AvatarUrl);
+      console.log('[Compat] Avatarlar (sync) — p1:', p1AvatarUrl ? 'set' : 'boş', ', p2:', p2AvatarUrl ? 'set' : 'boş');
+
+      // ── ADIM 2: Async olarak Supabase'den gerçek fotoğrafları al ──
+      (async function() {
+        try {
+          var updated = false;
+
+          // p1: Supabase profiles (en güncel)
+          if (window.supabaseClient) {
+            try {
+              var session = null;
+              if (window.auth && window.auth.getSession) session = await window.auth.getSession();
+              if (session && session.user) {
+                var profRes = await window.supabaseClient.from('profiles')
+                  .select('avatar_url')
+                  .eq('id', session.user.id)
+                  .maybeSingle();
+                if (profRes.data && profRes.data.avatar_url) {
+                  p1AvatarUrl = profRes.data.avatar_url;
+                  setAv(av1El, p1AvatarUrl);
+                  updated = true;
+                }
+              }
+            } catch(e) {}
+          }
+
+          // p2: userId varsa profiles tablosundan
+          if (ctx.p2.userId && window.supabaseClient) {
+            try {
+              var profRes2 = await window.supabaseClient.from('profiles')
                 .select('avatar_url')
-                .eq('id', session.user.id)
+                .eq('id', ctx.p2.userId)
                 .maybeSingle();
-              if (profRes.data && profRes.data.avatar_url) p1AvatarUrl = profRes.data.avatar_url;
-            }
-          } catch(e) {}
-        }
-        // Supabase'de de yoksa localStorage'dan
-        if (!p1AvatarUrl) {
-          try {
-            var ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null');
-            if (ud && ud.avatarUrl) p1AvatarUrl = ud.avatarUrl;
-          } catch(e) {}
-        }
+              if (profRes2.data && profRes2.data.avatar_url) {
+                p2AvatarUrl = profRes2.data.avatar_url;
+                setAv(av2El, p2AvatarUrl);
+                updated = true;
+              }
+            } catch(e) { console.warn('[Compat] Partner profiles lookup error:', e); }
+          }
 
-        // 2. Partner (person2) avatarı
-        // Önce compat_data'daki cached avatarUrl (kisi_profil.html'den userId + avatar ile geliyor)
-        var p2AvatarUrl = ctx.p2.avatarUrl || null;
-        // userId varsa doğrudan profiles tablosundan (en güncel fotoğraf — HER ZAMAN öncelikli)
-        if (ctx.p2.userId && window.supabaseClient) {
-          try {
-            var profRes2 = await window.supabaseClient.from('profiles')
-              .select('avatar_url')
-              .eq('id', ctx.p2.userId)
-              .maybeSingle();
-            if (profRes2.data && profRes2.data.avatar_url) p2AvatarUrl = profRes2.data.avatar_url;
-          } catch(e) { console.warn('[Compat] Partner profiles lookup error:', e); }
-        }
-        // userId yoksa fallback: discovery_profiles'dan isme göre ara
-        if (!p2AvatarUrl && window.supabaseClient) {
-          try {
-            var dpRes = await window.supabaseClient.from('discovery_profiles')
-              .select('avatar_url, user_id')
-              .ilike('full_name', '%' + ctx.p2.name + '%')
-              .limit(1)
-              .maybeSingle();
-            // discovery_profiles'dan user_id bulunduysa profiles'a bak
-            if (dpRes.data && dpRes.data.user_id) {
-              var profRes2b = await window.supabaseClient.from('profiles')
-                .select('avatar_url')
-                .eq('id', dpRes.data.user_id)
+          // p2: userId yoksa discovery_profiles'dan isme göre ara
+          if (!ctx.p2.userId && window.supabaseClient) {
+            try {
+              var dpRes = await window.supabaseClient.from('discovery_profiles')
+                .select('avatar_url, user_id')
+                .ilike('full_name', '%' + ctx.p2.name + '%')
+                .limit(1)
                 .maybeSingle();
-              if (profRes2b.data && profRes2b.data.avatar_url) p2AvatarUrl = profRes2b.data.avatar_url;
-            }
-            // profiles'dan bulunamadıysa discovery_profiles avatar kullan
-            if (!p2AvatarUrl && dpRes.data && dpRes.data.avatar_url) {
-              p2AvatarUrl = dpRes.data.avatar_url;
-            }
-          } catch(e) { console.warn('[Compat] Partner name-based avatar error:', e); }
-        }
+              if (dpRes.data && dpRes.data.user_id) {
+                var profRes2b = await window.supabaseClient.from('profiles')
+                  .select('avatar_url')
+                  .eq('id', dpRes.data.user_id)
+                  .maybeSingle();
+                if (profRes2b.data && profRes2b.data.avatar_url) {
+                  p2AvatarUrl = profRes2b.data.avatar_url;
+                  setAv(av2El, p2AvatarUrl);
+                  updated = true;
+                }
+              }
+              if (!updated && dpRes.data && dpRes.data.avatar_url) {
+                p2AvatarUrl = dpRes.data.avatar_url;
+                setAv(av2El, p2AvatarUrl);
+              }
+            } catch(e) { console.warn('[Compat] Partner name-based avatar error:', e); }
+          }
 
-        // avatarUtil fallback (cinsiyet bazlı default)
-        if (window.avatarUtil) {
-          if (!p1AvatarUrl) p1AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p1.name, gender: ctx.p1.gender });
-          if (!p2AvatarUrl) p2AvatarUrl = window.avatarUtil.getAvatarUrl({ name: ctx.p2.name, gender: ctx.p2.gender });
-        }
-
-        // Avatarları güncelle
-        if (av1El && p1AvatarUrl) av1El.style.backgroundImage = 'url("' + p1AvatarUrl + '")';
-        if (av2El && p2AvatarUrl) av2El.style.backgroundImage = 'url("' + p2AvatarUrl + '")';
-        console.log('[Compat] Avatarlar yüklendi — p1:', p1AvatarUrl ? 'OK' : 'default', ', p2:', p2AvatarUrl ? 'OK' : 'default', ', p2.userId:', ctx.p2.userId || 'yok');
-      } catch(e) { console.warn('[Compat] Avatar load error:', e); }
+          console.log('[Compat] Avatarlar (async) — p1:', p1AvatarUrl ? 'OK' : 'default', ', p2:', p2AvatarUrl ? 'OK' : 'default', ', p2.userId:', ctx.p2.userId || 'yok');
+        } catch(e) { console.warn('[Compat] Avatar async load error:', e); }
+      })();
     })();
 
     // Soulmate share kartı isim & skor
