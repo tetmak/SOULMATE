@@ -206,11 +206,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     _authResolve();
                 });
             } else if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-                // Aktif login/signup — sayfanın kendi kodu yönlendirmeyi yapacak
                 done = true;
                 try { sub.data.subscription.unsubscribe(); } catch(e) {}
-                _authResolve();
-                // checkSession() ÇAĞIRMA — race condition'ı önle
+                // OAuth redirect ise (URL'de code parametresi var) → checkSession çağır
+                // Normal email signup ise → sayfanın kendi kodu yönlendirmeyi yapacak
+                var urlParams = new URLSearchParams(window.location.search);
+                if (event === 'SIGNED_IN' && urlParams.has('code')) {
+                    console.log('[Auth] OAuth redirect algılandı, checkSession çağrılıyor');
+                    auth.checkSession().then(function() {
+                        _authResolve();
+                    }).catch(function() {
+                        _authResolve();
+                    });
+                } else {
+                    _authResolve();
+                }
             }
         });
         // Fallback: 3 saniye içinde event gelmezse yine de kontrol et
