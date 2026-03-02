@@ -257,13 +257,15 @@
         if(!d) return null;
         return reduce(d.replace(/\D/g,'').split('').reduce(function(a,x){return a+parseInt(x);},0));
     }
+    var _locMap = {tr:'tr-TR',en:'en-US',de:'de-DE',fr:'fr-FR',es:'es-ES',ar:'ar-SA',ru:'ru-RU',pt:'pt-BR'};
+    function _getLocale() { var l = (window.i18n && window.i18n.current) ? window.i18n.current() : 'tr'; return _locMap[l] || 'tr-TR'; }
     function formatDate(s) {
         if(!s) return '';
-        try { return new Date(s+'T00:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'}); } catch(e){return s;}
+        try { return new Date(s+'T00:00:00').toLocaleDateString(_getLocale(),{day:'numeric',month:'long',year:'numeric'}); } catch(e){return s;}
     }
     function shortDate(s) {
         if(!s) return '';
-        try { return new Date(s).toLocaleDateString('tr-TR',{day:'numeric',month:'short'}); } catch(e){return '';}
+        try { return new Date(s).toLocaleDateString(_getLocale(),{day:'numeric',month:'short'}); } catch(e){return '';}
     }
     var ARCH = {1:'The Leader',2:'The Diplomat',3:'The Creator',4:'The Builder',5:'The Adventurer',6:'The Nurturer',7:'The Seeker',8:'The Achiever',9:'The Humanitarian',11:'The Illuminator',22:'The Master Builder',33:'The Teacher'};
     // Uyumluluk skoru artık CompatEngine üzerinden hesaplanıyor (tek kaynak, 4 boyutlu)
@@ -415,7 +417,7 @@
                 '</div>' +
                 '<div class="flex-1 min-w-0">' +
                     '<p class="text-slate-900 dark:text-white font-bold text-sm truncate">' + name + ' &amp; ' + pName + '</p>' +
-                    '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Life Path ' + (lp||'?') + ' &amp; ' + lp2 + ' · <span class="text-primary font-bold">' + score + '% uyum</span></p>' +
+                    '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Life Path ' + (lp||'?') + ' &amp; ' + lp2 + ' · <span class="text-primary font-bold">' + score + '% ' + (window.i18n ? window.i18n.t('profile.compatibility', 'compatibility') : 'uyum') + '</span></p>' +
                 '</div>' +
                 '<div class="flex items-center gap-2 shrink-0">' +
                     '<div class="text-right">' +

@@ -495,21 +495,25 @@
             33: { title: 'MASTER GUIDANCE',   color: '#f9a8d4', glow: 'rgba(249,168,212,0.5)' }
         };
 
-        // Fallback açıklamalar (AI yoksa kullanılır)
-        var VIB_DESC = {
-            1:  'Başlatma ve doğrudan karar için sayısal destek güçlü. Harekete geçin.',
-            2:  'Değerlendirme ve koordinasyon için uygun kombinasyon. Dinleyin ve analiz edin.',
-            3:  'İfade ve iletişim için sayısal eğilim güçlü. Paylaşın.',
-            4:  'Sistematik çalışma ve yapısal kararlar destekleniyor. Disiplinli olun.',
-            5:  'Değişim ve adaptasyon için sayısal etki aktif. Esnek olun.',
-            6:  'Sorumluluk ve bakım eylemleri destekleniyor. Yakınlarınıza zaman ayırın.',
-            7:  'Analiz ve iç değerlendirme destekleniyor. Araştırma için ideal.',
-            8:  'Finansal kararlar ve otorite eylemleri destekleniyor. Kararlı olun.',
-            9:  'Tamamlama ve kapatma eylemleri destekleniyor. Süreçleri sonlandırın.',
-            11: 'Yüksek sayısal yoğunluk. Analitik derinlik artırılmış.',
-            22: 'Büyük ölçekli projeler için sayısal destek güçlü. Yapısal kararlar alın.',
-            33: 'Rehberlik ve büyük ölçekli sorumluluk destekleniyor.'
-        };
+        // Fallback açıklamalar (AI yoksa kullanılır) — i18n destekli
+        var _vt = function(k, fb) { return window.i18n ? window.i18n.t(k, fb) : fb; };
+        function getVibDesc(num) {
+            var descs = {
+                1:  _vt('home.vib_1',  'Strong numerical support for initiation and direct decisions. Take action.'),
+                2:  _vt('home.vib_2',  'Suitable combination for evaluation and coordination. Listen and analyze.'),
+                3:  _vt('home.vib_3',  'Strong numerical tendency for expression and communication. Share.'),
+                4:  _vt('home.vib_4',  'Systematic work and structural decisions are supported. Be disciplined.'),
+                5:  _vt('home.vib_5',  'Numerical influence for change and adaptation is active. Be flexible.'),
+                6:  _vt('home.vib_6',  'Responsibility and care actions are supported. Spend time with loved ones.'),
+                7:  _vt('home.vib_7',  'Analysis and inner evaluation are supported. Ideal for research.'),
+                8:  _vt('home.vib_8',  'Financial decisions and authority actions are supported. Be decisive.'),
+                9:  _vt('home.vib_9',  'Completion and closure actions are supported. Finalize processes.'),
+                11: _vt('home.vib_11', 'High numerical intensity. Analytical depth is enhanced.'),
+                22: _vt('home.vib_22', 'Strong numerical support for large-scale projects. Make structural decisions.'),
+                33: _vt('home.vib_33', 'Guidance and large-scale responsibility are supported.')
+            };
+            return descs[num] || descs[8];
+        }
 
         // ─── Bugünün Cache Key'i ─────────────────────────────
         var today = new Date();
@@ -649,7 +653,7 @@
         }
 
         // ─── Fallback açıklamayı hemen göster ────────────────
-        if (dscEl) dscEl.textContent = VIB_DESC[pd] || VIB_DESC[8];
+        if (dscEl) dscEl.textContent = getVibDesc(pd);
 
         // ─── AI ile kişiselleştirilmiş içerik ────────────────
         var _aiLang = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';

@@ -327,7 +327,7 @@
                             <div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-10">
                                 <span class="material-symbols-outlined">manage_accounts</span>
                             </div>
-                            <p class="text-slate-900 dark:text-white text-base font-normal leading-normal">Aboneliği Yönet</p>
+                            <p class="text-slate-900 dark:text-white text-base font-normal leading-normal" data-i18n="settings.manage_subscription">Aboneliği Yönet</p>
                         </div>
                         <span class="material-symbols-outlined text-slate-400 dark:text-white">chevron_right</span>
                     </div>
@@ -418,6 +418,7 @@
     </div>
 
     <script>
+            var _t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k,f){return f||k;};
             // NUMERAEL APP - Navigation Helper
             (function () {
                 // Auto navigation için
@@ -654,12 +655,12 @@
                 var planLabel = premiumData && premiumData.plan === 'yearly' ? 'Yıllık Plan' : premiumData && premiumData.plan ? 'Aylık Plan' : 'Premium';
                 var sourceLabel = premiumData && premiumData.source === 'paddle' ? 'Web' :
                                   premiumData && premiumData.source === 'play_store' ? 'Google Play' :
-                                  premiumData && premiumData.source === 'supabase' ? 'Sunucu' : 'Aktif';
+                                  premiumData && premiumData.source === 'supabase' ? _t('settings.server', 'Server') : _t('settings.active', 'Active');
 
                 subTitle.textContent = 'Numantic Premium';
                 subDetail.textContent = planLabel + ' · ' + sourceLabel;
 
-                subBadge.textContent = 'AKTİF';
+                subBadge.textContent = _t('settings.badge_active', 'ACTIVE');
                 subBadge.style.display = 'block';
                 subBadge.style.background = 'rgba(16,185,129,0.15)';
                 subBadge.style.color = '#10b981';
@@ -669,7 +670,9 @@
                     var expDate = new Date(premiumData.expires_at);
                     var now = new Date();
                     var daysLeft = Math.ceil((expDate - now) / (1000 * 60 * 60 * 24));
-                    subExpiryText.textContent = 'Yenileme: ' + expDate.toLocaleDateString('tr-TR') + ' (' + daysLeft + ' gün)';
+                    var _loc = (window.i18n && window.i18n.current) ? window.i18n.current() : 'tr';
+                    var _locMap = {tr:'tr-TR',en:'en-US',de:'de-DE',fr:'fr-FR',es:'es-ES',ar:'ar-SA',ru:'ru-RU',pt:'pt-BR'};
+                    subExpiryText.textContent = _t('settings.renewal', 'Renewal') + ': ' + expDate.toLocaleDateString(_locMap[_loc]||'tr-TR') + ' (' + daysLeft + ' ' + _t('settings.days', 'days') + ')';
                     subExpiry.style.display = 'block';
                 }
 
@@ -749,7 +752,7 @@
                     if (cached.name && nameEl) nameEl.textContent = cached.name;
                     if (cached.birthDate && birthEl) {
                         var d = new Date(cached.birthDate);
-                        birthEl.textContent = d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+                        birthEl.textContent = (function(){ var _lc=(window.i18n&&window.i18n.current)?window.i18n.current():'tr'; var _lm={tr:'tr-TR',en:'en-US',de:'de-DE',fr:'fr-FR',es:'es-ES',ar:'ar-SA',ru:'ru-RU',pt:'pt-BR'}; return d.toLocaleDateString(_lm[_lc]||'tr-TR',{day:'numeric',month:'long',year:'numeric'}); })();
                     }
                 }
             } catch(e) {}
@@ -767,7 +770,7 @@
                                 if (r.data.full_name && nameEl) nameEl.textContent = r.data.full_name;
                                 if (r.data.birth_date && birthEl) {
                                     var bd = new Date(r.data.birth_date);
-                                    birthEl.textContent = bd.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
+                                    birthEl.textContent = b(function(){ var _lc=(window.i18n&&window.i18n.current)?window.i18n.current():'tr'; var _lm={tr:'tr-TR',en:'en-US',de:'de-DE',fr:'fr-FR',es:'es-ES',ar:'ar-SA',ru:'ru-RU',pt:'pt-BR'}; return d.toLocaleDateString(_lm[_lc]||'tr-TR',{day:'numeric',month:'long',year:'numeric'}); })();
                                 }
                             }
                         });
@@ -794,7 +797,7 @@
             var isDark = window.themeEngine.isDark();
             toggle.checked = isDark;
             if (icon) icon.textContent = isDark ? 'dark_mode' : 'light_mode';
-            if (label) label.textContent = isDark ? 'Aktif' : 'Kapalı';
+            if (label) label.textContent = isDark ? _t('settings.active', 'Active') : _t('settings.inactive', 'Inactive');
         }
 
         // Initialize

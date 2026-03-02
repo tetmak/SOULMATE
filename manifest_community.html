@@ -613,6 +613,7 @@
     <script>
     (function() {
         'use strict';
+        var _t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k,f){return f||k;};
 
         var currentSort = 'newest';
         var currentCat = 'all';
@@ -696,8 +697,8 @@
                 var wIsReal = !weekly.isBot;
                 html += '<div class="weekly-card fade-up fd1 mb-4">' +
                     '<div class="flex items-center justify-between mb-4">' +
-                        '<span class="weekly-badge">🏆 Weekly Champion</span>' +
-                        '<span class="weekly-likes">' + fmtLikes(weekly.likes || 0) + ' Likes</span>' +
+                        '<span class="weekly-badge">🏆 ' + _t('manifest.weekly_champion', 'Weekly Champion') + '</span>' +
+                        '<span class="weekly-likes">' + fmtLikes(weekly.likes || 0) + ' ' + _t('manifest.likes', 'Likes') + '</span>' +
                     '</div>' +
                     '<p class="weekly-quote mb-6">"' + weekly.text + '"</p>' +
                     '<div class="flex items-center justify-between">' +
@@ -880,7 +881,7 @@
                     '<p class="my-manifest-text">"' + m.text + '"</p>' +
                     '<div class="my-manifest-meta">' +
                         '<span class="my-manifest-date">' + dateStr + '</span>' +
-                        '<span class="my-manifest-likes"><span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;">favorite</span> ' + (m.likes || 0) + ' likes</span>' +
+                        '<span class="my-manifest-likes"><span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;">favorite</span> ' + (m.likes || 0) + ' ' + _t('manifest.likes', 'Likes') + '</span>' +
                     '</div>' +
                 '</div>';
             }
