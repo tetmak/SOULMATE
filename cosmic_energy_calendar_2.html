@@ -165,7 +165,7 @@
             </div>
         </div>
     </div>
-    <main class="pt-20 pb-12 max-w-md mx-auto px-4 space-y-6">
+    <main class="pt-20 pb-28 max-w-md mx-auto px-4 space-y-6">
         <section class="glass-card rounded-xl p-4">
             <div class="flex items-center justify-between mb-4">
                 <button onclick="changeMonth(-1)" class="text-slate-400 dark:text-white/60 hover:text-slate-900 dark:hover:text-white transition-colors">
@@ -471,38 +471,6 @@
         updateDailyInfo(TODAY);
     </script>
 
-    <!-- Bottom Nav -->
-    <nav
-        class="fixed bottom-0 left-0 right-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-xl border-t border-slate-200 dark:border-white/10 flex items-center justify-around px-2 pb-2 pt-2 z-50">
-        <button onclick="window.location.href='cosmic_energy_calendar_2.html'"
-            class="flex flex-col items-center gap-1 text-primary py-1">
-            <span class="material-symbols-outlined text-lg"
-                style="font-variation-settings:'FILL' 1">calendar_month</span>
-            <span data-i18n="calendar.nav_calendar" class="text-[9px] font-bold uppercase tracking-tight">Takvim</span>
-        </button>
-        <button onclick="window.location.href='cosmic_manifest_portal.html'"
-            class="flex flex-col items-center gap-1 text-slate-400 dark:text-white/40 py-1">
-            <span class="material-symbols-outlined text-lg">explore</span>
-            <span data-i18n="calendar.nav_planner" class="text-[9px] font-bold uppercase tracking-tight">Planlayıcı</span>
-        </button>
-        <div class="relative -top-4">
-            <button
-                class="size-14 rounded-full bg-primary flex items-center justify-center text-white shadow-lg border-4 border-background-light dark:border-background-dark">
-                <span class="material-symbols-outlined text-2xl">add</span>
-            </button>
-            <span data-i18n="calendar.nav_ritual" class="text-[9px] font-bold uppercase text-slate-400 dark:text-white/40 block text-center mt-1">Ritüel</span>
-        </div>
-        <button onclick="window.location.href='daily_spiritual_guide.html'"
-            class="flex flex-col items-center gap-1 text-slate-400 dark:text-white/40 py-1">
-            <span class="material-symbols-outlined text-lg">auto_graph</span>
-            <span data-i18n="calendar.nav_daily_guide" class="text-[9px] font-bold uppercase tracking-tight">Günlük Rehber</span>
-        </button>
-        <button onclick="window.location.href='wheel_of_destiny.html'"
-            class="flex flex-col items-center gap-1 text-slate-400 dark:text-white/40 py-1">
-            <span class="material-symbols-outlined text-lg">casino</span>
-            <span data-i18n="calendar.nav_profile" class="text-[9px] font-bold uppercase tracking-tight">Profil</span>
-        </button>
-    </nav>
     <script src="js/numerology-context-engine.js"></script>
     <script src="js/decision-timing-engine.js"></script>
     <script src="js/numerology-ai.js"></script>
