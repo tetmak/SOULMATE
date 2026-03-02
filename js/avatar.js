@@ -8,7 +8,29 @@
 
     var MALE_PHOTO = 'https://lh3.googleusercontent.com/aida-public/AB6AXuCuOsAz49QL47Y42kzevX6C-TTqnQcn-fKw9bm9U03OA6_buy44Ic8bt_wBUtcV1MJ5sSb6R8X_DJ-8lXNkSzsIERq3NcoxgBJpX1j8AHhsCx98dsslHkQKdYdaF2cK9NTMVQ_OIb_O9MJ9U-ow3guDO7mGY7CZqxCnsEYsQtxoblSjPmW1y00tP0EZpQ-aEvg3xi3jiQQYomz46nlrrOFmED0f3iCzkJ1soKbGh7PjJ9Gt3wTvCduVO9zVt_o3gQ0nIpmOLHD736c';
     var FEMALE_PHOTO = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAwVIwPfxW7vQTdT6_K5paisRbNWYqgoOiwgoxaVjFXEkx2Hocf55LzYmz1rXyDXknrbMiB8X59nhq-ptzZsewBCHh9Bi4547zbTT3ZGBQPNn6awMcDKio5VTuc-gUc0V9YR2bAFRCjLTR5wqzwERZcGYXOLcXEN3lp4szkNmpf1Pd1-9lj37_4nq74Sfu5spZUv6QDfvpVwS7fZTl7cHKYVI8htJIgEwQ7EgFwZuHn8KfRUOgWtjHWZ3pu_qj4AgsK0fYYsgjY2_g';
-    var FEMALE_NAMES = ['şevval','ayşe','leyla','fatma','zeynep','elif','meryem','selin','buse','esra','merve','büşra','naz','nur','ece','derya','gül','pınar','havva','hatice','emine','hülya','sultan','yasemin','melek','cemre','defne','ilayda','irem','cansu','dilara','gamze','gizem','tuğba','ebru','aslı','özge','damla','beyza','aysun','sevgi','sibel','mine','deniz','ceren'];
+    var FEMALE_NAMES = [
+        'ada','ayça','ayda','aylin','ayşe','ayşegül','aysun','azra',
+        'bahar','banu','başak','belgin','beren','berna','beyza','bilge','birsen','buse','büşra',
+        'canan','cansu','ceren','cemre',
+        'damla','defne','deniz','derya','dilan','dilara','dilek','duygu',
+        'ebru','ece','edanur','ela','elçin','elif','elifnur','elvan','emel','emine','esma','esra','eylül','ezgi',
+        'fatma','feyza','filiz','funda',
+        'gamze','gizem','gonca','gökçe','gül','gülay','gülcan','güler','gülnur','gülşah','gülşen','güneş',
+        'hande','hatice','havva','hayat','hülya',
+        'ilayda','inci','ipek','irem',
+        'kader','kadriye','kumsal',
+        'lale','latife','leyla',
+        'melek','melike','melisa','meltem','merve','meryem','mine','miray','müge',
+        'naz','nazlı','neslihan','neva','nihal','nil','nisa','nur','nurgül','nurhan',
+        'oya','özge','özlem',
+        'pelin','pembe','pınar',
+        'rabia','rüya',
+        'sanem','seda','selin','selma','sena','serap','sevda','sevgi','sevil','sibel','simge','sinem','songül','su','sultan','sude',
+        'şevval','şeyma',
+        'tuba','tuğba','tülay','türkan',
+        'yağmur','yasemin','yeliz','yıldız',
+        'zehra','zeliha','zeynep','zübeyde','züleyha'
+    ];
 
     /**
      * Cinsiyet bazlı default avatar URL döndür.
