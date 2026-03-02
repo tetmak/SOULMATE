@@ -1,23 +1,15 @@
 /**
- * NUMERAEL — Premium Abonelik Sistemi (Çoklu Platform)
+ * NUMERAEL — Premium Abonelik Sistemi (Native Billing)
  *
  * Platform bazlı ödeme:
- *   - Web: Paddle.js v2 SDK ile overlay checkout
  *   - Android: Google Play Billing Library (doğrudan)
+ *   - iOS: Apple In-App Purchase (yakında)
  *
  * FREE:  Temel numeroloji, 1 arkadaş, 1 uyumluluk/ay, Deep Insight sayfa 1
  * PREMIUM: Sınırsız her şey, AI analizler, Cosmic Match reveal, 3 sayfa breakdown
  */
 (function() {
     'use strict';
-
-    // ═══════════════════════════════════════════════════════════
-    //    YAPILANDIRMA — Paddle Dashboard'dan al
-    // ═══════════════════════════════════════════════════════════
-    var PADDLE_CLIENT_TOKEN = 'test_1917c8739eeec42ab948b39da0d';           // Paddle Sandbox → Developer Tools → Authentication → Client-side token
-    var PADDLE_PRICE_MONTHLY = 'pri_01khyq04yfrd52w6qn8bar13q1';          // Sandbox Aylık
-    var PADDLE_PRICE_YEARLY = 'pri_01khyq0rwvw8cttc184xas0h5t';           // Sandbox Yıllık
-    var PADDLE_ENV = 'sandbox';             // 'sandbox' veya 'production'
 
     // ─── FREE LİMİTLER ──────────────────────────────────────
     var FREE_LIMITS = {
@@ -33,107 +25,6 @@
     };
 
     var PREMIUM_PRICE = { monthly: 79.99, yearly: 599.99, currency: 'TRY' };
-
-    // ─── PADDLE SDK ────────────────────────────────────────────
-    var paddleReady = false;
-
-    function loadPaddleSDK() {
-        return new Promise(function(resolve) {
-            if (window.Paddle) { resolve(); return; }
-            var script = document.createElement('script');
-            script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
-            script.onload = resolve;
-            script.onerror = function() {
-                console.warn('[Premium] Paddle SDK yüklenemedi');
-                resolve();
-            };
-            document.head.appendChild(script);
-        });
-    }
-
-    async function initPaddle() {
-        if (!PADDLE_CLIENT_TOKEN) {
-            console.info('[Premium] Paddle client token ayarlanmamış — localStorage fallback aktif');
-            return;
-        }
-        try {
-            await loadPaddleSDK();
-            if (!window.Paddle) return;
-
-            if (PADDLE_ENV === 'sandbox') {
-                try {
-                    window.Paddle.Environment.set('sandbox');
-                    console.log('[Premium] Sandbox modu ayarlandı');
-                } catch(envErr) {
-                    console.warn('[Premium] Paddle.Environment.set hatası:', envErr);
-                }
-            }
-            window.Paddle.Initialize({
-                token: PADDLE_CLIENT_TOKEN,
-                eventCallback: handlePaddleEvent
-            });
-            paddleReady = true;
-            console.log('[Premium] Paddle başlatıldı (' + PADDLE_ENV + ')');
-        } catch(e) { console.warn('[Premium] Paddle init error:', e); }
-    }
-
-    // ─── PADDLE EVENT HANDLER ──────────────────────────────────
-    function handlePaddleEvent(event) {
-        if (!event || !event.name) return;
-        console.log('[Premium] Paddle event:', event.name, JSON.stringify(event, null, 2));
-
-        if (event.name === 'checkout.completed') {
-            var data = event.data;
-            // Checkout başarılı — premium aktif et
-            var priceId = '';
-            if (data && data.items && data.items.length > 0) {
-                priceId = data.items[0].price_id || '';
-            }
-            var plan = priceId === PADDLE_PRICE_YEARLY ? 'yearly' : 'monthly';
-            var days = plan === 'yearly' ? 365 : 30;
-            var expires = new Date();
-            expires.setDate(expires.getDate() + days);
-
-            localStorage.setItem('numerael_premium', JSON.stringify({
-                active: true,
-                plan: plan,
-                expires_at: expires.toISOString(),
-                source: 'paddle',
-                cached_at: new Date().toISOString()
-            }));
-
-            // Supabase'e de kaydet
-            syncToSupabase(plan, expires.toISOString(), data);
-
-            console.log('[Premium] Ödeme başarılı! Plan:', plan);
-
-            // Kısa gecikme ile sayfayı yenile (checkout overlay kapansın)
-            setTimeout(function() { window.location.reload(); }, 1500);
-        }
-
-        if (event.name === 'checkout.closed') {
-            console.log('[Premium] Checkout kapatıldı');
-        }
-    }
-
-    async function syncToSupabase(plan, expiresAt, checkoutData) {
-        try {
-            var session = await window.auth.getSession();
-            if (!session || !session.user) return;
-            await window.supabaseClient.from('subscriptions').upsert({
-                user_id: session.user.id,
-                plan: plan,
-                status: 'active',
-                starts_at: new Date().toISOString(),
-                expires_at: expiresAt,
-                amount: plan === 'yearly' ? 59999 : 7999,
-                currency: 'TRY',
-                payment_provider: 'paddle',
-                payment_ref: checkoutData && checkoutData.transaction_id ? checkoutData.transaction_id : null,
-                updated_at: new Date().toISOString()
-            }, { onConflict: 'user_id' });
-        } catch(e) { console.warn('[Premium] Supabase sync error:', e); }
-    }
 
     // ─── PREMIUM DURUMU ──────────────────────────────────────
     // ⚠️ GEÇICI: Tüm kullanıcılar premium — Google Developer onayı sonrası false yap
@@ -324,18 +215,19 @@
         }
     }
 
-    // ─── ÖDEME BAŞLAT (Platform bazlı) ──────────────────────
+    // ─── ÖDEME BAŞLAT (Native Billing) ──────────────────────
     function startPurchase(plan) {
         plan = plan || 'yearly';
 
-        // Native platform → PlayBilling kullan
+        // Native platform → PlayBilling / Apple IAP
         if (window.billing && window.billing.isNative()) {
             startNativePurchase(plan);
             return;
         }
 
-        // Web platform → Paddle kullan
-        startPaddlePurchase(plan);
+        // Web platform → mağazaya yönlendir
+        console.log('[Premium] Web platform — native mağaza gerekli');
+        alert('Premium satın alma işlemi için lütfen mobil uygulamayı kullanın (Google Play veya App Store).');
     }
 
     async function startNativePurchase(plan) {
@@ -362,51 +254,6 @@
         } else {
             console.error('[Premium] Satın alma hatası:', result.error);
             alert('Satın alma sırasında bir hata oluştu. Lütfen tekrar deneyin.');
-        }
-    }
-
-    function startPaddlePurchase(plan) {
-        if (!paddleReady || !window.Paddle) {
-            console.warn('[Premium] Paddle SDK hazır değil');
-            window.location.href = 'premium_checkout_summary.html?plan=' + plan + '&return=' + encodeURIComponent(window.location.href);
-            return;
-        }
-
-        var priceId = plan === 'yearly' ? PADDLE_PRICE_YEARLY : PADDLE_PRICE_MONTHLY;
-
-        if (!priceId) {
-            console.warn('[Premium] Paddle fiyat ID ayarlanmamış');
-            window.location.href = 'premium_checkout_summary.html?plan=' + plan + '&return=' + encodeURIComponent(window.location.href);
-            return;
-        }
-
-        console.log('[Premium] Paddle checkout açılıyor, priceId:', priceId, 'plan:', plan);
-        var checkoutConfig = {
-            items: [{ priceId: priceId, quantity: 1 }],
-            settings: {
-                successUrl: window.location.origin + '/mystic_numerology_home_1.html?checkout=success',
-                allowLogout: false
-            }
-        };
-
-        try {
-            if (window.auth && window.auth.getSession) {
-                window.auth.getSession().then(function(s) {
-                    if (s && s.user && s.user.email) {
-                        checkoutConfig.customer = { email: s.user.email };
-                    }
-                    if (s && s.user) {
-                        checkoutConfig.customData = { user_id: s.user.id };
-                    }
-                    window.Paddle.Checkout.open(checkoutConfig);
-                }).catch(function() {
-                    window.Paddle.Checkout.open(checkoutConfig);
-                });
-            } else {
-                window.Paddle.Checkout.open(checkoutConfig);
-            }
-        } catch(e) {
-            window.Paddle.Checkout.open(checkoutConfig);
         }
     }
 
@@ -513,8 +360,8 @@
                         showPaywallError(modal, 'Satın alma başarısız oldu. Lütfen tekrar deneyin.');
                     }
                 } else {
-                    // Web → Paddle (startPurchase zaten handle ediyor)
-                    startPurchase(sel);
+                    // Web → native mağaza gerekli
+                    alert('Premium satın alma işlemi için lütfen mobil uygulamayı kullanın (Google Play veya App Store).');
                 }
             } catch(e) {
                 console.error('[Premium] Purchase error:', e);
@@ -585,7 +432,7 @@
     function clearPremium() { localStorage.removeItem('numerael_premium'); console.log('[Premium] Cleared'); window.location.reload(); }
 
     // ─── INIT ────────────────────────────────────────────────
-    // Platform bazlı init: native → PlayBilling, web → Paddle
+    // Native platform → PlayBilling başlat
     // platformReady diğer modüller tarafından await edilebilir
     var platformReady = (async function platformInit() {
         // Supabase'den kullanım sayaçlarını yükle (auth hazır olduktan sonra)
@@ -609,14 +456,13 @@
                     await window.billing.checkEntitlements();
                     console.log('[Premium] PlayBilling hazır');
                 } else {
-                    console.warn('[Premium] PlayBilling başlatılamadı — native ortamda Paddle kullanılamaz');
+                    console.warn('[Premium] PlayBilling başlatılamadı');
                 }
             } catch(e) {
                 console.error('[Premium] platformInit hatası:', e);
             }
         } else {
-            console.log('[Premium] Web platform — Paddle başlatılıyor');
-            await initPaddle();
+            console.log('[Premium] Web platform — native billing mevcut değil');
         }
     })();
 
@@ -644,7 +490,7 @@
         incrementDailyUsage: incrementDailyUsage, getDailyUsageCount: getDailyUsageCount,
         isReady: function() {
             if (window.billing && window.billing.isNative()) return window.billing.isReady();
-            return paddleReady;
+            return false; // Web'de native billing yok
         },
         waitReady: function() { return platformReady; },
         isNative: function() { return window.billing && window.billing.isNative(); },

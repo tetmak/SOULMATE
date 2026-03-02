@@ -42,7 +42,7 @@ module.exports = (req, res) => {
   <li><strong>Ücretsiz Plan:</strong> Temel özelliklerle sınırlı erişim sağlar.</li>
   <li><strong>Premium Plan:</strong> Aylık veya yıllık abonelikle tüm özelliklere erişim.</li>
   <li>Abonelikler otomatik olarak yenilenir; iptal işlemi mevcut dönemin sonunda geçerli olur.</li>
-  <li>Ödeme işlemleri Google Play, Apple App Store veya Paddle üzerinden gerçekleştirilir.</li>
+  <li>Ödeme işlemleri Google Play veya Apple App Store üzerinden gerçekleştirilir.</li>
   <li>İade politikaları ilgili platform kurallarına tabidir.</li>
 </ul>
 

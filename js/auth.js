@@ -24,6 +24,13 @@ var auth = {
         return res.data;
     },
 
+    async signInWithApple() {
+        if (!window.supabaseClient) throw new Error('Supabase not available');
+        var res = await window.supabaseClient.auth.signInWithOAuth({ provider: 'apple' });
+        if (res.error) throw res.error;
+        return res.data;
+    },
+
     async signOut() {
         if (!window.supabaseClient) return;
         var res = await window.supabaseClient.auth.signOut();

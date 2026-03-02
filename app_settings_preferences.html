@@ -653,8 +653,8 @@
             if (isPremiumUser) {
                 // ─── Premium User UI ───
                 var planLabel = premiumData && premiumData.plan === 'yearly' ? 'Yıllık Plan' : premiumData && premiumData.plan ? 'Aylık Plan' : 'Premium';
-                var sourceLabel = premiumData && premiumData.source === 'paddle' ? 'Web' :
-                                  premiumData && premiumData.source === 'play_store' ? 'Google Play' :
+                var sourceLabel = premiumData && premiumData.source === 'play_store' ? 'Google Play' :
+                                  premiumData && premiumData.source === 'app_store' ? 'App Store' :
                                   premiumData && premiumData.source === 'supabase' ? _t('settings.server', 'Server') : _t('settings.active', 'Active');
 
                 subTitle.textContent = 'Numantic Premium';
@@ -687,8 +687,8 @@
                             window.open('https://play.google.com/store/account/subscriptions', '_system');
                         }
                     } else {
-                        // Web: Paddle customer portal
-                        alert('Abonelik yönetimi için e-posta adresinize gönderilen Paddle bağlantısını kullanın.');
+                        // Web: mağazaya yönlendir
+                        alert('Aboneliğinizi ilgili mağazadan (Google Play / App Store) yönetebilirsiniz.');
                     }
                 });
 
