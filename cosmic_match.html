@@ -841,6 +841,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         var aiEl = document.getElementById('insight-ai');
         var loadingEl = document.getElementById('insight-loading');
         if (!matchProfile) { section.style.display = 'none'; return; }
+        // Premium olmayan kullanıcılar analiz göremez
+        if (!storedIsPrem) {
+            section.style.display = 'block';
+            loadingEl.style.display = 'none';
+            aiEl.style.display = 'block';
+            aiEl.innerHTML = '<div style="filter:blur(5px);-webkit-filter:blur(5px);pointer-events:none;user-select:none">Bu iki ruhun kozmik enerjileri birbirini tamamlıyor. Hayat yolları, ruh güdüleri ve kişilik sayıları arasındaki harmonik rezonans güçlü bir bağ oluşturuyor...</div>' +
+                '<div class="flex flex-col items-center gap-2 mt-4">' +
+                    '<span class="material-symbols-outlined text-primary text-2xl">lock</span>' +
+                    '<p class="text-xs text-slate-500 dark:text-white/50 text-center">Kozmik analizi görmek için Premium\'a geç</p>' +
+                    '<button onclick="window.location.href=\'premium_crystal_store.html\'" class="px-5 py-2 rounded-xl bg-primary text-[#181711] text-xs font-bold mt-1">Premium\'a Geç</button>' +
+                '</div>';
+            return;
+        }
         section.style.display = 'block';
 
         // Önceki AI çağrısını iptal et
@@ -1006,16 +1019,18 @@ document.addEventListener('DOMContentLoaded', async function() {
             var lp = p.life_path || '?';
             var avatarUrl = getPhoto(p.full_name || '', p.gender || '', p.avatar_url || '');
 
+            var markerBlur = storedIsPrem ? '' : 'filter:blur(6px);-webkit-filter:blur(6px);';
             var markerIcon = L.divIcon({
                 className: '',
-                html: '<div style="position:relative"><div class="cosmic-marker cosmic-marker-match"><img src="' + avatarUrl + '" alt=""></div><div class="cosmic-pin"></div></div>',
+                html: '<div style="position:relative"><div class="cosmic-marker cosmic-marker-match"><img src="' + avatarUrl + '" alt="" style="' + markerBlur + '"></div>' + (!storedIsPrem ? '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2"><span style="color:rgba(255,255,255,0.9);font-size:14px">🔒</span></div>' : '') + '<div class="cosmic-pin"></div></div>',
                 iconSize: [38, 48],
                 iconAnchor: [19, 48]
             });
 
+            var popupName = storedIsPrem ? maskName(p.full_name) : (p.full_name ? p.full_name.charAt(0) + '***' : '***');
             var marker = L.marker([p.city_lat, p.city_lng], { icon: markerIcon })
                 .addTo(_cosmicMap)
-                .bindPopup('<div style="text-align:center"><b>' + maskName(p.full_name) + '</b><br><span style="opacity:0.7">Yaşam Yolu: ' + lp + ' · %' + score + '</span><br><span style="opacity:0.5;font-size:10px">' + (p.city || '') + '</span></div>');
+                .bindPopup('<div style="text-align:center"><b>' + popupName + '</b><br><span style="opacity:0.7">Yaşam Yolu: ' + lp + ' · %' + score + '</span><br><span style="opacity:0.5;font-size:10px">' + (storedIsPrem ? (p.city || '') : '???') + '</span></div>');
 
             (function(i) {
                 marker.on('click', function() { selectRibbonItem(i); });
