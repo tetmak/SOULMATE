@@ -55,6 +55,9 @@
             50%{box-shadow:0 0 22px 4px var(--glow);border-color:var(--glow-solid)}
         }
         .card-unread{animation:card-unread-pulse 1.8s ease-in-out infinite}
+        /* Premium lock — blur */
+        .conn-locked img{filter:blur(8px);-webkit-filter:blur(8px)}
+        .conn-locked .conn-name{filter:blur(6px);-webkit-filter:blur(6px)}
     </style>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
@@ -85,6 +88,22 @@
             </button>
         </div>
         <div id="notif-inbox-list" class="flex flex-col gap-2"></div>
+    </div>
+
+    <!-- Premium Upgrade Banner (non-premium) -->
+    <div id="conn-premium-banner" style="display:none" class="mx-4 mt-4 p-4 rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/5 to-cosmic-violet/5 dark:from-primary/10 dark:to-cosmic-violet/10">
+        <div class="flex items-center gap-3">
+            <div class="size-10 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-primary">lock</span>
+            </div>
+            <div class="flex-1 min-w-0">
+                <p class="text-slate-900 dark:text-white text-sm font-bold">Profilleri Görmek İçin Premium</p>
+                <p class="text-slate-500 dark:text-white/50 text-xs mt-0.5">Bağlantılarını keşfet, uyumluluğunu gör!</p>
+            </div>
+            <button onclick="window.location.href='premium_crystal_store.html'" class="px-4 py-2 rounded-xl bg-primary text-[#181711] text-xs font-bold shrink-0">
+                Aç
+            </button>
+        </div>
     </div>
 
     <!-- Soul Connections Yatay Scroll -->
@@ -183,13 +202,20 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     function shortDate(s){try{return new Date(s).toLocaleDateString('tr-TR',{day:'numeric',month:'short'});}catch(e){return '';}}
 
-    // ─── Session ────────────────────────────────────────────
+    // ─── Session & Premium ────────────────────────────────────
     var session = null;
     var currentUserId = null;
+    var connIsPrem = false;
     try {
         session = await window.auth.getSession();
         if (session && session.user) currentUserId = session.user.id;
     } catch(e) {}
+    try { if (window.premium) connIsPrem = await window.premium.checkStatus(); } catch(e) {}
+    function maskName(n) { return n ? n.charAt(0) + '***' : '***'; }
+
+    // Premium banner göster/gizle
+    var premBanner = document.getElementById('conn-premium-banner');
+    if (premBanner && !connIsPrem) premBanner.style.display = 'block';
 
     // ─── Match-based connections (from Supabase) ────────────
     if (currentUserId && window.connectionEngine) {
@@ -213,26 +239,32 @@ document.addEventListener('DOMContentLoaded', async function() {
                 var exp = p.expression_num || calcExp(name);
                 var uc = getUserColor(mc.user_id || name);
 
+                var dispName = connIsPrem ? name : maskName(name);
+                var dispFirst = connIsPrem ? firstName : maskName(firstName);
+                var lockCls = connIsPrem ? '' : ' conn-locked';
+
                 // Add to horizontal scroll row
                 var avatarDiv = document.createElement('div');
-                avatarDiv.className = 'flex flex-col items-center gap-2 shrink-0 cursor-pointer fade-in';
+                avatarDiv.className = 'flex flex-col items-center gap-2 shrink-0 cursor-pointer fade-in' + lockCls;
                 avatarDiv.style.animationDelay = (idx * 0.05) + 's';
                 avatarDiv.innerHTML =
                     '<div class="relative">' +
                         '<div class="size-16 rounded-full border-2 overflow-hidden bg-slate-100 dark:bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
-                            '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">' +
+                            '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
                         '</div>' +
+                        (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-lg drop-shadow">lock</span></div>' : '') +
                         '<div class="absolute -bottom-1 -right-1 text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
                     '</div>' +
-                    '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
+                    '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate conn-name">' + dispFirst + '</span>';
                 avatarDiv.addEventListener('click', function() {
+                    if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
                     window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
                 });
                 rowEl.insertBefore(avatarDiv, rowEl.lastElementChild);
 
                 // Add to match connections list
                 var card = document.createElement('div');
-                card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border cursor-pointer fade-in';
+                card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border cursor-pointer fade-in' + lockCls;
                 card.style.borderColor = hexToRgba(uc.border, 0.15);
                 card.style.setProperty('--glow', hexToRgba(uc.border, 0.35));
                 card.style.setProperty('--glow-solid', uc.border);
@@ -241,19 +273,21 @@ document.addEventListener('DOMContentLoaded', async function() {
                 card.innerHTML =
                     '<div class="relative shrink-0">' +
                         '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
-                            '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">' +
+                            '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
                         '</div>' +
+                        (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-sm drop-shadow">lock</span></div>' : '') +
                         '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
                     '</div>' +
                     '<div class="flex-1 min-w-0">' +
-                        '<p class="text-slate-900 dark:text-white font-bold truncate">' + name + '</p>' +
+                        '<p class="text-slate-900 dark:text-white font-bold truncate conn-name">' + dispName + '</p>' +
                         '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + ' · Exp: ' + exp + '</p>' +
                         '<p class="text-slate-400 dark:text-white/25 text-xs">' + shortDate(mc.created_at) + '</p>' +
                     '</div>' +
-                    '<span class="material-symbols-outlined shrink-0" style="color:' + hexToRgba(uc.border, 0.5) + '">chat</span>' +
+                    (connIsPrem ? '<span class="material-symbols-outlined shrink-0" style="color:' + hexToRgba(uc.border, 0.5) + '">chat</span>' : '<span class="material-symbols-outlined text-primary/60 shrink-0">lock</span>') +
                     '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 shrink-0">chevron_right</span>';
 
                 card.addEventListener('click', function() {
+                    if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
                     window.location.href = 'messaging.html?uid=' + encodeURIComponent(mc.user_id);
                 });
                 mcList.appendChild(card);
@@ -359,47 +393,56 @@ document.addEventListener('DOMContentLoaded', async function() {
         var arch = ARCH[lp] || 'Soul';
         var uc = getUserColor(conn.fullName);
         var reading = compatMap[(conn.fullName||'').toLowerCase()];
+        var dispName = connIsPrem ? conn.fullName : maskName(conn.fullName);
+        var dispFirst = connIsPrem ? firstName : maskName(firstName);
+        var lockCls = connIsPrem ? '' : ' conn-locked';
 
         // ── Avatar satırı ──────────────────────────────────────
         var avatarDiv = document.createElement('div');
-        avatarDiv.className = 'flex flex-col items-center gap-2 shrink-0 cursor-pointer fade-in';
+        avatarDiv.className = 'flex flex-col items-center gap-2 shrink-0 cursor-pointer fade-in' + lockCls;
         avatarDiv.style.animationDelay = (idx * 0.05) + 's';
         avatarDiv.innerHTML =
             '<div class="relative">' +
                 '<div class="size-16 rounded-full border-2 overflow-hidden bg-slate-100 dark:bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
-                    '<img src="' + photo + '" alt="' + conn.fullName + '" class="w-full h-full object-cover">' +
+                    '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
                 '</div>' +
+                (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-lg drop-shadow">lock</span></div>' : '') +
                 '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
             '</div>' +
-            '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate">' + firstName + '</span>';
+            '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate conn-name">' + dispFirst + '</span>';
         avatarDiv.addEventListener('click', function() {
+            if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
             window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
         });
         rowEl.insertBefore(avatarDiv, rowEl.lastElementChild);
 
         // ── Analiz kartı ───────────────────────────────────────
         var card = document.createElement('div');
-        card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border fade-in';
+        card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border fade-in' + lockCls;
         card.style.borderColor = hexToRgba(uc.border, 0.08);
         card.style.animationDelay = (0.05 + idx * 0.07) + 's';
         card.innerHTML =
             '<div class="relative shrink-0 cursor-pointer" data-action="view">' +
                 '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
-                    '<img src="' + photo + '" alt="' + conn.fullName + '" class="w-full h-full object-cover">' +
+                    '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
                 '</div>' +
+                (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-sm drop-shadow">lock</span></div>' : '') +
                 '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
             '</div>' +
             '<div class="flex-1 min-w-0 cursor-pointer" data-action="view">' +
-                '<p class="text-slate-900 dark:text-white font-bold truncate">' + conn.fullName + '</p>' +
-                '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + (reading ? ' · <span class="text-primary font-bold">' + reading.overall_score + '% uyum</span>' : ' · Exp: ' + exp) + '</p>' +
+                '<p class="text-slate-900 dark:text-white font-bold truncate conn-name">' + dispName + '</p>' +
+                '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + (reading && connIsPrem ? ' · <span class="text-primary font-bold">' + reading.overall_score + '% uyum</span>' : ' · Exp: ' + exp) + '</p>' +
                 '<p class="text-slate-400 dark:text-white/25 text-xs">' + shortDate(reading ? (reading.updated_at || reading.created_at) : conn.createdAt) + '</p>' +
             '</div>' +
-            '<button class="flex items-center justify-center size-10 rounded-full hover:bg-red-500/20 transition-colors shrink-0 group" data-action="delete" data-name="' + conn.fullName + '">' +
-                '<span class="material-symbols-outlined text-slate-300 dark:text-white/30 group-hover:text-red-500 transition-colors">delete</span>' +
-            '</button>' +
+            (connIsPrem ?
+                '<button class="flex items-center justify-center size-10 rounded-full hover:bg-red-500/20 transition-colors shrink-0 group" data-action="delete" data-name="' + conn.fullName + '">' +
+                    '<span class="material-symbols-outlined text-slate-300 dark:text-white/30 group-hover:text-red-500 transition-colors">delete</span>' +
+                '</button>' :
+                '<span class="material-symbols-outlined text-primary/60 shrink-0">lock</span>') +
             '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 shrink-0 cursor-pointer" data-action="view">chevron_right</span>';
 
         card.addEventListener('click', function(e) {
+            if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
             var target = e.target.closest('[data-action]');
             if (!target) return;
 
