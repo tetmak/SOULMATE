@@ -164,13 +164,45 @@ document.addEventListener('DOMContentLoaded', async function() {
     // ─── URL Param ────────────────────────────────────────────
     var params = new URLSearchParams(window.location.search);
     var kisiName = params.get('kisi');
+    var kisiUid = params.get('uid'); // NuConnect match'lerden gelen user_id
     if (!kisiName) { window.location.href='connections_shared_readings.html'; return; }
 
-    // ─── Veri çek (localStorage + Supabase fallback) ───────
+    // ─── Veri çek ─────────────────────────────────────────────
     var kisi = null;
-    try { kisi = await window.profile.getConnectionDetail(kisiName); } catch(e) {}
 
-    // Supabase'den de dene (Cosmic Match connection'ları)
+    // 1. uid varsa doğrudan profiles + discovery_profiles'dan çek (en güvenilir)
+    if (kisiUid && window.supabaseClient) {
+        try {
+            var profUidRes = await window.supabaseClient.from('profiles')
+                .select('full_name, birth_date, gender, avatar_url')
+                .eq('id', kisiUid)
+                .maybeSingle();
+            var dpUidRes = await window.supabaseClient.from('discovery_profiles')
+                .select('full_name, birth_date, gender, life_path, avatar_url, user_id')
+                .eq('user_id', kisiUid)
+                .maybeSingle();
+            var pData = profUidRes.data;
+            var dData = dpUidRes.data;
+            if (pData || dData) {
+                kisi = {
+                    fullName: (pData && pData.full_name) || (dData && dData.full_name) || kisiName,
+                    birthDate: (pData && pData.birth_date) || (dData && dData.birth_date),
+                    gender: (pData && pData.gender) || (dData && dData.gender),
+                    lifePath: (dData && dData.life_path) || null,
+                    avatar_url: (pData && pData.avatar_url) || (dData && dData.avatar_url) || null,
+                    user_id: kisiUid
+                };
+                console.log('[KisiProfil] uid ile profil bulundu:', kisi.fullName, 'avatar:', kisi.avatar_url ? 'var' : 'yok');
+            }
+        } catch(e) { console.warn('[KisiProfil] uid lookup error:', e); }
+    }
+
+    // 2. uid yoksa localStorage'dan dene
+    if (!kisi) {
+        try { kisi = await window.profile.getConnectionDetail(kisiName); } catch(e) {}
+    }
+
+    // 3. Hâlâ yoksa discovery_profiles'dan isme göre dene
     if (!kisi && window.supabaseClient) {
         try {
             var dpRes = await window.supabaseClient.from('discovery_profiles')
@@ -192,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     // Avatar URL'i Supabase'den zenginleştir — profiles tablosu HER ZAMAN öncelikli
-    if (kisi && window.supabaseClient) {
+    if (kisi && window.supabaseClient && !kisiUid) {
         try {
             var nameToSearch = kisi.fullName || kisiName;
             // discovery_profiles'dan user_id al
@@ -205,6 +237,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             // profiles tablosu öncelikli (en güncel fotoğraf)
             if (kisiUserId) {
+                kisi.user_id = kisiUserId; // user_id'yi kaydet
                 var profRes = await window.supabaseClient.from('profiles')
                     .select('avatar_url')
                     .eq('id', kisiUserId)

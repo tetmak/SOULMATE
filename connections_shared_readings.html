@@ -258,7 +258,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate conn-name">' + dispFirst + '</span>';
                 avatarDiv.addEventListener('click', function() {
                     if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
-                    window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
+                    var profUrl = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
+                    if (mc.user_id) profUrl += '&uid=' + encodeURIComponent(mc.user_id);
+                    window.location.href = profUrl;
                 });
                 rowEl.insertBefore(avatarDiv, rowEl.lastElementChild);
 
