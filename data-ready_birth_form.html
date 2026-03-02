@@ -21,6 +21,7 @@
     <script src="js/premium.js"></script>
     <script src="js/gamification-engine.js"></script>
     <script src="js/profile.js"></script>
+    <script src="js/turkish-cities.js"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -122,24 +123,23 @@
                     </div>
                 </label>
             </div>
-            <!-- Select: Country of Birth -->
+            <!-- Select: Birth Location (Ülke → İl → İlçe) -->
+            <input type="hidden" id="input-pob" value="" />
             <div class="flex flex-col gap-4 px-4 py-3">
                 <label class="flex flex-col min-w-40 flex-1">
-                    <p data-i18n="birth.country" class="text-slate-900 dark:text-white text-sm font-medium leading-normal pb-2">Birth Country</p>
-                    <div class="flex w-full flex-1 items-stretch rounded-lg">
-                        <select id="input-pob"
-                            class="form-select flex w-full min-w-0 flex-1 rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] focus:border-primary h-14 p-[15px] text-base font-normal leading-normal">
-                            <option value="" data-i18n="birth.select_country">Select Country</option>
-                            <option value="Turkey">Turkey</option>
-                            <option value="USA">USA</option>
-                            <option value="UK">UK</option>
-                            <option value="Germany">Germany</option>
-                            <option value="France">France</option>
-                            <option value="Italy">Italy</option>
-                            <option value="Spain">Spain</option>
-                            <option value="Canada">Canada</option>
-                            <option value="Azerbaijan">Azerbaijan</option>
-                            <option value="Other">Other</option>
+                    <p data-i18n="birth.country" class="text-slate-900 dark:text-white text-sm font-medium leading-normal pb-2">Doğum Yeri</p>
+                    <div class="flex w-full gap-2">
+                        <select id="input-country"
+                            class="form-select flex-1 min-w-0 rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] focus:border-primary h-14 px-3 text-base font-normal leading-normal">
+                            <option value="" disabled selected data-i18n="birth.select_country">Ülke</option>
+                        </select>
+                        <select id="input-province"
+                            class="form-select flex-1 min-w-0 rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] focus:border-primary h-14 px-3 text-base font-normal leading-normal hidden">
+                            <option value="" disabled selected>İl</option>
+                        </select>
+                        <select id="input-district"
+                            class="form-select flex-1 min-w-0 rounded-lg text-slate-900 dark:text-white focus:outline-0 focus:ring-0 border border-slate-300 dark:border-[#544f3b] bg-white dark:bg-[#27251c] focus:border-primary h-14 px-3 text-base font-normal leading-normal hidden">
+                            <option value="" disabled selected>İlçe</option>
                         </select>
                     </div>
                 </label>
@@ -201,6 +201,160 @@
                 opt.textContent = y;
                 yearEl.appendChild(opt);
             }
+        })();
+
+        // ─── Kademeli Ülke / İl / İlçe dropdown'ları ──────────────
+        (function() {
+            var countryEl = document.getElementById('input-country');
+            var provinceEl = document.getElementById('input-province');
+            var districtEl = document.getElementById('input-district');
+            var pobHidden = document.getElementById('input-pob');
+            if (!countryEl) return;
+
+            // TURKISH_CITIES combined array'den il ve ülkeleri ayır
+            var allData = window.TURKISH_CITIES || [];
+            var provinces = []; // Türkiye illeri (districts array'i olanlar)
+            var countries = []; // Dünya ülkeleri
+            for (var i = 0; i < allData.length; i++) {
+                if (allData[i].districts && allData[i].districts.length > 0) {
+                    provinces.push(allData[i]);
+                } else {
+                    countries.push(allData[i]);
+                }
+            }
+
+            // Ülkeleri doldur — Türkiye en üstte
+            var optTR = document.createElement('option');
+            optTR.value = 'Türkiye';
+            optTR.textContent = 'Türkiye';
+            countryEl.appendChild(optTR);
+
+            // Diğer ülkeler
+            for (var i = 0; i < countries.length; i++) {
+                var c = countries[i];
+                if (c.name === 'Türkiye') continue;
+                var opt = document.createElement('option');
+                opt.value = c.name;
+                opt.textContent = c.name;
+                countryEl.appendChild(opt);
+            }
+
+            // input-pob güncelle
+            function updatePob() {
+                var val = '';
+                if (countryEl.value === 'Türkiye') {
+                    val = 'Türkiye';
+                    if (provinceEl.value) {
+                        val += ' - ' + provinceEl.value;
+                        if (districtEl.value) val += ' - ' + districtEl.value;
+                    }
+                } else if (countryEl.value) {
+                    val = countryEl.value;
+                }
+                pobHidden.value = val;
+            }
+
+            // İlleri doldur
+            function populateProvinces() {
+                provinceEl.innerHTML = '<option value="" disabled selected>İl</option>';
+                districtEl.innerHTML = '<option value="" disabled selected>İlçe</option>';
+                districtEl.classList.add('hidden');
+                for (var i = 0; i < provinces.length; i++) {
+                    var p = provinces[i];
+                    var opt = document.createElement('option');
+                    opt.value = p.name;
+                    opt.textContent = p.name;
+                    provinceEl.appendChild(opt);
+                }
+            }
+
+            // İlçeleri doldur
+            function populateDistricts(provinceName) {
+                districtEl.innerHTML = '<option value="" disabled selected>İlçe</option>';
+                for (var i = 0; i < provinces.length; i++) {
+                    var p = provinces[i];
+                    if (p.name === provinceName && p.districts) {
+                        for (var j = 0; j < p.districts.length; j++) {
+                            var d = p.districts[j];
+                            var opt = document.createElement('option');
+                            opt.value = d.name;
+                            opt.textContent = d.name;
+                            districtEl.appendChild(opt);
+                        }
+                        break;
+                    }
+                }
+            }
+
+            // Ülke değişince
+            countryEl.addEventListener('change', function() {
+                if (countryEl.value === 'Türkiye') {
+                    populateProvinces();
+                    provinceEl.classList.remove('hidden');
+                } else {
+                    provinceEl.classList.add('hidden');
+                    districtEl.classList.add('hidden');
+                    provinceEl.value = '';
+                    districtEl.value = '';
+                }
+                updatePob();
+            });
+
+            // İl değişince
+            provinceEl.addEventListener('change', function() {
+                if (provinceEl.value) {
+                    populateDistricts(provinceEl.value);
+                    districtEl.classList.remove('hidden');
+                } else {
+                    districtEl.classList.add('hidden');
+                }
+                updatePob();
+            });
+
+            // İlçe değişince
+            districtEl.addEventListener('change', function() {
+                updatePob();
+            });
+
+            // ─── Mevcut veriyi geri yükle ──────────────────────────
+            // "Türkiye - İstanbul - Fatih" veya "Almanya" veya "Turkey" (eski format)
+            window._restoreBirthPlace = function(placeStr) {
+                if (!placeStr) return;
+
+                // Eski İngilizce formatları Türkçe'ye çevir
+                var map = { 'Turkey': 'Türkiye', 'USA': 'Amerika Birleşik Devletleri', 'UK': 'Birleşik Krallık', 'Germany': 'Almanya', 'France': 'Fransa', 'Italy': 'İtalya', 'Spain': 'İspanya', 'Canada': 'Kanada', 'Azerbaijan': 'Azerbaycan' };
+                if (map[placeStr]) placeStr = map[placeStr];
+
+                var parts = placeStr.split(' - ');
+                var country = parts[0] ? parts[0].trim() : '';
+                var province = parts[1] ? parts[1].trim() : '';
+                var district = parts[2] ? parts[2].trim() : '';
+
+                // Ülke set et
+                countryEl.value = country;
+                // Eğer ülke listede yoksa option ekle
+                if (countryEl.value !== country) {
+                    var opt = document.createElement('option');
+                    opt.value = country;
+                    opt.textContent = country;
+                    countryEl.appendChild(opt);
+                    countryEl.value = country;
+                }
+
+                if (country === 'Türkiye' && province) {
+                    populateProvinces();
+                    provinceEl.classList.remove('hidden');
+                    provinceEl.value = province;
+
+                    if (district) {
+                        populateDistricts(province);
+                        districtEl.classList.remove('hidden');
+                        districtEl.value = district;
+                    }
+                }
+
+                updatePob();
+            };
         })();
 
         // Helper: Gün/Ay/Yıl'dan YYYY-MM-DD formatı oluştur
