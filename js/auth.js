@@ -19,7 +19,11 @@ var auth = {
 
     async signInWithGoogle() {
         if (!window.supabaseClient) throw new Error('Supabase not available');
-        var res = await window.supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+        var redirectUrl = window.location.origin + '/mystic_sign_up_screen.html';
+        var res = await window.supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: { redirectTo: redirectUrl }
+        });
         if (res.error) throw res.error;
         return res.data;
     },
