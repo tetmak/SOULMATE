@@ -17,6 +17,24 @@
                  (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
   var API_BASE = isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
+
+  // --- AI Auth Helper ---
+  var _aiSession = null;
+  async function _getAiAuthHeaders() {
+    var headers = { 'Content-Type': 'application/json' };
+    try {
+      if (!_aiSession && window.supabaseClient) {
+        var res = await window.supabaseClient.auth.getSession();
+        if (res && res.data && res.data.session) {
+          _aiSession = res.data.session;
+        }
+      }
+      if (_aiSession && _aiSession.access_token) {
+        headers['Authorization'] = 'Bearer ' + _aiSession.access_token;
+      }
+    } catch(e) { /* auth not available yet */ }
+    return headers;
+  }
   // ─── Skeleton loading style ────────────────────────────────────────
   var skeletonStyle = document.createElement('style');
   skeletonStyle.textContent = `
@@ -62,11 +80,10 @@
     var cached = sessionStorage.getItem(cacheKey);
     if (cached) return cached;
 
+    var _aiHeaders = await _getAiAuthHeaders();
     var r = await fetch(API_BASE + '/api/openai', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: _aiHeaders,
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [
@@ -83,6 +100,17 @@
     return text;
   }
 
+  
+  // ─── AI Disclaimer ────────────────────────────────────────
+  function _addAiDisclaimer(container) {
+    if (!container || container.querySelector('.ai-disclaimer')) return;
+    var d = document.createElement('div');
+    d.className = 'ai-disclaimer';
+    d.style.cssText = 'margin-top:8px;padding:6px 10px;background:rgba(139,92,246,0.06);border:1px solid rgba(139,92,246,0.1);border-radius:8px;font-size:10px;color:rgba(255,255,255,0.35);font-family:Space Grotesk,sans-serif;text-align:center';
+    d.textContent = 'Bu içerik yapay zeka tarafından üretilmiştir ve bilgilendirme amaçlıdır. Profesyonel tavsiye yerine geçmez.';
+    container.appendChild(d);
+  }
+
   // ─── Make element skeleton, then fill ─────────────────────────
   function skeletonFill(el, promise) {
     if (!el) return;
@@ -93,6 +121,7 @@
       el.classList.remove('ai-skeleton');
       el.classList.add('ai-fade-in');
       el.innerHTML = text;
+      _addAiDisclaimer(el.parentElement || el);
     }).catch(function() {
       el.classList.remove('ai-skeleton');
       el.innerHTML = original;

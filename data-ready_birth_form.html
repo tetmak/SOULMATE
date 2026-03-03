@@ -338,6 +338,22 @@
                         return;
                     }
 
+                    
+                    // Age verification (COPPA/GDPR compliance)
+                    var _dobParts = dob.split("-");
+                    if (_dobParts.length === 3) {
+                        var _birthDate = new Date(parseInt(_dobParts[0]), parseInt(_dobParts[1])-1, parseInt(_dobParts[2]));
+                        var _today = new Date();
+                        var _age = _today.getFullYear() - _birthDate.getFullYear();
+                        var _mDiff = _today.getMonth() - _birthDate.getMonth();
+                        if (_mDiff < 0 || (_mDiff === 0 && _today.getDate() < _birthDate.getDate())) _age--;
+                        if (_age < 13) {
+                            var _t2 = window.i18n ? window.i18n.t : function(k,f){return f||k;};
+                            alert(_t2("birth.age_too_young", "Bu uygulama 13 yaş ve üzeri kullanıcılar içindir."));
+                            return;
+                        }
+                    }
+
                     // Kayıt işlemi
                     try {
                         const existing = (() => { try { return JSON.parse(localStorage.getItem('numerael_user_data')); } catch(e) { return null; } })();
@@ -370,6 +386,7 @@
                                         birth_time: tob || null,
                                         birth_place: pob || null,
                                         gender: gender,
+                                        age_verified: true,
                                         updated_at: new Date().toISOString()
                                     });
                                     console.log('[Form] Supabase profiles güncellendi');

@@ -149,6 +149,30 @@
                 console.log('[Billing] Satın alma başarılı!');
                 // Premium durumunu güncelle
                 await checkEntitlements();
+
+                // Server-side dogrulama
+                try {
+                    var session = await window.auth.getSession();
+                    if (session && session.access_token) {
+                        var API_BASE = window.__NUMERAEL_API_BASE || '';
+                        var purchaseToken = (result && result.purchaseToken) || '';
+                        await fetch(API_BASE + '/api/verify-subscription', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer ' + session.access_token
+                            },
+                            body: JSON.stringify({
+                                platform: 'play_store',
+                                purchaseToken: purchaseToken,
+                                productId: productId
+                            })
+                        });
+                        console.log('[Billing] Server-side dogrulama gonderildi');
+                    }
+                } catch(verifyErr) {
+                    console.warn('[Billing] Server-side dogrulama hatasi:', verifyErr);
+                }
                 window.dispatchEvent(new CustomEvent('numerael:premium-changed', { detail: { active: true } }));
                 return { success: true };
             } else if (result && result.error === 'cancelled') {

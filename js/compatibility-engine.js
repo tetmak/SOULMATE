@@ -16,6 +16,24 @@
                   (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
   var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
+
+  // --- AI Auth Helper ---
+  var _aiSession = null;
+  async function _getAiAuthHeaders() {
+    var headers = { 'Content-Type': 'application/json' };
+    try {
+      if (!_aiSession && window.supabaseClient) {
+        var res2 = await window.supabaseClient.auth.getSession();
+        if (res2 && res2.data && res2.data.session) {
+          _aiSession = res2.data.session;
+        }
+      }
+      if (_aiSession && _aiSession.access_token) {
+        headers['Authorization'] = 'Bearer ' + _aiSession.access_token;
+      }
+    } catch(e) { /* auth not available yet */ }
+    return headers;
+  }
   // ─── i18n HELPER ────────────────────────────────────────────
   var _t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k,f){return f||k;};
 
@@ -301,11 +319,10 @@
     var maxTokens = (type === 'full_compat') ? 1000 : (type === 'karmic') ? 900 : 350;
 
     try {
+      var _aiH = await _getAiAuthHeaders();
       var res = await fetch(API_BASE + '/api/openai', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: _aiH,
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: [

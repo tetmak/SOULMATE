@@ -21,13 +21,19 @@
 
     async function createNotification(targetUserId, type, payload) {
         try {
-            await sb().from('notifications').insert({
-                user_id: targetUserId,
-                type: type,
-                payload: payload || {}
+            var session = await window.auth.getSession();
+            if (!session) return;
+            var API_BASE = window.__NUMERAEL_API_BASE || '';
+            await fetch(API_BASE + '/api/notifications-create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + session.access_token
+                },
+                body: JSON.stringify({ targetUserId: targetUserId, type: type, payload: payload || {} })
             });
         } catch(e) {
-            console.warn('[Notif] Create error:', e);
+            console.warn('[Notification] createNotification API error:', e);
         }
     }
 

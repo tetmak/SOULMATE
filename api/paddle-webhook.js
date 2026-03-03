@@ -29,6 +29,15 @@ function verifyPaddleSignature(rawBody, signature) {
         });
         if (!parts.ts || !parts.h1) return false;
 
+        // Timestamp validation (max 5 min age)
+        if (parts.ts) {
+            var tsAge = Date.now() - (parseInt(parts.ts) * 1000);
+            if (tsAge > 5 * 60 * 1000) {
+                console.warn("[Paddle Webhook] Timestamp too old:", tsAge);
+                return false;
+            }
+        }
+
         var signedPayload = parts.ts + ':' + rawBody;
         var expectedSignature = crypto
             .createHmac('sha256', PADDLE_WEBHOOK_SECRET)
@@ -78,6 +87,15 @@ export default async function handler(req, res) {
 
         var eventType = event.event_type;
         var data = event.data || {};
+        // Replay prevention — check if event already processed
+        var eventId = event.event_id || event.notification_id;
+        if (eventId) {
+            var { data: existing } = await supabase.from("webhook_events")
+                .select("event_id").eq("event_id", eventId).maybeSingle();
+            if (existing) return res.status(200).json({ ok: true, skipped: "duplicate" });
+            await supabase.from("webhook_events").insert({ event_id: eventId, event_type: eventType, processed_at: new Date().toISOString() });
+        }
+
 
         // custom_data'dan user_id al (checkout sırasında gönderildi)
         var userId = null;

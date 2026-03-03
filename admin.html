@@ -1,0 +1,194 @@
+<\!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Panel - Soulnum</title>
+<script src="js/tailwind.min.js"></script>
+<script src="js/supabase.min.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api-base.js"></script>
+<script src="js/admin-engine.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<style>
+body{background:#0f0a19;color:#e5e7eb;font-family:"Space Grotesk",sans-serif;margin:0;padding:0}
+.gold{color:#f2cc0d}.purple{color:#8b5cf6}.bg-card{background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.15);border-radius:12px}
+.stat-card{padding:16px;text-align:center}.stat-num{font-size:28px;font-weight:700}.stat-label{font-size:12px;opacity:0.6;margin-top:4px}
+.btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all 0.2s}
+.btn-purple{background:#8b5cf6;color:#fff}.btn-purple:hover{background:#7c3aed}
+.btn-red{background:#ef4444;color:#fff}.btn-red:hover{background:#dc2626}
+.btn-green{background:#22c55e;color:#fff}.btn-green:hover{background:#16a34a}
+.btn-gray{background:#374151;color:#d1d5db}.btn-gray:hover{background:#4b5563}
+.btn-gold{background:#f2cc0d;color:#0f0a19}.btn-gold:hover{background:#d4b00b}
+.tbl{width:100%;border-collapse:collapse;font-size:13px}.tbl th{text-align:left;padding:10px 8px;border-bottom:1px solid rgba(139,92,246,0.2);color:#8b5cf6;font-weight:600}
+.tbl td{padding:10px 8px;border-bottom:1px solid rgba(255,255,255,0.05)}.tbl tr:hover{background:rgba(139,92,246,0.04)}
+.search-input{background:rgba(255,255,255,0.06);border:1px solid rgba(139,92,246,0.2);border-radius:8px;padding:10px 14px;color:#fff;width:100%;font-size:14px;outline:none}
+.search-input:focus{border-color:#8b5cf6}.tab{padding:10px 20px;cursor:pointer;border-bottom:2px solid transparent;font-weight:500;opacity:0.6;transition:all 0.2s}
+.tab.active{border-color:#8b5cf6;opacity:1;color:#8b5cf6}.section{display:none}.section.active{display:block}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600}
+.badge-red{background:rgba(239,68,68,0.15);color:#f87171}.badge-green{background:rgba(34,197,94,0.15);color:#4ade80}.badge-yellow{background:rgba(234,179,8,0.15);color:#facc15}
+</style>
+</head>
+<body>
+<div style="max-width:960px;margin:0 auto;padding:16px">
+<\!-- Header -->
+<div style="display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid rgba(139,92,246,0.15)">
+<a href="mystic_numerology_home_1.html" style="color:#8b5cf6;text-decoration:none"><span class="material-symbols-outlined">arrow_back</span></a>
+<h1 style="font-size:22px;font-weight:700;margin:0"><span class="gold">Admin</span> Panel</h1>
+<div id="admin-role" style="margin-left:auto;font-size:12px;opacity:0.5"></div>
+</div>
+<\!-- Auth gate message -->
+<div id="auth-gate" style="text-align:center;padding:60px 20px;display:none">
+<span class="material-symbols-outlined" style="font-size:48px;color:#ef4444">lock</span>
+<p style="margin-top:12px;color:#f87171">Bu sayfaya erisim yetkiniz yok.</p>
+<a href="mystic_numerology_home_1.html" class="btn btn-purple" style="margin-top:16px;display:inline-block">Ana Sayfaya Don</a>
+</div>
+<\!-- Main content -->
+<div id="admin-content" style="display:none">
+<\!-- Tabs -->
+<div style="display:flex;gap:4px;margin:20px 0;border-bottom:1px solid rgba(139,92,246,0.1)">
+<div class="tab active" onclick="switchTab(this,'stats')">Istatistikler</div>
+<div class="tab" onclick="switchTab(this,'reports')">Raporlar</div>
+<div class="tab" onclick="switchTab(this,'users')">Kullanicilar</div>
+<div class="tab" onclick="switchTab(this,'content')">Icerik</div>
+</div>
+<\!-- Stats Section -->
+<div id="sec-stats" class="section active">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin:16px 0">
+<div class="bg-card stat-card"><div class="stat-num gold" id="s-users">-</div><div class="stat-label">Toplam Kullanici</div></div>
+<div class="bg-card stat-card"><div class="stat-num purple" id="s-active">-</div><div class="stat-label">Bugun Aktif</div></div>
+<div class="bg-card stat-card"><div class="stat-num" style="color:#f87171" id="s-reports">-</div><div class="stat-label">Bekleyen Rapor</div></div>
+<div class="bg-card stat-card"><div class="stat-num gold" id="s-posts">-</div><div class="stat-label">Toplam Post</div></div>
+<div class="bg-card stat-card"><div class="stat-num purple" id="s-premium">-</div><div class="stat-label">Premium</div></div>
+<div class="bg-card stat-card"><div class="stat-num" style="color:#38bdf8" id="s-ai">-</div><div class="stat-label">AI Istek (Bugun)</div></div>
+</div>
+<button class="btn btn-purple" onclick="loadStats()" style="margin-top:8px">Yenile</button>
+</div>
+<\!-- Reports Section -->
+<div id="sec-reports" class="section">
+<div style="display:flex;gap:8px;margin-bottom:12px">
+<select id="report-status" class="search-input" style="width:auto" onchange="loadReports()">
+<option value="pending">Bekleyen</option><option value="actioned">Islem Yapilan</option><option value="dismissed">Reddedilen</option>
+</select></div>
+<div id="reports-list"></div>
+<button id="reports-more" class="btn btn-gray" style="margin-top:8px;display:none" onclick="loadMoreReports()">Daha Fazla</button>
+</div>
+<\!-- Users Section -->
+<div id="sec-users" class="section">
+<div style="display:flex;gap:8px;margin-bottom:12px">
+<input id="user-search" class="search-input" placeholder="Kullanici ara (isim)..." />
+<button class="btn btn-purple" onclick="searchUsers()">Ara</button>
+</div>
+<div id="users-list"></div>
+</div>
+<\!-- Content Section -->
+<div id="sec-content" class="section">
+<p style="opacity:0.5;margin:16px 0">Raporlanan icerikler Raporlar sekmesinden yonetilebilir.</p>
+</div>
+</div><\!-- /admin-content -->
+</div><\!-- /container -->
+<script>
+var _reportsCursor = null;
+function switchTab(el, name) {
+    document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("active");});
+    el.classList.add("active");
+    document.querySelectorAll(".section").forEach(function(s){s.classList.remove("active");});
+    document.getElementById("sec-"+name).classList.add("active");
+    if(name==="reports")loadReports();
+    if(name==="stats")loadStats();
+}
+async function loadStats(){
+    try{var d=await window.adminEngine.getStats();
+    document.getElementById("s-users").textContent=d.totalUsers||0;
+    document.getElementById("s-active").textContent=d.activeToday||0;
+    document.getElementById("s-reports").textContent=d.pendingReports||0;
+    document.getElementById("s-posts").textContent=d.totalPosts||0;
+    document.getElementById("s-premium").textContent=d.premiumUsers||0;
+    document.getElementById("s-ai").textContent=(d.aiUsageToday?d.aiUsageToday.requests:0);
+    }catch(e){console.error("Stats error:",e);}
+}
+async function loadReports(reset){
+    if(reset\!==false)_reportsCursor=null;
+    var st=document.getElementById("report-status").value;
+    var d=await window.adminEngine.getReports(st,_reportsCursor,20);
+    var c=document.getElementById("reports-list");
+    if(\!_reportsCursor)c.innerHTML="";
+    if(\!d.reports||d.reports.length===0){c.innerHTML+="<p style=\"opacity:0.4;padding:20px\">Rapor bulunamadi.</p>";return;}
+    d.reports.forEach(function(r){
+        var div=document.createElement("div");
+        div.className="bg-card";div.style.cssText="padding:12px;margin-bottom:8px";
+        var dt=new Date(r.createdAt).toLocaleDateString("tr-TR");
+        var tc=r.targetContent?JSON.stringify(r.targetContent).slice(0,100):"N/A";
+        var h="<div style=\"display:flex;justify-content:space-between;align-items:center\">";
+        h+="<div><strong style=\"color:#8b5cf6\">"+r.reporter.name+"</strong> <span class=\"badge badge-yellow\">"+r.targetType+"</span> <span style=\"opacity:0.4;font-size:11px\">"+dt+"</span></div>";
+        h+="<div style=\"display:flex;gap:6px\">";
+        if(r.status==="pending"){
+            h+="<button class=\"btn btn-green\" onclick=\"actionReport('"+r.id+"','dismiss')\">Reddet</button>";
+            h+="<button class=\"btn btn-red\" onclick=\"actionReport('"+r.id+"','action')\">Islem Yap</button>";
+        }
+        h+="</div></div>";
+        h+="<div style=\"margin-top:6px;font-size:12px;opacity:0.7\"><b>Sebep:</b> "+r.reason+"</div>";
+        if(r.description)h+="<div style=\"margin-top:4px;font-size:12px;opacity:0.5\">"+r.description+"</div>";
+        h+="<div style=\"margin-top:4px;font-size:11px;opacity:0.35;word-break:break-all\">Hedef: "+tc+"</div>";
+        div.innerHTML=h;c.appendChild(div);
+    });
+    _reportsCursor=d.nextCursor;
+    document.getElementById("reports-more").style.display=d.nextCursor?"block":"none";
+}
+function loadMoreReports(){loadReports(false);}
+async function actionReport(id,act){
+    if(\!confirm(act==="action"?"Hedefe islem yapilacak. Emin misiniz?":"Rapor reddedilecek. Emin misiniz?"))return;
+    await window.adminEngine.actionReport(id,act);
+    loadReports();
+}
+async function searchUsers(){
+    var q=document.getElementById("user-search").value.trim();
+    var d=q?await window.adminEngine.searchUsers(q):await window.adminEngine.searchUsers("",20);
+    var c=document.getElementById("users-list");c.innerHTML="";
+    if(\!d.users||d.users.length===0){c.innerHTML="<p style=\"opacity:0.4;padding:20px\">Kullanici bulunamadi.</p>";return;}
+    d.users.forEach(function(u){
+        var div=document.createElement("div");div.className="bg-card";div.style.cssText="padding:12px;margin-bottom:8px";
+        var suspended=u.isSuspended?"<span class=\"badge badge-red\">Askida</span>":"<span class=\"badge badge-green\">Aktif</span>";
+        var role=u.role==="admin"?"<span class=\"badge badge-yellow\">Admin</span>":u.role==="moderator"?"<span class=\"badge badge-yellow\">Mod</span>":"";
+        var h="<div style=\"display:flex;justify-content:space-between;align-items:center\">";
+        h+="<div><strong>"+u.fullName+"</strong> "+suspended+" "+role+"</div>";
+        h+="<div style=\"display:flex;gap:4px\">";
+        if(u.isSuspended){h+="<button class=\"btn btn-green\" onclick=\"adminAction('"+u.id+"','unban')\">Kaldir</button>";}
+        else{h+="<button class=\"btn btn-red\" onclick=\"adminAction('"+u.id+"','ban')\">Banla</button>";}
+        h+="</div></div>";
+        h+="<div style=\"font-size:11px;opacity:0.4;margin-top:4px\">ID: "+u.id+"</div>";
+        div.innerHTML=h;c.appendChild(div);
+    });
+}
+async function adminAction(uid,act){
+    var reason=act==="ban"?prompt("Ban sebebi:"):null;
+    if(act==="ban"&&\!reason)return;
+    if(act==="ban")await window.adminEngine.banUser(uid,reason);
+    else if(act==="unban")await window.adminEngine.unbanUser(uid);
+    searchUsers();
+}
+// Enter key for search
+document.getElementById("user-search").addEventListener("keydown",function(e){if(e.key==="Enter")searchUsers();});
+// Auth gate and init
+async function initAdmin(){
+    try{
+        if(window.auth&&window.auth.whenReady)await window.auth.whenReady();
+        var sess=await window.auth.getSession();
+        if(\!sess||\!sess.user){document.getElementById("auth-gate").style.display="block";return;}
+        var uid=sess.user.id;
+        var profRes=await window.supabaseClient.from("profiles").select("role").eq("id",uid).single();
+        if(\!profRes.data||\!profRes.data.role||(profRes.data.role\!=="admin"&&profRes.data.role\!=="moderator")){
+            document.getElementById("auth-gate").style.display="block";return;
+        }
+        document.getElementById("admin-role").textContent="Rol: "+profRes.data.role;
+        document.getElementById("admin-content").style.display="block";
+        loadStats();
+    }catch(e){console.error("Admin init error:",e);document.getElementById("auth-gate").style.display="block";}
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initAdmin);
+else setTimeout(initAdmin,300);
+</script>
+</body>
+</html>

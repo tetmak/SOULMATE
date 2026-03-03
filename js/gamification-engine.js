@@ -277,6 +277,22 @@
             }
         }
 
+        // Server-side XP sync (fire-and-forget)
+        try {
+            var _syncAction = action;
+            if (window.auth && window.auth.getSession) {
+                window.auth.getSession().then(function(session) {
+                    if (!session) return;
+                    var API_BASE = window.__NUMERAEL_API_BASE || '';
+                    fetch(API_BASE + '/api/gamification-xp', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+                        body: JSON.stringify({ action: _syncAction })
+                    }).catch(function(e) { console.warn('[Gamification] Server XP sync error:', e); });
+                }).catch(function() {});
+            }
+        } catch(_syncErr) {}
+
         saveState(s);
         return s;
     }
