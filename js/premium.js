@@ -45,44 +45,54 @@
     async function checkPremiumStatus() {
         if (EVERYONE_IS_PREMIUM) return true;
 
-        // HER ZAMAN Supabase'den kontrol et (tek doğru kaynak)
+        // SERVER-FIRST: /api/subscription-status endpoint ile server tarafli kontrol
         try {
             var session = await window.auth.getSession();
-            if (!session || !session.user) return isPremium(); // offline → cache'e güven
-            var res = await window.supabaseClient.from('subscriptions').select('*').eq('user_id', session.user.id).in('status', ['active', 'cancelled']).maybeSingle();
-            if (res.data) {
-                var isActive = res.data.status === 'active' || (res.data.expires_at && new Date(res.data.expires_at) > new Date());
-                if (isActive) {
-                    localStorage.setItem('numerael_premium', JSON.stringify({ active: true, plan: res.data.plan || 'monthly', expires_at: res.data.expires_at, source: 'supabase', cached_at: new Date().toISOString() }));
-                    return true;
-                } else {
-                    // Supabase'de aktif abonelik yok — cache'i temizle
-                    localStorage.removeItem('numerael_premium');
+            if (session && session.access_token) {
+                var API_BASE = window.__NUMERAEL_API_BASE || '';
+                var res = await fetch(API_BASE + '/api/subscription-status', {
+                    method: 'GET',
+                    headers: { 'Authorization': 'Bearer ' + session.access_token }
+                });
+                if (res.ok) {
+                    var data = await res.json();
+                    if (data.premium) {
+                        localStorage.setItem('numerael_premium', JSON.stringify({
+                            active: true,
+                            plan: data.plan || 'monthly',
+                            expires_at: data.expiresAt,
+                            source: data.source || 'supabase',
+                            cached_at: new Date().toISOString()
+                        }));
+                        return true;
+                    } else {
+                        localStorage.removeItem('numerael_premium');
+                    }
                 }
             } else {
-                // Supabase'de kayıt yok — cache'i temizle
-                localStorage.removeItem('numerael_premium');
+                return isPremium();
             }
         } catch(e) {
-            console.warn('[Premium] Supabase kontrol hatası (offline?):', e.message);
-            // Ağ hatası — cache'e güven
+            console.warn('[Premium] Server kontrol hatasi (offline?):', e.message);
             return isPremium();
         }
 
-        // platformInit bitmesini bekle (PlayBilling hazır olsun)
         try { await platformReady; } catch(e) {}
 
-        // Native platform → PlayBilling'ten kontrol et
         if (window.billing && window.billing.isNative() && window.billing.isReady()) {
             try {
                 var rcPremium = await window.billing.checkEntitlements();
                 if (rcPremium) return true;
             } catch(e) {
-                console.warn('[Premium] Billing entitlement check hatası:', e);
+                console.warn('[Premium] Billing entitlement check hatasi:', e);
             }
         }
 
         return false;
+    }
+
+    async function isPremiumAsync() {
+        return await checkPremiumStatus();
     }
 
     // ─── KULLANIM LİMİTLERİ (Supabase + localStorage cache) ─────
@@ -439,11 +449,7 @@
             window.auth.whenReady().then(function() { _loadUsageFromSupabase(); });
         }
 
-        // ⚠️ GEÇICI: Herkes premium — ödeme platformu init atla
-        if (EVERYONE_IS_PREMIUM) {
-            console.log('[Premium] EVERYONE_IS_PREMIUM aktif — platform init atlandı');
-            return;
-        }
+        // EVERYONE_IS_PREMIUM flag aktif olsa bile platformu baslat (odeme yapilabilmeli)
 
         var isNative = window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform();
 
@@ -480,7 +486,7 @@
 
     // ─── GLOBAL EXPORT ───────────────────────────────────────
     window.premium = {
-        isPremium: isPremium, checkStatus: checkPremiumStatus,
+        isPremium: isPremium, isPremiumAsync: isPremiumAsync, checkStatus: checkPremiumStatus,
         canUse: canUseFeature, gate: gate,
         showPaywall: showPaywall, showBadge: showPremiumBadge,
         startPurchase: startPurchase,

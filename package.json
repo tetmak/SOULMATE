@@ -21,7 +21,9 @@
     "@capacitor/ios": "^8.1.0",
     "@capacitor/local-notifications": "^8.0.1",
     "@capacitor/splash-screen": "^8.0.1",
-    "@capacitor/status-bar": "^8.0.1"
+    "@capacitor/status-bar": "^8.0.1",
+    "@supabase/supabase-js": "^2.49.1",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "typescript": "^5.9.3"

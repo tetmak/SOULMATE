@@ -328,29 +328,20 @@
      */
     async function sendMessage(senderId, receiverId, content) {
         if (!content || !content.trim()) return { success: false, error: 'empty' };
-
-        // Verify connection
-        var connected = await areConnected(senderId, receiverId);
-        if (!connected) return { success: false, error: 'not_connected' };
-
         try {
-            var res = await sb().from('messages').insert({
-                sender_id: senderId,
-                receiver_id: receiverId,
-                content: content.trim()
-            }).select();
-
-            // Notify receiver of new message
-            if (res.data && res.data[0] && window.notificationEngine) {
-                var senderName = await getUserName(senderId);
-                window.notificationEngine.createNotification(receiverId, 'new_message', {
-                    sender_name: senderName,
-                    sender_id: senderId
-                });
-            }
-
-            return { success: true, data: res.data ? res.data[0] : null };
+            var session = await window.auth.getSession();
+            if (!session) return { success: false, error: 'not_authenticated' };
+            var API_BASE = window.__NUMERAEL_API_BASE || '';
+            var res = await fetch(API_BASE + '/api/messages-send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token },
+                body: JSON.stringify({ receiverId: receiverId, content: content.trim() })
+            });
+            var data = await res.json();
+            if (!res.ok) return { success: false, error: data.error || 'send_failed' };
+            return { success: true, data: data.message };
         } catch(e) {
+            console.error('[Connection] sendMessage error:', e);
             return { success: false, error: e.message || 'error' };
         }
     }

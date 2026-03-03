@@ -13,6 +13,24 @@
                   (typeof window.Capacitor !== 'undefined' && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
   var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
+
+  // --- AI Auth Helper ---
+  var _aiSession = null;
+  async function _getAiAuthHeaders() {
+    var headers = { 'Content-Type': 'application/json' };
+    try {
+      if (!_aiSession && window.supabaseClient) {
+        var res = await window.supabaseClient.auth.getSession();
+        if (res && res.data && res.data.session) {
+          _aiSession = res.data.session;
+        }
+      }
+      if (_aiSession && _aiSession.access_token) {
+        headers['Authorization'] = 'Bearer ' + _aiSession.access_token;
+      }
+    } catch(e) { /* auth not available yet */ }
+    return headers;
+  }
   // ═══════════════════════════════════════════════════════════
   // THEME DETECTION
   // ═══════════════════════════════════════════════════════════
@@ -814,6 +832,8 @@
     if (content) content.scrollTop = content.scrollHeight;
   }
 
+  function _dsDisclaimer(p){if(!p||p.querySelector(".ai-disclaimer"))return;var d=document.createElement("div");d.className="ai-disclaimer";d.style.cssText="margin-top:6px;padding:4px 8px;font-size:9px;color:rgba(255,255,255,0.25);text-align:center";d.textContent="Bu icerik yapay zeka tarafindan uretilmistir ve bilgilendirme amaclidir. Profesyonel tavsiye yerine gecmez.";p.appendChild(d);}
+
   function addAelMessage(text) {
     var chat = document.getElementById('ael-chat');
     var div = document.createElement('div');
@@ -823,6 +843,7 @@
     chat.appendChild(div);
     scrollContentToBottom();
     chatMessages.push({ role: 'assistant', content: text });
+    _dsDisclaimer(div);
   }
 
   function addUserMessage(text) {
@@ -964,9 +985,10 @@
         apiMessages.push({ role: m.role, content: m.content });
       });
 
+      var _aiH = await _getAiAuthHeaders();
       var response = await fetch(API_BASE + '/api/openai', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: _aiH,
         body: JSON.stringify({
           model: 'gpt-4o-mini',
           messages: apiMessages,
