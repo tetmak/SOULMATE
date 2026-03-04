@@ -5,13 +5,13 @@ import { checkRateLimit } from '../_lib/rate-limit.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
-    if (req.method \!== 'GET') return res.status(405).json({ error: 'method_not_allowed' });
+    if (req.method !== 'GET') return res.status(405).json({ error: 'method_not_allowed' });
     var authResult = await verifyAuth(req);
-    if (\!requireAuth(authResult, res)) return;
+    if (!requireAuth(authResult, res)) return;
     var supabase = getSupabaseAdmin();
     var userId = authResult.userId;
     var rl = checkRateLimit('account-export:' + userId, 1, 86400);
-    if (\!rl.allowed) return res.status(429).json({ error: 'rate_limit', message: '1 export per day' });
+    if (!rl.allowed) return res.status(429).json({ error: 'rate_limit', message: '1 export per day' });
     try {
         var tables = ['profiles','subscriptions','discovery_profiles','daily_matches','user_streaks',
             'user_gamification','quiz_results','connection_requests','connections','messages',

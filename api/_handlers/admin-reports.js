@@ -7,10 +7,10 @@ import { validateUUID, validateEnum, validatePagination, sanitizeText } from '..
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
     var authResult = await verifyAuth(req);
-    if (\!requireAdmin(authResult, res)) return;
+    if (!requireAdmin(authResult, res)) return;
     var supabase = getSupabaseAdmin();
     var rl = checkRateLimit('admin-reports:' + authResult.userId, 60, 60);
-    if (\!rl.allowed) return res.status(429).json({ error: 'rate_limit' });
+    if (!rl.allowed) return res.status(429).json({ error: 'rate_limit' });
     if (req.method === 'GET') return handleGet(req, res, supabase);
     if (req.method === 'POST') return handlePost(req, res, supabase, authResult);
     return res.status(405).json({ error: 'method_not_allowed' });
@@ -20,7 +20,7 @@ async function handleGet(req, res, supabase) {
     var url = new URL(req.url, 'http://localhost');
     var status = url.searchParams.get('status') || 'pending';
     var pag = validatePagination(url.searchParams.get('cursor'), url.searchParams.get('limit'), 50);
-    if (\!validateEnum(status, ['pending', 'reviewed', 'actioned', 'dismissed'])) {
+    if (!validateEnum(status, ['pending', 'reviewed', 'actioned', 'dismissed'])) {
         return res.status(400).json({ error: 'invalid_status' });
     }
     var query = supabase.from('reports')
@@ -61,11 +61,11 @@ async function handleGet(req, res, supabase) {
 
 async function handlePost(req, res, supabase, authResult) {
     var body = req.body || {};
-    if (\!body.reportId || \!validateUUID(body.reportId)) return res.status(400).json({ error: 'invalid_report_id' });
-    if (\!validateEnum(body.action, ['dismiss', 'action'])) return res.status(400).json({ error: 'invalid_action' });
+    if (!body.reportId || !validateUUID(body.reportId)) return res.status(400).json({ error: 'invalid_report_id' });
+    if (!validateEnum(body.action, ['dismiss', 'action'])) return res.status(400).json({ error: 'invalid_action' });
     var sanitizedNote = body.note ? sanitizeText(body.note, 500) : null;
     var rr = await supabase.from('reports').select('*').eq('id', body.reportId).single();
-    if (rr.error || \!rr.data) return res.status(404).json({ error: 'report_not_found' });
+    if (rr.error || !rr.data) return res.status(404).json({ error: 'report_not_found' });
     var report = rr.data;
     if (body.action === 'dismiss') {
         await supabase.from('reports').update({ status: 'dismissed', reviewed_by: authResult.userId }).eq('id', body.reportId);

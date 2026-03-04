@@ -7,10 +7,10 @@ import { validateUUID, validateEnum, sanitizeText } from '../_lib/validate.js';
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
     var authResult = await verifyAuth(req);
-    if (\!requireAdmin(authResult, res)) return;
+    if (!requireAdmin(authResult, res)) return;
     var supabase = getSupabaseAdmin();
     var rl = checkRateLimit('admin-users:' + authResult.userId, 60, 60);
-    if (\!rl.allowed) return res.status(429).json({ error: 'rate_limit' });
+    if (!rl.allowed) return res.status(429).json({ error: 'rate_limit' });
     if (req.method === 'GET') return handleGet(req, res, supabase);
     if (req.method === 'POST') return handlePost(req, res, supabase, authResult);
     return res.status(405).json({ error: 'method_not_allowed' });
@@ -24,7 +24,7 @@ async function handleGet(req, res, supabase) {
     if (limit > 50) limit = 50;
     if (userId && validateUUID(userId)) {
         var profileRes = await supabase.from('profiles').select('*').eq('id', userId).single();
-        if (profileRes.error || \!profileRes.data) return res.status(404).json({ error: 'user_not_found' });
+        if (profileRes.error || !profileRes.data) return res.status(404).json({ error: 'user_not_found' });
         var p = profileRes.data;
         var postCount = await supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', userId);
         var reportCount = await supabase.from('reports').select('id', { count: 'exact', head: true }).eq('target_id', userId).eq('target_type', 'user');
@@ -51,8 +51,8 @@ async function handleGet(req, res, supabase) {
 
 async function handlePost(req, res, supabase, authResult) {
     var body = req.body || {};
-    if (\!body.userId || \!validateUUID(body.userId)) return res.status(400).json({ error: 'invalid_user_id' });
-    if (\!validateEnum(body.action, ['ban', 'unban', 'shadowban', 'set_role'])) return res.status(400).json({ error: 'invalid_action' });
+    if (!body.userId || !validateUUID(body.userId)) return res.status(400).json({ error: 'invalid_user_id' });
+    if (!validateEnum(body.action, ['ban', 'unban', 'shadowban', 'set_role'])) return res.status(400).json({ error: 'invalid_action' });
     var sanitizedReason = body.reason ? sanitizeText(body.reason, 500) : null;
     if (body.action === 'ban') {
         await supabase.from('profiles').update({ is_suspended: true, suspended_at: new Date().toISOString(),
@@ -69,8 +69,8 @@ async function handlePost(req, res, supabase, authResult) {
         return res.status(200).json({ success: true });
     }
     if (body.action === 'set_role') {
-        if (authResult.role \!== 'admin') return res.status(403).json({ error: 'only_admin_can_set_role' });
-        if (\!validateEnum(body.role, ['user', 'admin', 'moderator'])) return res.status(400).json({ error: 'invalid_role' });
+        if (authResult.role !== 'admin') return res.status(403).json({ error: 'only_admin_can_set_role' });
+        if (!validateEnum(body.role, ['user', 'admin', 'moderator'])) return res.status(400).json({ error: 'invalid_role' });
         await supabase.from('profiles').update({ role: body.role }).eq('id', body.userId);
         return res.status(200).json({ success: true });
     }

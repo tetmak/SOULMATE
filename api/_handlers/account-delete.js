@@ -5,14 +5,14 @@ import { checkRateLimit } from '../_lib/rate-limit.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
-    if (req.method \!== 'POST') return res.status(405).json({ error: 'method_not_allowed' });
+    if (req.method !== 'POST') return res.status(405).json({ error: 'method_not_allowed' });
     var authResult = await verifyAuth(req);
-    if (\!requireAuth(authResult, res)) return;
+    if (!requireAuth(authResult, res)) return;
     var supabase = getSupabaseAdmin();
     var rl = checkRateLimit('account-delete:' + authResult.userId, 3, 3600);
-    if (\!rl.allowed) return res.status(429).json({ error: 'rate_limit' });
+    if (!rl.allowed) return res.status(429).json({ error: 'rate_limit' });
     var body = req.body || {};
-    if (body.confirmPhrase \!== 'DELETE') return res.status(400).json({ error: 'confirmation_required', message: 'Send confirmPhrase: DELETE' });
+    if (body.confirmPhrase !== 'DELETE') return res.status(400).json({ error: 'confirmation_required', message: 'Send confirmPhrase: DELETE' });
     var userId = authResult.userId;
     try {
         // GDPR full data deletion — delete ALL user data

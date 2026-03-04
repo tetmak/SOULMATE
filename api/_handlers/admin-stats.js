@@ -5,12 +5,12 @@ import { checkRateLimit } from '../_lib/rate-limit.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;
-    if (req.method \!== 'GET') return res.status(405).json({ error: 'method_not_allowed' });
+    if (req.method !== 'GET') return res.status(405).json({ error: 'method_not_allowed' });
     var authResult = await verifyAuth(req);
-    if (\!requireAdmin(authResult, res)) return;
+    if (!requireAdmin(authResult, res)) return;
     var supabase = getSupabaseAdmin();
     var rl = checkRateLimit('admin-stats:' + authResult.userId, 30, 60);
-    if (\!rl.allowed) return res.status(429).json({ error: 'rate_limit' });
+    if (!rl.allowed) return res.status(429).json({ error: 'rate_limit' });
     var todayStart = new Date(); todayStart.setHours(0,0,0,0);
     var todayISO = todayStart.toISOString();
     try {
