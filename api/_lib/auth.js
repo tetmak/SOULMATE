@@ -16,58 +16,57 @@ export async function verifyAuth(req) {
     }
     const token = header.slice(7);
 
-    if (!JWT_SECRET) {
-        // JWT_SECRET yoksa Supabase'in kendi dogrulama mekanizmasini kullan
+    // 1. JWT_SECRET varsa lokal dogrulama dene
+    if (JWT_SECRET) {
         try {
-            const supabase = getSupabaseAdmin();
-            const { data: { user }, error } = await supabase.auth.getUser(token);
-            if (error || !user) {
-                return { error: 'invalid_token', status: 401 };
-            }
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('role, is_suspended')
-                .eq('id', user.id)
-                .single();
+            const payload = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
+            const userId = payload.sub;
+            if (userId) {
+                const supabase = getSupabaseAdmin();
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role, is_suspended')
+                    .eq('id', userId)
+                    .single();
 
-            return {
-                userId: user.id,
-                role: (profile && profile.role) || 'user',
-                isSuspended: (profile && profile.is_suspended) || false,
-                token
-            };
+                return {
+                    userId,
+                    role: (profile && profile.role) || 'user',
+                    isSuspended: (profile && profile.is_suspended) || false,
+                    token
+                };
+            }
         } catch (e) {
-            return { error: 'auth_failed', status: 401 };
+            // JWT_SECRET yanlis olabilir — Supabase getUser fallback'e dus
+            if (e.name === 'TokenExpiredError') {
+                return { error: 'token_expired', status: 401 };
+            }
+            console.warn('[Auth] JWT verify failed, trying Supabase getUser fallback:', e.message);
         }
     }
 
+    // 2. Supabase getUser ile dogrula (JWT_SECRET yoksa veya jwt.verify basarisizsa)
     try {
-        const payload = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
-        const userId = payload.sub;
-        if (!userId) {
+        const supabase = getSupabaseAdmin();
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+        if (error || !user) {
             return { error: 'invalid_token', status: 401 };
         }
-
-        // Profil'den rol ve suspension durumunu cek
-        const supabase = getSupabaseAdmin();
         const { data: profile } = await supabase
             .from('profiles')
             .select('role, is_suspended')
-            .eq('id', userId)
+            .eq('id', user.id)
             .single();
 
         return {
-            userId,
+            userId: user.id,
             role: (profile && profile.role) || 'user',
             isSuspended: (profile && profile.is_suspended) || false,
             token
         };
     } catch (e) {
-        // Token suresi dolmus veya gecersiz
-        if (e.name === 'TokenExpiredError') {
-            return { error: 'token_expired', status: 401 };
-        }
-        return { error: 'invalid_token', status: 401 };
+        console.error('[Auth] getUser fallback also failed:', e.message);
+        return { error: 'auth_failed', status: 401 };
     }
 }
 
