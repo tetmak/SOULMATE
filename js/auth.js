@@ -19,6 +19,36 @@ var auth = {
 
     async signInWithGoogle() {
         if (!window.supabaseClient) throw new Error('Supabase not available');
+
+        // Native platform → Browser plugin ile dis tarayicida ac
+        var isNative = window.location.protocol === 'capacitor:' ||
+                       window.location.protocol === 'ionic:' ||
+                       window.location.hostname === 'localhost' ||
+                       window.location.protocol === 'file:' ||
+                       (typeof window.Capacitor !== 'undefined' &&
+                        window.Capacitor.isNativePlatform &&
+                        window.Capacitor.isNativePlatform());
+
+        if (isNative && window.Capacitor && window.Capacitor.Plugins) {
+            var SUPABASE_URL = 'https://cxkyyifqxbwidseofbgk.supabase.co';
+            var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4a3l5aWZxeGJ3aWRzZW9mYmdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NjM5OTMsImV4cCI6MjA1ODMzOTk5M30.r2kBhBVzwEhFsfyHnBhYiSmKaP0J0mRTLI0JUYaXXWU';
+            var callbackUrl = 'https://soulmate-kohl.vercel.app/auth-callback.html';
+            var oauthUrl = SUPABASE_URL + '/auth/v1/authorize?' +
+                'provider=google&' +
+                'redirect_to=' + encodeURIComponent(callbackUrl) + '&' +
+                'response_type=token&' +
+                'apikey=' + encodeURIComponent(SUPABASE_ANON_KEY);
+
+            var Browser = window.Capacitor.Plugins.Browser;
+            if (Browser && Browser.open) {
+                await Browser.open({ url: oauthUrl, windowName: '_system' });
+            } else {
+                window.open(oauthUrl, '_system');
+            }
+            return;
+        }
+
+        // Web: normal flow
         var redirectUrl = window.location.origin + '/mystic_sign_up_screen.html';
         var res = await window.supabaseClient.auth.signInWithOAuth({
             provider: 'google',
@@ -30,7 +60,41 @@ var auth = {
 
     async signInWithApple() {
         if (!window.supabaseClient) throw new Error('Supabase not available');
-        var res = await window.supabaseClient.auth.signInWithOAuth({ provider: 'apple' });
+
+        // Native platform → Browser plugin ile dis tarayicida ac
+        var isNative = window.location.protocol === 'capacitor:' ||
+                       window.location.protocol === 'ionic:' ||
+                       window.location.hostname === 'localhost' ||
+                       window.location.protocol === 'file:' ||
+                       (typeof window.Capacitor !== 'undefined' &&
+                        window.Capacitor.isNativePlatform &&
+                        window.Capacitor.isNativePlatform());
+
+        if (isNative && window.Capacitor && window.Capacitor.Plugins) {
+            var SUPABASE_URL = 'https://cxkyyifqxbwidseofbgk.supabase.co';
+            var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN4a3l5aWZxeGJ3aWRzZW9mYmdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDI3NjM5OTMsImV4cCI6MjA1ODMzOTk5M30.r2kBhBVzwEhFsfyHnBhYiSmKaP0J0mRTLI0JUYaXXWU';
+            var callbackUrl = 'https://soulmate-kohl.vercel.app/auth-callback.html';
+            var oauthUrl = SUPABASE_URL + '/auth/v1/authorize?' +
+                'provider=apple&' +
+                'redirect_to=' + encodeURIComponent(callbackUrl) + '&' +
+                'response_type=token&' +
+                'apikey=' + encodeURIComponent(SUPABASE_ANON_KEY);
+
+            var Browser = window.Capacitor.Plugins.Browser;
+            if (Browser && Browser.open) {
+                await Browser.open({ url: oauthUrl, windowName: '_system' });
+            } else {
+                window.open(oauthUrl, '_system');
+            }
+            return;
+        }
+
+        // Web: normal flow
+        var redirectUrl = window.location.origin + '/mystic_sign_up_screen.html';
+        var res = await window.supabaseClient.auth.signInWithOAuth({
+            provider: 'apple',
+            options: { redirectTo: redirectUrl }
+        });
         if (res.error) throw res.error;
         return res.data;
     },
@@ -251,6 +315,72 @@ document.addEventListener('DOMContentLoaded', function() {
             _authResolve();
         }).catch(function() {
             _authResolve();
+        });
+    }
+
+    // ─── DEEP LINK HANDLER (OAuth callback) ─────────────────
+    // Native'de Browser plugin ile OAuth'tan donen deep link'i yakala
+    if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.App) {
+        window.Capacitor.Plugins.App.addListener('appUrlOpen', function(data) {
+            if (!data.url || data.url.indexOf('auth-callback') === -1) return;
+            console.log('[Auth] Deep link alindi:', data.url);
+
+            var urlParts = data.url.split('?');
+            if (urlParts.length < 2) return;
+            var params = new URLSearchParams(urlParts[1]);
+            var accessToken = params.get('access_token');
+            var refreshToken = params.get('refresh_token');
+
+            if (!accessToken || !refreshToken) {
+                console.warn('[Auth] Deep link token eksik');
+                return;
+            }
+
+            // Browser'i kapat
+            if (window.Capacitor.Plugins.Browser) {
+                try { window.Capacitor.Plugins.Browser.close(); } catch(e) {}
+            }
+
+            // Session'i ayarla
+            window.supabaseClient.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken
+            }).then(function(result) {
+                if (result.error) {
+                    console.error('[Auth] setSession hatasi:', result.error.message);
+                    return;
+                }
+                console.log('[Auth] Deep link ile session kuruldu');
+
+                // Profil kontrol et → home veya birth form'a yonlendir
+                var userId = result.data && result.data.session && result.data.session.user ? result.data.session.user.id : null;
+                if (userId && window.supabaseClient) {
+                    window.supabaseClient.from('profiles').select('*').eq('id', userId).single()
+                        .then(function(profRes) {
+                            var prof = profRes.data;
+                            if (prof && (prof.full_name || prof.name) && prof.birth_date) {
+                                localStorage.setItem('numerael_user_data', JSON.stringify({
+                                    name: prof.full_name || prof.name,
+                                    birthDate: prof.birth_date,
+                                    birthTime: prof.birth_time || '',
+                                    birthPlace: prof.birth_place || '',
+                                    gender: prof.gender || 'unknown',
+                                    avatarUrl: prof.avatar_url || ''
+                                }));
+                                window.location.href = 'mystic_numerology_home_1.html';
+                            } else {
+                                window.location.href = 'data-ready_birth_form.html';
+                            }
+                        })
+                        .catch(function() {
+                            window.location.href = 'data-ready_birth_form.html';
+                        });
+                } else {
+                    window.location.href = 'data-ready_birth_form.html';
+                }
+            }).catch(function(err) {
+                console.error('[Auth] Deep link setSession hatasi:', err);
+            });
         });
     }
 });

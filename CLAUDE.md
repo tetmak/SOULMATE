@@ -26,7 +26,7 @@ npm run cap:open:ios
 ## Mimari
 
 ### Frontend (Framework yok)
-- ~39 HTML sayfası proje kökünde, her biri kendi inline `<script>` bloklarına sahip
+- ~42 HTML sayfası proje kökünde, her biri kendi inline `<script>` bloklarına sahip
 - Paylaşılan JS modülleri `<script src="js/...">` tag'leriyle yüklenir (bundler/import yok)
 - Tüm JS `var` kullanır ve `window` objesine bağlar — ES module yok
 - Tailwind CSS runtime JIT (`js/tailwind.min.js`)
@@ -37,9 +37,10 @@ npm run cap:open:ios
 | Modül | Export | Rol |
 |-------|--------|-----|
 | `supabase-config.js` | `window.supabaseClient` | Supabase client oluşturur — her şeyden önce yüklenmeli |
-| `auth.js` | `window.auth` | Kayıt/giriş/çıkış, session recovery (`INITIAL_SESSION`), sayfa yönlendirme |
-| `premium.js` | `window.premium` | Abonelik yönetimi: Paddle (web) + Play Billing (native), paywall UI, feature gate |
+| `auth.js` | `window.auth` | Kayıt/giriş/çıkış, Google/Apple OAuth (native Browser plugin), deep link handler, session recovery |
+| `premium.js` | `window.premium` | Abonelik yönetimi: Paddle (web) + Play Billing (Android) + Apple IAP (iOS), paywall UI, feature gate |
 | `play-billing.js` | `window.billing` | Google Play Billing Library doğrudan entegrasyon (native Android satın alma) |
+| `apple-billing.js` | `window.appleBilling` | Apple StoreKit 2 entegrasyonu (native iOS satın alma) |
 | `api-base.js` | `window.__NUMERAEL_API_BASE` | API base URL — web'de boş, native'de Vercel URL |
 | `numerology-engine.js` | `window.NumerologyEngine` | Pisagor numeroloji hesaplamaları (Türkçe karakter desteği), AI analiz |
 | `discovery-engine.js` | `window.DiscoveryEngine` | Cosmic Match: günlük eşleştirme, streak sistemi, reveal gating |
@@ -56,11 +57,13 @@ npm run cap:open:ios
 | `avatar-upload.js` | `window.avatarUpload` | Fotoğraf seçme (Capacitor Camera / file input) + Supabase Storage upload |
 | `bottom-nav.js` | — | Alt navigasyon barı |
 | `accordion-ai.js` | — | Accordion AI içerik yükleme |
+| `theme-engine.js` | `window.themeEngine` | Açık/koyu tema yönetimi |
+| `i18n-engine.js` | `window.i18n` | Çoklu dil desteği (TR, EN, vb.) |
 
 ### Backend
 
 #### Supabase
-- **Auth**: Email/password + Google OAuth
+- **Auth**: Email/password + Google OAuth + Apple OAuth
 - **Session key**: `numerael-auth-token`
 - **URL**: `https://cxkyyifqxbwidseofbgk.supabase.co`
 
@@ -80,6 +83,7 @@ npm run cap:open:ios
 | `connections` | Bidirectional bağlantılar |
 | `messages` | Kullanıcılar arası mesajlar (realtime) |
 | `notifications` | Bildirimler (connection_request, new_message, limit_hit) |
+| `usage_counters` | Aylık/günlük özellik kullanım sayaçları |
 
 #### Supabase Storage
 - **`avatars` bucket**: Kullanıcı profil fotoğrafları. RLS ile her kullanıcı kendi klasörüne yazar/okur.
@@ -92,13 +96,28 @@ Tüm tablolarda RLS (Row Level Security) aktif. SQL şemaları:
 
 #### Vercel Serverless API (`api/`)
 
+Vercel Hobby planı 12 serverless function limitine sahip. Catch-all router pattern ile 21 endpoint tek fonksiyonda çalışır.
+
+**Standalone fonksiyonlar** (her biri ayrı serverless function):
 | Endpoint | Rol |
 |----------|-----|
 | `openai.js` | OpenAI proxy — API key server-side eklenir |
 | `paddle-webhook.js` | Paddle webhook handler — abonelik olaylarını Supabase'e yazar |
-| `revenuecat-webhook.js` | RevenueCat webhook handler (eski, artık frontend'den çağrılmıyor) |
+| `revenuecat-webhook.js` | RevenueCat webhook handler (eski) |
 | `delete-account.js` | Hesap silme bilgi sayfası (app store gereksinimi) |
 | `privacy-policy.js` | Gizlilik politikası sayfası (app store gereksinimi) |
+| `[...path].js` | Catch-all router — 21 endpoint'i tek fonksiyon olarak yönetir |
+
+**Catch-all router altındaki handler'lar** (`api/_handlers/`):
+- `admin-content.js`, `admin-reports.js`, `admin-stats.js`, `admin-users.js`
+- `account-delete.js`, `account-export.js`
+- `blocks.js`, `follow.js`
+- `gamification-leaderboard.js`, `gamification-xp.js`
+- `messages-report.js`, `messages-send.js`
+- `notifications-create.js`
+- `post-comment.js`, `post-detail.js`, `post-react.js`, `post-report.js`, `posts.js`
+- `search.js`
+- `subscription-status.js`, `verify-subscription.js`
 
 **Vercel Environment Variables**:
 - `OPENAI_API_KEY` — OpenAI API anahtarı
@@ -124,14 +143,30 @@ Tüm tablolarda RLS (Row Level Security) aktif. SQL şemaları:
 - `@capacitor/core`, `@capacitor/android`, `@capacitor/ios`
 - `@capacitor/splash-screen`, `@capacitor/status-bar`
 - `@capacitor/camera` — Avatar fotoğraf seçimi için
-- `PlayBillingPlugin` — Custom native plugin (Google Play Billing Library)
+- `@capacitor/browser` — Native OAuth (Google/Apple) için harici tarayıcı
+- `@capacitor/app` — Deep link dinleme (OAuth callback)
+- `@capacitor/local-notifications` — Yerel bildirimler
+- `PlayBillingPlugin` — Custom native Android plugin (Google Play Billing Library)
+- `AppleIAPPlugin` — Custom native iOS plugin (StoreKit 2)
+
+#### Native Plugin Dosyaları
+- **Android**: `android/app/src/main/java/com/numerael/soulmate/PlayBillingPlugin.java`
+- **iOS**: `ios/App/App/AppleIAPPlugin.swift`
 
 ## Ödeme Sistemi
 
-### Dual Platform Yaklaşım
+### Tri-Platform Yaklaşım
 - **Web**: Paddle.js v2 overlay checkout
 - **Native (Android)**: Google Play Billing Library (doğrudan, `PlayBillingPlugin` native bridge)
-- **Native (iOS)**: Henüz entegre edilmedi
+- **Native (iOS)**: Apple StoreKit 2 (doğrudan, `AppleIAPPlugin` native bridge)
+
+### Platform Algılama (premium.js)
+```javascript
+// _getNativeBilling() fonksiyonu:
+// iOS → window.appleBilling
+// Android → window.billing
+// Web → null
+```
 
 ### Paddle (Web)
 - **Ortam**: Sandbox (test modu)
@@ -144,15 +179,18 @@ Tüm tablolarda RLS (Row Level Security) aktif. SQL şemaları:
 ### Google Play Billing (Native Android)
 - **Ürünler**: `numerael_premium_monthly`, `numerael_premium_yearly`
 - **Entegrasyon**: `js/play-billing.js` → `window.billing` → `PlayBillingPlugin` (Capacitor native bridge)
-- **RevenueCat kaldırıldı** — Doğrudan Google Play Billing Library kullanılıyor
+
+### Apple StoreKit 2 (Native iOS)
+- **Ürünler**: `numerael_premium_monthly`, `numerael_premium_yearly`
+- **Entegrasyon**: `js/apple-billing.js` → `window.appleBilling` → `AppleIAPPlugin` (Capacitor native bridge)
+- **Capabilities**: In-App Purchase + Sign in with Apple (`App.entitlements`)
 
 ### Premium Durum Kontrol Sırası
-1. `EVERYONE_IS_PREMIUM` flag (geçici — Google Developer onayı beklenirken `true`)
-2. localStorage cache (`numerael_premium`) → hızlı, offline çalışır
-3. `window.billing.checkEntitlements()` (Play Billing, sadece native) → gerçek zamanlı store durumu
-4. Supabase `subscriptions` tablosu → tüm platformlar için fallback
-
-**NOT**: `EVERYONE_IS_PREMIUM = true` geçici flag'i `premium.js` içinde aktif. Tüm kullanıcılar şu an premium olarak işlem görüyor.
+1. `EVERYONE_IS_PREMIUM` flag (geçici — `false` olarak ayarlandı)
+2. Server-side kontrol: `/api/subscription-status` endpoint
+3. Native billing: `_getNativeBilling().checkEntitlements()` (iOS veya Android)
+4. localStorage cache (`numerael_premium`) → hızlı, offline çalışır
+5. Supabase `subscriptions` tablosu → tüm platformlar için fallback
 
 ### Fiyatlandırma
 - Aylık: ₺79.99/ay
@@ -161,8 +199,7 @@ Tüm tablolarda RLS (Row Level Security) aktif. SQL şemaları:
 ### Free Limitler
 - 3 bağlantı (kendi profil + 2 arkadaş)
 - Ayda 2 uyumluluk analizi
-- Ayda 5 niyet (manifest portal)
-- Günde 1 niyet (tüm kullanıcılar)
+- Ayda 0 manifest (premium özellik), günde 1 niyet (tüm kullanıcılar)
 - Deep Insight sadece 1. sayfa
 - AI günlük rehber: yok
 - Cosmic Match reveal: yok
@@ -191,6 +228,18 @@ Sayfalar auth (sign_up, splash, onboarding) veya korumalı olarak sınıflandır
 
 **authReady promise**: `auth.whenReady()` — diğer sayfalar session kontrolünden önce bunu beklemeli.
 
+### Native OAuth Akışı (Google & Apple)
+1. `auth.signInWithGoogle()` veya `auth.signInWithApple()` çağrılır
+2. Native platformda `@capacitor/browser` ile harici tarayıcı açılır (Chrome Custom Tabs / SFSafariVC)
+3. Supabase OAuth authorize URL'sine implicit flow (`response_type=token`) ile yönlendirilir
+4. Başarılı auth sonrası `auth-callback.html` (Vercel'de hosted) sayfasına yönlendirilir
+5. `auth-callback.html` token'ları URL hash'ten çıkarır ve deep link ile uygulamaya geri gönderir
+6. `auth.js`'deki deep link handler (`appUrlOpen`) token'ları yakalar
+7. `supabaseClient.auth.setSession()` ile session kurulur
+8. Profil kontrol → ana sayfa veya doğum formu
+
+**Deep link scheme**: `com.numerael.soulmate://auth-callback?access_token=...&refresh_token=...`
+
 ## Native Platform Algılama
 
 `api-base.js` ve çoğu engine native ortamı şu şekilde algılar:
@@ -204,6 +253,11 @@ var isNative = window.location.protocol === 'capacitor:' ||
                 window.Capacitor.isNativePlatform());
 ```
 Native'de API çağrıları `https://soulmate-kohl.vercel.app` üzerinden gider.
+
+### iOS/Android Platform Ayrımı
+```javascript
+var platform = window.Capacitor.getPlatform(); // 'ios', 'android', 'web'
+```
 
 ## AI Entegrasyonu
 
@@ -224,7 +278,7 @@ Native'de API çağrıları `https://soulmate-kohl.vercel.app` üzerinden gider.
 ### XP Kaynakları
 - Uygulama açma: 5 XP, günlük okuma: 10, uyumluluk: 20, arkadaş ekle: 25, streak günü: 15, görev tamamla: 30, tüm görevler: 100 bonus
 
-### NBP = XP × 0.7
+### NBP = XP x 0.7
 - Rütbe yükselmesi ödül verir (premium günleri)
 - Her gün 3 rastgele günlük görev atanır
 - Tüm görevler tamamlanınca Kozmik Sandık açılır
@@ -260,9 +314,10 @@ Native'de API çağrıları `https://soulmate-kohl.vercel.app` üzerinden gider.
 | `index.html` | Splash'e yönlendirme |
 | `mystic_splash_screen.html` | Giriş splash ekranı |
 | `branded_celestial_splash_screen.html` | Markalı splash ekranı |
-| `mystic_sign_up_screen.html` | Kayıt/giriş |
+| `mystic_sign_up_screen.html` | Kayıt/giriş (Email + Google + Apple) |
 | `cosmic_onboarding_welcome.html` | Onboarding |
 | `data-ready_birth_form.html` | Doğum tarihi/isim formu |
+| `auth-callback.html` | OAuth callback bridge (Vercel hosted, deep link yönlendirme) |
 | `mystic_numerology_home_1.html` | Ana sayfa |
 | `daily_spiritual_guide.html` | Günlük ruhsal rehber |
 | `daily_number_deep_dive.html` | Günlük sayı derinlemesine |
@@ -306,18 +361,19 @@ Native'de API çağrıları `https://soulmate-kohl.vercel.app` üzerinden gider.
 |---------|--------|
 | `numerael-auth-token` | Supabase session |
 | `numerael_user_data` | Kullanıcı profil verisi (name, birthDate, gender) |
-| `numerael_premium` | Premium cache (active, plan, expires_at, source) |
+| `numerael_premium` | Premium cache (active, plan, expires_at, source, store) |
 | `numerael_gamification` | Gamification state (NBP, XP, quests, badges) |
 | `numerael_discovery_opted_in` | Cosmic Match opt-in durumu |
 | `numerael_connections_{userId}` | Arkadaş bağlantıları |
 | `numerael_compat_data` | Uyumluluk analiz verileri |
 | `numerael_compat_ai_v2__*` | Uyumluluk AI cache |
-| `numerael_usage_{feature}_{YYYY-MM}` | Aylık feature kullanım sayacı |
-| `numerael_usage_{feature}_{YYYY-MM-DD}` | Günlük feature kullanım sayacı |
+| `numerael_usage_{uid}_{feature}_{YYYY-MM}` | Aylık feature kullanım sayacı |
+| `numerael_usage_{uid}_{feature}_{YYYY-MM-DD}` | Günlük feature kullanım sayacı |
 
 ## Dil
 
-Tüm kullanıcı arayüzü, bazı modüllerdeki değişken isimleri ve dokümantasyon **Türkçe**. Console log prefix'leri İngilizce: `[Premium]`, `[Auth]`, `[Billing]`, `[Avatar]`, `[Gamification]`, `[Discovery]`, `[Streak]`, `[Match]`.
+- Tüm kullanıcı arayüzü **çoklu dil destekli** (`i18n-engine.js`): Türkçe (varsayılan), İngilizce, ve diğer diller
+- Console log prefix'leri İngilizce: `[Premium]`, `[Auth]`, `[Billing]`, `[AppleBilling]`, `[Avatar]`, `[Gamification]`, `[Discovery]`, `[Streak]`, `[Match]`
 
 ## Kod Kuralları
 
@@ -327,3 +383,24 @@ Tüm kullanıcı arayüzü, bazı modüllerdeki değişken isimleri ve dokümant
 - **Native API çağrıları**: Her zaman `API_BASE + '/api/...'` pattern'i kullan
 - **Türkçe karakter desteği**: `[A-ZÇĞİIÖŞÜ]` regex pattern'i kullan
 - **Supabase RLS**: Yeni tablo eklerken RLS policy'lerini unutma
+- **iOS/Android platform ayrımı**: `window.Capacitor.getPlatform()` kullan
+
+## iOS App Store Yapılandırması
+
+### Entitlements (`ios/App/App/App.entitlements`)
+- `com.apple.developer.in-app-payments` — In-App Purchase capability
+- `com.apple.developer.applesignin` — Sign in with Apple capability
+
+### Info.plist Güncellemeleri
+- **CFBundleDisplayName**: `Soulnum`
+- **CFBundleURLTypes**: `com.numerael.soulmate` scheme (deep link)
+- **ITSAppUsesNonExemptEncryption**: `false`
+- **NSCameraUsageDescription**: Profil fotoğrafı çekmek için
+- **NSPhotoLibraryUsageDescription**: Profil fotoğrafı seçmek için
+
+### App Store Connect Gereksinimleri
+- App Icons: `ios/App/App/Assets.xcassets/AppIcon.appiconset/`
+- Privacy Policy URL: `https://soulmate-kohl.vercel.app/api/privacy-policy`
+- Account Deletion URL: `https://soulmate-kohl.vercel.app/api/delete-account`
+- In-App Purchase ürünleri App Store Connect'te oluşturulmalı
+- Apple Sign-In Supabase dashboard'dan yapılandırılmalı

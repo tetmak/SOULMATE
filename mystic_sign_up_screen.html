@@ -398,11 +398,16 @@
                 });
             }
 
-            // Apple Sign In (coming soon)
+            // Apple Sign In
             if (btnApple) {
-                btnApple.addEventListener('click', function () {
+                btnApple.addEventListener('click', async function () {
                     var _t = window.i18n ? window.i18n.t : function(k,f){return f||k;};
-                    showToast(_t('signup.apple_coming_soon', 'Apple ile giri\u015F yak\u0131nda aktif olacak!'));
+                    try {
+                        await window.auth.signInWithApple();
+                        // Supabase will redirect to Apple consent screen
+                    } catch (e) {
+                        alert(_t('common.error', 'Hata') + ': ' + e.message);
+                    }
                 });
             }
         })();

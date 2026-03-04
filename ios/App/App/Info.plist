@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Numerael</string>
+        <string>Soulnum</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -48,5 +48,16 @@
 	<string>Profil fotoğrafını çekmek için kameranıza erişim gereklidir.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Profil fotoğrafı seçmek için galerinize erişim gereklidir.</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.numerael.soulmate</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>com.numerael.soulmate</string>
+		</dict>
+	</array>
 </dict>
 </plist>
