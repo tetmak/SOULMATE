@@ -1,7 +1,7 @@
-import { getSupabaseAdmin } from './_lib/supabase.js';
-import { verifyAuth, requireAdmin } from './_lib/auth.js';
-import { handleCors } from './_lib/cors.js';
-import { checkRateLimit } from './_lib/rate-limit.js';
+import { getSupabaseAdmin } from '../_lib/supabase.js';
+import { verifyAuth, requireAdmin } from '../_lib/auth.js';
+import { handleCors } from '../_lib/cors.js';
+import { checkRateLimit } from '../_lib/rate-limit.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;

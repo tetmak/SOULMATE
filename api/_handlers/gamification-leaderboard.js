@@ -1,6 +1,6 @@
-import { handleCors } from './_lib/cors.js';
-import { verifyAuth, requireAuth } from './_lib/auth.js';
-import { getSupabaseAdmin } from './_lib/supabase.js';
+import { handleCors } from '../_lib/cors.js';
+import { verifyAuth, requireAuth } from '../_lib/auth.js';
+import { getSupabaseAdmin } from '../_lib/supabase.js';
 
 /**
  * GET /api/gamification-leaderboard?period=weekly|alltime&limit=<int>

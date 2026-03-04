@@ -1,7 +1,7 @@
-import { getSupabaseAdmin } from './_lib/supabase.js';
-import { verifyAuth, requireAuth } from './_lib/auth.js';
-import { handleCors } from './_lib/cors.js';
-import { validateUUID } from './_lib/validate.js';
+import { getSupabaseAdmin } from '../_lib/supabase.js';
+import { verifyAuth, requireAuth } from '../_lib/auth.js';
+import { handleCors } from '../_lib/cors.js';
+import { validateUUID } from '../_lib/validate.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;

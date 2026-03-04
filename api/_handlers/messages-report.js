@@ -1,7 +1,7 @@
-import { handleCors } from './_lib/cors.js';
-import { verifyAuth, requireAuth } from './_lib/auth.js';
-import { getSupabaseAdmin } from './_lib/supabase.js';
-import { sanitizeText, validateUUID, validateEnum } from './_lib/validate.js';
+import { handleCors } from '../_lib/cors.js';
+import { verifyAuth, requireAuth } from '../_lib/auth.js';
+import { getSupabaseAdmin } from '../_lib/supabase.js';
+import { sanitizeText, validateUUID, validateEnum } from '../_lib/validate.js';
 
 const ALLOWED_REASONS = ['spam', 'harassment', 'inappropriate', 'scam', 'other'];
 

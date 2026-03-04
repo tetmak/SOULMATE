@@ -1,8 +1,8 @@
-import { handleCors } from './_lib/cors.js';
-import { verifyAuth, requireAuth } from './_lib/auth.js';
-import { getSupabaseAdmin } from './_lib/supabase.js';
-import { checkRateLimit } from './_lib/rate-limit.js';
-import { sanitizeText, validateUUID } from './_lib/validate.js';
+import { handleCors } from '../_lib/cors.js';
+import { verifyAuth, requireAuth } from '../_lib/auth.js';
+import { getSupabaseAdmin } from '../_lib/supabase.js';
+import { checkRateLimit } from '../_lib/rate-limit.js';
+import { sanitizeText, validateUUID } from '../_lib/validate.js';
 
 /**
  * POST /api/messages-send

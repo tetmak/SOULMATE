@@ -1,8 +1,8 @@
-import { handleCors } from './_lib/cors.js';
-import { verifyAuth, requireAuth } from './_lib/auth.js';
-import { getSupabaseAdmin } from './_lib/supabase.js';
-import { checkRateLimit } from './_lib/rate-limit.js';
-import { validateUUID, validateEnum } from './_lib/validate.js';
+import { handleCors } from '../_lib/cors.js';
+import { verifyAuth, requireAuth } from '../_lib/auth.js';
+import { getSupabaseAdmin } from '../_lib/supabase.js';
+import { checkRateLimit } from '../_lib/rate-limit.js';
+import { validateUUID, validateEnum } from '../_lib/validate.js';
 
 const ALLOWED_TYPES = ['connection_request', 'connection_accepted', 'new_message', 'limit_hit', 'xp_earned', 'rank_up'];
 

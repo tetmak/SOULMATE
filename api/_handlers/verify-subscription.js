@@ -8,11 +8,11 @@
  * Response: { verified: true/false, plan, expiresAt }
  */
 
-import { handleCors } from './_lib/cors.js';
-import { verifyAuth, requireAuth } from './_lib/auth.js';
-import { getSupabaseAdmin } from './_lib/supabase.js';
-import { checkRateLimit } from './_lib/rate-limit.js';
-import { validateEnum, sanitizeText } from './_lib/validate.js';
+import { handleCors } from '../_lib/cors.js';
+import { verifyAuth, requireAuth } from '../_lib/auth.js';
+import { getSupabaseAdmin } from '../_lib/supabase.js';
+import { checkRateLimit } from '../_lib/rate-limit.js';
+import { validateEnum, sanitizeText } from '../_lib/validate.js';
 
 export default async function handler(req, res) {
     if (handleCors(req, res)) return;

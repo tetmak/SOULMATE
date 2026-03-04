@@ -1,8 +1,8 @@
-import { handleCors } from './_lib/cors.js';
-import { verifyAuth, requireAuth } from './_lib/auth.js';
-import { getSupabaseAdmin } from './_lib/supabase.js';
-import { checkRateLimit } from './_lib/rate-limit.js';
-import { validateEnum } from './_lib/validate.js';
+import { handleCors } from '../_lib/cors.js';
+import { verifyAuth, requireAuth } from '../_lib/auth.js';
+import { getSupabaseAdmin } from '../_lib/supabase.js';
+import { checkRateLimit } from '../_lib/rate-limit.js';
+import { validateEnum } from '../_lib/validate.js';
 
 const XP_AMOUNTS = { app_open: 5, daily_reading: 10, compatibility: 20, add_connection: 25, cosmic_match_view: 10, streak_day: 15, quest_complete: 30, all_quests_bonus: 100, share_card: 20, reveal_match: 15, manifest_set: 10, wheel_spin: 10 };
 const ALLOWED_ACTIONS = Object.keys(XP_AMOUNTS);
