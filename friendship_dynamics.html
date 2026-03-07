@@ -589,11 +589,34 @@ document.addEventListener('DOMContentLoaded', async function() {
         personality: calcPers(friendName)
     };
 
+    // ─── ARKADAŞLIK AĞIRLIKLARI ────────────────────────────
+    // Romantik: LP %35 + Soul %30 + Pers %20 + Exp %15 (duygusal bağ ağırlıklı)
+    // Arkadaşlık: Exp %30 + Pers %30 + LP %25 + Soul %15 (iletişim & sosyal ağırlıklı)
     var lpScore = scaleScore(getCompatScore(user.lifePath, fri.lifePath));
     var soulScore = scaleScore(getCompatScore(user.soulUrge, fri.soulUrge));
     var persScore = scaleScore(getCompatScore(user.personality, fri.personality));
     var expScore = scaleScore(getCompatScore(user.expression, fri.expression));
-    var rawOverall = Math.round(getCompatScore(user.lifePath, fri.lifePath) * 0.35 + getCompatScore(user.soulUrge, fri.soulUrge) * 0.30 + getCompatScore(user.personality, fri.personality) * 0.20 + getCompatScore(user.expression, fri.expression) * 0.15);
+
+    // İletişim harmonisi bonusu: aynı veya tamamlayıcı Expression sayıları
+    var commBonus = 0;
+    if (user.expression === fri.expression) commBonus = 5;
+    else if (Math.abs(user.expression - fri.expression) <= 2) commBonus = 3;
+    else if ((user.expression + fri.expression) === 10) commBonus = 4; // tamamlayıcı çift
+
+    // Kişilik rezonansı bonusu: benzer dış enerji
+    var persBonus = 0;
+    if (user.personality === fri.personality) persBonus = 4;
+    else if (Math.abs(user.personality - fri.personality) <= 1) persBonus = 2;
+
+    var rawOverall = Math.round(
+        getCompatScore(user.expression, fri.expression) * 0.30 +
+        getCompatScore(user.personality, fri.personality) * 0.30 +
+        getCompatScore(user.lifePath, fri.lifePath) * 0.25 +
+        getCompatScore(user.soulUrge, fri.soulUrge) * 0.15 +
+        commBonus + persBonus
+    );
+    // Raw'u matris aralığına sınırla (bonus ile 88'i geçebilir)
+    rawOverall = Math.min(88, Math.max(28, rawOverall));
     var overall = scaleScore(rawOverall);
     var bondText = friendBondLabel(overall);
 
@@ -706,6 +729,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     var _aiLangFriend = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
     var FRIENDSHIP_SYSTEM = 'Sen bir Numeroloji Arkadaşlık Uzmanısın. Pisagor sistemini kullanarak iki kişinin arkadaşlık dinamiğini, uyumunu ve büyüme potansiyelini analiz edersin.\n\n' +
+        'ARKADAŞLIK SKORLAMA:\n- İfade (Expression) %30 + Kişilik (Personality) %30 + Yaşam Yolu (Life Path) %25 + Ruh Güdüsü (Soul Urge) %15\n- Arkadaşlıkta iletişim ve sosyal uyum romantik bağdan daha önemli.\n- İletişim harmonisi ve kişilik rezonansı bonusları eklenir.\n\n' +
         'KURAL:\n- ' + _aiLangFriend + '\n- Doğrudan çifte hitap et (siz/ikiniz/aranızdaki).\n- Romantik ilişki analizi YAPMA — bu sadece ARKADASLIK.\n- Vaaz yok. Başlık yok. Sadece düz paragraflar.\n- Somut, keskin, gerçekçi.\n- Her zaman İKİ KİŞİNİN ARASINDAKİ arkadaşlık dinamiğini analiz et.';
 
     var FRIENDSHIP_PROMPTS = {
@@ -753,7 +777,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function friendCacheKey(type) {
         var names = [user.name, fri.name].map(function(n) { return n.toLowerCase().trim().replace(/\s+/g,'_'); }).sort();
-        return 'numerael_friend_ai__' + names[0] + '__' + names[1] + '__' + type;
+        return 'numerael_friend_ai_v2__' + names[0] + '__' + names[1] + '__' + type;
     }
 
     function renderText(text) {
