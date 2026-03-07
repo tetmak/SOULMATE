@@ -35,10 +35,10 @@
         '1-11':68,'2-11':75,'3-11':70,'4-22':78,'6-33':85,'9-11':72,'9-33':80
     };
 
-    // Ham skoru [28,88] → [70,98] aralığına ölçekle (alt limit %70)
+    // Ham skoru [28,88] → [45,98] aralığına ölçekle (gerçekçi dağılım)
     function scaleScore(raw) {
-        var scaled = 70 + (raw - 28) * 28 / 60;
-        return Math.max(70, Math.min(98, Math.round(scaled)));
+        var scaled = 45 + (raw - 28) * 53 / 60;
+        return Math.max(45, Math.min(98, Math.round(scaled)));
     }
 
     function getScore(a, b) { var k=a<=b?a+'-'+b:b+'-'+a; return CM[k]||50; }
@@ -67,7 +67,7 @@
 
     // ─── ARKETIP ETİKETLERİ ──────────────────────────────────
     var ARCHETYPES = {1:'Lider',2:'Diplomat',3:'Yaratıcı',4:'Kurucu',5:'Kaşif',6:'Şifacı',7:'Mistik',8:'Güç',9:'Bilge',11:'İlhamcı',22:'Usta Mimar',33:'Öğretmen'};
-    var BOND_LABELS = {94:'Kozmik Ruh İkizi',89:'Kaderin Birleştirdiği',84:'Yıldız Bağı',79:'Güçlü Rezonans',74:'Uyumlu Titreşim',70:'Potansiyel Bağ',0:'Keşfedilecek Enerji'};
+    var BOND_LABELS = {90:'Kozmik Ruh İkizi',82:'Kaderin Birleştirdiği',74:'Yıldız Bağı',66:'Güçlü Rezonans',58:'Uyumlu Titreşim',50:'Potansiyel Bağ',0:'Keşfedilecek Enerji'};
 
     function bondLabel(score) {
         var keys = Object.keys(BOND_LABELS).map(Number).sort(function(a,b){return b-a;});

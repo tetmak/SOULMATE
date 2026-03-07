@@ -121,10 +121,10 @@
     return base;
   }
 
-  // Ham skoru [28,88] → [70,98] aralığına ölçekle (alt limit %70)
+  // Ham skoru [28,88] → [45,98] aralığına ölçekle (gerçekçi dağılım)
   function scaleScore(raw) {
-    var scaled = 70 + (raw - 28) * 28 / 60;
-    return Math.max(70, Math.min(98, Math.round(scaled)));
+    var scaled = 45 + (raw - 28) * 53 / 60;
+    return Math.max(45, Math.min(98, Math.round(scaled)));
   }
 
   function overallScore(p1, p2) {
@@ -137,30 +137,32 @@
   }
 
   // ─── BAĞLANTI ETİKETLERİ ─────────────────────────────────────
-  // Eşikler 70-98 ölçeklenmiş aralığa göre ayarlandı
+  // Eşikler 45-98 ölçeklenmiş aralığa göre ayarlandı
   function bondLabel(score) {
-    if (score >= 94) return _t('compat.bond_cosmic_twin', 'Kozmik Ruh İkizi');
-    if (score >= 89) return _t('compat.bond_soul_mate', 'İlahi Ruh Eşi');
-    if (score >= 84) return _t('compat.bond_celestial', 'Göksel Birliktelik');
-    if (score >= 79) return _t('compat.bond_karmic', 'Karmik Bağ');
-    if (score >= 74) return _t('compat.bond_growth', 'Büyüme Katalizörü');
+    if (score >= 90) return _t('compat.bond_cosmic_twin', 'Kozmik Ruh İkizi');
+    if (score >= 82) return _t('compat.bond_soul_mate', 'İlahi Ruh Eşi');
+    if (score >= 74) return _t('compat.bond_celestial', 'Göksel Birliktelik');
+    if (score >= 66) return _t('compat.bond_karmic', 'Karmik Bağ');
+    if (score >= 58) return _t('compat.bond_growth', 'Büyüme Katalizörü');
+    if (score >= 50) return _t('compat.bond_discovery', 'Potansiyel Keşif');
     return _t('compat.bond_cosmic_test', 'Kozmik Sınav');
   }
 
   function bondSubLabel(score) {
-    if (score >= 94) return _t('compat.bond_desc_1', 'Sonsuz Bağ · Kader · Aşk');
-    if (score >= 89) return _t('compat.bond_desc_2', 'Ruh Eşi · Kader · Uyum');
-    if (score >= 84) return _t('compat.bond_desc_3', 'Göksel Eşleşme · Uyum');
-    if (score >= 79) return _t('compat.bond_desc_4', 'Karmik Ders · Dönüşüm');
-    if (score >= 74) return _t('compat.bond_desc_5', 'Keşif · Potansiyel · Gelişim');
-    return _t('compat.bond_desc_6', 'Zorluk · Ders · Uyanış');
+    if (score >= 90) return _t('compat.bond_desc_1', 'Sonsuz Bağ · Kader · Aşk');
+    if (score >= 82) return _t('compat.bond_desc_2', 'Ruh Eşi · Kader · Uyum');
+    if (score >= 74) return _t('compat.bond_desc_3', 'Göksel Eşleşme · Uyum');
+    if (score >= 66) return _t('compat.bond_desc_4', 'Karmik Ders · Dönüşüm');
+    if (score >= 58) return _t('compat.bond_desc_5', 'Keşif · Potansiyel · Gelişim');
+    if (score >= 50) return _t('compat.bond_desc_6', 'Zorluk · Ders · Uyanış');
+    return _t('compat.bond_desc_7', 'Karşıtlık · Sınav · Dönüşüm');
   }
 
   function starCount(score) {
-    if (score >= 92) return 5;
-    if (score >= 86) return 4;
-    if (score >= 80) return 3;
-    if (score >= 74) return 2;
+    if (score >= 88) return 5;
+    if (score >= 76) return 4;
+    if (score >= 64) return 3;
+    if (score >= 52) return 2;
     return 1;
   }
 
@@ -358,7 +360,7 @@
     var p1Key = (ctx.p1.name + '_' + (ctx.p1.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
     var p2Key = (ctx.p2.name + '_' + (ctx.p2.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
     var sorted = [p1Key, p2Key].sort();
-    return 'numerael_compat_ai_v3__' + _lang + '__' + sorted[0] + '__' + sorted[1] + '__' + type;
+    return 'numerael_compat_ai_v4__' + _lang + '__' + sorted[0] + '__' + sorted[1] + '__' + type;
   }
 
   // Sync cache getter — loading animasyonunu atlamak için

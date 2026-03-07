@@ -523,7 +523,7 @@
       var p1Key = (ctx.p1.name + '_' + (ctx.p1.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
       var p2Key = (ctx.p2.name + '_' + (ctx.p2.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
       var sorted = [p1Key, p2Key].sort();
-      return 'numerael_compat_ai_v3__' + sorted[0] + '__' + sorted[1] + '__' + type;
+      return 'numerael_compat_ai_v4__' + sorted[0] + '__' + sorted[1] + '__' + type;
     }
 
     // === HARF GRIDI ===
@@ -597,10 +597,11 @@
         // === STAT KARTLARI ===
         var statBond = document.getElementById('stat-bond');
         if (statBond) {
-          if (ctx.overall >= 95) statBond.textContent = 'Kozmik \u0130kiz';
-          else if (ctx.overall >= 88) statBond.textContent = 'Ruh E\u015Fi';
-          else if (ctx.overall >= 80) statBond.textContent = 'G\u00F6ksel Uyum';
-          else if (ctx.overall >= 70) statBond.textContent = 'Karmik Ba\u011F';
+          if (ctx.overall >= 90) statBond.textContent = 'Kozmik \u0130kiz';
+          else if (ctx.overall >= 82) statBond.textContent = 'Ruh E\u015Fi';
+          else if (ctx.overall >= 74) statBond.textContent = 'G\u00F6ksel Uyum';
+          else if (ctx.overall >= 66) statBond.textContent = 'Karmik Ba\u011F';
+          else if (ctx.overall >= 58) statBond.textContent = 'Potansiyel';
           else statBond.textContent = 'Ke\u015Fif';
         }
         var statGrowth = document.getElementById('stat-growth');
