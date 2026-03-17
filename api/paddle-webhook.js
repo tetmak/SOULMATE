@@ -62,14 +62,16 @@ export default async function handler(req, res) {
     if (req.method === 'OPTIONS') return res.status(200).end();
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-    // Webhook imza doğrulama
-    if (PADDLE_WEBHOOK_SECRET) {
-        var signature = req.headers['paddle-signature'] || '';
-        var rawBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
-        if (!verifyPaddleSignature(rawBody, signature)) {
-            console.warn('[Paddle Webhook] Invalid signature');
-            return res.status(401).json({ error: 'Invalid signature' });
-        }
+    // Webhook imza doğrulama — secret yoksa tüm istekleri reddet
+    if (!PADDLE_WEBHOOK_SECRET) {
+        console.error('[Paddle Webhook] PADDLE_WEBHOOK_SECRET not configured — rejecting request');
+        return res.status(500).json({ error: 'Webhook secret not configured' });
+    }
+    var signature = req.headers['paddle-signature'] || '';
+    var rawBody = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+    if (!verifyPaddleSignature(rawBody, signature)) {
+        console.warn('[Paddle Webhook] Invalid signature');
+        return res.status(401).json({ error: 'Invalid signature' });
     }
 
     if (!SUPABASE_SERVICE_KEY) {
@@ -217,6 +219,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true, event: eventType });
     } catch (error) {
         console.error('[Paddle Webhook] Error:', error.message);
-        return res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: 'internal_error' });
     }
 }

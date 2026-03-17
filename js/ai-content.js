@@ -201,7 +201,8 @@
   // ─── Daily Number Deep Dive ───────────────────────────────────────
   async function fillDailyNumberDeepDive() {
     var ctx = getUserContext();
-    var num = document.querySelector('.text-6xl, .text-7xl, .text-8xl')?.textContent?.trim() || '7';
+    var _numEl = document.querySelector('.text-6xl, .text-7xl, .text-8xl');
+    var num = (_numEl && _numEl.textContent) ? _numEl.textContent.trim() : '7';
 
     var descEls = document.querySelectorAll('p.text-white\\/70, p.text-white\\/80, p.text-white\\/60, p.leading-relaxed, p.font-light');
     descEls.forEach(function(el, i) {

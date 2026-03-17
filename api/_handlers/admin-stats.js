@@ -34,6 +34,6 @@ export default async function handler(req, res) {
             aiUsageToday: { requests: aiRequests, tokensUsed: aiTokens }
         });
     } catch(e) {
-        return res.status(500).json({ error: 'stats_failed', message: e.message });
+        return res.status(500).json({ error: 'stats_failed' });
     }
 }

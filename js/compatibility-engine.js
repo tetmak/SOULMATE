@@ -35,7 +35,7 @@
     return headers;
   }
   // ─── i18n HELPER ────────────────────────────────────────────
-  var _t = window.i18n ? window.i18n.t.bind(window.i18n) : function(k,f){return f||k;};
+  function _t(k,f){ return window.i18n ? window.i18n.t(k,f) : (f||k); }
 
   var TABLE = {
     A:1, B:2, C:3, D:4, E:5, F:6, G:7, H:8, I:9,

@@ -168,7 +168,7 @@ function getLastMonday() {
 // ─── Handler ──────────────────────────────────────────
 export default async function handler(req, res) {
     const authHeader = req.headers.authorization;
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && process.env.CRON_SECRET) {
+    if (!process.env.CRON_SECRET || authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -454,6 +454,6 @@ export default async function handler(req, res) {
 
     } catch (e) {
         console.error('[ManifestCron] Error:', e);
-        return res.status(500).json({ error: e.message });
+        return res.status(500).json({ error: 'internal_error' });
     }
 }

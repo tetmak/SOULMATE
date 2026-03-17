@@ -38,7 +38,7 @@ async function createPost(req, res, auth) {
         .select('id, user_id, content, type, visibility, like_count, comment_count, created_at')
         .single();
 
-    if (error) return res.status(500).json({ error: 'create_failed', detail: error.message });
+    if (error) return res.status(500).json({ error: 'create_failed' });
     return res.status(201).json({ success: true, post: data });
 }
 
@@ -103,7 +103,7 @@ async function getFeed(req, res, auth) {
     }
 
     const { data: posts, error } = await query;
-    if (error) return res.status(500).json({ error: 'feed_failed', detail: error.message });
+    if (error) return res.status(500).json({ error: 'feed_failed' });
 
     let result = (posts || []).map(p => {
         const hoursAge = (Date.now() - new Date(p.created_at).getTime()) / (1000 * 60 * 60);

@@ -32,6 +32,6 @@ export default async function handler(req, res) {
         res.setHeader('Content-Disposition', 'attachment; filename=numerael-data-export.json');
         return res.status(200).json(exportData);
     } catch(e) {
-        return res.status(500).json({ error: 'export_failed', message: e.message });
+        return res.status(500).json({ error: 'export_failed' });
     }
 }

@@ -1,4 +1,4 @@
-const NumerologyEngine = (function () {
+var NumerologyEngine = (function () {
   'use strict';
 
   // Native app (Capacitor) ise Vercel production URL'sini kullan
@@ -10,7 +10,7 @@ const NumerologyEngine = (function () {
   var API_BASE = _isNative ? 'https://soulmate-kohl.vercel.app' : '';
 
   // ─── HARF TABLOLARI ───────────────────────────────────────────
-  const CHALDEAN = {
+  var CHALDEAN = {
     A: 1, B: 2, C: 3, D: 4, E: 5, F: 8, G: 3, H: 5, I: 1, J: 1, K: 2, L: 3, M: 4,
     N: 5, O: 7, P: 8, Q: 1, R: 2, S: 3, T: 4, U: 6, V: 6, W: 6, X: 5, Y: 1, Z: 7,
     'Ç': 3, 'Ğ': 3, 'İ': 1, 'I': 1, 'Ö': 7, 'Ş': 3, 'Ü': 6
@@ -18,16 +18,16 @@ const NumerologyEngine = (function () {
 
   // Pisagor sistemi — kullanıcının verdiği tabloya göre (Türkçe karakterler dahil)
   // 1:A,J,S,Ş | 2:B,K,T | 3:C,Ç,L,U,Ü | 4:D,M,V | 5:E,N,W | 6:F,O,Ö,X | 7:G,Ğ,P,Y | 8:H,Q,Z | 9:I,İ,R
-  const PYTHAGOREAN = {
+  var PYTHAGOREAN = {
     A: 1, B: 2, C: 3, D: 4, E: 5, F: 6, G: 7, H: 8, I: 9,
     J: 1, K: 2, L: 3, M: 4, N: 5, O: 6, P: 7, Q: 8, R: 9,
     S: 1, T: 2, U: 3, V: 4, W: 5, X: 6, Y: 7, Z: 8,
     'Ş': 1, 'Ç': 3, 'Ü': 3, 'Ö': 6, 'Ğ': 7, 'İ': 9
   };
 
-  const VOWELS = 'AEIOUİIÖÜ';
+  var VOWELS = 'AEIOUİIÖÜ';
 
-  const NUMBER_MEANINGS = {
+  var NUMBER_MEANINGS = {
     1: { title: 'THE LEADER', desc: 'Bağımsız, öncü, lider ruhlu.' },
     2: { title: 'THE DIPLOMAT', desc: 'Duyarlı, uyumlu, işbirlikçi.' },
     3: { title: 'THE CREATOR', desc: 'Yaratıcı, neşeli, ifade gücü.' },
@@ -45,24 +45,24 @@ const NumerologyEngine = (function () {
   function reduce(n) {
     if (n === 11 || n === 22 || n === 33) return n;
     while (n > 9 && n !== 11 && n !== 22 && n !== 33) {
-      n = String(n).split('').reduce((a, d) => a + parseInt(d), 0);
+      n = String(n).split('').reduce(function(a, d) { return a + parseInt(d); }, 0);
     }
     return n;
   }
 
   function calcNameNumber(name, system) {
-    const table = PYTHAGOREAN; // Sadece Pythagorean kullanılıyor
-    const clean = name.toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ]/g, '');
-    let sum = 0;
-    for (let i = 0; i < clean.length; i++) sum += (table[clean[i]] || 0);
+    var table = PYTHAGOREAN; // Sadece Pythagorean kullanılıyor
+    var clean = name.toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ]/g, '');
+    var sum = 0;
+    for (var i = 0; i < clean.length; i++) sum += (table[clean[i]] || 0);
     return reduce(sum);
   }
 
   function calcSoulUrge(name, system) {
-    const table = PYTHAGOREAN; // Sadece Pythagorean kullanılıyor
-    const clean = name.toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ]/g, '');
-    let sum = 0;
-    for (let i = 0; i < clean.length; i++) {
+    var table = PYTHAGOREAN; // Sadece Pythagorean kullanılıyor
+    var clean = name.toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ]/g, '');
+    var sum = 0;
+    for (var i = 0; i < clean.length; i++) {
       if (VOWELS.includes(clean[i])) sum += (table[clean[i]] || 0);
     }
     return reduce(sum);
@@ -70,14 +70,14 @@ const NumerologyEngine = (function () {
 
   function calcLifePath(dateStr) {
     if (!dateStr) return 1; // Default Life Path
-    const digits = dateStr.replace(/\D/g, '');
+    var digits = dateStr.replace(/\D/g, '');
     if (!digits) return 1;
-    const sum = digits.split('').reduce((a, d) => a + parseInt(d), 0);
+    var sum = digits.split('').reduce(function(a, d) { return a + parseInt(d); }, 0);
     return reduce(sum);
   }
 
   function getLetterValues(name, table) {
-    return name.toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ ]/g, '').split('').map(ch => {
+    return name.toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ ]/g, '').split('').map(function(ch) {
       if (ch === ' ') return { char: ' ', val: null };
       return { char: ch, val: table[ch] || 0 };
     });
@@ -85,17 +85,17 @@ const NumerologyEngine = (function () {
 
   // Helper: Get Consonants for Personality Number
   function calcPersonality(name, system) {
-    const table = PYTHAGOREAN; // Sadece Pythagorean kullanılıyor
-    const letters = getLetterValues(name, table);
-    const sum = letters.filter(l => !VOWELS.includes(l.char) && l.char !== ' ')
-      .reduce((acc, curr) => acc + curr.val, 0);
+    var table = PYTHAGOREAN; // Sadece Pythagorean kullanılıyor
+    var letters = getLetterValues(name, table);
+    var sum = letters.filter(function(l) { return !VOWELS.includes(l.char) && l.char !== ' '; })
+      .reduce(function(acc, curr) { return acc + curr.val; }, 0);
     return reduce(sum);
   }
 
   // Helper: Simplified Moon Phase
   function getMoonPhase(date) {
-    const known = new Date(2000, 0, 6);
-    const age = (((date - known) / 86400000) % 29.53058867 + 29.53058867) % 29.53058867;
+    var known = new Date(2000, 0, 6);
+    var age = (((date - known) / 86400000) % 29.53058867 + 29.53058867) % 29.53058867;
     if (age < 1.85) return 'New Moon';
     if (age < 7.38) return 'Waxing Crescent';
     if (age < 9.22) return 'First Quarter';
@@ -129,72 +129,68 @@ const NumerologyEngine = (function () {
   }
 
   // Card-based user prompts
-  const CARD_PROMPTS = {
-    soul: (ctx) => `Soul Urge (Heart's Desire) analysis for ${ctx.name} (${ctx.gender || 'unknown'}) — Number: ${ctx.soulUrgeNumber}.
-Write about their inner motivation, hidden desires they never tell anyone, love language, and emotional truths.
-Address with gender-appropriate language and reflect the gender perspective in the analysis.
-Writing about Personality or Life Path is STRICTLY forbidden.
-In the tone of number ${ctx.soulUrgeNumber}, 4 short paragraphs, 150-170 words.`,
+  var CARD_PROMPTS = {
+    soul: function(ctx) { return 'Soul Urge (Heart\'s Desire) analysis for ' + ctx.name + ' (' + (ctx.gender || 'unknown') + ') — Number: ' + ctx.soulUrgeNumber + '.\n' +
+      'Write about their inner motivation, hidden desires they never tell anyone, love language, and emotional truths.\n' +
+      'Address with gender-appropriate language and reflect the gender perspective in the analysis.\n' +
+      'Writing about Personality or Life Path is STRICTLY forbidden.\n' +
+      'In the tone of number ' + ctx.soulUrgeNumber + ', 4 short paragraphs, 150-170 words.'; },
 
-    pers: (ctx) => `Personality Number analysis for ${ctx.name} (${ctx.gender || 'unknown'}) — Number: ${ctx.personalityNumber}.
-Write about the image they project outward, what people feel when they first meet ${ctx.gender === 'female' || ctx.gender === 'kadın' ? 'her' : ctx.gender === 'male' || ctx.gender === 'erkek' ? 'him' : 'this person'}, and their social mask.
-Address with gender-appropriate language.
-Writing about Soul Urge or Life Path is STRICTLY forbidden.
-In the tone of number ${ctx.personalityNumber}, 4 short paragraphs, 150-170 words.`,
+    pers: function(ctx) { var gPronoun = (ctx.gender === 'female' || ctx.gender === 'kadın') ? 'her' : (ctx.gender === 'male' || ctx.gender === 'erkek') ? 'him' : 'this person';
+      return 'Personality Number analysis for ' + ctx.name + ' (' + (ctx.gender || 'unknown') + ') — Number: ' + ctx.personalityNumber + '.\n' +
+      'Write about the image they project outward, what people feel when they first meet ' + gPronoun + ', and their social mask.\n' +
+      'Address with gender-appropriate language.\n' +
+      'Writing about Soul Urge or Life Path is STRICTLY forbidden.\n' +
+      'In the tone of number ' + ctx.personalityNumber + ', 4 short paragraphs, 150-170 words.'; },
 
-    lp: (ctx) => `Life Path (Life Purpose) analysis for ${ctx.name} (${ctx.gender || 'unknown'}) — Number: ${ctx.lifePathNumber}.
-Write about their great purpose in this life, where destiny pulls ${ctx.gender === 'female' || ctx.gender === 'kadın' ? 'her' : ctx.gender === 'male' || ctx.gender === 'erkek' ? 'him' : 'this person'}, and the recurring themes throughout their life.
-Address with gender-appropriate language and enrich the analysis from the gender perspective.
-Writing about Soul Urge or Personality is STRICTLY forbidden.
-If ${ctx.lifePathNumber} is a Master Number (11/22/33), especially emphasize its high potential and challenges.
-In the tone of number ${ctx.lifePathNumber}, 4 short paragraphs, 150-170 words.`,
+    lp: function(ctx) { var gPronoun = (ctx.gender === 'female' || ctx.gender === 'kadın') ? 'her' : (ctx.gender === 'male' || ctx.gender === 'erkek') ? 'him' : 'this person';
+      return 'Life Path (Life Purpose) analysis for ' + ctx.name + ' (' + (ctx.gender || 'unknown') + ') — Number: ' + ctx.lifePathNumber + '.\n' +
+      'Write about their great purpose in this life, where destiny pulls ' + gPronoun + ', and the recurring themes throughout their life.\n' +
+      'Address with gender-appropriate language and enrich the analysis from the gender perspective.\n' +
+      'Writing about Soul Urge or Personality is STRICTLY forbidden.\n' +
+      'If ' + ctx.lifePathNumber + ' is a Master Number (11/22/33), especially emphasize its high potential and challenges.\n' +
+      'In the tone of number ' + ctx.lifePathNumber + ', 4 short paragraphs, 150-170 words.'; },
 
-    full: (ctx) => `PREMIUM FULL DESTINY ANALYSIS for ${ctx.name} (Gender: ${ctx.gender || 'unknown'}). Birth Date: ${ctx.birthDate}.
-
-NUMBERS:
-- Life Path (Life Purpose): ${ctx.lifePathNumber}
-- Expression (Name) Number: ${ctx.expressionNumber}
-- Soul Urge (Heart's Desire): ${ctx.soulUrgeNumber}
-- Personality Number: ${ctx.personalityNumber}
-
-${(ctx.lifePathNumber === 11 || ctx.lifePathNumber === 22 || ctx.lifePathNumber === 33) ? `⚠️ MASTER NUMBER DETECTED: Life Path ${ctx.lifePathNumber} is a Master Number. Place this at the center of the analysis, describe both its high potential AND heavy burden in detail.` : ''}
-
-WRITING RULES:
-- CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turkish.'} No preaching. Address as "you" directly.
-- Address with gender-appropriate language and reflect the gender perspective in the analysis (${ctx.gender === 'female' || ctx.gender === 'kadın' ? 'female' : ctx.gender === 'male' || ctx.gender === 'erkek' ? 'male' : 'person'} perspective).
-- No headings, no bullet points. Only flowing plain paragraphs.
-- The tone of number ${ctx.lifePathNumber} dominates — refer to the tone guide.
-- Each paragraph goes deeper than the previous one.
-
-PARAGRAPH STRUCTURE (write exactly these 8 paragraphs):
-
-1. OPENING — The first truth born from the combination of the name ${ctx.name} and Life Path ${ctx.lifePathNumber}. Sharp, striking.
-
-2. LIFE PATH (${ctx.lifePathNumber}) — Describe this number's great purpose in ${ctx.name}'s life, recurring patterns, and which direction destiny pulls them. Concrete and deep.
-
-3. SOUL URGE (${ctx.soulUrgeNumber}) — Inner desires and hidden motivations. Wishes they never confess to anyone. Emotional truths.
-
-4. PERSONALITY MASK (${ctx.personalityNumber}) — The gap or harmony between the image projected to the outside world and the inner world. How do people see ${ctx.name} — is it accurate?
-
-5. EXPRESSION MISSION (${ctx.expressionNumber}) — The true talents and mission they should use throughout life. Not what they should DO, but what they should BE.
-
-6. NUMBER TENSIONS — Conflicts or harmonies between ${ctx.lifePathNumber}, ${ctx.soulUrgeNumber}, and ${ctx.expressionNumber}. When do these numbers help each other, when do they fight?
-
-7. PITFALLS AND DECISIVE MOMENTS — Energy patterns ${ctx.name} must avoid, recurring life mistakes. Be ruthlessly honest.
-
-8. CLOSING — A truth, not a question. End by using ${ctx.name}'s name. 350-400 words total.
-CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turkish.'}`
+    full: function(ctx) {
+      var _aiLang = window.i18n ? window.i18n.getAILang() : 'Write in Turkish.';
+      var gLabel = (ctx.gender === 'female' || ctx.gender === 'kadın') ? 'female' : (ctx.gender === 'male' || ctx.gender === 'erkek') ? 'male' : 'person';
+      var masterNote = (ctx.lifePathNumber === 11 || ctx.lifePathNumber === 22 || ctx.lifePathNumber === 33) ?
+        '\n⚠️ MASTER NUMBER DETECTED: Life Path ' + ctx.lifePathNumber + ' is a Master Number. Place this at the center of the analysis, describe both its high potential AND heavy burden in detail.' : '';
+      return 'PREMIUM FULL DESTINY ANALYSIS for ' + ctx.name + ' (Gender: ' + (ctx.gender || 'unknown') + '). Birth Date: ' + ctx.birthDate + '.\n\n' +
+      'NUMBERS:\n' +
+      '- Life Path (Life Purpose): ' + ctx.lifePathNumber + '\n' +
+      '- Expression (Name) Number: ' + ctx.expressionNumber + '\n' +
+      '- Soul Urge (Heart\'s Desire): ' + ctx.soulUrgeNumber + '\n' +
+      '- Personality Number: ' + ctx.personalityNumber + '\n' +
+      masterNote + '\n\n' +
+      'WRITING RULES:\n' +
+      '- CRITICAL LANGUAGE RULE: ' + _aiLang + ' No preaching. Address as "you" directly.\n' +
+      '- Address with gender-appropriate language and reflect the gender perspective in the analysis (' + gLabel + ' perspective).\n' +
+      '- No headings, no bullet points. Only flowing plain paragraphs.\n' +
+      '- The tone of number ' + ctx.lifePathNumber + ' dominates — refer to the tone guide.\n' +
+      '- Each paragraph goes deeper than the previous one.\n\n' +
+      'PARAGRAPH STRUCTURE (write exactly these 8 paragraphs):\n\n' +
+      '1. OPENING — The first truth born from the combination of the name ' + ctx.name + ' and Life Path ' + ctx.lifePathNumber + '. Sharp, striking.\n\n' +
+      '2. LIFE PATH (' + ctx.lifePathNumber + ') — Describe this number\'s great purpose in ' + ctx.name + '\'s life, recurring patterns, and which direction destiny pulls them. Concrete and deep.\n\n' +
+      '3. SOUL URGE (' + ctx.soulUrgeNumber + ') — Inner desires and hidden motivations. Wishes they never confess to anyone. Emotional truths.\n\n' +
+      '4. PERSONALITY MASK (' + ctx.personalityNumber + ') — The gap or harmony between the image projected to the outside world and the inner world. How do people see ' + ctx.name + ' — is it accurate?\n\n' +
+      '5. EXPRESSION MISSION (' + ctx.expressionNumber + ') — The true talents and mission they should use throughout life. Not what they should DO, but what they should BE.\n\n' +
+      '6. NUMBER TENSIONS — Conflicts or harmonies between ' + ctx.lifePathNumber + ', ' + ctx.soulUrgeNumber + ', and ' + ctx.expressionNumber + '. When do these numbers help each other, when do they fight?\n\n' +
+      '7. PITFALLS AND DECISIVE MOMENTS — Energy patterns ' + ctx.name + ' must avoid, recurring life mistakes. Be ruthlessly honest.\n\n' +
+      '8. CLOSING — A truth, not a question. End by using ' + ctx.name + '\'s name. 350-400 words total.\n' +
+      'CRITICAL LANGUAGE RULE: ' + _aiLang;
+    }
   };
 
   // AI Analysis Fetcher — Pisagor Sistemi
   async function getAIAnalysis(type, number, context) {
     // API key artık /api/openai proxy'si tarafından server-side ekleniyor
 
-    const system = context.system || 'pythagorean';
+    var system = context.system || 'pythagorean';
     var genderLabel = '';
     if (context.gender === 'female' || context.gender === 'kadın') genderLabel = 'female';
     else if (context.gender === 'male' || context.gender === 'erkek') genderLabel = 'male';
-    const numCtx = {
+    var numCtx = {
       name: context.name,
       birthDate: context.birthDate,
       gender: genderLabel,
@@ -204,13 +200,13 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
       personalityNumber: calcPersonality(context.name, system)
     };
 
-    let cardPromptFn = CARD_PROMPTS[type] || CARD_PROMPTS.full;
-    let userPrompt = cardPromptFn(numCtx);
+    var cardPromptFn = CARD_PROMPTS[type] || CARD_PROMPTS.full;
+    var userPrompt = cardPromptFn(numCtx);
 
     // Context Engine varsa — full analiz promptuna bağlam bilgisi ekle
     if (type === 'full' && window.NumerologyContext && context.birthDate) {
       try {
-        const weightedCtx = window.NumerologyContext.buildContext({
+        var weightedCtx = window.NumerologyContext.buildContext({
           life_path: numCtx.lifePathNumber,
           personality_number: numCtx.personalityNumber,
           expression_number: numCtx.expressionNumber,
@@ -219,7 +215,7 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
           birthDate: context.birthDate
         });
 
-        let contextAddition = '\n\nCONTEXT INFORMATION (integrate this into the analysis):\n';
+        var contextAddition = '\n\nCONTEXT INFORMATION (integrate this into the analysis):\n';
         contextAddition += '- Dominant themes: ' + weightedCtx.dominant_themes.join(', ') + '\n';
         contextAddition += '- Tension areas: ' + weightedCtx.tension_areas.join(', ') + '\n';
         contextAddition += '- Intensity: ' + weightedCtx.intensity + '/2.5\n';
@@ -242,7 +238,7 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
 
     try {
       var _h = window.__getAiAuthHeaders ? await window.__getAiAuthHeaders() : { 'Content-Type': 'application/json' };
-      const response = await fetch(API_BASE + '/api/openai', {
+      var response = await fetch(API_BASE + '/api/openai', {
         method: 'POST',
         headers: _h,
         body: JSON.stringify({
@@ -255,8 +251,11 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
           max_tokens: type === 'full' ? 1200 : 400
         })
       });
-      const data = await response.json();
-      return data.choices?.[0]?.message?.content?.trim() || null;
+      var data = await response.json();
+      var choices = data.choices;
+      var msg = choices && choices[0] ? choices[0].message : null;
+      var content = msg ? msg.content : null;
+      return content ? content.trim() : null;
     } catch (e) {
       console.error('AI Analysis Error:', e);
       return null;
@@ -266,55 +265,55 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
   // UI Renderer
   async function renderBreakdown(table, data) {
     if (!data || !data.name) return;
-    const name = data.name.trim();
-    const nameUpper = name.toUpperCase();
+    var name = data.name.trim();
+    var nameUpper = name.toUpperCase();
 
     // 1. Title
-    const nameTitle = document.querySelector('h1.tracking-widest.text-4xl, h1.font-extrabold');
+    var nameTitle = document.querySelector('h1.tracking-widest.text-4xl, h1.font-extrabold');
     if (nameTitle) nameTitle.textContent = nameUpper;
 
     // 2. Letters
-    const letterContainer = document.querySelector('.flex.flex-wrap.justify-center.gap-2.py-6, .flex.flex-wrap.justify-center.gap-2.pt-4.pb-2');
+    var letterContainer = document.querySelector('.flex.flex-wrap.justify-center.gap-2.py-6, .flex.flex-wrap.justify-center.gap-2.pt-4.pb-2');
     if (letterContainer) {
-      const letters = getLetterValues(name, table);
-      letterContainer.innerHTML = letters.filter(l => l.char !== ' ').map(l => {
-        const isVowel = VOWELS.includes(l.char);
-        return `<div class="flex flex-col items-center">
-          <span class="text-primary text-xs font-bold mb-1 letter-glow">${l.val}</span>
-          <div class="w-10 h-14 flex items-center justify-center border ${isVowel ? 'border-primary bg-primary/10' : 'border-primary/30 bg-primary/5'} rounded-lg text-2xl font-bold">${l.char}</div>
-        </div>`;
+      var letters = getLetterValues(name, table);
+      letterContainer.innerHTML = letters.filter(function(l) { return l.char !== ' '; }).map(function(l) {
+        var isVowel = VOWELS.includes(l.char);
+        return '<div class="flex flex-col items-center">' +
+          '<span class="text-primary text-xs font-bold mb-1 letter-glow">' + l.val + '</span>' +
+          '<div class="w-10 h-14 flex items-center justify-center border ' + (isVowel ? 'border-primary bg-primary/10' : 'border-primary/30 bg-primary/5') + ' rounded-lg text-2xl font-bold">' + l.char + '</div>' +
+        '</div>';
       }).join('');
     }
 
     // 3. Numbers Calculation
-    const systemName = (table === PYTHAGOREAN) ? 'pythagorean' : 'chaldean';
-    const soulNum = calcSoulUrge(name, systemName);
-    const expNum = calcNameNumber(name, systemName);
-    const lpNum = calcLifePath(data.birthDate);
-    const persNum = calcPersonality(name, systemName);
+    var systemName = (table === PYTHAGOREAN) ? 'pythagorean' : 'chaldean';
+    var soulNum = calcSoulUrge(name, systemName);
+    var expNum = calcNameNumber(name, systemName);
+    var lpNum = calcLifePath(data.birthDate);
+    var persNum = calcPersonality(name, systemName);
 
     // 4. Expression Display
-    const bigExpEl = document.querySelector('h3.text-7xl');
+    var bigExpEl = document.querySelector('h3.text-7xl');
     if (bigExpEl) bigExpEl.textContent = expNum;
 
-    const expBadge = document.querySelector('.bg-primary.px-3.py-1.rounded-full');
+    var expBadge = document.querySelector('.bg-primary.px-3.py-1.rounded-full');
     if (expBadge) expBadge.textContent = 'Number ' + expNum;
 
     // 5. Accordion Numbers & Archive Detail (Safe Selection)
-    const accordionSection = document.querySelector('section.px-4.space-y-3');
-    const archiveStats = document.querySelector('.flex.items-center.gap-6.mt-4.pt-4'); // Archive page stats
+    var accordionSection = document.querySelector('section.px-4.space-y-3');
+    var archiveStats = document.querySelector('.flex.items-center.gap-6.mt-4.pt-4'); // Archive page stats
 
     if (accordionSection || archiveStats) {
-      const isArchive = !!archiveStats;
+      var isArchive = !!archiveStats;
 
       // Update numbers
       if (isArchive) {
-        const stats = archiveStats.querySelectorAll('.text-2xl.font-bold');
+        var stats = archiveStats.querySelectorAll('.text-2xl.font-bold');
         if (stats[0]) stats[0].textContent = lpNum;   // Life Path
         if (stats[1]) stats[1].textContent = soulNum; // Soul Urge
         if (stats[2]) stats[2].textContent = expNum;  // Destiny/Expression
       } else {
-        const numDisplays = accordionSection.querySelectorAll('.text-3xl.font-black, .text-2xl.font-black');
+        var numDisplays = accordionSection.querySelectorAll('.text-3xl.font-black, .text-2xl.font-black');
         if (numDisplays[0]) numDisplays[0].textContent = soulNum;
         if (numDisplays[1]) numDisplays[1].textContent = persNum;
         if (numDisplays[2]) numDisplays[2].textContent = lpNum;
@@ -322,7 +321,7 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
 
       // Archetypes / Labels
       if (!isArchive) {
-        const archetypeBadges = accordionSection.querySelectorAll('[class*="bg-primary/10"][class*="text-primary"]');
+        var archetypeBadges = accordionSection.querySelectorAll('[class*="bg-primary/10"][class*="text-primary"]');
         if (archetypeBadges[0]) archetypeBadges[0].textContent = (NUMBER_MEANINGS[soulNum] || {}).title || 'THE SOUL';
         if (archetypeBadges[1]) archetypeBadges[1].textContent = (NUMBER_MEANINGS[persNum] || {}).title || 'THE PERSONA';
         if (archetypeBadges[2]) archetypeBadges[2].textContent = (NUMBER_MEANINGS[lpNum] || {}).title || 'THE JOURNEY';
@@ -330,44 +329,44 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
 
       // 6. Content Rendering (Accordions vs Parchment)
       if (isArchive) {
-        const parchment = document.querySelector('.parchment-texture');
+        var parchment = document.querySelector('.parchment-texture');
         if (parchment) {
-          const contentArea = parchment.querySelector('.space-y-8') || parchment;
+          var contentArea = parchment.querySelector('.space-y-8') || parchment;
 
           // Clear and show single big loading
-          contentArea.innerHTML = `<div class="ai-loading" style="padding:60px 40px; text-align:center; opacity:0.7; font-style:italic;">
-              <span class="material-symbols-outlined" style="font-size:52px; display:block; margin:0 auto 20px; color:#cfa117; animation: spin 3s linear infinite;">auto_awesome</span>
-              <p style="color:#cfa117; font-size:15px; margin-bottom:8px; font-weight:600;">Üstat tüm sayıların gizli sesini dinliyor...</p>
-              <p style="font-size:12px; opacity:0.6;">Bu derin okuma 20-30 saniye sürebilir</p>
-            </div>`;
+          contentArea.innerHTML = '<div class="ai-loading" style="padding:60px 40px; text-align:center; opacity:0.7; font-style:italic;">' +
+              '<span class="material-symbols-outlined" style="font-size:52px; display:block; margin:0 auto 20px; color:#cfa117; animation: spin 3s linear infinite;">auto_awesome</span>' +
+              '<p style="color:#cfa117; font-size:15px; margin-bottom:8px; font-weight:600;">Üstat tüm sayıların gizli sesini dinliyor...</p>' +
+              '<p style="font-size:12px; opacity:0.6;">Bu derin okuma 20-30 saniye sürebilir</p>' +
+            '</div>';
 
-          getAIAnalysis('full', 0, { name, birthDate: data.birthDate, gender: data.gender, system: systemName }).then(result => {
+          getAIAnalysis('full', 0, { name: name, birthDate: data.birthDate, gender: data.gender, system: systemName }).then(function(result) {
             if (result) {
-              const paragraphs = result.split(/\n\n+/).filter(p => p.trim());
-              const formatted = paragraphs.map((p, i) => {
-                const text = p.trim();
+              var paragraphs = result.split(/\n\n+/).filter(function(p) { return p.trim(); });
+              var formatted = paragraphs.map(function(p, i) {
+                var text = p.trim();
                 // İlk paragraf büyük harfli drop cap efektiyle
                 if (i === 0) {
-                  return `<p style="margin-bottom:24px; font-size:17px; line-height:1.9;">${text}</p>`;
+                  return '<p style="margin-bottom:24px; font-size:17px; line-height:1.9;">' + text + '</p>';
                 }
-                return `<p style="margin-bottom:20px; font-size:16px; line-height:1.85; text-align:justify;">${text}</p>`;
+                return '<p style="margin-bottom:20px; font-size:16px; line-height:1.85; text-align:justify;">' + text + '</p>';
               }).join('');
-              contentArea.innerHTML = `<div style="padding:32px 24px;">${formatted}</div>`;
+              contentArea.innerHTML = '<div style="padding:32px 24px;">' + formatted + '</div>';
             } else {
-              contentArea.innerHTML = `<p style="padding:40px; color:#ef4444; text-align:center;">Analiz şu an yüklenemiyor. Lütfen tekrar deneyin.</p>`;
+              contentArea.innerHTML = '<p style="padding:40px; color:#ef4444; text-align:center;">Analiz şu an yüklenemiyor. Lütfen tekrar deneyin.</p>';
             }
           });
         }
       } else {
-        const dataMap = [
+        var dataMap = [
           { id: soulNum, label: 'Soul Urge', type: 'soul' },
           { id: persNum, label: 'Personality', type: 'pers' },
           { id: lpNum, label: 'Life Path', type: 'lp' }
         ];
 
-        const cards = accordionSection.querySelectorAll(':scope > div');
-        cards.forEach((card, i) => {
-          let contentDiv = card.querySelector('.dynamic-accordion-content');
+        var cards = accordionSection.querySelectorAll(':scope > div');
+        cards.forEach(function(card, i) {
+          var contentDiv = card.querySelector('.dynamic-accordion-content');
           if (!contentDiv) {
             contentDiv = document.createElement('div');
             contentDiv.className = 'dynamic-accordion-content';
@@ -379,48 +378,47 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
             contentDiv.style.borderTop = '1px solid ' + (document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)');
             card.appendChild(contentDiv);
 
-            const btn = card.querySelector('button');
+            var btn = card.querySelector('button');
             if (btn && !btn.dataset.hasAccordion) {
               btn.dataset.hasAccordion = "true";
-              btn.addEventListener('click', (e) => {
+              btn.addEventListener('click', function(e) {
                 e.preventDefault();
-                const icon = btn.querySelector('.material-symbols-outlined:last-child');
-                const isHidden = contentDiv.style.display === 'none';
+                var icon = btn.querySelector('.material-symbols-outlined:last-child');
+                var isHidden = contentDiv.style.display === 'none';
                 contentDiv.style.display = isHidden ? 'block' : 'none';
                 if (icon) icon.textContent = isHidden ? 'expand_less' : 'expand_more';
               });
             }
           }
 
-          const item = dataMap[i];
+          var item = dataMap[i];
           if (item) {
-          contentDiv.innerHTML = `
-              <div class="ai-content-wrapper" style="padding:16px 20px;">
-                <div class="acc-loading" style="color:rgba(207,161,23,0.5); font-size:13px; font-style:italic; animation: acc-pulse 1.5s infinite; display:flex; align-items:center; gap:8px;">
-                  <span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span>
-                  ✦ Analiz hazırlanıyor...
-                </div>
-                <div class="ai-text" style="display:none; color:${document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.85)' : 'rgba(30,30,30,0.82)'}; font-size:14px; line-height:1.85;"></div>
-              </div>
-            `;
+          contentDiv.innerHTML =
+              '<div class="ai-content-wrapper" style="padding:16px 20px;">' +
+                '<div class="acc-loading" style="color:rgba(207,161,23,0.5); font-size:13px; font-style:italic; animation: acc-pulse 1.5s infinite; display:flex; align-items:center; gap:8px;">' +
+                  '<span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span>' +
+                  '✦ Analiz hazırlanıyor...' +
+                '</div>' +
+                '<div class="ai-text" style="display:none; color:' + (document.documentElement.classList.contains('dark') ? 'rgba(255,255,255,0.85)' : 'rgba(30,30,30,0.82)') + '; font-size:14px; line-height:1.85;"></div>' +
+              '</div>';
 
-            getAIAnalysis(item.type, item.id, { name, birthDate: data.birthDate, gender: data.gender, system: systemName }).then(result => {
-              const wrapper = contentDiv.querySelector('.ai-content-wrapper');
+            getAIAnalysis(item.type, item.id, { name: name, birthDate: data.birthDate, gender: data.gender, system: systemName }).then(function(result) {
+              var wrapper = contentDiv.querySelector('.ai-content-wrapper');
               if (!wrapper) return;
-              const loading = wrapper.querySelector('.acc-loading');
-              const textEl = wrapper.querySelector('.ai-text');
+              var loading = wrapper.querySelector('.acc-loading');
+              var textEl = wrapper.querySelector('.ai-text');
               if (result) {
                 if (loading) loading.style.display = 'none';
                 if (textEl) {
                   textEl.innerHTML = result
                     .split(/\n\n+/)
-                    .filter(p => p.trim())
-                    .map(p => `<p style="margin-bottom:12px;">${p.trim()}</p>`)
+                    .filter(function(p) { return p.trim(); })
+                    .map(function(p) { return '<p style="margin-bottom:12px;">' + p.trim() + '</p>'; })
                     .join('');
                   textEl.style.display = 'block';
                 }
               } else {
-                if (loading) loading.innerHTML = `<span style="color:#ef4444">Analiz şu an yüklenemiyor.</span>`;
+                if (loading) loading.innerHTML = '<span style="color:#ef4444">Analiz şu an yüklenemiyor.</span>';
               }
             });
           }
@@ -430,25 +428,24 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
 
     // Add spin animation to head if not present
     if (!document.getElementById('ai-spin-style')) {
-      const style = document.createElement('style');
+      var style = document.createElement('style');
       style.id = 'ai-spin-style';
-      style.textContent = `
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes acc-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.9} }
-        @keyframes acc-in { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
-        .dynamic-accordion-content .ai-text { animation: acc-in 0.5s ease; }
-      `;
+      style.textContent =
+        '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }' +
+        '@keyframes acc-pulse { 0%,100%{opacity:0.4} 50%{opacity:0.9} }' +
+        '@keyframes acc-in { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }' +
+        '.dynamic-accordion-content .ai-text { animation: acc-in 0.5s ease; }';
       document.head.appendChild(style);
     }
 
-    const headerName = document.querySelector('h2.font-extrabold, h2.text-lg.font-extrabold');
+    var headerName = document.querySelector('h2.font-extrabold, h2.text-lg.font-extrabold');
     if (headerName && !headerName.textContent.includes('&')) headerName.textContent = nameUpper;
   }
 
   async function initBreakdownPage() {
-    const params = new URLSearchParams(window.location.search);
-    const kisiName = params.get('kisi');
-    let data = null;
+    var params = new URLSearchParams(window.location.search);
+    var kisiName = params.get('kisi');
+    var data = null;
 
     // 1. URL parametresiyle başka kişi analizi — çoklu kaynak
     if (kisiName) {
@@ -507,8 +504,6 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
       try { data = JSON.parse(localStorage.getItem('numerael_user_data')); } catch(e) {}
     }
 
-    // 3. Aktif analiz sadece kisi parametresiyle erişildiğinde kullanılır (yukarıda halledildi)
-
     // 3. Son çare — veri yoksa forma yönlendir (mobilde geç yüklenebilir, 1 kez daha dene)
     if (!data || !data.name) {
       // Mobilde localStorage geç yazılabiliyor — 500ms bekle ve tekrar dene
@@ -520,42 +515,43 @@ CRITICAL LANGUAGE RULE: ${window.i18n ? window.i18n.getAILang() : 'Write in Turk
       }
     }
 
-    const getTable = () => {
+    var getTable = function() {
       // Sadece Pythagorean kullanılıyor
       return PYTHAGOREAN;
     };
 
-    document.querySelectorAll('input[name="system-type"]').forEach(radio => {
-      radio.addEventListener('change', () => {
-        const renderFunc = window.renderBreakdown || renderBreakdown;
+    document.querySelectorAll('input[name="system-type"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        var renderFunc = window.renderBreakdown || renderBreakdown;
         renderFunc(getTable(), data);
       });
     });
 
-    const renderFunc = window.renderBreakdown || renderBreakdown;
+    var renderFunc = window.renderBreakdown || renderBreakdown;
     renderFunc(getTable(), data);
   }
 
   // Export
   return {
-    CHALDEAN,
-    PYTHAGOREAN,
-    NUMBER_MEANINGS,
-    calcNameNumber,
-    calcSoulUrge,
-    calcLifePath,
-    calcPersonality,
-    getLetterValues,
-    renderBreakdown,
-    initBreakdownPage
+    CHALDEAN: CHALDEAN,
+    PYTHAGOREAN: PYTHAGOREAN,
+    NUMBER_MEANINGS: NUMBER_MEANINGS,
+    calcNameNumber: calcNameNumber,
+    calcSoulUrge: calcSoulUrge,
+    calcLifePath: calcLifePath,
+    calcPersonality: calcPersonality,
+    getLetterValues: getLetterValues,
+    renderBreakdown: renderBreakdown,
+    initBreakdownPage: initBreakdownPage
   };
 })();
 
+window.NumerologyEngine = NumerologyEngine;
+
 // Auto-run for breakdown + archive pages
-window.addEventListener('load', () => {
-  const path = window.location.pathname;
+window.addEventListener('load', function() {
+  var path = window.location.pathname;
   if (path.includes('name_numerology_breakdown') || path.includes('past_reading_archive_detail')) {
-    setTimeout(() => NumerologyEngine.initBreakdownPage(), 100);
+    setTimeout(function() { NumerologyEngine.initBreakdownPage(); }, 100);
   }
 });
-

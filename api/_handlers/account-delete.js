@@ -62,6 +62,6 @@ export default async function handler(req, res) {
         return res.status(200).json({ success: true, message: 'Account and all data deleted' });
     } catch(e) {
         console.error('[AccountDelete] Error:', e.message);
-        return res.status(500).json({ error: 'deletion_failed', message: e.message });
+        return res.status(500).json({ error: 'deletion_failed' });
     }
 }

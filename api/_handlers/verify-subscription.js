@@ -42,17 +42,18 @@ export default async function handler(req, res) {
             else expiry.setMonth(expiry.getMonth() + 1);
             expiresAt = expiry.toISOString();
 
+            // Play Store doğrulama: purchaseToken zorunlu
             // TODO: Full Google Play Developer API v3 verification
             // When GOOGLE_PLAY_SERVICE_ACCOUNT_KEY is configured:
             // 1. Use google-auth-library to get access token from service account
             // 2. Call androidpublisher/v3/applications/{packageName}/purchases/subscriptions/{subscriptionId}/tokens/{token}
             // 3. Verify purchase state, expiry time, and acknowledgment status
-            // For now, trust the client purchase (native PlayBillingPlugin verifies locally)
-            if (purchaseToken && typeof purchaseToken === 'string') {
-                console.log('[verify-subscription] Play Store stub - userId:', userId, 'productId:', cleanProductId);
-            } else {
-                console.warn('[verify-subscription] Play Store - no token for userId:', userId);
+            // For now, native PlayBillingPlugin local verification'a güven ama token zorunlu
+            if (!purchaseToken || typeof purchaseToken !== 'string' || purchaseToken.length < 10) {
+                console.warn('[verify-subscription] Play Store - missing/invalid token for userId:', userId);
+                return res.status(400).json({ error: 'invalid_purchase_token' });
             }
+            console.log('[verify-subscription] Play Store - userId:', userId, 'productId:', cleanProductId, 'tokenLen:', purchaseToken.length);
             verified = true;
 
         } else if (platform === 'paddle') {
