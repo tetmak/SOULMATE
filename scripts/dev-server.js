@@ -26,7 +26,7 @@ var MIME = {
 
 var server = http.createServer(function(req, res) {
     var url = req.url.split('?')[0];
-    if (url === '/') url = '/mystic_splash_screen.html';
+    if (url === '/') url = '/cosmic_onboarding_welcome.html';
     var filePath = path.join(ROOT, url);
     var ext = path.extname(filePath).toLowerCase();
 

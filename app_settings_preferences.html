@@ -473,10 +473,10 @@
                 btnLogout.addEventListener('click', async function () {
                     try {
                         await window.auth.signOut();
-                        window.location.href = 'mystic_splash_screen.html';
+                        window.location.href = 'mystic_sign_up_screen.html';
                     } catch (e) {
                         console.error('Logout error:', e);
-                        window.location.href = 'mystic_splash_screen.html';
+                        window.location.href = 'mystic_sign_up_screen.html';
                     }
                 });
             }

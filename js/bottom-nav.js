@@ -10,7 +10,6 @@
 
     // ─── Bu sayfalarda nav GÖSTERME ──────────────────────────
     var EXCLUDED = [
-        'mystic_splash_screen.html',
         'branded_celestial_splash_screen.html',
         'cosmic_onboarding_welcome.html',
         'mystic_sign_up_screen.html',
