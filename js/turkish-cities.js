@@ -1403,6 +1403,29 @@
      * Countries: value = country name
      * @param {HTMLSelectElement} selectEl
      */
+    /**
+     * Return flat array of all cities for autocomplete usage.
+     * Each item: {value: string, label: string, group: string}
+     */
+    window.getCityList = function() {
+        var list = [];
+        var i, j, c, d;
+        for (i = 0; i < TURKEY_PROVINCES.length; i++) {
+            c = TURKEY_PROVINCES[i];
+            if (c.districts && c.districts.length > 0) {
+                for (j = 0; j < c.districts.length; j++) {
+                    d = c.districts[j];
+                    list.push({ value: c.name + ' - ' + d.name, label: d.name, group: c.name });
+                }
+            }
+        }
+        for (i = 0; i < WORLD_COUNTRIES.length; i++) {
+            c = WORLD_COUNTRIES[i];
+            list.push({ value: c.name, label: c.name, group: 'Dünya' });
+        }
+        return list;
+    };
+
     window.populateCitySelect = function(selectEl) {
         if (!selectEl) return;
         var i, j, c, d, provGroup, worldGroup, opt;

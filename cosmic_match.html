@@ -105,6 +105,15 @@
     .streak-fire{animation:streak-fire 2s ease-in-out infinite}
     .shimmer-placeholder{background:linear-gradient(90deg,rgba(196,124,32,0.08) 25%,rgba(229,163,84,0.15) 50%,rgba(196,124,32,0.08) 75%);background-size:200% 100%;animation:shimmer 2s ease-in-out infinite}
     /* Leaflet harita dark tema */
+    /* City autocomplete dropdown */
+    .city-autocomplete-dropdown{display:none;position:absolute;top:100%;left:0;right:0;max-height:220px;overflow-y:auto;z-index:50;border-radius:12px;margin-top:4px;border:1px solid rgba(196,124,32,0.2);background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
+    .dark .city-autocomplete-dropdown{background:rgba(20,16,12,0.97);border-color:rgba(196,124,32,0.25)}
+    .city-autocomplete-dropdown.open{display:block}
+    .city-ac-group{padding:6px 12px 2px;font-size:11px;font-weight:700;color:rgba(196,124,32,0.7);text-transform:uppercase;letter-spacing:0.05em}
+    .city-ac-item{padding:8px 12px;font-size:13px;cursor:pointer;color:#1a1a1a;transition:background 0.15s}
+    .dark .city-ac-item{color:#E2D1C3}
+    .city-ac-item:hover,.city-ac-item.active{background:rgba(196,124,32,0.1)}
+    .city-ac-empty{padding:12px;text-align:center;font-size:13px;color:#999}
     .dark #cosmic-map .leaflet-tile-pane{filter:brightness(0.7) invert(1) contrast(1.1) hue-rotate(200deg) saturate(0.3)}
     .dark #cosmic-map .leaflet-control-zoom a{background:rgba(36,24,18,0.9);color:#C47C20;border-color:rgba(196,124,32,0.3)}
     .dark #cosmic-map .leaflet-control-attribution{background:rgba(36,24,18,0.8)!important;color:rgba(255,255,255,0.4)!important;font-size:8px}
@@ -184,9 +193,12 @@
             <span class="material-symbols-outlined text-sm align-middle mr-1">location_on</span>
             <span data-i18n="match.select_city_label">Şehrini Seç</span>
         </label>
-        <select id="city-select" class="w-full py-3 px-4 rounded-xl text-sm font-medium bg-white/5 dark:bg-white/5 border border-gray-200 dark:border-primary/20 text-gray-800 dark:text-[#E2D1C3] focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none" style="background-image:url('data:image/svg+xml;utf8,<svg fill=\&quot;%23C47C20\&quot; viewBox=\&quot;0 0 24 24\&quot; xmlns=\&quot;http://www.w3.org/2000/svg\&quot;><path d=\&quot;M7 10l5 5 5-5z\&quot;/></svg>');background-repeat:no-repeat;background-position:right 12px center;background-size:20px">
-            <option value="" data-i18n="match.select_province">— İl seçin —</option>
-        </select>
+        <div class="relative">
+            <input id="city-input" type="text" autocomplete="off" placeholder="Şehir ara..." data-i18n-placeholder="match.select_province" class="w-full py-3 px-4 pr-10 rounded-xl text-sm font-medium bg-white/5 dark:bg-white/5 border border-gray-200 dark:border-primary/20 text-gray-800 dark:text-[#E2D1C3] focus:outline-none focus:ring-2 focus:ring-primary/40">
+            <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none" style="font-size:20px">search</span>
+            <input type="hidden" id="city-value">
+            <div id="city-dropdown" class="city-autocomplete-dropdown"></div>
+        </div>
     </div>
     <button id="btn-optin" class="w-full max-w-[320px] py-4 rounded-2xl text-sm font-bold uppercase tracking-[0.15em] flex items-center justify-center gap-3 text-white transition active:scale-95 bg-gradient-to-r from-primary/80 to-primary shadow-lg shadow-primary/20 border border-white/10 mb-auto flex-shrink-0">
         <span class="material-symbols-outlined">rocket_launch</span>
@@ -387,9 +399,12 @@
         <!-- Şehir değiştirme paneli -->
         <div id="city-change-panel" style="display:none" class="mb-3 glass-light dark:glass rounded-2xl p-3 flex items-center gap-2">
             <span class="material-symbols-outlined text-primary text-lg">location_on</span>
-            <select id="city-change-select" class="flex-1 py-2 px-3 rounded-xl text-sm font-medium bg-white/10 dark:bg-white/5 border border-gray-200 dark:border-primary/20 text-gray-800 dark:text-[#E2D1C3] focus:outline-none focus:ring-2 focus:ring-primary/40 appearance-none" style="background-image:url('data:image/svg+xml;utf8,<svg fill=\&quot;%23C47C20\&quot; viewBox=\&quot;0 0 24 24\&quot; xmlns=\&quot;http://www.w3.org/2000/svg\&quot;><path d=\&quot;M7 10l5 5 5-5z\&quot;/></svg>');background-repeat:no-repeat;background-position:right 10px center;background-size:18px">
-                <option value="" data-i18n="match.select_province">— İl seçin —</option>
-            </select>
+            <div class="relative flex-1">
+                <input id="city-change-input" type="text" autocomplete="off" placeholder="Şehir ara..." data-i18n-placeholder="match.select_province" class="w-full py-2 px-3 pr-8 rounded-xl text-sm font-medium bg-white/10 dark:bg-white/5 border border-gray-200 dark:border-primary/20 text-gray-800 dark:text-[#E2D1C3] focus:outline-none focus:ring-2 focus:ring-primary/40">
+                <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-primary pointer-events-none" style="font-size:16px">search</span>
+                <input type="hidden" id="city-change-value">
+                <div id="city-change-dropdown" class="city-autocomplete-dropdown"></div>
+            </div>
             <button id="btn-save-city" class="px-3 py-2 rounded-xl text-xs font-bold text-white bg-primary transition active:scale-95" data-i18n="match.save_btn">Kaydet</button>
             <button id="btn-cancel-city" class="px-2 py-2 rounded-xl text-xs text-text-muted transition active:scale-95">
                 <span class="material-symbols-outlined" style="font-size:18px">close</span>
@@ -504,10 +519,84 @@ document.addEventListener('DOMContentLoaded', async function() {
         window.gamification.trackAction('cosmic_match_view');
     }
 
-    // Şehir seçici doldur (ilçeli şehirler optgroup ile)
-    var citySelect = document.getElementById('city-select');
-    if (citySelect && window.populateCitySelect) {
-        window.populateCitySelect(citySelect);
+    // ─── Autocomplete helper ──────────────────────────────
+    var _cityList = window.getCityList ? window.getCityList() : [];
+
+    function initCityAutocomplete(inputEl, dropdownEl, hiddenEl, onSelect) {
+        var MAX_RESULTS = 20;
+
+        function renderDropdown(query) {
+            dropdownEl.innerHTML = '';
+            var q = (query || '').toLowerCase().replace(/\s+/g, ' ').trim();
+            var filtered = [];
+            var i, item;
+
+            if (q.length === 0) {
+                // Show first MAX_RESULTS items
+                for (i = 0; i < _cityList.length && filtered.length < MAX_RESULTS; i++) {
+                    filtered.push(_cityList[i]);
+                }
+            } else {
+                for (i = 0; i < _cityList.length && filtered.length < MAX_RESULTS; i++) {
+                    item = _cityList[i];
+                    if (item.value.toLowerCase().indexOf(q) !== -1 || item.group.toLowerCase().indexOf(q) !== -1) {
+                        filtered.push(item);
+                    }
+                }
+            }
+
+            if (filtered.length === 0) {
+                var empty = document.createElement('div');
+                empty.className = 'city-ac-empty';
+                empty.textContent = 'Sonuç bulunamadı';
+                dropdownEl.appendChild(empty);
+            } else {
+                var lastGroup = '';
+                for (i = 0; i < filtered.length; i++) {
+                    item = filtered[i];
+                    if (item.group !== lastGroup) {
+                        lastGroup = item.group;
+                        var groupEl = document.createElement('div');
+                        groupEl.className = 'city-ac-group';
+                        groupEl.textContent = lastGroup;
+                        dropdownEl.appendChild(groupEl);
+                    }
+                    var row = document.createElement('div');
+                    row.className = 'city-ac-item';
+                    row.textContent = item.group === 'Dünya' ? item.label : item.label + ' (' + item.group + ')';
+                    row.setAttribute('data-value', item.value);
+                    row.addEventListener('mousedown', function(e) {
+                        e.preventDefault();
+                        var val = this.getAttribute('data-value');
+                        inputEl.value = this.textContent;
+                        hiddenEl.value = val;
+                        dropdownEl.classList.remove('open');
+                        if (onSelect) onSelect(val);
+                    });
+                    dropdownEl.appendChild(row);
+                }
+            }
+            dropdownEl.classList.add('open');
+        }
+
+        inputEl.addEventListener('input', function() {
+            hiddenEl.value = '';
+            renderDropdown(this.value);
+        });
+        inputEl.addEventListener('focus', function() {
+            renderDropdown(this.value);
+        });
+        inputEl.addEventListener('blur', function() {
+            setTimeout(function() { dropdownEl.classList.remove('open'); }, 200);
+        });
+    }
+
+    // Şehir autocomplete — opt-in ekranı
+    var cityInput = document.getElementById('city-input');
+    var cityDropdown = document.getElementById('city-dropdown');
+    var cityValue = document.getElementById('city-value');
+    if (cityInput && cityDropdown && cityValue) {
+        initCityAutocomplete(cityInput, cityDropdown, cityValue);
     }
 
     // Opt-in
@@ -516,10 +605,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         document.getElementById('optin-screen').style.display = 'flex';
         document.getElementById('main-content').style.display = 'none';
         document.getElementById('btn-optin').addEventListener('click', async function() {
-            var selectedCity = citySelect ? citySelect.value : '';
+            var selectedCity = cityValue ? cityValue.value : '';
             if (!selectedCity) {
-                citySelect.style.borderColor = '#ef4444';
-                citySelect.focus();
+                cityInput.style.borderColor = '#ef4444';
+                cityInput.focus();
                 return;
             }
             this.disabled = true;
@@ -1059,16 +1148,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     (function() {
         var changeBtn = document.getElementById('btn-change-city');
         var panel = document.getElementById('city-change-panel');
-        var select = document.getElementById('city-change-select');
+        var changeInput = document.getElementById('city-change-input');
+        var changeValue = document.getElementById('city-change-value');
+        var changeDropdown = document.getElementById('city-change-dropdown');
         var saveBtn = document.getElementById('btn-save-city');
         var cancelBtn = document.getElementById('btn-cancel-city');
         var cityLabel = document.getElementById('btn-city-label');
-        if (!changeBtn || !panel || !select) return;
+        if (!changeBtn || !panel || !changeInput) return;
 
-        // Select'i doldur (ilçeli şehirler optgroup ile)
-        if (window.populateCitySelect) {
-            window.populateCitySelect(select);
-        }
+        // Autocomplete init
+        initCityAutocomplete(changeInput, changeDropdown, changeValue);
 
         // Mevcut şehri göster
         function loadCurrentCity() {
@@ -1079,7 +1168,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 .then(function(res) {
                     if (res.data && res.data.city) {
                         cityLabel.textContent = res.data.city;
-                        select.value = res.data.city;
+                        changeInput.value = res.data.city;
+                        changeValue.value = res.data.city;
                     }
                 });
         }
@@ -1096,7 +1186,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Kaydet
         saveBtn.addEventListener('click', async function() {
-            var newCity = select.value;
+            var newCity = changeValue.value;
             if (!newCity) return;
             saveBtn.disabled = true;
             saveBtn.textContent = '...';
