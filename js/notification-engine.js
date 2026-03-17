@@ -219,8 +219,16 @@
             existingBtn.appendChild(badge);
             // Don't inject floating bell
         } else {
-            // Inject floating bell
-            document.body.appendChild(bell);
+            // Only inject floating bell on home and connections pages
+            var path = window.location.pathname.toLowerCase();
+            var allowedPages = ['mystic_numerology_home', 'connections_shared_readings'];
+            var showBell = false;
+            for (var i = 0; i < allowedPages.length; i++) {
+                if (path.indexOf(allowedPages[i]) !== -1) { showBell = true; break; }
+            }
+            if (showBell) {
+                document.body.appendChild(bell);
+            }
         }
         document.body.appendChild(overlay);
         document.body.appendChild(panel);
