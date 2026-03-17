@@ -179,7 +179,8 @@
       '- Master Numbers: 11, 22, 33 — not reduced\n\n' +
       'WRITING RULES:\n' +
       '- ' + _aiLang + ' Address the couple directly (you/both of you/between you).\n' +
-      '- No preaching. No headings. Only plain paragraphs.\n' +
+      '- Use ONLY the exact names provided in the prompt. NEVER invent, substitute, or hallucinate different names. If the prompt says "Onur and Şevval", write about Onur and Şevval — not any other name.\n' +
+      '- Use headings ONLY when the prompt explicitly provides a MANDATORY FORMAT with headings. Otherwise, no headings — only plain paragraphs.\n' +
       '- Always analyze the COUPLE — individual analysis is forbidden.\n' +
       '- Concrete, sharp, realistic.\n' +
       '- Tone: Based on the average of the two numbers: 1-5 energetic/dynamic, 6-9 deep/mystical, if Master Number present heavy/vision-laden.\n\n' +
@@ -360,7 +361,7 @@
     var p1Key = (ctx.p1.name + '_' + (ctx.p1.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
     var p2Key = (ctx.p2.name + '_' + (ctx.p2.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
     var sorted = [p1Key, p2Key].sort();
-    return 'numerael_compat_ai_v4__' + _lang + '__' + sorted[0] + '__' + sorted[1] + '__' + type;
+    return 'numerael_compat_ai_v5__' + _lang + '__' + sorted[0] + '__' + sorted[1] + '__' + type;
   }
 
   // Sync cache getter — loading animasyonunu atlamak için
