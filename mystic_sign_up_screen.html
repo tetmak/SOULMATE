@@ -8,6 +8,7 @@
     <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
     <script src="js/supabase.min.js"></script>
     <script src="js/supabase-config.js"></script>
@@ -17,9 +18,21 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Space Grotesk', sans-serif; min-height: 100dvh; overflow-x: hidden; }
         .cosmic-bg {
-            position: fixed; inset: 0; z-index: 0;
+            position: fixed; inset: -20px; z-index: 0;
             background: url('images/signup-bg.png') center center / cover no-repeat;
+            background-color: #f8f5f0;
+            animation: cosmicDrift 8s ease-in-out infinite;
+        }
+        .dark .cosmic-bg {
+            background: url('images/signup-bg-dark.png') center center / cover no-repeat;
             background-color: #0a0a1a;
+        }
+        @keyframes cosmicDrift {
+            0% { transform: scale(1.06) translate(0, 0); }
+            25% { transform: scale(1.12) translate(-15px, -10px); }
+            50% { transform: scale(1.06) translate(10px, -15px); }
+            75% { transform: scale(1.12) translate(-8px, 10px); }
+            100% { transform: scale(1.06) translate(0, 0); }
         }
         .content { position: relative; z-index: 1; }
         .btn-social {
@@ -62,24 +75,93 @@
         /* Screen transitions */
         .screen { transition: opacity 0.3s ease, transform 0.3s ease; }
         .screen.hidden { display: none; }
+
+        /* Floating stars */
+        .stars-container { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: #FAC638;
+            box-shadow: 0 0 8px 4px rgba(250,198,56,0.6), 0 0 20px 8px rgba(250,198,56,0.3);
+            animation: starFloat linear infinite;
+        }
+        @keyframes starFloat {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            5% { opacity: 1; }
+            50% { opacity: 0.5; }
+            95% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) translateX(50px); opacity: 0; }
+        }
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.6); box-shadow: 0 0 4px 2px rgba(250,198,56,0.3); }
+            50% { opacity: 1; transform: scale(1.4); box-shadow: 0 0 12px 6px rgba(250,198,56,0.6), 0 0 24px 10px rgba(250,198,56,0.2); }
+        }
+        .star-fixed {
+            position: absolute;
+            border-radius: 50%;
+            background: #FAC638;
+            box-shadow: 0 0 6px 3px rgba(250,198,56,0.5);
+            animation: starTwinkle ease-in-out infinite;
+        }
+        /* Dark mode overrides */
+        .dark .btn-apple { background: #fff; color: #000; }
+        .dark .btn-apple:hover { background: #f0f0f0; }
+        .dark .btn-google { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.2); }
+        .dark .btn-google:hover { background: rgba(255,255,255,0.15); }
+        .dark .input-field { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.15); }
+        .dark .input-field::placeholder { color: rgba(255,255,255,0.4); }
+        .dark .otp-input { background: rgba(255,255,255,0.1); color: #fff; border-color: rgba(255,255,255,0.15); }
     </style>
 </head>
 <body>
     <div class="cosmic-bg"></div>
 
+    <!-- Floating Stars -->
+    <div class="stars-container">
+        <!-- Slowly rising stars -->
+        <div class="star" style="width:3px;height:3px;left:10%;bottom:-10%;animation-duration:12s;animation-delay:0s"></div>
+        <div class="star" style="width:2px;height:2px;left:25%;bottom:-10%;animation-duration:16s;animation-delay:2s"></div>
+        <div class="star" style="width:4px;height:4px;left:40%;bottom:-10%;animation-duration:14s;animation-delay:4s"></div>
+        <div class="star" style="width:2px;height:2px;left:60%;bottom:-10%;animation-duration:18s;animation-delay:1s"></div>
+        <div class="star" style="width:3px;height:3px;left:75%;bottom:-10%;animation-duration:13s;animation-delay:6s"></div>
+        <div class="star" style="width:2px;height:2px;left:88%;bottom:-10%;animation-duration:15s;animation-delay:3s"></div>
+        <div class="star" style="width:3px;height:3px;left:50%;bottom:-10%;animation-duration:17s;animation-delay:8s"></div>
+        <div class="star" style="width:2px;height:2px;left:15%;bottom:-10%;animation-duration:20s;animation-delay:5s"></div>
+        <!-- Twinkling fixed stars -->
+        <div class="star-fixed" style="width:3px;height:3px;top:8%;left:20%;animation-duration:3s;animation-delay:0s"></div>
+        <div class="star-fixed" style="width:2px;height:2px;top:15%;right:15%;animation-duration:4s;animation-delay:1.5s"></div>
+        <div class="star-fixed" style="width:2px;height:2px;top:35%;left:8%;animation-duration:3.5s;animation-delay:0.8s"></div>
+        <div class="star-fixed" style="width:3px;height:3px;top:50%;right:12%;animation-duration:4.5s;animation-delay:2s"></div>
+        <div class="star-fixed" style="width:2px;height:2px;top:65%;left:30%;animation-duration:3s;animation-delay:1s"></div>
+        <div class="star-fixed" style="width:2px;height:2px;top:80%;right:25%;animation-duration:5s;animation-delay:0.5s"></div>
+        <div class="star-fixed" style="width:3px;height:3px;top:25%;left:55%;animation-duration:4s;animation-delay:3s"></div>
+        <div class="star-fixed" style="width:2px;height:2px;top:45%;right:35%;animation-duration:3.5s;animation-delay:2.5s"></div>
+    </div>
+
     <!-- ============ SCREEN 1: MAIN LOGIN ============ -->
     <div id="screen-main" class="content screen flex flex-col min-h-screen max-w-[430px] mx-auto px-6">
         <!-- Top bar -->
         <div class="flex items-center justify-between pt-14 pb-4">
-            <div onclick="window.location.href='cosmic_onboarding_welcome.html'" class="text-black/40 flex items-center cursor-pointer hover:text-black/60 transition-colors">
+            <div onclick="window.location.href='cosmic_onboarding_welcome.html'" class="text-black/40 dark:text-white/40 flex items-center cursor-pointer hover:text-black/60 dark:hover:text-white/60 transition-colors">
                 <span class="material-symbols-outlined text-[22px]">arrow_back_ios</span>
             </div>
-            <button id="btn-lang-selector" class="text-black/40 hover:text-black/60 transition-colors cursor-pointer" title="Language">
-                <span class="text-lg" id="lang-flag"></span>
+            <button id="btn-lang-selector" class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-black/8 dark:bg-white/10 hover:bg-black/15 dark:hover:bg-white/20 transition-all cursor-pointer border border-black/10 dark:border-white/15" title="Language">
+                <span class="material-symbols-outlined text-[16px] text-black/50 dark:text-white/50">language</span>
+                <span id="lang-code" class="text-[13px] font-semibold text-black/60 dark:text-white/70"></span>
+                <span class="material-symbols-outlined text-[14px] text-black/40 dark:text-white/40">expand_more</span>
             </button>
+            <span id="lang-flag" class="hidden"></span>
         </div>
 
-        <!-- Spacer -->
+        <!-- Logo & Intro -->
+        <div class="flex flex-col items-center -mt-8">
+            <img src="images/splash-logo.png" alt="Numantic" class="w-80 h-auto" />
+            <h2 class="text-primary tracking-[0.4em] text-[30px] font-bold ml-[0.4em] -mt-14" style="font-family:'Cinzel',serif; text-shadow: 0 2px 8px rgba(180,140,20,0.4), 0 1px 2px rgba(0,0,0,0.15);">Numantic</h2>
+        </div>
+        <div class="text-center px-4 mt-4">
+            <h1 class="text-[24px] font-bold text-black/85 dark:text-white/90 leading-tight" data-i18n-html="signup.intro_title">Sayilarin Gucuyle<br/><span class="text-primary">Ruhsal Yolculuguna Basla</span></h1>
+            <p class="text-black/50 dark:text-white/50 text-[14px] mt-3 leading-relaxed" data-i18n="signup.intro_desc">Numeroloji, uyumluluk analizi ve kozmik rehberlikle hayatindaki gizli anlami kesfet.</p>
+        </div>
         <div class="flex-1"></div>
 
         <!-- Bottom content -->
@@ -93,7 +175,7 @@
             </button>
 
             <!-- Diger secenekler toggle -->
-            <button id="btn-other-options" class="text-black/70 font-semibold text-[15px] mt-1 mb-4 cursor-pointer hover:text-black/90 transition-colors" style="background:none;border:none;font-family:'Space Grotesk',sans-serif" data-i18n="signup.other_options">Diger secenekler</button>
+            <button id="btn-other-options" class="text-black/70 dark:text-white/70 font-semibold text-[15px] mt-1 mb-4 cursor-pointer hover:text-black/90 dark:hover:text-white/90 transition-colors" style="background:none;border:none;font-family:'Space Grotesk',sans-serif" data-i18n="signup.other_options">Diger secenekler</button>
 
             <!-- Expandable section -->
             <div id="expand-section" class="expand-section w-full">
@@ -110,17 +192,17 @@
 
                 <!-- Divider -->
                 <div class="flex items-center gap-3 my-3">
-                    <hr class="flex-1 border-black/10" />
-                    <span class="text-black/30 text-xs font-medium">veya</span>
-                    <hr class="flex-1 border-black/10" />
+                    <hr class="flex-1 border-black/10 dark:border-white/10" />
+                    <span class="text-black/30 dark:text-white/30 text-xs font-medium" data-i18n="signup.divider_or">veya</span>
+                    <hr class="flex-1 border-black/10 dark:border-white/10" />
                 </div>
 
                 <!-- Phone number input -->
                 <div class="flex gap-2 mb-3">
                     <div class="input-field flex items-center gap-1 px-3 cursor-pointer" id="country-selector" style="width:90px;flex-shrink:0">
                         <span id="country-flag" class="text-lg">🇹🇷</span>
-                        <span id="country-code" class="text-sm font-semibold text-black/70">+90</span>
-                        <span class="material-symbols-outlined text-black/30 text-[16px]">expand_more</span>
+                        <span id="country-code" class="text-sm font-semibold text-black/70 dark:text-white/70">+90</span>
+                        <span class="material-symbols-outlined text-black/30 dark:text-white/30 text-[16px]">expand_more</span>
                     </div>
                     <input id="input-phone" class="input-field flex-1" type="tel" placeholder="5XX XXX XX XX" inputmode="numeric" style="width:100%" />
                 </div>
@@ -131,11 +213,11 @@
             </div>
 
             <!-- Legal text -->
-            <p class="text-black/30 text-[11px] text-center leading-relaxed px-4 mt-2" data-i18n="signup.legal_text">
+            <p class="text-black/30 dark:text-white/30 text-[11px] text-center leading-relaxed px-4 mt-2" data-i18n="signup.legal_text">
                 Kaydolarak, <a href="javascript:void(0)" class="underline text-black/40 hover:text-black/50">Genel Kullanim Kosullarimizi</a> ve <a href="javascript:void(0)" class="underline text-black/40 hover:text-black/50">Gizlilik Politikamizi</a> kabul etmis olursun.
             </p>
 
-            <a id="btn-trouble" class="text-black/30 text-[11px] mt-3 mb-2 cursor-pointer hover:text-black/40 underline transition-colors" data-i18n="signup.trouble_link">Baglanti sorunu mu?</a>
+            <a id="btn-trouble" class="text-black/30 dark:text-white/30 text-[11px] mt-3 mb-2 cursor-pointer hover:text-black/40 dark:hover:text-white/40 underline transition-colors" data-i18n="signup.trouble_link">Baglanti sorunu mu?</a>
         </div>
     </div>
 
@@ -143,7 +225,7 @@
     <div id="screen-otp" class="content screen hidden flex flex-col min-h-screen max-w-[430px] mx-auto px-6">
         <!-- Top bar -->
         <div class="flex items-center justify-between pt-14 pb-4">
-            <div id="btn-otp-back" class="text-black/40 flex items-center cursor-pointer hover:text-black/60 transition-colors">
+            <div id="btn-otp-back" class="text-black/40 dark:text-white/40 flex items-center cursor-pointer hover:text-black/60 dark:hover:text-white/60 transition-colors">
                 <span class="material-symbols-outlined text-[22px]">arrow_back_ios</span>
             </div>
             <div></div>
@@ -151,11 +233,11 @@
 
         <!-- OTP Content -->
         <div class="flex flex-col items-center pt-8">
-            <div class="w-16 h-16 mb-6 bg-black/5 rounded-full flex items-center justify-center">
-                <span class="material-symbols-outlined text-black/60 text-3xl">sms</span>
+            <div class="w-16 h-16 mb-6 bg-black/5 dark:bg-white/10 rounded-full flex items-center justify-center">
+                <span class="material-symbols-outlined text-black/60 dark:text-white/60 text-3xl">sms</span>
             </div>
-            <h2 class="text-black/80 text-xl font-bold text-center mb-2" data-i18n="signup.otp_title">Kodunu gir</h2>
-            <p class="text-black/40 text-sm text-center mb-8">
+            <h2 class="text-black/80 dark:text-white/85 text-xl font-bold text-center mb-2" data-i18n="signup.otp_title">Kodunu gir</h2>
+            <p class="text-black/40 dark:text-white/40 text-sm text-center mb-8">
                 <span id="otp-phone-display"></span>
                 <span data-i18n="signup.otp_subtitle"> numarasina kod gonderdik</span>
             </p>
@@ -174,9 +256,9 @@
                 <span data-i18n="signup.btn_verify">Dogrula</span>
             </button>
 
-            <p class="text-black/40 text-sm text-center">
+            <p class="text-black/40 dark:text-white/40 text-sm text-center">
                 <span id="resend-timer" data-i18n="signup.otp_resend_wait">60 saniye bekleyin</span>
-                <a id="btn-resend" class="text-black/70 font-semibold cursor-pointer hover:underline ml-1 hidden" data-i18n="signup.otp_resend">Tekrar gonder</a>
+                <a id="btn-resend" class="text-black/70 dark:text-white/70 font-semibold cursor-pointer hover:underline ml-1 hidden" data-i18n="signup.otp_resend">Tekrar gonder</a>
             </p>
         </div>
     </div>
@@ -268,7 +350,8 @@
                 var digits = raw.replace(/\D/g, '');
                 // Remove leading 0
                 if (digits.charAt(0) === '0') digits = digits.substring(1);
-                return countryCode + digits;
+                var code = window.__phoneCountryCode || countryCode;
+                return code + digits;
             }
 
             // Send OTP
@@ -409,24 +492,60 @@
             }
         })();
 
+        // Language → Country Code mapping
+        var langCountryMap = {
+            'tr': { flag: '🇹🇷', code: '+90', placeholder: '5XX XXX XX XX' },
+            'en': { flag: '🇬🇧', code: '+44', placeholder: '7XXX XXX XXX' },
+            'de': { flag: '🇩🇪', code: '+49', placeholder: '1XX XXXXXXX' },
+            'fr': { flag: '🇫🇷', code: '+33', placeholder: '6 XX XX XX XX' },
+            'es': { flag: '🇪🇸', code: '+34', placeholder: '6XX XXX XXX' },
+            'ar': { flag: '🇸🇦', code: '+966', placeholder: '5X XXX XXXX' },
+            'ru': { flag: '🇷🇺', code: '+7', placeholder: '9XX XXX XX XX' },
+            'pt': { flag: '🇧🇷', code: '+55', placeholder: '11 9XXXX XXXX' },
+            'it': { flag: '🇮🇹', code: '+39', placeholder: '3XX XXX XXXX' },
+            'nl': { flag: '🇳🇱', code: '+31', placeholder: '6 XXXX XXXX' },
+            'ja': { flag: '🇯🇵', code: '+81', placeholder: '90 XXXX XXXX' },
+            'ko': { flag: '🇰🇷', code: '+82', placeholder: '10 XXXX XXXX' },
+            'zh': { flag: '🇨🇳', code: '+86', placeholder: '1XX XXXX XXXX' }
+        };
+
+        function updatePhoneCountry(langCode) {
+            var map = langCountryMap[langCode] || langCountryMap['tr'];
+            var countryFlagEl = document.getElementById('country-flag');
+            var countryCodeEl = document.getElementById('country-code');
+            var phoneInput = document.getElementById('input-phone');
+            if (countryFlagEl) countryFlagEl.textContent = map.flag;
+            if (countryCodeEl) countryCodeEl.textContent = map.code;
+            if (phoneInput) phoneInput.placeholder = map.placeholder;
+            // Update countryCode variable in auth logic scope
+            window.__phoneCountryCode = map.code;
+        }
+
         // Language Selector
         (function() {
             var langBtn = document.getElementById('btn-lang-selector');
             var flagEl = document.getElementById('lang-flag');
             if (!langBtn || !window.i18n) return;
             var langs = window.i18n.languages();
+            var codeEl = document.getElementById('lang-code');
             function updateFlag() {
                 var cur = window.i18n.current();
                 for (var i = 0; i < langs.length; i++) {
                     if (langs[i].code === cur) { flagEl.textContent = langs[i].flag; break; }
                 }
+                if (codeEl) codeEl.textContent = cur.toUpperCase();
+                updatePhoneCountry(cur);
             }
             updateFlag();
             langBtn.addEventListener('click', function() {
                 var overlay = document.createElement('div');
-                overlay.style.cssText = 'position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)';
-                var html = '<div style="background:#1a1810;border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:24px;width:90%;max-width:340px;max-height:80vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,0.25)">';
-                html += '<h3 style="color:#fff;font-size:16px;font-weight:800;margin-bottom:16px;text-align:center;font-family:Space Grotesk,sans-serif">' + window.i18n.t('signup.select_language', 'Select Language') + '</h3>';
+                overlay.style.cssText = 'position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)';
+                var isDark = document.documentElement.classList.contains('dark');
+                var modalBg = isDark ? 'rgba(20,18,30,0.75)' : 'rgba(255,252,245,0.7)';
+                var modalBorder = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)';
+                var textColor = isDark ? '#fff' : '#1a1a1a';
+                var html = '<div style="background:' + modalBg + ';backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid ' + modalBorder + ';border-radius:20px;padding:24px;width:90%;max-width:340px;max-height:80vh;overflow-y:auto;box-shadow:0 25px 50px rgba(0,0,0,0.12)">';
+                html += '<h3 style="color:' + textColor + ';font-size:16px;font-weight:800;margin-bottom:16px;text-align:center;font-family:Space Grotesk,sans-serif">' + window.i18n.t('signup.select_language', 'Select Language') + '</h3>';
                 html += '<div style="display:flex;flex-direction:column;gap:4px">';
                 var current = window.i18n.current();
                 for (var i = 0; i < langs.length; i++) {
@@ -436,8 +555,8 @@
                     var itemBorder = isActive ? '2px solid #FAC638' : '2px solid transparent';
                     html += '<div class="lang-option" data-lang="' + l.code + '" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;cursor:pointer;background:' + itemBg + ';border:' + itemBorder + ';transition:background 0.15s">';
                     html += '<span style="font-size:24px">' + l.flag + '</span>';
-                    html += '<div style="flex:1"><p style="color:#fff;font-size:14px;font-weight:600;margin:0">' + l.native + '</p></div>';
-                    if (isActive) html += '<span class="material-symbols-outlined" style="color:#FAC638;font-size:20px">check_circle</span>';
+                    html += '<div style="flex:1"><p style="color:' + textColor + ';font-size:14px;font-weight:600;margin:0">' + l.native + '</p></div>';
+                    if (isActive) html += '<span class="material-symbols-outlined" style="color:#d4a017;font-size:20px">check_circle</span>';
                     html += '</div>';
                 }
                 html += '</div></div>';
@@ -447,8 +566,10 @@
                 var options = overlay.querySelectorAll('.lang-option');
                 for (var j = 0; j < options.length; j++) {
                     options[j].addEventListener('click', function() {
-                        window.i18n.set(this.getAttribute('data-lang'));
+                        var newLang = this.getAttribute('data-lang');
+                        window.i18n.set(newLang);
                         updateFlag();
+                        updatePhoneCountry(newLang);
                         overlay.remove();
                     });
                 }

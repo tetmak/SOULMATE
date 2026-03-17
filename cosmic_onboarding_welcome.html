@@ -38,11 +38,31 @@
         }
     </script>
     <style>
-        .dark .cosmic-gradient {
-            background: radial-gradient(circle at 50% 40%, #2c2811 0%, #12110a 70%);
+        .cosmic-gradient {
+            position: relative;
+            overflow: hidden;
         }
-        html:not(.dark) .cosmic-gradient {
-            background: radial-gradient(circle at 50% 40%, #fffbe6 0%, #f8f8f5 70%);
+        .cosmic-gradient::before {
+            content: '';
+            position: absolute;
+            inset: -20px;
+            background: url('images/signup-bg.png') center center / cover no-repeat;
+            animation: cosmicDrift 8s ease-in-out infinite;
+            z-index: 0;
+        }
+        .dark .cosmic-gradient::before {
+            background: url('images/signup-bg-dark.png') center center / cover no-repeat;
+        }
+        .cosmic-gradient > * {
+            position: relative;
+            z-index: 1;
+        }
+        @keyframes cosmicDrift {
+            0% { transform: scale(1.06) translate(0, 0); }
+            25% { transform: scale(1.12) translate(-15px, -10px); }
+            50% { transform: scale(1.06) translate(10px, -15px); }
+            75% { transform: scale(1.12) translate(-8px, 10px); }
+            100% { transform: scale(1.06) translate(0, 0); }
         }
         .glow-effect {
             box-shadow: 0 0 20px rgba(242, 204, 13, 0.3);
@@ -81,6 +101,34 @@
         html:not(.dark) .dot:not(.active) {
             background: rgba(0,0,0,0.15);
         }
+        /* Floating stars */
+        .star {
+            position: absolute;
+            border-radius: 50%;
+            background: #FAC638;
+            box-shadow: 0 0 8px 4px rgba(250,198,56,0.6), 0 0 20px 8px rgba(250,198,56,0.3);
+            animation: starFloat linear infinite;
+            pointer-events: none;
+        }
+        @keyframes starFloat {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            5% { opacity: 1; }
+            50% { opacity: 0.5; }
+            95% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) translateX(50px); opacity: 0; }
+        }
+        @keyframes starTwinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.6); box-shadow: 0 0 4px 2px rgba(250,198,56,0.3); }
+            50% { opacity: 1; transform: scale(1.4); box-shadow: 0 0 12px 6px rgba(250,198,56,0.6), 0 0 24px 10px rgba(250,198,56,0.2); }
+        }
+        .star-fixed {
+            position: absolute;
+            border-radius: 50%;
+            background: #FAC638;
+            box-shadow: 0 0 6px 3px rgba(250,198,56,0.5);
+            animation: starTwinkle ease-in-out infinite;
+            pointer-events: none;
+        }
     </style>
 </head>
 
@@ -96,10 +144,22 @@
                     <!-- Slide 1 -->
                     <div class="slide">
                         <div class="flex flex-1 items-center justify-center w-full">
-                            <div class="relative flex aspect-square w-full max-w-[320px] items-center justify-center">
-                                <div class="absolute inset-0 bg-primary/10 blur-[100px] rounded-full"></div>
-                                <div class="z-10 w-full h-full rounded-full bg-center bg-no-repeat bg-contain"
-                                    style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCKoQEisbEKWsVFEJbkHIhfhRG4DBBLUbdlftQy22DOjQ8VOUjg-OKibok-Hk3FjTm7TOgj9Ih4IkQeJb7pY_n5aM-yMUnWoa3m8FNbqxUiYpVr35U7rhgHBLJaBuIZNuyfaoje7TwNf73sxX6A1MsJN44Sgq7mzqhYlUzqjxXxvnDRKJVpmDy6qHaYygaZPgwn2vLZiea5dpw-SPsxOkZaoW4BJuzItgx0GHy3CSY5BBSyiq3AujYHAw55i5P4lXniqKJASt2bJw_Y"); mix-blend-mode: screen;'>
+                            <div class="relative flex aspect-square w-full max-w-[280px] items-center justify-center">
+                                <div class="z-10 flex flex-col items-center gap-6">
+                                    <div class="w-28 h-28 rounded-full bg-gradient-to-br from-primary/20 to-amber-500/20 border border-primary/30 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-primary text-6xl" style="font-variation-settings:'FILL' 1">diamond</span>
+                                    </div>
+                                    <div class="flex gap-4">
+                                        <div class="w-16 h-16 rounded-xl bg-white/30 backdrop-blur-sm border border-white/40 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-primary/80 text-3xl" style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                                        </div>
+                                        <div class="w-16 h-16 rounded-xl bg-white/30 backdrop-blur-sm border border-white/40 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-purple-400/80 text-3xl" style="font-variation-settings:'FILL' 1">stars</span>
+                                        </div>
+                                        <div class="w-16 h-16 rounded-xl bg-white/30 backdrop-blur-sm border border-white/40 flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-pink-400/80 text-3xl" style="font-variation-settings:'FILL' 1">mystery</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="absolute -top-4 -right-4 text-primary/40 animate-pulse">
                                     <span class="material-symbols-outlined text-4xl">star_rate</span>
@@ -264,12 +324,26 @@
             </div>
         </div>
 
-        <!-- Floating Particles -->
+        <!-- Floating Stars -->
         <div class="pointer-events-none absolute inset-0 overflow-hidden">
-            <div class="absolute top-1/4 left-1/4 h-1 w-1 rounded-full bg-slate-400/40 dark:bg-white/40"></div>
-            <div class="absolute top-1/3 right-1/4 h-0.5 w-0.5 rounded-full bg-slate-400/60 dark:bg-white/60"></div>
-            <div class="absolute bottom-1/4 right-1/3 h-1 w-1 rounded-full bg-primary/30"></div>
-            <div class="absolute top-1/2 left-1/2 h-0.5 w-0.5 rounded-full bg-slate-400/20 dark:bg-white/20"></div>
+            <!-- Rising stars -->
+            <div class="star" style="width:3px;height:3px;left:10%;bottom:-10%;animation-duration:12s;animation-delay:0s"></div>
+            <div class="star" style="width:2px;height:2px;left:25%;bottom:-10%;animation-duration:16s;animation-delay:2s"></div>
+            <div class="star" style="width:4px;height:4px;left:40%;bottom:-10%;animation-duration:14s;animation-delay:4s"></div>
+            <div class="star" style="width:2px;height:2px;left:60%;bottom:-10%;animation-duration:18s;animation-delay:1s"></div>
+            <div class="star" style="width:3px;height:3px;left:75%;bottom:-10%;animation-duration:13s;animation-delay:6s"></div>
+            <div class="star" style="width:2px;height:2px;left:88%;bottom:-10%;animation-duration:15s;animation-delay:3s"></div>
+            <div class="star" style="width:3px;height:3px;left:50%;bottom:-10%;animation-duration:17s;animation-delay:8s"></div>
+            <div class="star" style="width:2px;height:2px;left:15%;bottom:-10%;animation-duration:20s;animation-delay:5s"></div>
+            <!-- Twinkling fixed stars -->
+            <div class="star-fixed" style="width:3px;height:3px;top:8%;left:20%;animation-duration:3s;animation-delay:0s"></div>
+            <div class="star-fixed" style="width:2px;height:2px;top:15%;right:15%;animation-duration:4s;animation-delay:1.5s"></div>
+            <div class="star-fixed" style="width:2px;height:2px;top:35%;left:8%;animation-duration:3.5s;animation-delay:0.8s"></div>
+            <div class="star-fixed" style="width:3px;height:3px;top:50%;right:12%;animation-duration:4.5s;animation-delay:2s"></div>
+            <div class="star-fixed" style="width:2px;height:2px;top:65%;left:30%;animation-duration:3s;animation-delay:1s"></div>
+            <div class="star-fixed" style="width:2px;height:2px;top:80%;right:25%;animation-duration:5s;animation-delay:0.5s"></div>
+            <div class="star-fixed" style="width:3px;height:3px;top:25%;left:55%;animation-duration:4s;animation-delay:3s"></div>
+            <div class="star-fixed" style="width:2px;height:2px;top:45%;right:35%;animation-duration:3.5s;animation-delay:2.5s"></div>
         </div>
     </div>
 
