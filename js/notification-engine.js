@@ -221,7 +221,7 @@
         } else {
             // Only inject floating bell on home and connections pages
             var path = window.location.pathname.toLowerCase();
-            var allowedPages = ['mystic_numerology_home', 'connections_shared_readings'];
+            var allowedPages = ['mystic_numerology_home'];
             var showBell = false;
             for (var i = 0; i < allowedPages.length; i++) {
                 if (path.indexOf(allowedPages[i]) !== -1) { showBell = true; break; }
