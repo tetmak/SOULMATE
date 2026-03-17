@@ -106,7 +106,7 @@
     .shimmer-placeholder{background:linear-gradient(90deg,rgba(196,124,32,0.08) 25%,rgba(229,163,84,0.15) 50%,rgba(196,124,32,0.08) 75%);background-size:200% 100%;animation:shimmer 2s ease-in-out infinite}
     /* Leaflet harita dark tema */
     /* City autocomplete dropdown */
-    .city-autocomplete-dropdown{display:none;position:absolute;top:100%;left:0;right:0;max-height:220px;overflow-y:auto;z-index:50;border-radius:12px;margin-top:4px;border:1px solid rgba(196,124,32,0.2);background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
+    .city-autocomplete-dropdown{display:none;position:absolute;top:100%;left:0;right:0;max-height:220px;overflow-y:auto;z-index:1000;border-radius:12px;margin-top:4px;border:1px solid rgba(196,124,32,0.2);background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
     .dark .city-autocomplete-dropdown{background:rgba(20,16,12,0.97);border-color:rgba(196,124,32,0.25)}
     .city-autocomplete-dropdown.open{display:block}
     .city-ac-group{padding:6px 12px 2px;font-size:11px;font-weight:700;color:rgba(196,124,32,0.7);text-transform:uppercase;letter-spacing:0.05em}
@@ -397,7 +397,7 @@
             </div>
         </div>
         <!-- Şehir değiştirme paneli -->
-        <div id="city-change-panel" style="display:none" class="mb-3 glass-light dark:glass rounded-2xl p-3 flex items-center gap-2">
+        <div id="city-change-panel" style="display:none" class="mb-3 glass-light dark:glass rounded-2xl p-3 flex items-center gap-2 relative z-[900]">
             <span class="material-symbols-outlined text-primary text-lg">location_on</span>
             <div class="relative flex-1">
                 <input id="city-change-input" type="text" autocomplete="off" placeholder="Şehir ara..." data-i18n-placeholder="match.select_province" class="w-full py-2 px-3 pr-8 rounded-xl text-sm font-medium bg-white/10 dark:bg-white/5 border border-gray-200 dark:border-primary/20 text-gray-800 dark:text-[#E2D1C3] focus:outline-none focus:ring-2 focus:ring-primary/40">
