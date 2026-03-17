@@ -692,6 +692,72 @@
     <script src="js/numerology-context-engine.js"></script>
     <script src="js/decision-timing-engine.js"></script>
     <script src="js/numerology-ai.js"></script>
+    <script src="js/lunar-utils.js"></script>
+    <script>
+    // ─── Lunar Phase Popup ─────────────────────────────
+    (function() {
+        'use strict';
+        var POPUP_KEY = 'numerael_last_moon_popup';
+        var PREFS_KEY = 'numerael_notification_prefs';
+
+        // Check if lunar alerts enabled (default: true)
+        try {
+            var prefs = JSON.parse(localStorage.getItem(PREFS_KEY) || '{}');
+            if (prefs.lunarAlerts === false) return;
+        } catch(e) {}
+
+        // Check if already shown today
+        var today = new Date().toISOString().slice(0, 10);
+        var lastShown = null;
+        try { lastShown = localStorage.getItem(POPUP_KEY); } catch(e) {}
+        if (lastShown === today) return;
+
+        // Wait for DOM and auth
+        function showLunarPopup() {
+            if (!window.lunarUtils) return;
+            var moon = window.lunarUtils.getMoon(new Date());
+            var phaseTR = window.lunarUtils.getPhaseNameTR(moon.phase);
+            var icon = window.lunarUtils.getPhaseIcon(moon.phase);
+            var tip = window.lunarUtils.getPhaseTipTR(moon.phase);
+
+            var dk = document.documentElement.classList.contains('dark');
+            var bg = dk ? 'rgba(20,16,10,0.95)' : 'rgba(255,252,245,0.97)';
+            var border = dk ? 'rgba(196,124,32,0.25)' : 'rgba(196,124,32,0.2)';
+            var titleColor = dk ? '#fff' : '#1e293b';
+            var textColor = dk ? 'rgba(255,255,255,0.7)' : '#64748b';
+            var phaseColor = '#ecb613';
+
+            var ov = document.createElement('div');
+            ov.id = 'lunar-popup-overlay';
+            ov.style.cssText = 'position:fixed;inset:0;z-index:250;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);animation:lunar-fade-in 0.4s ease';
+            ov.innerHTML =
+                '<style>@keyframes lunar-fade-in{from{opacity:0}to{opacity:1}}@keyframes lunar-scale-in{from{transform:scale(0.9);opacity:0}to{transform:scale(1);opacity:1}}</style>' +
+                '<div style="background:'+bg+';border:1px solid '+border+';border-radius:24px;padding:32px 24px;width:88%;max-width:340px;box-shadow:0 25px 60px rgba(0,0,0,0.3);text-align:center;animation:lunar-scale-in 0.4s ease">' +
+                    '<div style="font-size:56px;margin-bottom:12px;filter:drop-shadow(0 4px 12px rgba(196,124,32,0.3))">'+icon+'</div>' +
+                    '<h3 style="color:'+phaseColor+';font-size:20px;font-weight:800;margin-bottom:4px;font-family:Manrope,sans-serif">'+phaseTR+'</h3>' +
+                    '<p style="color:'+textColor+';font-size:11px;margin-bottom:16px">Aydınlanma: %'+moon.illum+'</p>' +
+                    '<p style="color:'+titleColor+';font-size:14px;line-height:1.7;margin-bottom:20px;font-family:Manrope,sans-serif">'+tip+'</p>' +
+                    '<div style="display:flex;gap:10px">' +
+                        '<button id="lunar-popup-close" style="flex:1;height:42px;border-radius:12px;border:1px solid '+border+';background:transparent;color:'+titleColor+';font-weight:600;font-size:13px;cursor:pointer;font-family:Manrope,sans-serif">Kapat</button>' +
+                        '<button id="lunar-popup-detail" style="flex:1;height:42px;border-radius:12px;border:none;background:linear-gradient(135deg,#C47C20,#ecb613);color:#181611;font-weight:700;font-size:13px;cursor:pointer;font-family:Manrope,sans-serif">Detaya Git</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(ov);
+
+            // Mark as shown
+            try { localStorage.setItem(POPUP_KEY, today); } catch(e) {}
+
+            ov.addEventListener('click', function(e) { if (e.target === ov) ov.remove(); });
+            document.getElementById('lunar-popup-close').addEventListener('click', function() { ov.remove(); });
+            document.getElementById('lunar-popup-detail').addEventListener('click', function() {
+                window.location.href = 'lunar_phase_energy_tracker.html';
+            });
+        }
+
+        // Delay popup slightly so page loads first
+        setTimeout(showLunarPopup, 2000);
+    })();
+    </script>
 </body>
 
 </html>

@@ -459,6 +459,12 @@
 
     function fireNativeNotification(notif) {
         if (!_localNotifReady || !_localNotifPlugin) return;
+        // Check user notification preferences
+        try {
+            var prefs = JSON.parse(localStorage.getItem('numerael_notification_prefs') || '{}');
+            if (prefs.dailyInsight === false && notif.type === 'daily_insight') return;
+            if (prefs.lunarAlerts === false && notif.type === 'lunar_alert') return;
+        } catch(e) {}
         try {
             var nativeTexts = {
                 'connection_request': _t('notif.native_connection_request', 'Yeni bağlantı isteği geldi'),

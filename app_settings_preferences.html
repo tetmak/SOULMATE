@@ -133,8 +133,8 @@
                     class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] px-4 pb-2 pt-4 font-display"
                     data-i18n="settings.personal_info">
                     Personal Information</h3>
-                <div
-                    class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-[72px] py-2 justify-between cursor-pointer border-b border-slate-100 dark:border-border-dark">
+                <div id="row-fullname"
+                    class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-[72px] py-2 justify-between cursor-pointer border-b border-slate-100 dark:border-border-dark active:bg-slate-50 dark:active:bg-white/5 transition-colors">
                     <div class="flex items-center gap-4">
                         <div
                             class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
@@ -153,8 +153,8 @@
                         <span class="material-symbols-outlined text-slate-400 dark:text-white">chevron_right</span>
                     </div>
                 </div>
-                <div
-                    class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-[72px] py-2 justify-between cursor-pointer">
+                <div id="row-birthdate"
+                    class="flex items-center gap-4 bg-white dark:bg-surface-dark px-4 min-h-[72px] py-2 justify-between cursor-pointer active:bg-slate-50 dark:active:bg-white/5 transition-colors">
                     <div class="flex items-center gap-4">
                         <div
                             class="text-primary flex items-center justify-center rounded-lg bg-primary/10 shrink-0 size-12">
@@ -193,7 +193,7 @@
                             Daily Numerology Insight</p>
                     </div>
                     <label class="custom-toggle">
-                        <input checked="" type="checkbox" />
+                        <input id="toggle-daily-insight" checked="" type="checkbox" />
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -210,7 +210,7 @@
                             Lunar Phase Alerts</p>
                     </div>
                     <label class="custom-toggle">
-                        <input checked="" type="checkbox" />
+                        <input id="toggle-lunar-alerts" checked="" type="checkbox" />
                         <span class="slider"></span>
                     </label>
                 </div>
@@ -771,7 +771,7 @@
                                 if (r.data.full_name && nameEl) nameEl.textContent = r.data.full_name;
                                 if (r.data.birth_date && birthEl) {
                                     var bd = new Date(r.data.birth_date);
-                                    birthEl.textContent = b(function(){ var _lc=(window.i18n&&window.i18n.current)?window.i18n.current():'tr'; var _lm={tr:'tr-TR',en:'en-US',de:'de-DE',fr:'fr-FR',es:'es-ES',ar:'ar-SA',ru:'ru-RU',pt:'pt-BR'}; return d.toLocaleDateString(_lm[_lc]||'tr-TR',{day:'numeric',month:'long',year:'numeric'}); })();
+                                    birthEl.textContent = (function(){ var _lc=(window.i18n&&window.i18n.current)?window.i18n.current():'tr'; var _lm={tr:'tr-TR',en:'en-US',de:'de-DE',fr:'fr-FR',es:'es-ES',ar:'ar-SA',ru:'ru-RU',pt:'pt-BR'}; return bd.toLocaleDateString(_lm[_lc]||'tr-TR',{day:'numeric',month:'long',year:'numeric'}); })();
                                 }
                             }
                         });
@@ -882,6 +882,249 @@
     });
 
     window.addEventListener('languagechange', updateLangUI);
+})();
+</script>
+
+<script>
+// ─── Edit Name & Birthdate Modals + Notification Toggles ─────
+(function() {
+    'use strict';
+
+    // Helper: dark mode aware colors
+    function themeColors() {
+        var dk = document.documentElement.classList.contains('dark');
+        return {
+            bg: dk ? '#221d10' : '#ffffff',
+            border: dk ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+            title: dk ? 'white' : '#1e293b',
+            sub: dk ? 'rgba(255,255,255,0.5)' : '#64748b',
+            inputBg: dk ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.04)',
+            inputBorder: dk ? 'rgba(255,255,255,0.12)' : 'rgba(0,0,0,0.12)',
+            inputColor: dk ? '#fff' : '#1e293b',
+            cancelBorder: dk ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.15)',
+            cancelColor: dk ? 'white' : '#1e293b'
+        };
+    }
+
+    function createOverlay() {
+        var ov = document.createElement('div');
+        ov.style.cssText = 'position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px)';
+        ov.addEventListener('click', function(e) { if (e.target === ov) ov.remove(); });
+        return ov;
+    }
+
+    function formatBirthDate(dateStr) {
+        if (!dateStr) return '';
+        var d = new Date(dateStr);
+        var _lc = (window.i18n && window.i18n.current) ? window.i18n.current() : 'tr';
+        var _lm = {tr:'tr-TR',en:'en-US',de:'de-DE',fr:'fr-FR',es:'es-ES',ar:'ar-SA',ru:'ru-RU',pt:'pt-BR'};
+        return d.toLocaleDateString(_lm[_lc] || 'tr-TR', {day:'numeric', month:'long', year:'numeric'});
+    }
+
+    // ═══ NAME EDIT MODAL ═══
+    var rowName = document.getElementById('row-fullname');
+    if (rowName) {
+        rowName.addEventListener('click', function() {
+            var c = themeColors();
+            var ov = createOverlay();
+            var currentName = (document.getElementById('settings-fullname') || {}).textContent || '';
+            if (currentName === 'Yükleniyor...') currentName = '';
+
+            ov.innerHTML =
+                '<div style="background:'+c.bg+';border:1px solid '+c.border+';border-radius:20px;padding:28px 24px;width:90%;max-width:380px;box-shadow:0 25px 50px rgba(0,0,0,0.25)">' +
+                    '<h3 style="color:'+c.title+';font-size:18px;font-weight:800;margin-bottom:4px;font-family:Manrope,sans-serif">Ad Soyad Düzenle</h3>' +
+                    '<p style="color:'+c.sub+';font-size:13px;margin-bottom:16px">Adınızı ve soyadınızı güncelleyin.</p>' +
+                    '<input id="edit-name-input" type="text" value="'+currentName.replace(/"/g,'&quot;')+'" placeholder="Ad Soyad" style="width:100%;box-sizing:border-box;padding:12px 16px;border-radius:12px;border:1px solid '+c.inputBorder+';background:'+c.inputBg+';color:'+c.inputColor+';font-size:15px;font-family:Manrope,sans-serif;outline:none;margin-bottom:8px">' +
+                    '<p id="edit-name-status" style="display:none;text-align:center;font-size:13px;margin-bottom:10px;padding:8px;border-radius:8px"></p>' +
+                    '<div style="display:flex;gap:10px;margin-top:8px">' +
+                        '<button id="edit-name-cancel" style="flex:1;height:44px;border-radius:12px;border:1px solid '+c.cancelBorder+';background:transparent;color:'+c.cancelColor+';font-weight:600;font-size:14px;cursor:pointer;font-family:Manrope,sans-serif">İptal</button>' +
+                        '<button id="edit-name-save" style="flex:1;height:44px;border-radius:12px;border:none;background:#ecb613;color:#181611;font-weight:700;font-size:14px;cursor:pointer;font-family:Manrope,sans-serif">Kaydet</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(ov);
+
+            var input = document.getElementById('edit-name-input');
+            input.focus();
+            input.select();
+
+            document.getElementById('edit-name-cancel').addEventListener('click', function() { ov.remove(); });
+
+            document.getElementById('edit-name-save').addEventListener('click', async function() {
+                var newName = input.value.trim();
+                var statusEl = document.getElementById('edit-name-status');
+                if (!newName || newName.length < 2) {
+                    statusEl.style.display = 'block';
+                    statusEl.style.background = 'rgba(239,68,68,0.15)';
+                    statusEl.style.color = '#ef4444';
+                    statusEl.textContent = 'Lütfen geçerli bir ad girin.';
+                    return;
+                }
+                this.textContent = 'Kaydediliyor...';
+                this.disabled = true;
+                try {
+                    var userRes = await window.supabaseClient.auth.getUser();
+                    var userId = userRes.data.user.id;
+                    var upd = await window.supabaseClient.from('profiles').update({ full_name: newName }).eq('id', userId);
+                    if (upd.error) throw upd.error;
+                    // Update UI
+                    var nameEl = document.getElementById('settings-fullname');
+                    if (nameEl) nameEl.textContent = newName;
+                    // Update localStorage
+                    try {
+                        var cached = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
+                        cached.name = newName;
+                        localStorage.setItem('numerael_user_data', JSON.stringify(cached));
+                    } catch(e2) {}
+                    statusEl.style.display = 'block';
+                    statusEl.style.background = 'rgba(16,185,129,0.15)';
+                    statusEl.style.color = '#10b981';
+                    statusEl.textContent = '✓ Ad güncellendi!';
+                    setTimeout(function() { ov.remove(); }, 1200);
+                } catch(err) {
+                    statusEl.style.display = 'block';
+                    statusEl.style.background = 'rgba(239,68,68,0.15)';
+                    statusEl.style.color = '#ef4444';
+                    statusEl.textContent = 'Hata: ' + (err.message || 'Bilinmeyen hata');
+                    this.textContent = 'Kaydet';
+                    this.disabled = false;
+                }
+            });
+        });
+    }
+
+    // ═══ BIRTHDATE EDIT MODAL ═══
+    var rowBirth = document.getElementById('row-birthdate');
+    if (rowBirth) {
+        rowBirth.addEventListener('click', function() {
+            var c = themeColors();
+            var ov = createOverlay();
+
+            // Parse current birthdate
+            var currentBD = '';
+            try {
+                var cached = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
+                currentBD = cached.birthDate || '';
+            } catch(e) {}
+            var curD = currentBD ? new Date(currentBD) : null;
+            var curDay = curD ? curD.getDate() : 1;
+            var curMonth = curD ? curD.getMonth() : 0;
+            var curYear = curD ? curD.getFullYear() : 1990;
+
+            // Build day/month/year options
+            var dayOpts = '';
+            for (var d = 1; d <= 31; d++) {
+                dayOpts += '<option value="'+d+'"'+(d===curDay?' selected':'')+'>'+d+'</option>';
+            }
+            var months = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+            var monthOpts = '';
+            for (var m = 0; m < 12; m++) {
+                monthOpts += '<option value="'+m+'"'+(m===curMonth?' selected':'')+'>'+months[m]+'</option>';
+            }
+            var yearOpts = '';
+            var thisYear = new Date().getFullYear();
+            for (var y = thisYear; y >= 1920; y--) {
+                yearOpts += '<option value="'+y+'"'+(y===curYear?' selected':'')+'>'+y+'</option>';
+            }
+
+            var selectStyle = 'flex:1;padding:10px 8px;border-radius:10px;border:1px solid '+c.inputBorder+';background:'+c.inputBg+';color:'+c.inputColor+';font-size:14px;font-family:Manrope,sans-serif;outline:none;appearance:none;-webkit-appearance:none;text-align:center';
+
+            ov.innerHTML =
+                '<div style="background:'+c.bg+';border:1px solid '+c.border+';border-radius:20px;padding:28px 24px;width:90%;max-width:380px;box-shadow:0 25px 50px rgba(0,0,0,0.25)">' +
+                    '<h3 style="color:'+c.title+';font-size:18px;font-weight:800;margin-bottom:4px;font-family:Manrope,sans-serif">Doğum Tarihi Düzenle</h3>' +
+                    '<p style="color:'+c.sub+';font-size:13px;margin-bottom:16px">Doğum tarihinizi güncelleyin.</p>' +
+                    '<div style="display:flex;gap:8px;margin-bottom:8px">' +
+                        '<select id="edit-bd-day" style="'+selectStyle+'">'+dayOpts+'</select>' +
+                        '<select id="edit-bd-month" style="'+selectStyle+'">'+monthOpts+'</select>' +
+                        '<select id="edit-bd-year" style="'+selectStyle+'">'+yearOpts+'</select>' +
+                    '</div>' +
+                    '<p id="edit-bd-status" style="display:none;text-align:center;font-size:13px;margin-bottom:10px;padding:8px;border-radius:8px"></p>' +
+                    '<div style="display:flex;gap:10px;margin-top:8px">' +
+                        '<button id="edit-bd-cancel" style="flex:1;height:44px;border-radius:12px;border:1px solid '+c.cancelBorder+';background:transparent;color:'+c.cancelColor+';font-weight:600;font-size:14px;cursor:pointer;font-family:Manrope,sans-serif">İptal</button>' +
+                        '<button id="edit-bd-save" style="flex:1;height:44px;border-radius:12px;border:none;background:#ecb613;color:#181611;font-weight:700;font-size:14px;cursor:pointer;font-family:Manrope,sans-serif">Kaydet</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(ov);
+
+            document.getElementById('edit-bd-cancel').addEventListener('click', function() { ov.remove(); });
+
+            document.getElementById('edit-bd-save').addEventListener('click', async function() {
+                var day = parseInt(document.getElementById('edit-bd-day').value);
+                var month = parseInt(document.getElementById('edit-bd-month').value);
+                var year = parseInt(document.getElementById('edit-bd-year').value);
+                var statusEl = document.getElementById('edit-bd-status');
+                var dateObj = new Date(year, month, day);
+                if (dateObj.getDate() !== day) {
+                    statusEl.style.display = 'block';
+                    statusEl.style.background = 'rgba(239,68,68,0.15)';
+                    statusEl.style.color = '#ef4444';
+                    statusEl.textContent = 'Geçersiz tarih. Lütfen kontrol edin.';
+                    return;
+                }
+                var isoDate = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+                this.textContent = 'Kaydediliyor...';
+                this.disabled = true;
+                try {
+                    var userRes = await window.supabaseClient.auth.getUser();
+                    var userId = userRes.data.user.id;
+                    var upd = await window.supabaseClient.from('profiles').update({ birth_date: isoDate }).eq('id', userId);
+                    if (upd.error) throw upd.error;
+                    // Update UI
+                    var birthEl = document.getElementById('settings-birthdate');
+                    if (birthEl) birthEl.textContent = formatBirthDate(isoDate);
+                    // Update localStorage
+                    try {
+                        var cached = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
+                        cached.birthDate = isoDate;
+                        localStorage.setItem('numerael_user_data', JSON.stringify(cached));
+                    } catch(e2) {}
+                    statusEl.style.display = 'block';
+                    statusEl.style.background = 'rgba(16,185,129,0.15)';
+                    statusEl.style.color = '#10b981';
+                    statusEl.textContent = '✓ Doğum tarihi güncellendi!';
+                    setTimeout(function() { ov.remove(); }, 1200);
+                } catch(err) {
+                    statusEl.style.display = 'block';
+                    statusEl.style.background = 'rgba(239,68,68,0.15)';
+                    statusEl.style.color = '#ef4444';
+                    statusEl.textContent = 'Hata: ' + (err.message || 'Bilinmeyen hata');
+                    this.textContent = 'Kaydet';
+                    this.disabled = false;
+                }
+            });
+        });
+    }
+
+    // ═══ NOTIFICATION TOGGLES ═══
+    var NOTIF_PREFS_KEY = 'numerael_notification_prefs';
+
+    function loadNotifPrefs() {
+        try { return JSON.parse(localStorage.getItem(NOTIF_PREFS_KEY) || '{}'); } catch(e) { return {}; }
+    }
+    function saveNotifPrefs(prefs) {
+        try { localStorage.setItem(NOTIF_PREFS_KEY, JSON.stringify(prefs)); } catch(e) {}
+    }
+
+    var toggleDaily = document.getElementById('toggle-daily-insight');
+    var toggleLunar = document.getElementById('toggle-lunar-alerts');
+    var prefs = loadNotifPrefs();
+
+    // Restore state (default: true if not set)
+    if (toggleDaily) {
+        toggleDaily.checked = prefs.dailyInsight !== false;
+        toggleDaily.addEventListener('change', function() {
+            var p = loadNotifPrefs();
+            p.dailyInsight = this.checked;
+            saveNotifPrefs(p);
+        });
+    }
+    if (toggleLunar) {
+        toggleLunar.checked = prefs.lunarAlerts !== false;
+        toggleLunar.addEventListener('change', function() {
+            var p = loadNotifPrefs();
+            p.lunarAlerts = this.checked;
+            saveNotifPrefs(p);
+        });
+    }
 })();
 </script>
 </body>
