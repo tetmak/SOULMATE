@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Mascot Preview</title>
+    <style>
+        body { background: #1a1a2e; color: white; font-family: sans-serif; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: rgba(255,255,255,0.05); border-radius: 16px; padding: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .card h3 { margin: 8px 0 4px; font-size: 14px; color: #FAC638; }
+        .card p { font-size: 11px; color: rgba(255,255,255,0.5); }
+        .anim { width: 150px; height: 150px; margin: 0 auto; }
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center;margin-bottom:24px;">Mascot Preview</h1>
+    <div class="grid">
+        <div class="card">
+            <div class="anim" id="a1"></div>
+            <h3>mascot-default</h3>
+            <p>Ana sayfa greeting</p>
+        </div>
+        <div class="card">
+            <div class="anim" id="a2"></div>
+            <h3>mascot-celebrate</h3>
+            <p>Analiz sonucu</p>
+        </div>
+        <div class="card">
+            <div class="anim" id="a3"></div>
+            <h3>mascot-excited</h3>
+            <p>Uyumluluk</p>
+        </div>
+        <div class="card">
+            <div class="anim" id="a4"></div>
+            <h3>mascot-thinking</h3>
+            <p>Loading</p>
+        </div>
+        <div class="card">
+            <div class="anim" id="a5"></div>
+            <h3>mascot-wave</h3>
+            <p>Onboarding</p>
+        </div>
+        <div class="card">
+            <div class="anim" id="a6"></div>
+            <h3>mascot-sad</h3>
+            <p>Hata/kayip</p>
+        </div>
+        <div class="card">
+            <div class="anim" id="a7"></div>
+            <h3>mascot-winner</h3>
+            <p>Match bulundu</p>
+        </div>
+    </div>
+    <script src="js/lottie.min.js"></script>
+    <script>
+        var anims = [
+            ['a1', 'mascot-default'],
+            ['a2', 'mascot-celebrate'],
+            ['a3', 'mascot-excited'],
+            ['a4', 'mascot-thinking'],
+            ['a5', 'mascot-wave'],
+            ['a6', 'mascot-sad'],
+            ['a7', 'mascot-winner']
+        ];
+        anims.forEach(function(a) {
+            lottie.loadAnimation({
+                container: document.getElementById(a[0]),
+                renderer: 'svg',
+                loop: true,
+                autoplay: true,
+                path: 'assets/lottie/' + a[1] + '.json'
+            });
+        });
+    </script>
+</body>
+</html>
