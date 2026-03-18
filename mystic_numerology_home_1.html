@@ -196,11 +196,23 @@
 
     <main class="flex-1 overflow-y-auto">
 
-        <!-- Greeting -->
-        <div class="px-6 pt-8 pb-4">
-            <p class="text-gold text-xs font-medium tracking-widest uppercase mb-1" data-i18n="home.celestial_guidance">Celestial Guidance</p>
-            <h1 class="text-slate-900 dark:text-white tracking-tight text-3xl font-bold leading-tight">The Universe is aligned, <span
-                    id="home-user-name">Alex</span></h1>
+        <!-- Mascot Greeting Section -->
+        <div class="px-4 pt-6 pb-2">
+            <div class="flex items-end gap-3">
+                <!-- Mascot -->
+                <div class="shrink-0 relative" style="width: 100px; height: 100px;">
+                    <div id="mascot-container" style="width: 100px; height: 100px;"></div>
+                </div>
+                <!-- Speech Bubble -->
+                <div class="flex-1 relative bg-white/90 dark:bg-white/10 backdrop-blur-sm rounded-2xl rounded-bl-md p-4 shadow-lg border border-slate-200/50 dark:border-white/10 mb-2">
+                    <!-- Bubble arrow -->
+                    <div class="absolute -left-2 bottom-4 w-0 h-0 border-t-[8px] border-t-transparent border-r-[10px] border-r-white/90 dark:border-r-white/10 border-b-[8px] border-b-transparent"></div>
+                    <p class="text-gold text-[10px] font-bold tracking-[0.2em] uppercase mb-1" data-i18n="home.celestial_guidance">Celestial Guidance</p>
+                    <p class="text-slate-800 dark:text-white text-sm font-semibold leading-snug" id="mascot-message">
+                        <span data-i18n="home.universe_aligned">The Universe is aligned,</span> <span id="home-user-name" class="text-primary font-bold">Alex</span> ✨
+                    </p>
+                </div>
+            </div>
         </div>
 
         <!-- Personal Vibration Card -->
