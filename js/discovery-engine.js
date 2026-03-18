@@ -369,9 +369,20 @@
                 if (!needsRegen) {
                     // Havuzda mevcut eşleşmelere dahil olmayan yeni profiller var mı kontrol et
                     var existingMatchedIds = existing.data.map(function(m) { return m.matched_user_id; });
+
+                    // Geçmiş TÜM eşleşmeleri al — tekrar eşleşmeyi önlemek için
+                    var allPastIds = [];
+                    try {
+                        var pastCheck = await sb.from('daily_matches')
+                            .select('matched_user_id')
+                            .eq('user_id', userId);
+                        allPastIds = (pastCheck.data || []).map(function(r) { return r.matched_user_id; });
+                    } catch(pe) {}
+
                     var allOpposite = await fetchDiscoverableProfiles(userId, userGender, userLang);
                     var missingProfiles = allOpposite.filter(function(p) {
-                        return existingMatchedIds.indexOf(p.user_id) === -1;
+                        return existingMatchedIds.indexOf(p.user_id) === -1 &&
+                               allPastIds.indexOf(p.user_id) === -1;
                     });
 
                     if (missingProfiles.length > 0 && existing.data.length < MAX_DAILY_MATCHES) {
@@ -436,10 +447,10 @@
             return pastIds.indexOf(p.user_id) === -1;
         });
 
-        // Eğer hiç yeni profil kalmadıysa tüm havuzdan göster
+        // Eğer hiç yeni profil kalmadıysa boş döndür — tekrar eşleşme OLMAZ
         if (!newProfiles.length) {
-            console.log('[Match] Tüm profiller daha önce gösterilmiş, havuz yenileniyor');
-            newProfiles = profiles;
+            console.log('[Match] Tüm profiller daha önce gösterilmiş, yeni eşleşme yok');
+            return [];
         }
 
         // Skor hesapla ve sırala
