@@ -11,13 +11,61 @@
         'winner':    'assets/lottie/mascot-winner.json'
     };
 
-    /**
-     * Mascot'u bir container'a yükle
-     * @param {string|HTMLElement} target - Element ID veya element
-     * @param {string} type - Mascot tipi: default, celebrate, excited, thinking, wave, sad, winner
-     * @param {object} opts - { loop, autoplay, size }
-     * @returns {object|null} lottie animation instance
-     */
+    // Sayfa bazlı mascot config — otomatik inject
+    var PAGE_CONFIG = {
+        'mystic_numerology_home_1.html':           null, // Manuel HTML'de var
+        'cosmic_onboarding_welcome.html':          null, // Manuel
+        'cosmic_calculation_loading.html':         null, // Manuel
+        'soul_mate_loading.html':                  null, // Manuel
+        'name_numerology_breakdown_1.html':        null, // Manuel
+        'name_numerology_breakdown_2.html':        null, // Manuel
+        'name_numerology_breakdown_3.html':        null, // Manuel
+        'relationship_compatibility_analysis.html':null, // Manuel
+        'cosmic_match.html':                       null, // Manuel (winner JS ile)
+
+        // Günlük sayfalar
+        'daily_spiritual_guide.html':    { type: 'default',   msg: 'Bugünün kozmik enerjisi seninle! ✨' },
+        'daily_number_deep_dive.html':   { type: 'excited',   msg: 'Sayının derinliklerine inelim! 🔮' },
+
+        // Takvim & Manifest
+        'cosmic_energy_calendar_2.html': { type: 'default',   msg: 'Kozmik takvimin hazır! 🌙' },
+        'manifest_portal.html':          { type: 'excited',   msg: 'Niyetini evrene göndermeye hazır mısın? ✨' },
+        'manifest_community.html':       { type: 'default',   msg: 'Topluluktan ilham al! 💫' },
+        'cosmic_manifest_portal.html':   { type: 'default',   msg: 'Niyet portalın açık! 🌟' },
+
+        // Profil & Ayarlar
+        'profile_soul_journey.html':     { type: 'default',   msg: 'Ruh yolculuğun harika gidiyor! 💜' },
+        'connections_shared_readings.html': { type: 'celebrate', msg: 'Bağlantıların güçleniyor! 🤝' },
+        'app_settings_preferences.html': { type: 'default',   msg: 'Deneyimini özelleştir! ⚙️' },
+        'kisi_profil.html':              { type: 'default',   msg: 'Kozmik profil kartı! 🌟' },
+
+        // Oyun & Skor
+        'leaderboard.html':              { type: 'excited',   msg: 'Sıralamada yükseliyorsun! 🏆' },
+        'numerology_quiz.html':          { type: 'excited',   msg: 'Bilgini test etmeye hazır mısın? 🧠' },
+        'wheel_of_destiny.html':         { type: 'excited',   msg: 'Kader çarkını çevir! 🎡' },
+        'wheel_reward_success.html':     { type: 'winner',    msg: 'Tebrikler, ödülünü kazandın! 🎉' },
+        'lunar_phase_energy_tracker.html': { type: 'default', msg: 'Ay enerjisi seninle! 🌙' },
+
+        // Premium
+        'premium_checkout_summary.html': { type: 'wave',      msg: 'Premium ile sınırsız keşif! 💎' },
+        'premium_crystal_store.html':    { type: 'wave',      msg: 'Kristal mağazaya hoş geldin! 💎' },
+
+        // Mesajlaşma
+        'messaging.html':               { type: 'default',    msg: 'Kozmik sohbetler! 💬' },
+
+        // Uyumluluk Formu
+        'compatibility_input_form.html': { type: 'thinking',  msg: 'İsimleri gir, kozmik bağı keşfedelim! 🔮' },
+        'friendship_dynamics.html':      { type: 'celebrate',  msg: 'Arkadaşlık enerjiniz nasıl? 🤝' },
+
+        // Diğer detay sayfaları
+        'numerology_meaning_chart.html': { type: 'default',   msg: 'Sayıların gizli anlamları! 📖' },
+        'letter_vibration_detail.html':  { type: 'default',   msg: 'Harflerin titreşim gücü! 🔤' },
+        'past_reading_archive_detail.html': { type: 'default', msg: 'Geçmiş okumalarına göz at! 📜' },
+
+        // Doğum formu
+        'data-ready_birth_form.html':    { type: 'wave',      msg: 'Kozmik yolculuğun başlıyor! 🌟' }
+    };
+
     function loadMascot(target, type, opts) {
         if (typeof lottie === 'undefined') {
             console.warn('[Mascot] lottie-web not loaded');
@@ -41,7 +89,6 @@
             path: animPath
         });
 
-        // Bounce on click
         container.style.cursor = 'pointer';
         container.style.transition = 'transform 0.3s ease';
         container.addEventListener('click', function() {
@@ -61,13 +108,6 @@
         return anim;
     }
 
-    /**
-     * Mascot + speech bubble HTML oluştur ve hedef elementin önüne/sonuna ekle
-     * @param {string} targetId - Hangi elementin yanına eklenecek
-     * @param {string} type - Mascot tipi
-     * @param {string} message - Konuşma balonu mesajı
-     * @param {object} opts - { position: 'before'|'after', size: 80, bubbleClass: '' }
-     */
     function injectMascot(targetId, type, message, opts) {
         opts = opts || {};
         var target = document.getElementById(targetId);
@@ -94,12 +134,6 @@
         return loadMascot('mascot-inject-' + type, type, opts);
     }
 
-    /**
-     * Tam ekran celebration overlay (winner, analiz tamamlandı vs.)
-     * @param {string} type - Mascot tipi
-     * @param {string} message - Mesaj
-     * @param {number} duration - Kaç ms gösterilecek (0 = kalıcı)
-     */
     function showCelebration(type, message, duration) {
         var overlay = document.createElement('div');
         overlay.id = 'mascot-celebration';
@@ -112,14 +146,12 @@
 
         document.body.appendChild(overlay);
 
-        // Fade in
         requestAnimationFrame(function() {
             overlay.style.opacity = '1';
         });
 
         var anim = loadMascot('mascot-celeb-anim', type, { loop: true });
 
-        // Close
         var closeBtn = document.getElementById('mascot-celeb-close');
         function close() {
             overlay.style.opacity = '0';
@@ -134,12 +166,102 @@
         return { anim: anim, close: close };
     }
 
-    // Auto-init: sayfada mascot-container varsa otomatik yükle
+    /**
+     * Sayfa bazlı otomatik mascot inject
+     * Header veya main'den sonra ilk uygun yere mascot + bubble ekler
+     */
+    function autoInjectForPage() {
+        var page = window.location.pathname.split('/').pop() || '';
+        var config = PAGE_CONFIG[page];
+
+        // null = manuel HTML'de zaten var, undefined = bilinmeyen sayfa
+        if (config === null || config === undefined) return;
+
+        // Inject noktası bul: header sonrası, main başı, veya body'nin ilk child'ı
+        var anchor = null;
+        var position = 'after';
+
+        // 1. </header> sonrası
+        var headers = document.querySelectorAll('header');
+        if (headers.length > 0) {
+            anchor = headers[headers.length - 1];
+            position = 'after';
+        }
+
+        // 2. <main> içine ilk child olarak
+        if (!anchor) {
+            var main = document.querySelector('main');
+            if (main && main.firstElementChild) {
+                anchor = main.firstElementChild;
+                position = 'before';
+            } else if (main) {
+                anchor = main;
+                position = 'inside';
+            }
+        }
+
+        // 3. Body'nin scrollable content'i
+        if (!anchor) {
+            var scrollable = document.querySelector('.flex-1.overflow-y-auto, .overflow-y-auto, [class*="overflow-y"]');
+            if (scrollable && scrollable.firstElementChild) {
+                anchor = scrollable.firstElementChild;
+                position = 'before';
+            }
+        }
+
+        // 4. Fallback: body'deki ilk div
+        if (!anchor) {
+            var firstDiv = document.body.querySelector('div > div');
+            if (firstDiv) {
+                anchor = firstDiv;
+                position = 'before';
+            }
+        }
+
+        if (!anchor) {
+            console.log('[Mascot] No inject anchor found for', page);
+            return;
+        }
+
+        var size = 70;
+        var wrapper = document.createElement('div');
+        wrapper.className = 'mascot-section flex items-end gap-3 px-4 py-3';
+        wrapper.style.cssText = 'max-width:480px;margin:0 auto;';
+
+        var animId = 'mascot-auto-' + config.type;
+        wrapper.innerHTML =
+            '<div class="shrink-0" style="width:' + size + 'px;height:' + size + 'px;">' +
+                '<div id="' + animId + '" style="width:' + size + 'px;height:' + size + 'px;"></div>' +
+            '</div>' +
+            '<div class="flex-1 relative bg-white/90 dark:bg-white/10 backdrop-blur-sm rounded-2xl rounded-bl-md p-3 shadow-lg border border-slate-200/50 dark:border-white/10 mb-1">' +
+                '<div class="absolute -left-2 bottom-3 w-0 h-0 border-t-[6px] border-t-transparent border-r-[8px] border-r-white/90 dark:border-r-white/10 border-b-[6px] border-b-transparent"></div>' +
+                '<p class="text-slate-800 dark:text-white text-sm font-medium leading-snug">' + config.msg + '</p>' +
+            '</div>';
+
+        if (position === 'before') {
+            anchor.parentNode.insertBefore(wrapper, anchor);
+        } else if (position === 'inside') {
+            anchor.prepend(wrapper);
+        } else {
+            anchor.parentNode.insertBefore(wrapper, anchor.nextSibling);
+        }
+
+        loadMascot(animId, config.type, { size: size });
+        console.log('[Mascot] Auto-injected', config.type, 'on', page);
+    }
+
+    // Auto-init
     function autoInit() {
+        // 1. Manuel container varsa yükle
         var container = document.getElementById('mascot-container');
         if (container) {
             var type = container.getAttribute('data-mascot') || 'default';
             loadMascot(container, type);
+        }
+
+        // 2. Sayfa config'i varsa otomatik inject
+        if (!container) {
+            autoInjectForPage();
         }
     }
 
