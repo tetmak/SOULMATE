@@ -62,9 +62,9 @@
 <div class="absolute w-64 h-64 border border-mystic-gold/20 rounded-full"></div>
 <!-- Inner Ring -->
 <div class="absolute w-48 h-48 border border-mystic-gold/40 rounded-full"></div>
-<!-- Center Sacred Geometry SVG Placeholder -->
-<div class="w-40 h-40 flex items-center justify-center rounded-full bg-primary/10 sacred-glow border border-mystic-gold/60">
-<span class="material-symbols-outlined text-mystic-gold !text-7xl">all_inclusive</span>
+<!-- Mascot Thinking -->
+<div class="w-40 h-40 flex items-center justify-center rounded-full bg-primary/5 sacred-glow">
+<div id="mascot-container" data-mascot="thinking" style="width:120px;height:120px;"></div>
 </div>
 </div>
 <!-- Header Text -->
@@ -123,5 +123,6 @@ var calcInterval = setInterval(function() {
     if (newIdx !== calcMsgIdx) { calcMsgIdx = newIdx; calcTxt.textContent = calcMessages[calcMsgIdx]; }
 }, 130);
 </script>
-
+<script src="js/lottie.min.js"></script>
+<script src="js/mascot.js"></script>
 </body></html>

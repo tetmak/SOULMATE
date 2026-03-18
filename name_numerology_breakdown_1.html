@@ -147,6 +147,20 @@
                 class="text-slate-900 dark:text-white tracking-widest text-4xl font-extrabold leading-tight text-center mt-2">
                 ALEXANDER</h1>
         </section>
+
+        <!-- Mascot Celebration -->
+        <div class="px-4 py-3">
+            <div class="flex items-end gap-3">
+                <div class="shrink-0" style="width:80px;height:80px;">
+                    <div id="mascot-container" data-mascot="celebrate" style="width:80px;height:80px;"></div>
+                </div>
+                <div class="flex-1 relative bg-white/90 dark:bg-white/10 backdrop-blur-sm rounded-2xl rounded-bl-md p-3 shadow-lg border border-slate-200/50 dark:border-white/10 mb-2">
+                    <div class="absolute -left-2 bottom-4 w-0 h-0 border-t-[8px] border-t-transparent border-r-[10px] border-r-white/90 dark:border-r-white/10 border-b-[8px] border-b-transparent"></div>
+                    <p class="text-slate-800 dark:text-white text-sm font-medium leading-snug" data-i18n="breakdown1.mascot_msg">Sayıların sana çok şey anlatıyor! Hadi keşfedelim ✨</p>
+                </div>
+            </div>
+        </div>
+
         <section id="expression-section" class="flex flex-col items-center justify-center py-10 relative">
             <div class="relative size-56 flex items-center justify-center cursor-pointer" id="expression-circle">
                 <svg class="absolute inset-0 size-full -rotate-90">
@@ -1508,6 +1522,8 @@ CRITICAL LANGUAGE RULE: ${_aiLangChat}` });
     })();
     </script>
 
+<script src="js/lottie.min.js"></script>
+<script src="js/mascot.js"></script>
 <script src="js/notification-engine.js"></script>
 <script src="js/bottom-nav.js"></script>
 </body>

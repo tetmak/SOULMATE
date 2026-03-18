@@ -37,8 +37,8 @@ html:not(.dark) body{color:white}
 <div class="relative w-48 h-48 flex items-center justify-center">
 <div class="absolute w-40 h-40 border-2 border-mystic-gold/60 rounded-full infinity-ring" style="left:-15%;"></div>
 <div class="absolute w-40 h-40 border-2 border-mystic-gold/60 rounded-full infinity-ring" style="right:-15%;animation-delay:2s;"></div>
-<div class="z-20 w-24 h-24 flex items-center justify-center rounded-full bg-soul-red/20 backdrop-blur-sm border border-mystic-gold/40 soul-glow">
-<span class="material-symbols-outlined text-mystic-gold !text-5xl" style="font-variation-settings:'FILL' 1">favorite</span>
+<div class="z-20 w-32 h-32 flex items-center justify-center">
+<div id="mascot-container" data-mascot="thinking" style="width:120px;height:120px;"></div>
 </div>
 </div>
 </div>
@@ -95,5 +95,6 @@ var interval = setInterval(function() {
     pct.textContent = Math.round(progress) + '%';
 }, 150);
 </script>
-
+<script src="js/lottie.min.js"></script>
+<script src="js/mascot.js"></script>
 </body></html>
