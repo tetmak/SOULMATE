@@ -254,17 +254,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (premBanner && !connIsPrem) premBanner.style.display = 'block';
 
     // ─── Helper: Avatar oluştur (herhangi bir row'a eklemek için) ──
-    function createAvatarEl(name, firstName, photo, lp, uc, lockCls, dispFirst, idx, clickFn) {
+    function createAvatarEl(name, firstName, photo, lp, uc, lockCls, dispFirst, idx, clickFn, gender) {
         var avatarDiv = document.createElement('div');
         avatarDiv.className = 'flex flex-col items-center gap-2 shrink-0 cursor-pointer fade-in' + lockCls;
         avatarDiv.style.animationDelay = (idx * 0.05) + 's';
         avatarDiv.innerHTML =
             '<div class="relative">' +
-                '<div class="size-16 rounded-full border-2 overflow-hidden bg-slate-100 dark:bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
+                '<div class="size-16 rounded-full border-[3px] overflow-hidden bg-slate-100 dark:bg-surface-dark" style="border-color:' + ((gender === 'female' || gender === 'kadın') ? '#FF2D55' : '#ffffff') + ';box-shadow:0 0 12px ' + ((gender === 'female' || gender === 'kadın') ? 'rgba(255,45,85,0.4)' : 'rgba(255,255,255,0.2)') + '">' +
                     '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
                 '</div>' +
                 (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-lg drop-shadow">lock</span></div>' : '') +
-                '<div class="absolute -bottom-1 -right-1 text-[#0a0a0a] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#0a0a0a]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                '<div class="absolute -bottom-1 -right-1 text-[#0a0a0a] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#0a0a0a]" style="background:' + ((gender === 'female' || gender === 'kadın') ? '#FF2D55' : '#ffffff') + '">' + lp + '</div>' +
             '</div>' +
             '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate conn-name">' + dispFirst + '</span>';
         avatarDiv.addEventListener('click', clickFn);
@@ -353,7 +353,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 var profUrl = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
                 if (m.user_id) profUrl += '&uid=' + encodeURIComponent(m.user_id);
                 window.location.href = profUrl;
-            });
+            }, m.gender);
             grpMatchesRow.appendChild(avatarDiv);
 
             // Card
@@ -421,7 +421,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 var profUrl = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
                 if (mc.user_id) profUrl += '&uid=' + encodeURIComponent(mc.user_id);
                 window.location.href = profUrl;
-            });
+            }, p.gender);
             grpFriendsRow.appendChild(avatarDiv);
 
             // Card
@@ -575,7 +575,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             var avatarDiv = createAvatarEl(conn.fullName, firstName, photo, lp, uc, lockCls, dispFirst, idx, function() {
                 if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
                 window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
-            });
+            }, conn.gender);
             grpCompatRow.appendChild(avatarDiv);
 
             // Card
