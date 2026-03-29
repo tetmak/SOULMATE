@@ -8,7 +8,7 @@
     <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Montserrat:wght@800&display=swap" rel="stylesheet" />
     <script src="js/supabase.min.js"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
@@ -18,137 +18,150 @@
     <script id="tailwind-config">
         tailwind.config = { darkMode:"class", theme:{ extend:{
             colors:{
-                        "background-light": "#f8f8f5", primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10", "surface-light": "#ffffff","card-dark":"#393628", "card-light": "#f5f5f0" },
-            fontFamily:{ display:["Space Grotesk","sans-serif"] },
+                primary:"#FF2D55", "fuchsia":"#FF00FF", "electric":"#00E0FF", "vibrantRed":"#FF2D55",
+                "background-light":"#ffffff", "background-dark":"#0a0a0a",
+                "surface-dark":"#1a1a1a", "surface-light":"#ffffff",
+                "card-dark":"#1a1a1a", "card-light":"#f5f5f5"
+            },
+            fontFamily:{ display:["Montserrat","sans-serif"], body:["Outfit","sans-serif"], sans:["Outfit","sans-serif"] },
             borderRadius:{ DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" }
         }}}
     </script>
     <style>
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
-        .glow-border{box-shadow:0 0 14px rgba(242,204,13,0.35)}
-        body{min-height:max(884px,100dvh);font-family:'Space Grotesk',sans-serif}
+        body{height:100dvh;overflow:hidden;background:#fff;color:#000;font-family:'Outfit',sans-serif}
+        html.dark body{background:#0a0a0a;color:#fff}
         @keyframes fade-in{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
         .fade-in{animation:fade-in 0.38s ease forwards}
         .card-hover{transition:transform 0.15s ease}
         .card-hover:active{transform:scale(0.97)}
+        .glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.08)}
+        html.dark .glass{background:rgba(26,26,26,0.8);border:1px solid rgba(255,255,255,0.1)}
+        .profile-card-fade::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,var(--section-bg));z-index:40;pointer-events:none}
+        :root{--section-bg:#fff}
+        html.dark{--section-bg:#0a0a0a}
     </style>
     <script src="js/gamification-engine.js"></script>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
-<div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden">
+<body class="bg-white dark:bg-[#0a0a0a] text-black dark:text-white">
+<div class="relative w-full max-w-[480px] mx-auto h-screen overflow-y-auto">
 
-    <!-- Header -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
-        <div onclick="window.location.href='connections_shared_readings.html'"
-            class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
-            <span class="material-symbols-outlined">arrow_back_ios</span>
-        </div>
-        <h2 id="header-title" class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center">—</h2>
-        <div class="w-12"></div>
-    </header>
+    <!-- ═══ HERO — Tam ekran fotoğraf kartı ═══ -->
+    <div class="relative profile-card-fade" style="height:60vh;min-height:380px">
+        <!-- Geri butonu (absolute) -->
+        <header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-5 pt-12 pb-4">
+            <button onclick="window.location.href='connections_shared_readings.html'"
+                class="text-white p-2 rounded-full backdrop-blur-md bg-black/20 dark:bg-white/10 border border-white/20">
+                <span class="material-symbols-outlined">arrow_back_ios</span>
+            </button>
+            <h2 id="header-title" class="text-white text-lg font-bold drop-shadow-lg">—</h2>
+            <div class="w-10"></div>
+        </header>
 
-    <!-- Profile Hero -->
-    <div class="flex p-6 pt-8 flex-col items-center fade-in">
-        <div class="relative">
-            <div id="profil-foto" class="size-32 rounded-full border-4 border-primary/40 glow-border overflow-hidden bg-slate-100 dark:bg-surface-dark flex items-center justify-center">
-                <span id="profil-initial" class="text-primary text-5xl font-bold">?</span>
-            </div>
-            <div class="absolute -bottom-2 -right-2 bg-primary text-[#181711] h-12 w-12 rounded-full flex flex-col items-center justify-center border-4 border-background-light dark:border-[#181711] font-bold shadow-lg">
-                <span class="text-[9px] leading-none uppercase tracking-tighter">Path</span>
-                <span id="life-path" class="text-xl leading-none font-black">—</span>
+        <!-- Fotoğraf arka plan -->
+        <div class="absolute inset-0 overflow-hidden bg-gradient-to-br from-fuchsia/20 to-electric/20 dark:from-fuchsia/30 dark:to-electric/30">
+            <div id="profil-foto" class="w-full h-full flex items-center justify-center">
+                <span id="profil-initial" class="text-white/30 text-8xl font-bold">?</span>
             </div>
         </div>
-        <div class="mt-5 flex flex-col items-center gap-1">
-            <p id="kisi-isim" class="text-slate-900 dark:text-white text-2xl font-bold tracking-tight">—</p>
-            <p id="kisi-tarih" class="text-slate-500 dark:text-white/40 text-sm">—</p>
-            <div class="flex items-center gap-2 mt-1">
-                <span class="material-symbols-outlined text-primary text-base">auto_awesome</span>
-                <p id="kisi-unvan" class="text-primary/90 text-sm font-semibold">—</p>
+
+        <!-- Life Path Badge -->
+        <div class="absolute top-28 left-5 z-30 bg-vibrantRed px-4 py-1.5 rounded-full border border-white/30 rotate-[-5deg] shadow-lg">
+            <span class="text-white text-sm font-extrabold uppercase tracking-widest">Path <span id="life-path">—</span></span>
+        </div>
+
+        <!-- Gradient overlay ile bilgiler -->
+        <div class="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 bg-gradient-to-t from-black via-black/70 to-transparent pt-32">
+            <h1 id="kisi-isim" class="text-4xl font-display font-extrabold text-white mb-1">—</h1>
+            <p id="kisi-tarih" class="text-white/60 text-sm mb-1">—</p>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-vibrantRed text-base">auto_awesome</span>
+                <p id="kisi-unvan" class="text-vibrantRed text-sm font-bold">—</p>
             </div>
         </div>
     </div>
 
-    <!-- Numeroloji İstatistikleri -->
-    <div class="flex gap-3 px-4 pb-4 fade-in" style="animation-delay:0.08s">
-        <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Expression</p>
-            <p id="stat-expression" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
+    <!-- ═══ ALT BÖLÜM — Stats + Aksiyonlar ═══ -->
+    <div class="bg-white dark:bg-[#0a0a0a] px-4 pb-32 space-y-4 -mt-2 relative z-30">
+
+        <!-- Numeroloji İstatistikleri -->
+        <div class="flex gap-3 pt-4 fade-in" style="animation-delay:0.08s">
+            <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 glass">
+                <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Expression</p>
+                <p id="stat-expression" class="text-black dark:text-white text-3xl font-black">—</p>
+            </div>
+            <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 glass">
+                <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Soul Urge</p>
+                <p id="stat-soul" class="text-black dark:text-white text-3xl font-black">—</p>
+            </div>
+            <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 glass">
+                <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Personality</p>
+                <p id="stat-pers" class="text-black dark:text-white text-3xl font-black">—</p>
+            </div>
         </div>
-        <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Soul Urge</p>
-            <p id="stat-soul" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
+
+        <!-- Kişisel Analiz Kartları -->
+        <div class="fade-in space-y-3" style="animation-delay:0.15s">
+            <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="kisi.personality_analysis">Kişilik Analizi</p>
+
+            <!-- İsim Analizi (Deep Insight) -->
+            <div id="btn-name-analysis"
+                class="card-hover flex items-center gap-4 p-4 glass rounded-2xl cursor-pointer">
+                <div class="size-12 shrink-0 rounded-full bg-vibrantRed/15 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-vibrantRed">person_search</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p id="name-analysis-label" class="text-black dark:text-white font-bold truncate">— Deep Insight</p>
+                    <p class="text-black/40 dark:text-white/40 text-xs mt-0.5" data-i18n="kisi.deep_insight_desc">Pisagor · Expression · Soul Urge · Life Path</p>
+                </div>
+                <div class="shrink-0 flex items-center gap-2">
+                    <span class="text-xs font-bold text-vibrantRed bg-vibrantRed/10 px-2 py-0.5 rounded-full">OPEN</span>
+                    <span class="material-symbols-outlined text-black/20 dark:text-white/30">chevron_right</span>
+                </div>
+            </div>
+
+            <!-- Arkadaşlık Dinamiği -->
+            <div id="btn-friendship-dynamics"
+                class="card-hover flex items-center gap-4 p-4 glass rounded-2xl cursor-pointer">
+                <div class="size-12 shrink-0 rounded-full flex items-center justify-center bg-electric/15">
+                    <span class="material-symbols-outlined text-electric">handshake</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p id="friendship-label" class="text-black dark:text-white font-bold truncate" data-i18n="kisi.friendship_dynamics">Arkadaşlık Dinamiği</p>
+                    <p class="text-black/40 dark:text-white/40 text-xs mt-0.5" data-i18n="kisi.friendship_desc">Seninle arasındaki uyum · Yol haritası · Analiz</p>
+                </div>
+                <div class="shrink-0 flex items-center gap-2">
+                    <span class="text-xs font-bold text-fuchsia bg-fuchsia/10 px-2 py-0.5 rounded-full">PRO</span>
+                    <span class="material-symbols-outlined text-black/20 dark:text-white/30">chevron_right</span>
+                </div>
+            </div>
+
+            <!-- Romantik Uyumluluk Analizi -->
+            <div id="btn-soulmate-analysis"
+                class="card-hover flex items-center gap-4 p-4 glass rounded-2xl cursor-pointer">
+                <div class="size-12 shrink-0 rounded-full flex items-center justify-center bg-fuchsia/15">
+                    <span class="material-symbols-outlined text-fuchsia">favorite</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p id="soulmate-label" class="text-black dark:text-white font-bold truncate" data-i18n="kisi.compatibility_analysis">Uyumluluk Analizi</p>
+                    <p class="text-black/40 dark:text-white/40 text-xs mt-0.5" data-i18n="kisi.compatibility_desc">Romantik uyum · Karmik bağ · Ruh eşi skoru</p>
+                </div>
+                <div class="shrink-0 flex items-center gap-2">
+                    <span class="text-xs font-bold text-vibrantRed bg-vibrantRed/10 px-2 py-0.5 rounded-full">SOUL</span>
+                    <span class="material-symbols-outlined text-black/20 dark:text-white/30">chevron_right</span>
+                </div>
+            </div>
         </div>
-        <div class="flex-1 flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest">Personality</p>
-            <p id="stat-pers" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
-        </div>
+
+        <div class="h-8"></div>
     </div>
-
-    <!-- Kişisel Analiz Kartı -->
-    <div class="px-4 pb-4 fade-in" style="animation-delay:0.15s">
-        <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3" data-i18n="kisi.personality_analysis">Kişilik Analizi</p>
-
-        <!-- İsim Analizi (Deep Insight) -->
-        <div id="btn-name-analysis"
-            class="card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-primary/20 cursor-pointer mb-3">
-            <div class="size-12 shrink-0 rounded-full bg-primary/15 flex items-center justify-center">
-                <span class="material-symbols-outlined text-primary">person_search</span>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p id="name-analysis-label" class="text-slate-900 dark:text-white font-bold truncate">— Deep Insight</p>
-                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5" data-i18n="kisi.deep_insight_desc">Pisagor · Expression · Soul Urge · Life Path</p>
-            </div>
-            <div class="shrink-0 flex items-center gap-2">
-                <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">OPEN</span>
-                <span class="material-symbols-outlined text-slate-400 dark:text-white/30">chevron_right</span>
-            </div>
-        </div>
-
-        <!-- Arkadaşlık Dinamiği Butonu -->
-        <div id="btn-friendship-dynamics"
-            class="card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-[#2dd4bf]/20 cursor-pointer mb-3"
-            style="background: linear-gradient(135deg, rgba(45,212,191,0.06), rgba(34,211,238,0.04));">
-            <div class="size-12 shrink-0 rounded-full flex items-center justify-center" style="background:rgba(45,212,191,0.12);">
-                <span class="material-symbols-outlined" style="color:#2dd4bf;">handshake</span>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p id="friendship-label" class="text-slate-900 dark:text-white font-bold truncate" data-i18n="kisi.friendship_dynamics">Arkadaşlık Dinamiği</p>
-                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5" data-i18n="kisi.friendship_desc">Seninle arasındaki uyum · Yol haritası · Analiz</p>
-            </div>
-            <div class="shrink-0 flex items-center gap-2">
-                <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#c084fc;background:rgba(139,92,246,0.15);">PRO</span>
-                <span class="material-symbols-outlined text-slate-400 dark:text-white/30">chevron_right</span>
-            </div>
-        </div>
-
-        <!-- Romantik Uyumluluk Analizi Butonu -->
-        <div id="btn-soulmate-analysis"
-            class="card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-[#f472b6]/20 cursor-pointer mb-3"
-            style="background: linear-gradient(135deg, rgba(244,114,182,0.06), rgba(236,72,153,0.04));">
-            <div class="size-12 shrink-0 rounded-full flex items-center justify-center" style="background:rgba(244,114,182,0.12);">
-                <span class="material-symbols-outlined" style="color:#f472b6;">favorite</span>
-            </div>
-            <div class="flex-1 min-w-0">
-                <p id="soulmate-label" class="text-slate-900 dark:text-white font-bold truncate" data-i18n="kisi.compatibility_analysis">Uyumluluk Analizi</p>
-                <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5" data-i18n="kisi.compatibility_desc">Romantik uyum · Karmik bağ · Ruh eşi skoru</p>
-            </div>
-            <div class="shrink-0 flex items-center gap-2">
-                <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="color:#f472b6;background:rgba(244,114,182,0.15);">SOUL</span>
-                <span class="material-symbols-outlined text-slate-400 dark:text-white/30">chevron_right</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="h-8"></div>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', async function() {
 
-    // Auth hazır olana kadar bekle (Supabase'den veri çekilsin)
     if (window.auth && window.auth.whenReady) await window.auth.whenReady();
 
-    // ─── Pisagor ──────────────────────────────────────────────
     var TABLE = {A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8,'Ş':1,'Ç':3,'Ü':3,'Ö':6,'Ğ':7,'İ':9};
     var VOWELS = 'AEIOUİIÖÜ';
     function reduce(n){if(n===11||n===22||n===33)return n;while(n>9){n=String(n).split('').reduce(function(a,d){return a+parseInt(d);},0);if(n===11||n===22||n===33)break;}return n;}
@@ -159,18 +172,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     function formatDate(s){if(!s)return '';try{return new Date(s+'T00:00:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric'});}catch(e){return s;}}
 
     var ARCH = {1:'The Leader',2:'The Diplomat',3:'The Creator',4:'The Builder',5:'The Adventurer',6:'The Nurturer',7:'The Seeker',8:'The Achiever',9:'The Humanitarian',11:'The Illuminator',22:'The Master Builder',33:'The Teacher'};
-    // Avatar: avatarUtil kullanılıyor (js/avatar.js)
 
-    // ─── URL Param ────────────────────────────────────────────
     var params = new URLSearchParams(window.location.search);
     var kisiName = params.get('kisi');
-    var kisiUid = params.get('uid'); // NuConnect match'lerden gelen user_id
+    var kisiUid = params.get('uid');
     if (!kisiName) { window.location.href='connections_shared_readings.html'; return; }
 
-    // ─── Veri çek ─────────────────────────────────────────────
     var kisi = null;
 
-    // 1. uid varsa doğrudan profiles + discovery_profiles'dan çek (en güvenilir)
     if (kisiUid && window.supabaseClient) {
         try {
             var profUidRes = await window.supabaseClient.from('profiles')
@@ -192,17 +201,14 @@ document.addEventListener('DOMContentLoaded', async function() {
                     avatar_url: (pData && pData.avatar_url) || (dData && dData.avatar_url) || null,
                     user_id: kisiUid
                 };
-                console.log('[KisiProfil] uid ile profil bulundu:', kisi.fullName, 'avatar:', kisi.avatar_url ? 'var' : 'yok');
             }
-        } catch(e) { console.warn('[KisiProfil] uid lookup error:', e); }
+        } catch(e) {}
     }
 
-    // 2. uid yoksa localStorage'dan dene
     if (!kisi) {
         try { kisi = await window.profile.getConnectionDetail(kisiName); } catch(e) {}
     }
 
-    // 3. Hâlâ yoksa discovery_profiles'dan isme göre dene
     if (!kisi && window.supabaseClient) {
         try {
             var dpRes = await window.supabaseClient.from('discovery_profiles')
@@ -220,14 +226,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                     user_id: dpRes.data.user_id
                 };
             }
-        } catch(e) { console.warn('[KisiProfil] Supabase fallback error:', e); }
+        } catch(e) {}
     }
 
-    // Avatar URL'i Supabase'den zenginleştir — profiles tablosu HER ZAMAN öncelikli
     if (kisi && window.supabaseClient && !kisiUid) {
         try {
             var nameToSearch = kisi.fullName || kisiName;
-            // discovery_profiles'dan user_id al
             var dpAvatarRes = await window.supabaseClient.from('discovery_profiles')
                 .select('avatar_url, user_id')
                 .ilike('full_name', '%' + nameToSearch + '%')
@@ -235,9 +239,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 .maybeSingle();
             var kisiUserId = kisi.user_id || (dpAvatarRes.data ? dpAvatarRes.data.user_id : null);
 
-            // profiles tablosu öncelikli (en güncel fotoğraf)
             if (kisiUserId) {
-                kisi.user_id = kisiUserId; // user_id'yi kaydet
+                kisi.user_id = kisiUserId;
                 var profRes = await window.supabaseClient.from('profiles')
                     .select('avatar_url')
                     .eq('id', kisiUserId)
@@ -246,11 +249,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                     kisi.avatar_url = profRes.data.avatar_url;
                 }
             }
-            // profiles'dan bulunamadıysa discovery_profiles'dan al
             if (!kisi.avatar_url && dpAvatarRes.data && dpAvatarRes.data.avatar_url) {
                 kisi.avatar_url = dpAvatarRes.data.avatar_url;
             }
-            // Hâlâ yoksa profiles'ı isme göre dene
             if (!kisi.avatar_url) {
                 var profByName = await window.supabaseClient.from('profiles')
                     .select('avatar_url')
@@ -259,7 +260,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     .maybeSingle();
                 if (profByName.data && profByName.data.avatar_url) kisi.avatar_url = profByName.data.avatar_url;
             }
-        } catch(e) { console.warn('[KisiProfil] Avatar enrich error:', e); }
+        } catch(e) {}
     }
 
     if (!kisi) {
@@ -275,7 +276,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     var soul = calcSoul(name);
     var pers = calcPers(name);
 
-    // Avatar
     var photo = window.avatarUtil.getAvatarUrl({ avatarUrl: kisi.avatar_url || null, name: name, gender: kisi.gender });
 
     // ─── UI ───────────────────────────────────────────────────
@@ -289,16 +289,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('stat-pers').textContent = pers || '—';
     document.getElementById('name-analysis-label').textContent = name.toUpperCase() + ' — Deep Insight';
 
-    // Fotoğraf
+    // Fotoğraf — tam ekran arka plan
     var fotoEl = document.getElementById('profil-foto');
-    var initEl = document.getElementById('profil-initial');
     fotoEl.innerHTML = '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">';
-    if (initEl) initEl.remove();
 
     // ─── Deep Insight butonu ──────────────────────────────────
-    // Bu kişinin verisini geçici olarak set et, sonra breakdown_1'e git
     document.getElementById('btn-name-analysis').addEventListener('click', function() {
-        // Kişinin verisini breakdown sayfasına taşımak için temp key kullan
         try {
             localStorage.setItem('numerael_kisi_temp', JSON.stringify({
                 name: name,
@@ -307,7 +303,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 gender: kisi.gender || null,
                 avatar_url: kisi.avatar_url || null,
                 user_id: kisi.user_id || null,
-                isTemp: true  // Ana kullanıcı değil
+                isTemp: true
             }));
         } catch(e) {}
         window.location.href = 'name_numerology_breakdown_1.html?kisi=' + encodeURIComponent(name);
@@ -332,7 +328,6 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // ─── Romantik Uyumluluk Analizi butonu ─────────────────
     document.getElementById('btn-soulmate-analysis').addEventListener('click', async function() {
-        // Ana kullanıcı verisini al
         var ud = null;
         try { ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); } catch(e) {}
         if (!ud || !ud.name || !ud.birthDate) {
@@ -340,14 +335,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             return;
         }
 
-        // Uyumluluk verisini localStorage'a yaz — analiz sayfası bunu okuyacak
-        // user_id, gender, avatarUrl dahil — compat engine doğrudan avatar lookup yapabilsin
         localStorage.setItem('numerael_compat_data', JSON.stringify({
             person1: { name: ud.name, birthDate: ud.birthDate, gender: ud.gender || null, avatarUrl: ud.avatarUrl || null },
             person2: { name: name, birthDate: bd, userId: kisi.user_id || null, gender: kisi.gender || null, avatarUrl: kisi.avatar_url || null }
         }));
 
-        // Bağlantıya da kaydet (connections listesinde görünsün)
         if (window.profile) {
             await window.profile.saveConnection({
                 fullName: name,
@@ -357,15 +349,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
         }
 
-        // Supabase'e uyumluluk kaydı yaz
         if (window.CompatEngine && window.CompatEngine.saveReadingToSupabase) {
             try {
                 var ctx = window.CompatEngine.getCompatData();
                 await window.CompatEngine.saveReadingToSupabase(ctx);
-            } catch(se) { console.warn('[KisiProfil] Supabase compat save error:', se); }
+            } catch(se) {}
         }
 
-        // Direkt analiz loading sayfasına git
         window.location.href = 'soul_mate_loading.html';
     });
 });

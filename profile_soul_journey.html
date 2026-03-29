@@ -8,7 +8,7 @@
     <script src="js/i18n-engine.js"></script>
     <script src="js/tailwind.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Montserrat:wght@800&display=swap" rel="stylesheet" />
     <script src="js/supabase.min.js"></script>
     <script src="js/supabase-config.js"></script>
     <script src="js/api-base.js"></script>
@@ -28,202 +28,221 @@
             darkMode: "class",
             theme: { extend: {
                 colors: {
-                        "background-light": "#f8f8f5", "primary":"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10", "surface-light": "#ffffff","card-dark":"#393628", "card-light": "#f5f5f0" },
-                fontFamily: { "display":["Space Grotesk","sans-serif"] },
-                borderRadius: { "DEFAULT":"1rem","lg":"2rem","xl":"3rem","full":"9999px" }
+                    primary:"#FF2D55", "fuchsia":"#FF00FF", "electric":"#00E0FF", "vibrantRed":"#FF2D55",
+                    "background-light":"#ffffff", "background-dark":"#0a0a0a",
+                    "surface-dark":"#1a1a1a", "surface-light":"#ffffff",
+                    "card-dark":"#1a1a1a", "card-light":"#f5f5f5",
+                    "cosmic-violet":"#7000FF"
+                },
+                fontFamily: { display:["Montserrat","sans-serif"], body:["Outfit","sans-serif"], sans:["Outfit","sans-serif"] },
+                borderRadius: { DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" }
             }}
         }
     </script>
     <style>
         .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
-        .glow-border{box-shadow:0 0 15px rgba(242,204,13,0.4)}
-        body{min-height:max(884px,100dvh);font-family:'Space Grotesk',sans-serif}
+        body{height:100dvh;overflow:hidden;background:#fff;color:#000;font-family:'Outfit',sans-serif}
+        html.dark body{background:#0a0a0a;color:#fff}
         @keyframes fade-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
         .fade-in{animation:fade-in 0.4s ease forwards}
         .card-hover{transition:transform 0.15s ease}
         .card-hover:active{transform:scale(0.97)}
+        .glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.08)}
+        html.dark .glass{background:rgba(26,26,26,0.8);border:1px solid rgba(255,255,255,0.1)}
+        .profile-card-fade::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,var(--section-bg));z-index:40;pointer-events:none}
+        :root{--section-bg:#fff}
+        html.dark{--section-bg:#0a0a0a}
     </style>
 </head>
-<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-white min-h-screen">
-<div class="relative flex h-auto min-h-screen w-full flex-col max-w-[480px] mx-auto overflow-x-hidden">
+<body class="bg-white dark:bg-[#0a0a0a] text-black dark:text-white">
+<div class="relative w-full max-w-[480px] mx-auto h-screen overflow-y-auto">
 
-    <!-- Header -->
-    <header class="flex items-center p-4 pb-2 justify-between sticky top-0 z-50 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md border-b border-slate-200 dark:border-white/5">
-        <div onclick="window.location.href='mystic_numerology_home_1.html'"
-            class="flex size-12 shrink-0 items-center justify-start cursor-pointer text-slate-700 dark:text-white">
-            <span class="material-symbols-outlined">arrow_back_ios</span>
-        </div>
-        <h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center" data-i18n="profile.title">Soul Journey</h2>
-        <div class="flex items-center gap-1">
-            <button id="btn-theme-profile"
-                class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
-                <span id="theme-icon-profile" class="material-symbols-outlined text-slate-500 dark:text-white/60">light_mode</span>
+    <!-- ═══ HERO — Tam ekran profil kartı ═══ -->
+    <div class="relative profile-card-fade" style="height:50vh;min-height:340px">
+        <!-- Header (absolute) -->
+        <header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-5 pt-12 pb-4">
+            <button onclick="window.location.href='mystic_numerology_home_1.html'"
+                class="text-white p-2 rounded-full backdrop-blur-md bg-black/20 dark:bg-white/10 border border-white/20">
+                <span class="material-symbols-outlined">arrow_back_ios</span>
             </button>
-            <button onclick="window.location.href='app_settings_preferences.html'"
-                class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-transparent hover:bg-slate-100 dark:hover:bg-white/10 transition-colors">
-                <span class="material-symbols-outlined text-slate-500 dark:text-white/60">settings</span>
-            </button>
-        </div>
-    </header>
+            <h2 class="text-white text-lg font-bold drop-shadow-lg" data-i18n="profile.title">Soul Journey</h2>
+            <div class="flex items-center gap-1">
+                <button id="btn-theme-profile"
+                    class="flex size-10 cursor-pointer items-center justify-center rounded-full backdrop-blur-md bg-black/20 dark:bg-white/10 border border-white/20">
+                    <span id="theme-icon-profile" class="material-symbols-outlined text-white">light_mode</span>
+                </button>
+                <button onclick="window.location.href='app_settings_preferences.html'"
+                    class="flex size-10 cursor-pointer items-center justify-center rounded-full backdrop-blur-md bg-black/20 dark:bg-white/10 border border-white/20">
+                    <span class="material-symbols-outlined text-white">settings</span>
+                </button>
+            </div>
+        </header>
 
-    <!-- Profile Hero -->
-    <div class="flex p-6 pt-8 flex-col items-center fade-in">
-        <div class="relative" style="touch-action:manipulation">
-            <div id="profile-avatar" class="h-32 w-32 rounded-full border-4 border-primary/40 glow-border overflow-hidden bg-primary/20 flex items-center justify-center cursor-pointer" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
-                <span id="profile-initial" class="text-primary text-5xl font-bold">?</span>
-            </div>
-            <div id="avatar-edit-badge" class="absolute -bottom-1 -left-1 bg-white dark:bg-card-dark text-slate-700 dark:text-white h-11 w-11 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711] cursor-pointer shadow-lg z-10" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent;min-width:44px;min-height:44px" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
-                <span class="material-symbols-outlined text-lg">photo_camera</span>
-            </div>
-            <div class="absolute -bottom-2 -right-2 bg-primary text-[#181711] h-12 w-12 rounded-full flex flex-col items-center justify-center border-4 border-background-light dark:border-[#181711] font-bold shadow-lg">
-                <span class="text-[9px] leading-none uppercase tracking-tighter">Path</span>
-                <span id="lp-number" class="text-xl leading-none font-black">—</span>
+        <!-- Avatar arka plan fotoğrafı -->
+        <div class="absolute inset-0 overflow-hidden bg-gradient-to-br from-fuchsia/20 to-electric/20 dark:from-fuchsia/30 dark:to-electric/30">
+            <div id="profile-avatar" class="w-full h-full flex items-center justify-center cursor-pointer" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
+                <span id="profile-initial" class="text-white/30 text-8xl font-bold">?</span>
             </div>
         </div>
-        <div class="mt-5 flex flex-col items-center gap-1">
-            <p id="profile-name" class="text-slate-900 dark:text-white text-2xl font-bold tracking-tight">—</p>
-            <p id="profile-birthdate" class="text-slate-500 dark:text-white/40 text-sm">—</p>
-            <div class="flex items-center gap-2 mt-1">
-                <span class="material-symbols-outlined text-primary text-base">auto_awesome</span>
-                <p id="profile-archetype" class="text-primary/90 text-sm font-semibold">—</p>
+
+        <!-- Kamera butonu -->
+        <div id="avatar-edit-badge" class="absolute bottom-20 right-6 z-50 bg-white/90 dark:bg-black/60 backdrop-blur-md text-black dark:text-white h-12 w-12 rounded-full flex items-center justify-center border border-black/10 dark:border-white/20 cursor-pointer shadow-lg" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
+            <span class="material-symbols-outlined text-lg">photo_camera</span>
+        </div>
+
+        <!-- LP Badge -->
+        <div class="absolute top-28 left-5 z-30 bg-vibrantRed px-4 py-1.5 rounded-full border border-white/30 rotate-[-5deg] shadow-lg">
+            <span class="text-white text-sm font-extrabold uppercase tracking-widest">Path <span id="lp-number">—</span></span>
+        </div>
+
+        <!-- Gradient overlay ile bilgiler -->
+        <div class="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 bg-gradient-to-t from-black via-black/70 to-transparent pt-24">
+            <h1 id="profile-name" class="text-4xl font-display font-extrabold text-white mb-1">—</h1>
+            <p id="profile-birthdate" class="text-white/60 text-sm mb-1">—</p>
+            <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-vibrantRed text-base">auto_awesome</span>
+                <p id="profile-archetype" class="text-vibrantRed text-sm font-bold">—</p>
             </div>
         </div>
     </div>
 
-    <!-- Gamification Rank -->
-    <div id="profile-rank-section" class="px-4 pb-4">
-        <div class="rounded-2xl p-4 border bg-white dark:bg-card-dark border-slate-200 dark:border-white/5">
-            <div class="flex items-center gap-3">
-                <div id="pr-icon" class="size-11 rounded-xl flex items-center justify-center" style="background:rgba(139,92,246,0.12)">
-                    <span class="material-symbols-outlined text-purple-400" style="font-variation-settings:'FILL' 1" id="pr-icon-span">explore</span>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                        <p id="pr-rank-name" class="text-slate-900 dark:text-white text-sm font-bold">—</p>
-                        <span id="pr-nbp" class="text-slate-400 dark:text-white/20 text-xs">0 NBP</span>
+    <!-- ═══ ALT BÖLÜM ═══ -->
+    <div class="bg-white dark:bg-[#0a0a0a] px-4 pb-32 -mt-2 relative z-30">
+
+        <!-- Gamification Rank -->
+        <div id="profile-rank-section" class="pb-4 pt-4">
+            <div class="rounded-2xl p-4 glass">
+                <div class="flex items-center gap-3">
+                    <div id="pr-icon" class="size-11 rounded-xl flex items-center justify-center" style="background:rgba(139,92,246,0.12)">
+                        <span class="material-symbols-outlined text-purple-400" style="font-variation-settings:'FILL' 1" id="pr-icon-span">explore</span>
                     </div>
-                    <div class="mt-1.5 h-1.5 bg-slate-200 dark:bg-white/5 rounded-full overflow-hidden">
-                        <div id="pr-progress" class="h-full rounded-full transition-all" style="width:0%;background:#a855f7"></div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <p id="pr-rank-name" class="text-black dark:text-white text-sm font-bold">—</p>
+                            <span id="pr-nbp" class="text-black/20 dark:text-white/20 text-xs">0 NBP</span>
+                        </div>
+                        <div class="mt-1.5 h-1.5 bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
+                            <div id="pr-progress" class="h-full rounded-full transition-all" style="width:0%;background:#a855f7"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Numerology Stats -->
+        <div class="grid grid-cols-2 gap-3 pb-4">
+            <div class="flex flex-col gap-1.5 rounded-2xl p-4 glass">
+                <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.life_path">Life Path</p>
+                <p id="stat-lifepath" class="text-vibrantRed text-3xl font-black">—</p>
+            </div>
+            <div class="flex flex-col gap-1.5 rounded-2xl p-4 glass">
+                <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.expression">Expression</p>
+                <p id="stat-expression" class="text-black dark:text-white text-3xl font-black">—</p>
+            </div>
+            <div class="flex flex-col gap-1.5 rounded-2xl p-4 glass">
+                <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.soul_urge">Soul Urge</p>
+                <p id="stat-soul" class="text-black dark:text-white text-3xl font-black">—</p>
+            </div>
+            <div class="flex flex-col gap-1.5 rounded-2xl p-4 glass">
+                <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.personality">Personality</p>
+                <p id="stat-pers" class="text-black dark:text-white text-3xl font-black">—</p>
+            </div>
+        </div>
+
+        <!-- Sections -->
+        <div class="space-y-6">
+
+            <!-- İsim Analizi -->
+            <div class="fade-in" style="animation-delay:0.1s">
+                <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3" data-i18n="profile.name_analysis">Name Analysis</p>
+                <div onclick="window.location.href='name_numerology_breakdown_1.html'"
+                    class="card-hover flex items-center gap-4 p-4 glass rounded-2xl cursor-pointer">
+                    <div class="size-12 shrink-0 rounded-full bg-vibrantRed/15 flex items-center justify-center">
+                        <span class="material-symbols-outlined text-vibrantRed">person_search</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="name-analysis-title" class="text-black dark:text-white font-bold truncate">— Deep Insight</p>
+                        <p class="text-black/40 dark:text-white/40 text-xs mt-0.5">Pisagor · Soul Urge · Life Path</p>
+                    </div>
+                    <div class="shrink-0 flex items-center gap-2">
+                        <span class="text-xs font-bold text-vibrantRed bg-vibrantRed/10 px-2 py-0.5 rounded-full">OPEN</span>
+                        <span class="material-symbols-outlined text-black/20 dark:text-white/30">chevron_right</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uyumluluk Geçmişi -->
+            <div class="fade-in" style="animation-delay:0.2s">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.compat_readings">Compatibility Readings</p>
+                </div>
+                <div id="compat-history-list" class="space-y-3"></div>
+                <div id="compat-empty" style="display:none"
+                    class="text-center py-8 text-black/30 dark:text-white/25 text-sm italic rounded-2xl glass">
+                    Henüz uyumluluk analizi yok.<br/>
+                    <span class="mt-3 text-black/30 dark:text-white/35 text-xs block">Alttaki <span class="text-vibrantRed font-bold">+</span> menüsünden "Ruh Eşi" ile başlayabilirsin.</span>
+                </div>
+            </div>
+
+            <!-- Connection Requests Inbox -->
+            <div class="fade-in" style="animation-delay:0.22s">
+                <div class="flex items-center justify-between mb-3">
+                    <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.connection_requests">Connection Requests</p>
+                    <span id="req-count-badge" style="display:none" class="text-xs font-bold text-white bg-cosmic-violet/80 px-2 py-0.5 rounded-full"></span>
+                </div>
+                <div id="conn-requests-list" class="space-y-3"></div>
+                <div id="conn-requests-empty" style="display:none"
+                    class="text-center py-6 text-black/30 dark:text-white/25 text-sm italic rounded-2xl glass">
+                    <span data-i18n="profile.no_requests">No pending requests</span>
+                </div>
+            </div>
+
+            <!-- Cosmic Match Keşfedilebilirlik -->
+            <div class="fade-in" style="animation-delay:0.25s">
+                <p class="text-black/40 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3" data-i18n="profile.cosmic_match">Cosmic Match</p>
+                <div class="flex items-center gap-4 p-4 glass rounded-2xl">
+                    <div class="size-12 shrink-0 rounded-full flex items-center justify-center" style="background:rgba(139,92,246,0.12)">
+                        <span class="material-symbols-outlined" style="color:#8b5cf6">auto_awesome</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-black dark:text-white font-bold text-sm" data-i18n="profile.discoverable">Keşfedilebilir Ol</p>
+                        <p class="text-black/40 dark:text-white/35 text-xs mt-0.5" data-i18n="profile.discoverable_desc">Diğer kullanıcılar seni eşleşme radarında görsün</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                        <input type="checkbox" id="toggle-discoverable" class="sr-only peer">
+                        <div class="w-11 h-6 bg-black/10 dark:bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-black/30 dark:after:bg-white/50 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#8b5cf6] peer-checked:after:bg-white"></div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Butonlar -->
+            <div class="space-y-3 fade-in pt-2" style="animation-delay:0.3s">
+                <button id="btn-refresh-soul"
+                    class="w-full bg-vibrantRed text-white py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                    <span class="material-symbols-outlined">refresh</span>
+                    <span data-i18n="profile.refresh">Ruh Analizimi Yenile</span>
+                </button>
+                <button id="btn-premium"
+                    class="w-full py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform"
+                    style="background:linear-gradient(135deg,#FF2D55,#FF00FF,#00E0FF);color:#fff;"
+                    onclick="window.location.href='premium_crystal_store.html'">
+                    <span class="material-symbols-outlined">workspace_premium</span>
+                    <span data-i18n="profile.go_premium">Premium'a Geç</span>
+                </button>
+                <button id="btn-logout"
+                    class="w-full bg-red-50 dark:bg-white/5 text-red-400 py-3 rounded-full font-semibold text-sm border border-red-500/15 flex items-center justify-center gap-2 active:scale-95 transition-transform">
+                    <span class="material-symbols-outlined text-base">logout</span>
+                    <span data-i18n="profile.sign_out">Sign Out</span>
+                </button>
+            </div>
+        </div>
+        <div class="h-8"></div>
     </div>
-
-    <!-- Numerology Stats -->
-    <div class="grid grid-cols-2 gap-3 px-4 pb-4">
-        <div class="flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.life_path">Life Path</p>
-            <p id="stat-lifepath" class="text-primary text-3xl font-black">—</p>
-        </div>
-        <div class="flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.expression">Expression</p>
-            <p id="stat-expression" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
-        </div>
-        <div class="flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.soul_urge">Soul Urge</p>
-            <p id="stat-soul" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
-        </div>
-        <div class="flex flex-col gap-1.5 rounded-2xl p-4 bg-white dark:bg-card-dark border border-slate-200 dark:border-white/5">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.personality">Personality</p>
-            <p id="stat-pers" class="text-slate-900 dark:text-white text-3xl font-black">—</p>
-        </div>
-    </div>
-
-    <!-- Sections -->
-    <div class="flex-1 pb-10 px-4 space-y-6">
-
-        <!-- İsim Analizi -->
-        <div class="fade-in" style="animation-delay:0.1s">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3" data-i18n="profile.name_analysis">Name Analysis</p>
-            <div onclick="window.location.href='name_numerology_breakdown_1.html'"
-                class="card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-primary/25 cursor-pointer">
-                <div class="size-12 shrink-0 rounded-full bg-primary/15 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-primary">person_search</span>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p id="name-analysis-title" class="text-slate-900 dark:text-white font-bold truncate">— Deep Insight</p>
-                    <p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Pisagor · Soul Urge · Life Path</p>
-                </div>
-                <div class="shrink-0 flex items-center gap-2">
-                    <span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">OPEN</span>
-                    <span class="material-symbols-outlined text-slate-300 dark:text-white/30">chevron_right</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Uyumluluk Geçmişi -->
-        <div class="fade-in" style="animation-delay:0.2s">
-            <div class="flex items-center justify-between mb-3">
-                <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.compat_readings">Compatibility Readings</p>
-            </div>
-            <div id="compat-history-list" class="space-y-3"></div>
-            <div id="compat-empty" style="display:none"
-                class="text-center py-8 text-slate-400 dark:text-white/25 text-sm italic rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card-dark">
-                Henüz uyumluluk analizi yok.<br/>
-                <span class="mt-3 text-slate-400 dark:text-white/35 text-xs block">Alttaki <span class="text-primary font-bold">+</span> menüsünden "Ruh Eşi" ile başlayabilirsin.</span>
-            </div>
-        </div>
-
-        <!-- Connection Requests Inbox -->
-        <div class="fade-in" style="animation-delay:0.22s">
-            <div class="flex items-center justify-between mb-3">
-                <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest" data-i18n="profile.connection_requests">Connection Requests</p>
-                <span id="req-count-badge" style="display:none" class="text-xs font-bold text-white bg-cosmic-violet/80 px-2 py-0.5 rounded-full"></span>
-            </div>
-            <div id="conn-requests-list" class="space-y-3"></div>
-            <div id="conn-requests-empty" style="display:none"
-                class="text-center py-6 text-slate-400 dark:text-white/25 text-sm italic rounded-2xl border border-slate-200 dark:border-white/5 bg-white dark:bg-card-dark">
-                <span data-i18n="profile.no_requests">No pending requests</span>
-            </div>
-        </div>
-
-        <!-- Cosmic Match Keşfedilebilirlik -->
-        <div class="fade-in" style="animation-delay:0.25s">
-            <p class="text-slate-500 dark:text-white/40 text-[10px] font-bold uppercase tracking-widest mb-3" data-i18n="profile.cosmic_match">Cosmic Match</p>
-            <div class="flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-white/5">
-                <div class="size-12 shrink-0 rounded-full flex items-center justify-center" style="background:rgba(139,92,246,0.12)">
-                    <span class="material-symbols-outlined" style="color:#8b5cf6">auto_awesome</span>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="text-slate-900 dark:text-white font-bold text-sm" data-i18n="profile.discoverable">Keşfedilebilir Ol</p>
-                    <p class="text-slate-500 dark:text-white/35 text-xs mt-0.5" data-i18n="profile.discoverable_desc">Diğer kullanıcılar seni eşleşme radarında görsün</p>
-                </div>
-                <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                    <input type="checkbox" id="toggle-discoverable" class="sr-only peer">
-                    <div class="w-11 h-6 bg-slate-200 dark:bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 dark:after:bg-white/50 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#8b5cf6] peer-checked:after:bg-white"></div>
-                </label>
-            </div>
-        </div>
-
-        <!-- Butonlar -->
-        <div class="space-y-3 fade-in pt-2" style="animation-delay:0.3s">
-            <button id="btn-refresh-soul"
-                class="w-full bg-primary text-[#181711] py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
-                <span class="material-symbols-outlined">refresh</span>
-                <span data-i18n="profile.refresh">Ruh Analizimi Yenile</span>
-            </button>
-            <button id="btn-premium"
-                class="w-full py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform"
-                style="background:linear-gradient(135deg,#bf953f,#fcf6ba,#b38728,#fbf5b7,#aa771c);color:#181711;"
-                onclick="window.location.href='premium_crystal_store.html'">
-                <span class="material-symbols-outlined">workspace_premium</span>
-                <span data-i18n="profile.go_premium">Premium'a Geç</span>
-            </button>
-            <button id="btn-logout"
-                class="w-full bg-red-50 dark:bg-white/5 text-red-400 py-3 rounded-full font-semibold text-sm border border-red-500/15 flex items-center justify-center gap-2 active:scale-95 transition-transform">
-                <span class="material-symbols-outlined text-base">logout</span>
-                <span data-i18n="profile.sign_out">Sign Out</span>
-            </button>
-        </div>
-    </div>
-    <div class="h-8"></div>
 </div>
 
 <script>
 (async function() {
 
-    // ─── Pisagor Tablosu ───────────────────────────────────────
     var TABLE = {
         A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,
         J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,
@@ -269,30 +288,22 @@
         try { return new Date(s).toLocaleDateString(_getLocale(),{day:'numeric',month:'short'}); } catch(e){return '';}
     }
     var ARCH = {1:'The Leader',2:'The Diplomat',3:'The Creator',4:'The Builder',5:'The Adventurer',6:'The Nurturer',7:'The Seeker',8:'The Achiever',9:'The Humanitarian',11:'The Illuminator',22:'The Master Builder',33:'The Teacher'};
-    // Uyumluluk skoru artık CompatEngine üzerinden hesaplanıyor (tek kaynak, 4 boyutlu)
     function compatScoreFull(name1, bd1, name2, bd2) {
         if (window.CompatEngine && window.CompatEngine.calculateOverall) {
             return window.CompatEngine.calculateOverall(name1, bd1, name2, bd2).overall;
         }
-        return 75; // fallback
+        return 75;
     }
 
-    // ─── Veri (Supabase'den çek) ──────────────────────────────
-    // Auth hazır olana kadar bekle
     await auth.whenReady();
     var session = null;
     try { session = await window.auth.getSession(); } catch(e) {}
     if (!session || !session.user) { window.location.href = 'mystic_sign_up_screen.html'; return; }
     var userId = session.user.id;
 
-    // Supabase profiles tablosundan tüm veriyi çek
     var ud = null;
     try {
-        var profRes = await window.supabaseClient
-            .from('profiles')
-            .select('*')
-            .eq('id', userId)
-            .single();
+        var profRes = await window.supabaseClient.from('profiles').select('*').eq('id', userId).single();
         if (profRes.data) {
             ud = {
                 name: profRes.data.full_name || profRes.data.name || '',
@@ -302,14 +313,12 @@
                 gender: profRes.data.gender || 'unknown',
                 avatarUrl: profRes.data.avatar_url || ''
             };
-            // localStorage'ı cache olarak güncelle (offline destek)
             try { localStorage.setItem('numerael_user_data', JSON.stringify(ud)); } catch(ce) {}
         }
     } catch(e) {
         console.warn('[Profile] Supabase profil çekme hatası, localStorage fallback:', e.message);
     }
 
-    // Fallback: Supabase'den çekemediyse (ağ hatası) localStorage'dan dene
     if (!ud || !ud.name) {
         try { ud = JSON.parse(localStorage.getItem('numerael_user_data') || 'null'); } catch(e) {}
     }
@@ -319,30 +328,37 @@
     var name=ud.name, bd=ud.birthDate||'';
     var lp=calcLP(bd), exp=calcExpression(name), soul=calcSoul(name), pers=calcPers(name);
 
-    // ─── UI ───────────────────────────────────────────────────
     var gender = ud.gender || '';
 
-    // Avatar fotoğrafını set et (avatarUtil kullanır)
+    // Avatar — tam ekran arka plan olarak set et
     var avatarEl = document.getElementById('profile-avatar');
-    window.avatarUtil.setAvatar(avatarEl, { avatarUrl: ud.avatarUrl || null, name: name, gender: gender });
+    var photo = window.avatarUtil.getAvatarUrl({ avatarUrl: ud.avatarUrl || null, name: name, gender: gender });
+    if (photo) {
+        avatarEl.innerHTML = '<img src="' + photo + '" class="w-full h-full object-cover" alt="">';
+    }
 
-    // Avatar yükleme handler
-    // KRİTİK: pickPhoto() DOĞRUDAN user gesture içinde çağrılmalı!
-    // getSession().then() async olduğu için gesture zincirini kırar → mobil tarayıcıda dosya seçici açılmaz.
-    // Bu yüzden ÖNCE fotoğrafı seç, SONRA auth kontrolü yap ve yükle.
+    // setAvatar uyumluluğu — avatarUpload sonrası güncelleme için
+    window.avatarUtil._profileHeroEl = avatarEl;
+    var _origSetAvatar = window.avatarUtil.setAvatar;
+    window.avatarUtil.setAvatar = function(el, opts) {
+        if (el === avatarEl) {
+            var url = window.avatarUtil.getAvatarUrl(opts);
+            if (url) avatarEl.innerHTML = '<img src="' + url + '" class="w-full h-full object-cover" alt="">';
+            return;
+        }
+        if (_origSetAvatar) _origSetAvatar(el, opts);
+    };
+
     window._triggerAvatarUpload = function() {
         if (!window.avatarUpload) return;
-        // 1. HEMEN fotoğraf seç (user gesture zinciri korunsun)
         window.avatarUpload.pickPhoto().then(function(dataUrl) {
             if (!dataUrl) return;
-            // 2. Auth kontrolü (artık async olması sorun değil — fotoğraf zaten seçildi)
             window.supabaseClient.auth.getSession().then(function(res) {
                 var session = res && res.data && res.data.session;
-                if (!session || !session.user) { console.warn('[Avatar] Oturum yok'); return; }
-                // 3. Yükle
+                if (!session || !session.user) return;
                 window.avatarUpload.uploadAvatar(session.user.id, dataUrl).then(function(newUrl) {
                     if (newUrl) {
-                        window.avatarUtil.setAvatar(avatarEl, { avatarUrl: newUrl, name: name, gender: gender });
+                        avatarEl.innerHTML = '<img src="' + newUrl + '" class="w-full h-full object-cover" alt="">';
                     }
                 }).catch(function(e) { console.error('[Avatar] Upload hatası:', e); });
             });
@@ -354,7 +370,6 @@
     document.getElementById('lp-number').textContent = lp||'—';
     document.getElementById('profile-archetype').textContent = ARCH[lp]||'The Soul';
 
-    // Gamification rank
     if (window.gamification) {
         var rp = window.gamification.getRankProgress();
         var r = rp.current;
@@ -374,20 +389,16 @@
     document.getElementById('stat-pers').textContent = pers||'—';
     document.getElementById('name-analysis-title').textContent = name.toUpperCase()+' — Deep Insight';
 
-    // ─── Uyumluluk Geçmişi ───────────────────────────────────
-    // Önce Supabase'den çek, yoksa localStorage fallback
     var hist = [];
     var listEl = document.getElementById('compat-history-list');
     var emptyEl = document.getElementById('compat-empty');
 
-    // Supabase'den uyumluluk geçmişini yükle
     var supabaseReadings = [];
     if (window.CompatEngine && window.CompatEngine.loadReadingsFromSupabase) {
         try { supabaseReadings = await window.CompatEngine.loadReadingsFromSupabase(); } catch(e) {}
     }
 
     if (supabaseReadings.length > 0) {
-        // Supabase verisini hist formatına çevir
         hist = supabaseReadings.map(function(r) {
             return {
                 partnerName: r.partner_name,
@@ -399,13 +410,11 @@
                 _fromSupabase: true
             };
         });
-        // localStorage'ı da senkronize et (cache)
         try {
             var localHist = hist.map(function(h) { return { partnerName: h.partnerName, partnerDate: h.partnerDate, date: h.date }; });
             localStorage.setItem('numerael_compat_history', JSON.stringify(localHist));
         } catch(e) {}
     } else {
-        // Supabase boşsa localStorage fallback
         try { hist = JSON.parse(localStorage.getItem('numerael_compat_history')||'[]'); } catch(e){}
     }
 
@@ -419,20 +428,20 @@
             var score = item.overallScore || compatScoreFull(name, bd, pName, pDate);
 
             var div = document.createElement('div');
-            div.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-white/5 cursor-pointer fade-in';
+            div.className = 'card-hover flex items-center gap-4 p-4 glass rounded-2xl cursor-pointer fade-in';
             div.style.animationDelay = (0.1 + idx*0.07)+'s';
             div.innerHTML =
                 '<div class="size-12 shrink-0 rounded-full bg-red-500/10 flex items-center justify-center">' +
                     '<span class="material-symbols-outlined text-red-400">favorite</span>' +
                 '</div>' +
                 '<div class="flex-1 min-w-0">' +
-                    '<p class="text-slate-900 dark:text-white font-bold text-sm truncate">' + name + ' &amp; ' + pName + '</p>' +
-                    '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">Life Path ' + (lp||'?') + ' &amp; ' + lp2 + ' · <span class="text-primary font-bold">' + score + '% ' + (window.i18n ? window.i18n.t('profile.compatibility', 'compatibility') : 'uyum') + '</span></p>' +
+                    '<p class="text-black dark:text-white font-bold text-sm truncate">' + name + ' &amp; ' + pName + '</p>' +
+                    '<p class="text-black/40 dark:text-white/40 text-xs mt-0.5">Life Path ' + (lp||'?') + ' &amp; ' + lp2 + ' · <span class="text-vibrantRed font-bold">' + score + '% ' + (window.i18n ? window.i18n.t('profile.compatibility', 'compatibility') : 'uyum') + '</span></p>' +
                 '</div>' +
                 '<div class="flex items-center gap-2 shrink-0">' +
                     '<div class="text-right">' +
-                        '<p class="text-slate-400 dark:text-white/30 text-xs">' + shortDate(item.date) + '</p>' +
-                        '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 text-sm">chevron_right</span>' +
+                        '<p class="text-black/30 dark:text-white/30 text-xs">' + shortDate(item.date) + '</p>' +
+                        '<span class="material-symbols-outlined text-black/20 dark:text-white/20 text-sm">chevron_right</span>' +
                     '</div>' +
                     '<button class="compat-delete-btn size-8 rounded-full bg-red-500/10 flex items-center justify-center hover:bg-red-500/25 transition-colors" data-idx="' + idx + '" data-name="' + pName.replace(/"/g,'&quot;') + '" data-date="' + (pDate||'') + '">' +
                         '<span class="material-symbols-outlined text-red-400/60 text-base">close</span>' +
@@ -446,7 +455,6 @@
                 var delDate = this.getAttribute('data-date');
                 hist.splice(i, 1);
                 try { localStorage.setItem('numerael_compat_history', JSON.stringify(hist)); } catch(ex){}
-                // Supabase'den de sil
                 if (window.CompatEngine && window.CompatEngine.deleteReadingFromSupabase) {
                     window.CompatEngine.deleteReadingFromSupabase(delName, delDate);
                 }
@@ -456,7 +464,6 @@
                 setTimeout(function() {
                     div.remove();
                     if (!hist.length) emptyEl.style.display = 'block';
-                    // data-idx'leri güncelle
                     var remaining = listEl.querySelectorAll('.compat-delete-btn');
                     for (var r = 0; r < remaining.length; r++) remaining[r].setAttribute('data-idx', r);
                 }, 200);
@@ -475,20 +482,13 @@
         });
     }
 
-    // ─── Cosmic Match Keşfedilebilirlik Toggle ────────────────
     var toggleEl = document.getElementById('toggle-discoverable');
-    // Supabase'den discovery opt-in durumunu kontrol et
     var isOptedIn = false;
     try {
-        var dpRes = await window.supabaseClient
-            .from('discovery_profiles')
-            .select('user_id')
-            .eq('user_id', userId)
-            .maybeSingle();
+        var dpRes = await window.supabaseClient.from('discovery_profiles').select('user_id').eq('user_id', userId).maybeSingle();
         isOptedIn = !!(dpRes.data);
         localStorage.setItem('numerael_discovery_opted_in', isOptedIn ? 'true' : 'false');
     } catch(e) {
-        // Ağ hatası — localStorage fallback
         isOptedIn = localStorage.getItem('numerael_discovery_opted_in') === 'true';
     }
     toggleEl.checked = isOptedIn;
@@ -498,7 +498,6 @@
         try { session = await window.auth.getSession(); } catch(e){}
         var uid = session && session.user ? session.user.id : null;
         if (!uid) { toggleEl.checked = false; return; }
-
         if (toggleEl.checked) {
             var ok = await window.discovery.optIn(uid);
             if (!ok) toggleEl.checked = false;
@@ -507,33 +506,19 @@
         }
     });
 
-    // ─── Ruh Analizi Yenile ──────────────────────────────────
     document.getElementById('btn-refresh-soul').addEventListener('click', function() {
-        // Ana kullanıcının cache'lerini temizle (yeni AI analiz üretilecek)
         var slug = name.toLowerCase().replace(/\s+/g, '_');
         var keys = Object.keys(localStorage);
-        var cleared = 0;
         keys.forEach(function(k) {
-            if (k.indexOf('numerael_karmic') !== -1 && k.indexOf(slug) !== -1) {
+            if ((k.indexOf('numerael_karmic') !== -1 || k.indexOf('numerael_accord_') !== -1) && k.indexOf(slug) !== -1) {
                 localStorage.removeItem(k);
-                cleared++;
-            }
-            // accordion-ai cache'leri de temizle
-            if (k.indexOf('numerael_accord_') !== -1 && k.indexOf(slug) !== -1) {
-                localStorage.removeItem(k);
-                cleared++;
             }
         });
-        console.log('[Soul Refresh] ' + cleared + ' cache temizlendi: ' + name);
-
-        // Deep Insight sayfasına git (kisi parametresi yok = ana kullanıcı)
         window.location.href = 'name_numerology_breakdown_1.html';
     });
 
-    // ─── Logout ───────────────────────────────────────────────
     document.getElementById('btn-logout').addEventListener('click', async function() {
         try {
-            // numerael_user_data SİLİNMEZ — tekrar login'de form sormasın diye
             localStorage.removeItem('numerael_compat_data');
             localStorage.removeItem('numerael_active_analysis');
             await window.auth.signOut();
@@ -543,7 +528,7 @@
 
 })();
 
-// ─── CONNECTION REQUESTS INBOX ─────────────────────────────
+// Connection Requests Inbox
 (async function() {
     var session = null;
     try { session = await window.auth.getSession(); } catch(e) {}
@@ -559,10 +544,7 @@
     var emptyEl = document.getElementById('conn-requests-empty');
     var badgeEl = document.getElementById('req-count-badge');
 
-    if (!requests.length) {
-        emptyEl.style.display = 'block';
-        return;
-    }
+    if (!requests.length) { emptyEl.style.display = 'block'; return; }
 
     badgeEl.textContent = requests.length;
     badgeEl.style.display = 'inline';
@@ -574,17 +556,17 @@
         var lp = sp.life_path || '?';
 
         var card = document.createElement('div');
-        card.className = 'flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border border-slate-200 dark:border-white/5 fade-in';
+        card.className = 'flex items-center gap-4 p-4 glass rounded-2xl fade-in';
         card.innerHTML =
             '<div class="relative shrink-0">' +
-                '<div class="size-12 rounded-full overflow-hidden border-2 border-purple-300 dark:border-cosmic-violet/30 bg-slate-100 dark:bg-surface-dark">' +
+                '<div class="size-12 rounded-full overflow-hidden border-2 border-fuchsia/30 bg-black/5 dark:bg-white/5">' +
                     '<img src="' + photo + '" class="w-full h-full object-cover" alt="">' +
                 '</div>' +
-                '<div class="absolute -bottom-1 -right-1 bg-purple-500 dark:bg-cosmic-violet text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-white dark:border-[#181711]">' + lp + '</div>' +
+                '<div class="absolute -bottom-1 -right-1 bg-fuchsia text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-white dark:border-[#0a0a0a]">' + lp + '</div>' +
             '</div>' +
             '<div class="flex-1 min-w-0">' +
-                '<p class="text-slate-900 dark:text-white font-bold text-sm truncate">' + senderName + '</p>' +
-                '<p class="text-slate-500 dark:text-white/35 text-[10px]">LP ' + lp + '</p>' +
+                '<p class="text-black dark:text-white font-bold text-sm truncate">' + senderName + '</p>' +
+                '<p class="text-black/40 dark:text-white/35 text-[10px]">LP ' + lp + '</p>' +
             '</div>' +
             '<div class="flex gap-2 shrink-0">' +
                 '<button class="conn-accept-btn size-10 rounded-full bg-green-500/15 flex items-center justify-center" data-reqid="' + req.id + '">' +
@@ -595,7 +577,6 @@
                 '</button>' +
             '</div>';
 
-        // Accept handler
         card.querySelector('.conn-accept-btn').addEventListener('click', async function() {
             var reqId = this.getAttribute('data-reqid');
             this.disabled = true;
@@ -607,7 +588,6 @@
             }
         });
 
-        // Reject handler
         card.querySelector('.conn-reject-btn').addEventListener('click', async function() {
             var reqId = this.getAttribute('data-reqid');
             this.disabled = true;
@@ -623,16 +603,12 @@
 
     function updateBadge() {
         var remaining = listEl.querySelectorAll('.conn-accept-btn').length;
-        if (remaining === 0) {
-            badgeEl.style.display = 'none';
-            emptyEl.style.display = 'block';
-        } else {
-            badgeEl.textContent = remaining;
-        }
+        if (remaining === 0) { badgeEl.style.display = 'none'; emptyEl.style.display = 'block'; }
+        else { badgeEl.textContent = remaining; }
     }
 })();
 
-// ─── Theme Toggle ─────────────────────────────────────
+// Theme Toggle
 (function() {
     var btn = document.getElementById('btn-theme-profile');
     var icon = document.getElementById('theme-icon-profile');
