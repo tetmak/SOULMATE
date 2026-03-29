@@ -104,6 +104,8 @@
             border: 1px solid rgba(100, 116, 139, 0.3);
             box-shadow: 0 4px 24px rgba(100, 116, 139, 0.12), 0 1px 4px rgba(0,0,0,0.05);
         }
+        .lunar-card-dark { background: radial-gradient(circle at 30% 40%, rgba(45,212,191,0.3), transparent 65%), radial-gradient(circle at 70% 60%, rgba(56,189,248,0.2), transparent 65%), linear-gradient(135deg, rgba(5,20,20,0.95) 0%, rgba(2,15,15,1) 100%); border: 1px solid rgba(45,212,191,0.25); }
+        .celestial-card-dark { background: radial-gradient(circle at 30% 40%, rgba(52,211,153,0.3), transparent 65%), radial-gradient(circle at 70% 60%, rgba(16,185,129,0.2), transparent 65%), linear-gradient(135deg, rgba(5,20,10,0.95) 0%, rgba(2,15,5,1) 100%); border: 1px solid rgba(16,185,129,0.25); }
         .shimmer-border {
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
@@ -137,23 +139,23 @@
             background: radial-gradient(circle at center, rgba(250, 198, 56, 0.25) 0%, rgba(245, 158, 11, 0.1) 40%, transparent 80%);
         }
         .manifest-portal-card {
-            background: linear-gradient(135deg,#0a0e2a 0%,#1a1040 40%,#0d1a3a 100%);
-            border: 1px solid rgba(99,102,241,0.2);
+            background: radial-gradient(circle at 30% 40%, rgba(251,191,36,0.35), transparent 65%), radial-gradient(circle at 70% 60%, rgba(245,158,11,0.25), transparent 65%), linear-gradient(135deg, rgba(30,15,5,0.95) 0%, rgba(20,10,2,1) 100%);
+            border: 1px solid rgba(251,191,36,0.25);
         }
         html:not(.dark) .manifest-portal-card {
-            background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 40%, #e0e7ff 100%);
-            border: 1px solid rgba(124, 58, 237, 0.3);
-            box-shadow: 0 4px 24px rgba(124, 58, 237, 0.12), 0 1px 4px rgba(0,0,0,0.05);
+            background: radial-gradient(circle at 30% 40%, rgba(251,191,36,0.15), transparent 65%), radial-gradient(circle at 70% 60%, rgba(245,158,11,0.1), transparent 65%), linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1px solid rgba(245,158,11,0.3);
+            box-shadow: 0 4px 24px rgba(245,158,11,0.12), 0 1px 4px rgba(0,0,0,0.05);
         }
         html:not(.dark) .lunar-card-light {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%) !important;
-            border-color: rgba(59, 130, 246, 0.3) !important;
-            box-shadow: 0 4px 24px rgba(59, 130, 246, 0.12), 0 1px 4px rgba(0,0,0,0.05) !important;
+            background: radial-gradient(circle at 30% 40%, rgba(56,189,248,0.12), transparent 65%), radial-gradient(circle at 70% 60%, rgba(45,212,191,0.1), transparent 65%), linear-gradient(135deg, #f0fdfa 0%, #e0f7fa 100%) !important;
+            border-color: rgba(45,212,191,0.3) !important;
+            box-shadow: 0 4px 24px rgba(45,212,191,0.12), 0 1px 4px rgba(0,0,0,0.05) !important;
         }
         html:not(.dark) .celestial-card-light {
-            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%) !important;
-            border-color: rgba(245, 158, 11, 0.3) !important;
-            box-shadow: 0 4px 24px rgba(245, 158, 11, 0.12), 0 1px 4px rgba(0,0,0,0.05) !important;
+            background: radial-gradient(circle at 30% 40%, rgba(52,211,153,0.12), transparent 65%), radial-gradient(circle at 70% 60%, rgba(16,185,129,0.1), transparent 65%), linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%) !important;
+            border-color: rgba(16,185,129,0.3) !important;
+            box-shadow: 0 4px 24px rgba(16,185,129,0.12), 0 1px 4px rgba(0,0,0,0.05) !important;
         }
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
@@ -306,7 +308,7 @@
 
             <!-- Lunar Insights -->
             <div id="card-lunar"
-                class="relative w-full rounded-3xl overflow-hidden cosmic-card lunar-card-light cursor-pointer active:scale-[0.98] transition-all">
+                class="relative w-full rounded-3xl overflow-hidden lunar-card-dark lunar-card-light cursor-pointer active:scale-[0.98] transition-all">
                 <div class="relative p-10 flex flex-col items-center text-center">
                     <div class="mb-6 relative">
                         <div class="absolute inset-0 blur-2xl bg-blue-300/20 rounded-full scale-125"></div>
@@ -324,7 +326,7 @@
 
             <!-- Celestial Forecast -->
             <div id="card-celestial"
-                class="relative w-full rounded-3xl overflow-hidden cosmic-card celestial-card-light cursor-pointer active:scale-[0.98] transition-all">
+                class="relative w-full rounded-3xl overflow-hidden celestial-card-dark celestial-card-light cursor-pointer active:scale-[0.98] transition-all">
                 <div class="absolute inset-0 celestial-glow-intense"></div>
                 <div class="relative p-10 flex flex-col items-center text-center">
                     <div class="mb-6 relative">
@@ -346,11 +348,11 @@
             <div id="card-manifest-portal"
                 class="relative w-full rounded-3xl overflow-hidden cursor-pointer active:scale-[0.98] transition-all manifest-portal-card">
                 <div class="absolute inset-0 opacity-30"
-                    style="background:radial-gradient(ellipse at 50% 30%, rgba(99,102,241,0.3), transparent 70%);"></div>
+                    style="background:radial-gradient(ellipse at 50% 30%, rgba(251,191,36,0.2), transparent 70%);"></div>
                 <div class="relative p-10 flex flex-col items-center text-center">
                     <div class="mb-6 relative">
                         <div class="absolute inset-0 blur-2xl bg-indigo-500/20 rounded-full scale-125"></div>
-                        <span class="material-symbols-outlined relative text-indigo-500 dark:text-indigo-300 text-5xl drop-shadow-[0_0_15px_rgba(129,140,248,0.5)]"
+                        <span class="material-symbols-outlined relative text-amber-500 dark:text-amber-300 text-5xl drop-shadow-[0_0_15px_rgba(251,191,36,0.5)]"
                             style="font-variation-settings: 'FILL' 1;">flare</span>
                     </div>
                     <h4 class="text-slate-900 dark:text-white text-2xl font-extrabold tracking-widest uppercase mb-4" data-i18n="home.manifest_portal">Manifest Portal</h4>
