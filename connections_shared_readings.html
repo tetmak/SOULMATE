@@ -107,42 +107,55 @@
         </div>
     </div>
 
-    <!-- Soul Connections Yatay Scroll -->
-    <div class="flex flex-col gap-2 pt-6 pb-2">
-        <div class="flex items-center justify-between px-5">
-            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight" data-i18n="connections.soul_connections">Soul Connections</h3>
+    <!-- Add Button (standalone) -->
+    <div class="flex gap-4 px-5 pt-6 pb-2">
+        <div class="flex flex-col items-center gap-2 shrink-0">
+            <button onclick="openSearchModal()"
+                class="size-16 rounded-full border-2 border-dashed border-primary/40 flex items-center justify-center text-primary/60 hover:border-primary/60 transition-colors">
+                <span class="material-symbols-outlined text-3xl">add</span>
+            </button>
+            <span class="text-slate-500 dark:text-white/40 text-xs font-medium" data-i18n="connections.add">Ekle</span>
+        </div>
+        <div class="flex items-center">
             <p class="text-slate-400 dark:text-white/30 text-xs" id="connections-count"></p>
         </div>
-        <div id="connections-row" class="flex gap-4 overflow-x-auto px-5 hide-scrollbar pb-2">
-            <!-- Ekle butonu her zaman -->
-            <div class="flex flex-col items-center gap-2 shrink-0">
-                <button onclick="openSearchModal()"
-                    class="size-16 rounded-full border-2 border-dashed border-primary/40 flex items-center justify-center text-primary/60 hover:border-primary/60 transition-colors">
-                    <span class="material-symbols-outlined text-3xl">add</span>
-                </button>
-                <span class="text-slate-500 dark:text-white/40 text-xs font-medium" data-i18n="connections.add">Ekle</span>
-            </div>
-        </div>
     </div>
 
-    <!-- Match-based Connections -->
-    <div id="match-connections-section" style="display:none" class="px-4 pb-2">
-        <div class="flex items-center justify-between py-4">
-            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight" data-i18n="connections.match_connections">Match Connections</h3>
-            <span id="match-conn-count" class="text-slate-400 dark:text-white/30 text-xs"></span>
+    <!-- Group 1: NuMatch Eşleşmeler -->
+    <div id="group-matches" style="display:none" class="pt-4">
+        <div class="flex items-center gap-2 px-5 mb-2">
+            <span class="material-symbols-outlined text-base" style="color:#ef4444">favorite</span>
+            <h3 class="text-slate-900 dark:text-white text-sm font-bold" data-i18n="connections.group_matches">NuMatch Eşleşmeler</h3>
+            <span id="group-matches-count" class="text-xs text-slate-400 dark:text-white/30"></span>
         </div>
-        <div id="match-connections-list" class="flex flex-col gap-3"></div>
+        <div id="group-matches-row" class="flex gap-4 overflow-x-auto px-5 hide-scrollbar pb-2"></div>
+        <div id="group-matches-list" class="px-4 flex flex-col gap-3 mt-2"></div>
     </div>
 
-    <!-- Recent Analyses Liste -->
+    <!-- Group 2: Uyumluluk Analizleri -->
+    <div id="group-compat" style="display:none" class="pt-4">
+        <div class="flex items-center gap-2 px-5 mb-2">
+            <span class="material-symbols-outlined text-pink-400 text-base">diversity_3</span>
+            <h3 class="text-slate-900 dark:text-white text-sm font-bold" data-i18n="connections.group_compat">Uyumluluk Analizleri</h3>
+            <span id="group-compat-count" class="text-xs text-slate-400 dark:text-white/30"></span>
+        </div>
+        <div id="group-compat-row" class="flex gap-4 overflow-x-auto px-5 hide-scrollbar pb-2"></div>
+        <div id="group-compat-list" class="px-4 flex flex-col gap-3 mt-2"></div>
+    </div>
+
+    <!-- Group 3: Kişilik Analizleri -->
+    <div id="group-personality" style="display:none" class="pt-4">
+        <div class="flex items-center gap-2 px-5 mb-2">
+            <span class="material-symbols-outlined text-primary text-base">person_search</span>
+            <h3 class="text-slate-900 dark:text-white text-sm font-bold" data-i18n="connections.group_personality">Kişilik Analizleri</h3>
+            <span id="group-personality-count" class="text-xs text-slate-400 dark:text-white/30"></span>
+        </div>
+        <div id="group-personality-row" class="flex gap-4 overflow-x-auto px-5 hide-scrollbar pb-2"></div>
+        <div id="group-personality-list" class="px-4 flex flex-col gap-3 mt-2"></div>
+    </div>
+
+    <!-- Boş durum -->
     <div class="flex-1 px-4">
-        <div class="flex items-center justify-between py-4">
-            <h3 class="text-slate-900 dark:text-white text-base font-bold tracking-tight" data-i18n="connections.recent_analyses">Recent Analyses</h3>
-            <span id="analyses-count" class="text-slate-400 dark:text-white/30 text-xs"></span>
-        </div>
-        <div id="analyses-list" class="flex flex-col gap-3"></div>
-
-        <!-- Boş durum -->
         <div id="empty-state" style="display:none"
             class="text-center py-16 text-slate-400 dark:text-white/25 text-sm italic">
             <span data-i18n="connections.no_analyses">Henüz analiz yapılmadı.</span><br/>
@@ -218,84 +231,136 @@ document.addEventListener('DOMContentLoaded', async function() {
     var premBanner = document.getElementById('conn-premium-banner');
     if (premBanner && !connIsPrem) premBanner.style.display = 'block';
 
-    // ─── Match-based connections (from Supabase) ────────────
+    // ─── Helper: Avatar oluştur (herhangi bir row'a eklemek için) ──
+    function createAvatarEl(name, firstName, photo, lp, uc, lockCls, dispFirst, idx, clickFn) {
+        var avatarDiv = document.createElement('div');
+        avatarDiv.className = 'flex flex-col items-center gap-2 shrink-0 cursor-pointer fade-in' + lockCls;
+        avatarDiv.style.animationDelay = (idx * 0.05) + 's';
+        avatarDiv.innerHTML =
+            '<div class="relative">' +
+                '<div class="size-16 rounded-full border-2 overflow-hidden bg-slate-100 dark:bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
+                    '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
+                '</div>' +
+                (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-lg drop-shadow">lock</span></div>' : '') +
+                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+            '</div>' +
+            '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate conn-name">' + dispFirst + '</span>';
+        avatarDiv.addEventListener('click', clickFn);
+        return avatarDiv;
+    }
+
+    // ─── Helper: Local connection kartı oluştur ──
+    function createLocalCard(conn, photo, lp, exp, arch, uc, reading, dispName, lockCls, idx) {
+        var card = document.createElement('div');
+        card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border fade-in' + lockCls;
+        card.style.borderColor = hexToRgba(uc.border, 0.08);
+        card.style.animationDelay = (0.05 + idx * 0.07) + 's';
+        card.innerHTML =
+            '<div class="relative shrink-0 cursor-pointer" data-action="view">' +
+                '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
+                    '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
+                '</div>' +
+                (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-sm drop-shadow">lock</span></div>' : '') +
+                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+            '</div>' +
+            '<div class="flex-1 min-w-0 cursor-pointer" data-action="view">' +
+                '<p class="text-slate-900 dark:text-white font-bold truncate conn-name">' + dispName + '</p>' +
+                '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + (reading && connIsPrem ? ' · <span class="text-primary font-bold">' + reading.overall_score + '% uyum</span>' : ' · Exp: ' + exp) + '</p>' +
+                '<p class="text-slate-400 dark:text-white/25 text-xs">' + shortDate(reading ? (reading.updated_at || reading.created_at) : conn.createdAt) + '</p>' +
+            '</div>' +
+            (connIsPrem ?
+                '<button class="flex items-center justify-center size-10 rounded-full hover:bg-red-500/20 transition-colors shrink-0 group" data-action="delete" data-name="' + conn.fullName + '">' +
+                    '<span class="material-symbols-outlined text-slate-300 dark:text-white/30 group-hover:text-red-500 transition-colors">delete</span>' +
+                '</button>' :
+                '<span class="material-symbols-outlined text-primary/60 shrink-0">lock</span>') +
+            '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 shrink-0 cursor-pointer" data-action="view">chevron_right</span>';
+
+        card.addEventListener('click', function(e) {
+            if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
+            var target = e.target.closest('[data-action]');
+            if (!target) return;
+            var action = target.getAttribute('data-action');
+            if (action === 'view') {
+                window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
+            } else if (action === 'delete') {
+                e.stopPropagation();
+                var delName = target.getAttribute('data-name');
+                if (confirm('"' + delName + '" profilini silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz.')) {
+                    deleteConnection(delName);
+                }
+            }
+        });
+        return card;
+    }
+
+    // ─── Match-based connections (from Supabase) — Group 1 ──
+    var matchConns = [];
     if (currentUserId && window.connectionEngine) {
-        var matchConns = await window.connectionEngine.getConnections(currentUserId);
-        if (matchConns.length > 0) {
-            var mcSection = document.getElementById('match-connections-section');
-            var mcList = document.getElementById('match-connections-list');
-            var mcCount = document.getElementById('match-conn-count');
-            var rowEl = document.getElementById('connections-row');
+        try { matchConns = await window.connectionEngine.getConnections(currentUserId); } catch(e) {}
+    }
 
-            mcSection.style.display = 'block';
-            mcCount.textContent = matchConns.length + ' connected';
+    if (matchConns.length > 0) {
+        var grpMatchesEl = document.getElementById('group-matches');
+        var grpMatchesRow = document.getElementById('group-matches-row');
+        var grpMatchesList = document.getElementById('group-matches-list');
+        var grpMatchesCount = document.getElementById('group-matches-count');
 
-            matchConns.forEach(function(mc, idx) {
-                var p = mc.profile || {};
-                var name = p.full_name || 'Kullanıcı';
-                var lp = p.life_path || calcLP(p.birth_date) || '?';
-                var photo = getPhoto(name, p.gender, p.avatar_url);
-                var firstName = name.split(' ')[0];
-                var arch = ARCH[lp] || 'Soul';
-                var exp = p.expression_num || calcExp(name);
-                var uc = getUserColor(mc.user_id || name);
+        grpMatchesEl.style.display = 'block';
+        grpMatchesCount.textContent = matchConns.length + ' eşleşme';
 
-                var dispName = connIsPrem ? name : maskName(name);
-                var dispFirst = connIsPrem ? firstName : maskName(firstName);
-                var lockCls = connIsPrem ? '' : ' conn-locked';
+        matchConns.forEach(function(mc, idx) {
+            var p = mc.profile || {};
+            var name = p.full_name || 'Kullanıcı';
+            var lp = p.life_path || calcLP(p.birth_date) || '?';
+            var photo = getPhoto(name, p.gender, p.avatar_url);
+            var firstName = name.split(' ')[0];
+            var arch = ARCH[lp] || 'Soul';
+            var exp = p.expression_num || calcExp(name);
+            var uc = getUserColor(mc.user_id || name);
 
-                // Add to horizontal scroll row
-                var avatarDiv = document.createElement('div');
-                avatarDiv.className = 'flex flex-col items-center gap-2 shrink-0 cursor-pointer fade-in' + lockCls;
-                avatarDiv.style.animationDelay = (idx * 0.05) + 's';
-                avatarDiv.innerHTML =
-                    '<div class="relative">' +
-                        '<div class="size-16 rounded-full border-2 overflow-hidden bg-slate-100 dark:bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
-                            '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
-                        '</div>' +
-                        (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-lg drop-shadow">lock</span></div>' : '') +
-                        '<div class="absolute -bottom-1 -right-1 text-white text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
-                    '</div>' +
-                    '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate conn-name">' + dispFirst + '</span>';
-                avatarDiv.addEventListener('click', function() {
-                    if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
-                    var profUrl = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
-                    if (mc.user_id) profUrl += '&uid=' + encodeURIComponent(mc.user_id);
-                    window.location.href = profUrl;
-                });
-                rowEl.insertBefore(avatarDiv, rowEl.lastElementChild);
+            var dispName = connIsPrem ? name : maskName(name);
+            var dispFirst = connIsPrem ? firstName : maskName(firstName);
+            var lockCls = connIsPrem ? '' : ' conn-locked';
 
-                // Add to match connections list
-                var card = document.createElement('div');
-                card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border cursor-pointer fade-in' + lockCls;
-                card.style.borderColor = hexToRgba(uc.border, 0.15);
-                card.style.setProperty('--glow', hexToRgba(uc.border, 0.35));
-                card.style.setProperty('--glow-solid', uc.border);
-                card.setAttribute('data-chat-uid', mc.user_id || '');
-                card.style.animationDelay = (0.05 + idx * 0.07) + 's';
-                card.innerHTML =
-                    '<div class="relative shrink-0">' +
-                        '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
-                            '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
-                        '</div>' +
-                        (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-sm drop-shadow">lock</span></div>' : '') +
-                        '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
-                    '</div>' +
-                    '<div class="flex-1 min-w-0">' +
-                        '<p class="text-slate-900 dark:text-white font-bold truncate conn-name">' + dispName + '</p>' +
-                        '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + ' · Exp: ' + exp + '</p>' +
-                        '<p class="text-slate-400 dark:text-white/25 text-xs">' + shortDate(mc.created_at) + '</p>' +
-                    '</div>' +
-                    (connIsPrem ? '<span class="material-symbols-outlined shrink-0" style="color:' + hexToRgba(uc.border, 0.5) + '">chat</span>' : '<span class="material-symbols-outlined text-primary/60 shrink-0">lock</span>') +
-                    '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 shrink-0">chevron_right</span>';
-
-                card.addEventListener('click', function() {
-                    if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
-                    window.location.href = 'messaging.html?uid=' + encodeURIComponent(mc.user_id);
-                });
-                mcList.appendChild(card);
+            // Avatar row
+            var avatarDiv = createAvatarEl(name, firstName, photo, lp, uc, lockCls, dispFirst, idx, function() {
+                if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
+                var profUrl = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
+                if (mc.user_id) profUrl += '&uid=' + encodeURIComponent(mc.user_id);
+                window.location.href = profUrl;
             });
-        }
+            grpMatchesRow.appendChild(avatarDiv);
+
+            // Card
+            var card = document.createElement('div');
+            card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border cursor-pointer fade-in' + lockCls;
+            card.style.borderColor = hexToRgba(uc.border, 0.15);
+            card.style.setProperty('--glow', hexToRgba(uc.border, 0.35));
+            card.style.setProperty('--glow-solid', uc.border);
+            card.setAttribute('data-chat-uid', mc.user_id || '');
+            card.style.animationDelay = (0.05 + idx * 0.07) + 's';
+            card.innerHTML =
+                '<div class="relative shrink-0">' +
+                    '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
+                        '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
+                    '</div>' +
+                    (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-sm drop-shadow">lock</span></div>' : '') +
+                    '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                '</div>' +
+                '<div class="flex-1 min-w-0">' +
+                    '<p class="text-slate-900 dark:text-white font-bold truncate conn-name">' + dispName + '</p>' +
+                    '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + ' · Exp: ' + exp + '</p>' +
+                    '<p class="text-slate-400 dark:text-white/25 text-xs">' + shortDate(mc.created_at) + '</p>' +
+                '</div>' +
+                (connIsPrem ? '<span class="material-symbols-outlined shrink-0" style="color:' + hexToRgba(uc.border, 0.5) + '">chat</span>' : '<span class="material-symbols-outlined text-primary/60 shrink-0">lock</span>') +
+                '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 shrink-0">chevron_right</span>';
+
+            card.addEventListener('click', function() {
+                if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
+                window.location.href = 'messaging.html?uid=' + encodeURIComponent(mc.user_id);
+            });
+            grpMatchesList.appendChild(card);
+        });
     }
 
     // ─── Local connections (existing localStorage) ──────────
@@ -313,25 +378,16 @@ document.addEventListener('DOMContentLoaded', async function() {
     var connections = Object.values(seen);
     connections.sort(function(a,b){return new Date(b.createdAt)-new Date(a.createdAt);});
 
-    var rowEl = document.getElementById('connections-row');
-    var listEl = document.getElementById('analyses-list');
     var emptyEl = document.getElementById('empty-state');
     var countEl = document.getElementById('connections-count');
-    var aCountEl = document.getElementById('analyses-count');
 
     // Update total count (local + match-based)
-    var matchConnCount = 0;
-    try { if (currentUserId && window.connectionEngine) { var mc = await window.connectionEngine.getConnections(currentUserId); matchConnCount = mc.length; } } catch(e){}
-    var totalCount = connections.length + matchConnCount;
+    var totalCount = connections.length + matchConns.length;
     countEl.textContent = totalCount + ' kişi';
 
-    if (connections.length === 0 && matchConnCount === 0) {
+    if (connections.length === 0 && matchConns.length === 0) {
         emptyEl.style.display = 'block';
         return;
-    }
-
-    if (connections.length > 0) {
-        aCountEl.textContent = connections.length + ' analiz';
     }
 
     // Local connections için Supabase'den avatar_url çek — profiles HER ZAMAN öncelikli
@@ -388,82 +444,87 @@ document.addEventListener('DOMContentLoaded', async function() {
         } catch(e) { console.warn('[Connections] CompatEngine load error:', e); }
     }
 
-    connections.forEach(function(conn, idx) {
-        var lp = conn.lifePath || calcLP(conn.birthDate) || '?';
-        var exp = calcExp(conn.fullName);
-        var photo = getPhoto(conn.fullName, conn.gender, conn.avatar_url);
-        var firstName = (conn.fullName||'').split(' ')[0];
-        var arch = ARCH[lp] || 'Soul';
-        var uc = getUserColor(conn.fullName);
-        var reading = compatMap[(conn.fullName||'').toLowerCase()];
-        var dispName = connIsPrem ? conn.fullName : maskName(conn.fullName);
-        var dispFirst = connIsPrem ? firstName : maskName(firstName);
-        var lockCls = connIsPrem ? '' : ' conn-locked';
-
-        // ── Avatar satırı ──────────────────────────────────────
-        var avatarDiv = document.createElement('div');
-        avatarDiv.className = 'flex flex-col items-center gap-2 shrink-0 cursor-pointer fade-in' + lockCls;
-        avatarDiv.style.animationDelay = (idx * 0.05) + 's';
-        avatarDiv.innerHTML =
-            '<div class="relative">' +
-                '<div class="size-16 rounded-full border-2 overflow-hidden bg-slate-100 dark:bg-surface-dark" style="border-color:' + uc.border + ';box-shadow:0 0 12px ' + uc.glow + '">' +
-                    '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
-                '</div>' +
-                (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-lg drop-shadow">lock</span></div>' : '') +
-                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
-            '</div>' +
-            '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate conn-name">' + dispFirst + '</span>';
-        avatarDiv.addEventListener('click', function() {
-            if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
-            window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
-        });
-        rowEl.insertBefore(avatarDiv, rowEl.lastElementChild);
-
-        // ── Analiz kartı ───────────────────────────────────────
-        var card = document.createElement('div');
-        card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border fade-in' + lockCls;
-        card.style.borderColor = hexToRgba(uc.border, 0.08);
-        card.style.animationDelay = (0.05 + idx * 0.07) + 's';
-        card.innerHTML =
-            '<div class="relative shrink-0 cursor-pointer" data-action="view">' +
-                '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
-                    '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
-                '</div>' +
-                (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-sm drop-shadow">lock</span></div>' : '') +
-                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
-            '</div>' +
-            '<div class="flex-1 min-w-0 cursor-pointer" data-action="view">' +
-                '<p class="text-slate-900 dark:text-white font-bold truncate conn-name">' + dispName + '</p>' +
-                '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + (reading && connIsPrem ? ' · <span class="text-primary font-bold">' + reading.overall_score + '% uyum</span>' : ' · Exp: ' + exp) + '</p>' +
-                '<p class="text-slate-400 dark:text-white/25 text-xs">' + shortDate(reading ? (reading.updated_at || reading.created_at) : conn.createdAt) + '</p>' +
-            '</div>' +
-            (connIsPrem ?
-                '<button class="flex items-center justify-center size-10 rounded-full hover:bg-red-500/20 transition-colors shrink-0 group" data-action="delete" data-name="' + conn.fullName + '">' +
-                    '<span class="material-symbols-outlined text-slate-300 dark:text-white/30 group-hover:text-red-500 transition-colors">delete</span>' +
-                '</button>' :
-                '<span class="material-symbols-outlined text-primary/60 shrink-0">lock</span>') +
-            '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 shrink-0 cursor-pointer" data-action="view">chevron_right</span>';
-
-        card.addEventListener('click', function(e) {
-            if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
-            var target = e.target.closest('[data-action]');
-            if (!target) return;
-
-            var action = target.getAttribute('data-action');
-
-            if (action === 'view') {
-                window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
-            } else if (action === 'delete') {
-                e.stopPropagation();
-                var name = target.getAttribute('data-name');
-                if (confirm('"' + name + '" profilini silmek istediğinize emin misiniz?\n\nBu işlem geri alınamaz.')) {
-                    deleteConnection(name);
-                }
-            }
-        });
-
-        listEl.appendChild(card);
+    // ─── Split local connections into 2 groups ──────────────
+    var compatConns = [];    // Group 2: has compatibility reading
+    var personalityConns = []; // Group 3: no compatibility reading
+    connections.forEach(function(conn) {
+        var key = (conn.fullName||'').toLowerCase();
+        if (compatMap[key]) {
+            compatConns.push(conn);
+        } else {
+            personalityConns.push(conn);
+        }
     });
+
+    // ─── Group 2: Uyumluluk Analizleri ──────────────────────
+    if (compatConns.length > 0) {
+        var grpCompatEl = document.getElementById('group-compat');
+        var grpCompatRow = document.getElementById('group-compat-row');
+        var grpCompatList = document.getElementById('group-compat-list');
+        var grpCompatCount = document.getElementById('group-compat-count');
+
+        grpCompatEl.style.display = 'block';
+        grpCompatCount.textContent = compatConns.length + ' analiz';
+
+        compatConns.forEach(function(conn, idx) {
+            var lp = conn.lifePath || calcLP(conn.birthDate) || '?';
+            var exp = calcExp(conn.fullName);
+            var photo = getPhoto(conn.fullName, conn.gender, conn.avatar_url);
+            var firstName = (conn.fullName||'').split(' ')[0];
+            var arch = ARCH[lp] || 'Soul';
+            var uc = getUserColor(conn.fullName);
+            var reading = compatMap[(conn.fullName||'').toLowerCase()];
+            var dispName = connIsPrem ? conn.fullName : maskName(conn.fullName);
+            var dispFirst = connIsPrem ? firstName : maskName(firstName);
+            var lockCls = connIsPrem ? '' : ' conn-locked';
+
+            // Avatar row
+            var avatarDiv = createAvatarEl(conn.fullName, firstName, photo, lp, uc, lockCls, dispFirst, idx, function() {
+                if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
+                window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
+            });
+            grpCompatRow.appendChild(avatarDiv);
+
+            // Card
+            var card = createLocalCard(conn, photo, lp, exp, arch, uc, reading, dispName, lockCls, idx);
+            grpCompatList.appendChild(card);
+        });
+    }
+
+    // ─── Group 3: Kişilik Analizleri ────────────────────────
+    if (personalityConns.length > 0) {
+        var grpPersEl = document.getElementById('group-personality');
+        var grpPersRow = document.getElementById('group-personality-row');
+        var grpPersList = document.getElementById('group-personality-list');
+        var grpPersCount = document.getElementById('group-personality-count');
+
+        grpPersEl.style.display = 'block';
+        grpPersCount.textContent = personalityConns.length + ' analiz';
+
+        personalityConns.forEach(function(conn, idx) {
+            var lp = conn.lifePath || calcLP(conn.birthDate) || '?';
+            var exp = calcExp(conn.fullName);
+            var photo = getPhoto(conn.fullName, conn.gender, conn.avatar_url);
+            var firstName = (conn.fullName||'').split(' ')[0];
+            var arch = ARCH[lp] || 'Soul';
+            var uc = getUserColor(conn.fullName);
+            var reading = null; // no compat reading for this group
+            var dispName = connIsPrem ? conn.fullName : maskName(conn.fullName);
+            var dispFirst = connIsPrem ? firstName : maskName(firstName);
+            var lockCls = connIsPrem ? '' : ' conn-locked';
+
+            // Avatar row
+            var avatarDiv = createAvatarEl(conn.fullName, firstName, photo, lp, uc, lockCls, dispFirst, idx, function() {
+                if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
+                window.location.href = 'kisi_profil.html?kisi=' + encodeURIComponent(conn.fullName);
+            });
+            grpPersRow.appendChild(avatarDiv);
+
+            // Card
+            var card = createLocalCard(conn, photo, lp, exp, arch, uc, reading, dispName, lockCls, idx);
+            grpPersList.appendChild(card);
+        });
+    }
 
     // ─── Okunmamış mesaj blink ─────────────────────────────
     function refreshChatBlinks() {
