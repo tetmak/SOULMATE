@@ -307,12 +307,14 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (!_kPhotos.length) _kPhotos = [null];
 
         _kSlidesEl.innerHTML = ''; _kDotsEl.innerHTML = ''; _kIdx = 0;
+        var gW = _kGalleryEl.offsetWidth || window.innerWidth;
+
         _kPhotos.forEach(function(url, i) {
             var slide = document.createElement('div');
-            slide.className = 'flex-shrink-0 w-full h-full';
+            slide.style.cssText = 'flex-shrink:0;width:' + gW + 'px;height:100%';
             slide.innerHTML = url
-                ? '<img src="' + url + '" class="w-full h-full object-cover" alt="">'
-                : '<div class="w-full h-full flex items-center justify-center"><span class="material-symbols-outlined text-white/20" style="font-size:64px">person</span></div>';
+                ? '<img src="' + url + '" style="width:100%;height:100%;object-fit:cover" alt="">'
+                : '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center"><span class="material-symbols-outlined text-white/20" style="font-size:64px">person</span></div>';
             _kSlidesEl.appendChild(slide);
             if (_kPhotos.length > 1) {
                 var dot = document.createElement('div');
@@ -320,14 +322,15 @@ document.addEventListener('DOMContentLoaded', async function() {
                 _kDotsEl.appendChild(dot);
             }
         });
-        _kSlidesEl.style.width = (_kPhotos.length * 100) + '%';
+        _kSlidesEl.style.width = (_kPhotos.length * gW) + 'px';
         _kSlidesEl.style.transform = 'translateX(0)';
     }
 
     function goKisiSlide(idx) {
         if (idx < 0) idx = 0; if (idx >= _kPhotos.length) idx = _kPhotos.length - 1;
         _kIdx = idx;
-        _kSlidesEl.style.transform = 'translateX(-' + (idx * (100 / _kPhotos.length)) + '%)';
+        var gW = _kGalleryEl.offsetWidth || window.innerWidth;
+        _kSlidesEl.style.transform = 'translateX(-' + (idx * gW) + 'px)';
         _kDotsEl.querySelectorAll('div').forEach(function(d, i) {
             d.className = 'h-1 rounded-full transition-all ' + (i === idx ? 'w-6 bg-white' : 'w-1.5 bg-white/40');
         });
