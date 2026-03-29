@@ -65,7 +65,7 @@
         'html:not(.dark) #numerael-bottom-nav .nav-tab:not(.active):hover{color:rgba(0,0,0,0.6)}',
         '#numerael-bottom-nav .nav-tab .material-symbols-outlined{font-size:24px;transition:all 0.2s}',
         '#numerael-bottom-nav .nav-tab.active .material-symbols-outlined{font-variation-settings:"FILL" 1}',
-        '#numerael-bottom-nav .nav-tab span:last-child{font-size:9px;font-weight:800;letter-spacing:0.02em;font-family:'Montserrat',sans-serif;font-style:italic;text-transform:uppercase}',
+        "#numerael-bottom-nav .nav-tab span:last-child{font-size:9px;font-weight:800;letter-spacing:0.02em;font-family:'Montserrat',sans-serif;font-style:italic;text-transform:uppercase}",
         '#numerael-plus-btn{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#f2cc0d,#e6b800);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;top:-22px;box-shadow:0 4px 20px rgba(242,204,13,0.35);transition:transform 0.2s,box-shadow 0.2s;z-index:1002}',
         'html:not(.dark) #numerael-plus-btn{background:linear-gradient(135deg,#fbbf24,#f59e0b);box-shadow:0 4px 16px rgba(251,191,36,0.35)}',
         '#numerael-plus-btn:active{transform:scale(0.92)}',
