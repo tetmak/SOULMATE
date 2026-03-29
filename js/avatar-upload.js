@@ -266,16 +266,25 @@
 
     function getPhotos(userId) {
         if (!window.supabaseClient) return Promise.resolve([]);
+        // Önce profiles'dan dene (kendi profilin), sonra discovery_profiles (başkası, public read)
         return window.supabaseClient.from('profiles').select('photos, avatar_url').eq('id', userId).maybeSingle()
             .then(function(res) {
                 var d = res.data;
-                if (!d) return [];
-                var photos = (d.photos && Array.isArray(d.photos)) ? d.photos : [];
-                // photos boşsa ama avatar_url varsa, onu ilk eleman olarak kullan
-                if (photos.filter(Boolean).length === 0 && d.avatar_url) {
-                    photos = [d.avatar_url];
+                if (d) {
+                    var photos = (d.photos && Array.isArray(d.photos)) ? d.photos : [];
+                    if (photos.filter(Boolean).length > 0) return photos;
+                    if (d.avatar_url) return [d.avatar_url];
                 }
-                return photos;
+                // profiles'dan bulunamadıysa discovery_profiles'dan dene (public read)
+                return window.supabaseClient.from('discovery_profiles').select('photos, avatar_url').eq('user_id', userId).maybeSingle()
+                    .then(function(dpRes) {
+                        var dp = dpRes.data;
+                        if (!dp) return [];
+                        var dpPhotos = (dp.photos && Array.isArray(dp.photos)) ? dp.photos : [];
+                        if (dpPhotos.filter(Boolean).length > 0) return dpPhotos;
+                        if (dp.avatar_url) return [dp.avatar_url];
+                        return [];
+                    });
             })
             .catch(function() { return []; });
     }
