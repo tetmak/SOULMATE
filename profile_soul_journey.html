@@ -415,26 +415,43 @@
     }
 
     // Yeni fotoğraf ekleme
+    var _dbPhotos = []; // DB'deki gerçek photos array'i (fallback değil)
+
     window._triggerPhotoAdd = function() {
         if (!window.avatarUpload) return;
-        // Boş slot bul
-        var nextIdx = 0;
-        for (var i = 0; i < (window.avatarUpload.MAX_PHOTOS || 4); i++) {
-            if (!_galleryPhotos[i]) { nextIdx = i; break; }
-            if (i === _galleryPhotos.length) { nextIdx = i; break; }
-        }
-        if (nextIdx >= (window.avatarUpload.MAX_PHOTOS || 4)) {
-            nextIdx = _galleryIdx; // Mevcut slide'ı değiştir
-        }
 
+        // ÖNCE fotoğraf seç (user gesture chain korunsun)
         window.avatarUpload.pickPhoto().then(function(dataUrl) {
             if (!dataUrl) return;
-            window.avatarUpload.uploadPhoto(userId, dataUrl, nextIdx).then(function(result) {
-                if (result && result.photos) {
-                    renderGallery(result.photos);
-                    goToSlide(nextIdx);
-                }
-            }).catch(function(e) { console.error('[Gallery] Upload error:', e); });
+
+            // DB'den güncel photos array'ini çek, sonra boş slot bul
+            window.supabaseClient.from('profiles').select('photos').eq('id', userId).maybeSingle()
+                .then(function(res) {
+                    _dbPhotos = (res.data && Array.isArray(res.data.photos)) ? res.data.photos : [];
+
+                    // İlk boş slot'u bul
+                    var maxPhotos = window.avatarUpload.MAX_PHOTOS || 4;
+                    var nextIdx = -1;
+                    for (var i = 0; i < maxPhotos; i++) {
+                        if (!_dbPhotos[i]) { nextIdx = i; break; }
+                    }
+                    // Hepsi doluysa mevcut slide'ı değiştir
+                    if (nextIdx === -1) nextIdx = _galleryIdx < maxPhotos ? _galleryIdx : 0;
+
+                    window.avatarUpload.uploadPhoto(userId, dataUrl, nextIdx).then(function(result) {
+                        if (result && result.photos) {
+                            _dbPhotos = result.photos;
+                            renderGallery(result.photos);
+                            goToSlide(nextIdx);
+                        }
+                    }).catch(function(e) { console.error('[Gallery] Upload error:', e); });
+                })
+                .catch(function() {
+                    // DB'ye ulaşılamadıysa index 0'a yaz
+                    window.avatarUpload.uploadPhoto(userId, dataUrl, 0).then(function(result) {
+                        if (result && result.photos) { renderGallery(result.photos); }
+                    });
+                });
         }).catch(function(e) { console.log('[Gallery] Photo pick cancelled'); });
     };
 
