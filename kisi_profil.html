@@ -327,7 +327,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     function goKisiSlide(idx) {
-        if (idx < 0) idx = 0; if (idx >= _kPhotos.length) idx = _kPhotos.length - 1;
+        if (_kPhotos.length <= 1) { _kIdx = 0; return; }
+        if (idx < 0) idx = _kPhotos.length - 1;
+        if (idx >= _kPhotos.length) idx = 0;
         _kIdx = idx;
         var gW = _kGalleryEl.offsetWidth || window.innerWidth;
         _kSlidesEl.style.transform = 'translateX(-' + (idx * gW) + 'px)';

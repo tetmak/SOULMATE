@@ -378,8 +378,9 @@
     }
 
     function goToSlide(idx) {
-        if (idx < 0) idx = 0;
-        if (idx >= _galleryPhotos.length) idx = _galleryPhotos.length - 1;
+        if (_galleryPhotos.length <= 1) { _galleryIdx = 0; return; }
+        if (idx < 0) idx = _galleryPhotos.length - 1;
+        if (idx >= _galleryPhotos.length) idx = 0;
         _galleryIdx = idx;
         var galleryW = _galleryEl.offsetWidth || window.innerWidth;
         _slidesEl.style.transform = 'translateX(-' + (idx * galleryW) + 'px)';
