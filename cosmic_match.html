@@ -34,10 +34,10 @@
                     "fuchsia": "#FF00FF",
                     "electric": "#00E0FF",
                     "vibrantRed": "#FF2D55",
-                    "background-light": "#0a0a0a",
+                    "background-light": "#ffffff",
                     "background-dark": "#0a0a0a",
                     "card-dark": "#1a1a1a",
-                    "card-light": "#1a1a1a",
+                    "card-light": "#f5f5f5",
                     "accent-gold": "#FF2D55",
                     "accent-gold-dark": "#cc1a3e",
                     "text-muted": "#888",
@@ -57,15 +57,13 @@
     .no-scrollbar::-webkit-scrollbar { display: none }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none }
     .glass {
-        background: rgba(26, 26, 26, 0.8);
+        background: rgba(255,255,255,0.85);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255,255,255,0.1);
+        border: 1px solid rgba(0,0,0,0.08);
     }
-    .glass-light {
+    html.dark .glass {
         background: rgba(26, 26, 26, 0.8);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
         border: 1px solid rgba(255,255,255,0.1);
     }
     .material-symbols-outlined {
@@ -73,7 +71,8 @@
     }
 </style>
 <style>
-    body { height: 100dvh; overflow: hidden; background: #0a0a0a; color: #fff; }
+    body { height: 100dvh; overflow: hidden; background: #fff; color: #000; }
+    html.dark body { background: #0a0a0a; color: #fff; }
     .swipe-gradient { background: linear-gradient(135deg, #7000FF 0%, #FF007A 50%, #00C2FF 100%); }
     .card-shadow { box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
     .frameless-img {
@@ -94,18 +93,23 @@
     .fade-up{animation:fade-up 0.5s ease forwards;opacity:0}
     .pulse-glow{animation:pulse-glow 3s ease-in-out infinite}
     .streak-fire{animation:streak-fire 2s ease-in-out infinite}
-    .shimmer-placeholder{background:linear-gradient(90deg,rgba(255,255,255,0.05) 25%,rgba(255,255,255,0.1) 50%,rgba(255,255,255,0.05) 75%);background-size:200% 100%;animation:shimmer 2s ease-in-out infinite}
+    .shimmer-placeholder{background:linear-gradient(90deg,rgba(0,0,0,0.05) 25%,rgba(0,0,0,0.1) 50%,rgba(0,0,0,0.05) 75%);background-size:200% 100%;animation:shimmer 2s ease-in-out infinite}
     /* City autocomplete dropdown */
-    .city-autocomplete-dropdown{display:none;position:absolute;top:100%;left:0;right:0;max-height:220px;overflow-y:auto;z-index:1000;border-radius:12px;margin-top:4px;border:1px solid rgba(255,255,255,0.1);background:rgba(20,20,20,0.97);backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+    .city-autocomplete-dropdown{display:none;position:absolute;top:100%;left:0;right:0;max-height:220px;overflow-y:auto;z-index:1000;border-radius:12px;margin-top:4px;border:1px solid rgba(0,0,0,0.1);background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);box-shadow:0 8px 24px rgba(0,0,0,0.12)}
+    html.dark .city-autocomplete-dropdown{border-color:rgba(255,255,255,0.1);background:rgba(20,20,20,0.97);box-shadow:0 8px 24px rgba(0,0,0,0.4)}
     .city-autocomplete-dropdown.open{display:block}
     .city-ac-group{padding:6px 12px 2px;font-size:11px;font-weight:700;color:rgba(255,45,85,0.7);text-transform:uppercase;letter-spacing:0.05em}
-    .city-ac-item{padding:8px 12px;font-size:13px;cursor:pointer;color:#ddd;transition:background 0.15s}
+    .city-ac-item{padding:8px 12px;font-size:13px;cursor:pointer;color:#333;transition:background 0.15s}
+    html.dark .city-ac-item{color:#ddd}
     .city-ac-item:hover,.city-ac-item.active{background:rgba(255,45,85,0.1)}
-    .city-ac-empty{padding:12px;text-align:center;font-size:13px;color:#666}
+    .city-ac-empty{padding:12px;text-align:center;font-size:13px;color:#999}
+    html.dark .city-ac-empty{color:#666}
     /* Leaflet */
-    #cosmic-map .leaflet-tile-pane{filter:brightness(0.7) invert(1) contrast(1.1) hue-rotate(200deg) saturate(0.3)}
-    #cosmic-map .leaflet-control-zoom a{background:rgba(26,26,26,0.9);color:#FF2D55;border-color:rgba(255,45,85,0.3)}
-    #cosmic-map .leaflet-control-attribution{background:rgba(26,26,26,0.8)!important;color:rgba(255,255,255,0.4)!important;font-size:8px}
+    html.dark #cosmic-map .leaflet-tile-pane{filter:brightness(0.7) invert(1) contrast(1.1) hue-rotate(200deg) saturate(0.3)}
+    #cosmic-map .leaflet-control-zoom a{background:rgba(255,255,255,0.9);color:#FF2D55;border-color:rgba(255,45,85,0.3)}
+    html.dark #cosmic-map .leaflet-control-zoom a{background:rgba(26,26,26,0.9)}
+    #cosmic-map .leaflet-control-attribution{background:rgba(255,255,255,0.8)!important;color:rgba(0,0,0,0.4)!important;font-size:8px}
+    html.dark #cosmic-map .leaflet-control-attribution{background:rgba(26,26,26,0.8)!important;color:rgba(255,255,255,0.4)!important}
     #cosmic-map .leaflet-control-attribution a{color:rgba(255,45,85,0.6)!important}
     #cosmic-map .cosmic-marker{position:relative;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;transition:transform 0.2s;border:3px solid;box-shadow:0 2px 10px rgba(0,0,0,0.4);overflow:hidden}
     #cosmic-map .cosmic-marker:hover{transform:scale(1.2);z-index:100!important}
@@ -114,21 +118,23 @@
     #cosmic-map .cosmic-marker-match{width:38px;height:38px;border-color:#00E0FF;box-shadow:0 2px 12px rgba(0,0,0,0.3)}
     #cosmic-map .cosmic-pin{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-top:10px solid #00E0FF;filter:drop-shadow(0 2px 2px rgba(0,0,0,0.3))}
     #cosmic-map .cosmic-pin-self{border-top-color:#FF2D55}
-    .leaflet-popup-content-wrapper{background:rgba(26,26,26,0.95)!important;color:#ddd!important;border-radius:12px!important;border:1px solid rgba(255,255,255,0.1)!important;box-shadow:0 4px 20px rgba(0,0,0,0.4)!important}
-    .leaflet-popup-tip{background:rgba(26,26,26,0.95)!important}
+    .leaflet-popup-content-wrapper{background:rgba(255,255,255,0.95)!important;color:#333!important;border-radius:12px!important;border:1px solid rgba(255,255,255,0.1)!important;box-shadow:0 4px 20px rgba(0,0,0,0.4)!important}
+    .leaflet-popup-tip{background:rgba(255,255,255,0.95)!important}
+    html.dark .leaflet-popup-content-wrapper{background:rgba(26,26,26,0.95)!important;color:#ddd!important}
+    html.dark .leaflet-popup-tip{background:rgba(26,26,26,0.95)!important}
     .leaflet-popup-content{margin:8px 12px!important;font-family:'Outfit',sans-serif!important;font-size:12px!important}
     .scroll-fragment{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all 0.3s ease}
     .scroll-fragment.ribbon-active .frag-ring{background:linear-gradient(135deg,#FF2D55,#FF007A);box-shadow:0 0 16px rgba(255,45,85,0.4);transform:scale(1.05)}
 </style>
 </head>
-<body class="bg-black font-body antialiased text-white">
+<body class="bg-white dark:bg-black font-body antialiased text-black dark:text-white">
 
 <!-- ═══ ANA KAPSAYICI ═══ -->
-<div class="relative w-full max-w-md mx-auto h-screen overflow-hidden bg-black flex flex-col">
+<div class="relative w-full max-w-md mx-auto h-screen overflow-hidden bg-white dark:bg-black flex flex-col">
 
 <!-- ═══ HEADER ═══ -->
-<header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 pt-12 pb-4 bg-gradient-to-b from-black/80 to-transparent">
-    <button onclick="window.location.href='mystic_numerology_home_1.html'" class="text-white p-2 rounded-full backdrop-blur-md bg-white/10">
+<header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 pt-12 pb-4 bg-gradient-to-b from-white/80 dark:from-black/80 to-transparent">
+    <button onclick="window.location.href='mystic_numerology_home_1.html'" class="text-black dark:text-white p-2 rounded-full backdrop-blur-md bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10">
         <span class="material-icons-outlined">arrow_back_ios</span>
     </button>
     <h1 class="text-xl font-heading font-extrabold tracking-tighter uppercase italic">NuMatch</h1>
@@ -143,41 +149,41 @@
     <div class="size-20 rounded-full flex items-center justify-center mb-4 mt-auto pulse-glow" style="background:radial-gradient(circle,rgba(255,45,85,0.15),rgba(10,10,10,0.8));border:3px solid #FF2D55">
         <span class="material-symbols-outlined text-4xl text-primary">auto_awesome</span>
     </div>
-    <h2 class="font-heading text-2xl font-extrabold text-white mb-2 tracking-wider uppercase" data-i18n="match.optin_title">Kozmik Eşleşme</h2>
-    <p class="text-white/60 text-sm leading-relaxed max-w-[300px] mb-5" data-i18n="match.optin_subtitle">
+    <h2 class="font-heading text-2xl font-extrabold text-black dark:text-white mb-2 tracking-wider uppercase" data-i18n="match.optin_title">Kozmik Eşleşme</h2>
+    <p class="text-black/60 dark:text-white/60 text-sm leading-relaxed max-w-[300px] mb-5" data-i18n="match.optin_subtitle">
         Numerolojik profilini diğer kullanıcılarla paylaş ve evrenin senin için seçtiği ruh eşlerini keşfet.
     </p>
     <div class="glass rounded-2xl p-4 mb-4 w-full max-w-[320px]">
         <div class="flex items-center gap-3 mb-3">
             <span class="material-symbols-outlined text-primary">visibility</span>
             <div class="flex-1 text-left">
-                <p class="text-sm font-bold text-white" data-i18n="match.optin_shared_title">Ne paylaşılır?</p>
-                <p class="text-white/50 text-xs" data-i18n="match.optin_shared_desc">Sadece ismin, yaşam yolu ve numerolojik sayıların</p>
+                <p class="text-sm font-bold text-black dark:text-white" data-i18n="match.optin_shared_title">Ne paylaşılır?</p>
+                <p class="text-black/50 dark:text-white/50 text-xs" data-i18n="match.optin_shared_desc">Sadece ismin, yaşam yolu ve numerolojik sayıların</p>
             </div>
         </div>
         <div class="flex items-center gap-3 mb-3">
             <span class="material-symbols-outlined text-red-400">lock</span>
             <div class="flex-1 text-left">
-                <p class="text-sm font-bold text-white" data-i18n="match.optin_privacy_title">Gizlilik</p>
-                <p class="text-white/50 text-xs" data-i18n="match.optin_privacy_desc">Doğum tarihin ve kişisel verilerin paylaşılmaz</p>
+                <p class="text-sm font-bold text-black dark:text-white" data-i18n="match.optin_privacy_title">Gizlilik</p>
+                <p class="text-black/50 dark:text-white/50 text-xs" data-i18n="match.optin_privacy_desc">Doğum tarihin ve kişisel verilerin paylaşılmaz</p>
             </div>
         </div>
         <div class="flex items-center gap-3">
             <span class="material-symbols-outlined text-emerald-400">toggle_on</span>
             <div class="flex-1 text-left">
-                <p class="text-sm font-bold text-white" data-i18n="match.optin_toggle_title">İstediğin zaman kapat</p>
-                <p class="text-white/50 text-xs" data-i18n="match.optin_toggle_desc">Profil ayarlarından keşfedilebilirliğini kapat</p>
+                <p class="text-sm font-bold text-black dark:text-white" data-i18n="match.optin_toggle_title">İstediğin zaman kapat</p>
+                <p class="text-black/50 dark:text-white/50 text-xs" data-i18n="match.optin_toggle_desc">Profil ayarlarından keşfedilebilirliğini kapat</p>
             </div>
         </div>
     </div>
     <!-- Şehir Seçici -->
     <div class="w-full max-w-[320px] mb-6">
-        <label class="text-xs font-bold text-white/50 uppercase tracking-wider mb-2 block text-left">
+        <label class="text-xs font-bold text-black/50 dark:text-white/50 uppercase tracking-wider mb-2 block text-left">
             <span class="material-symbols-outlined text-sm align-middle mr-1">location_on</span>
             <span data-i18n="match.select_city_label">Şehrini Seç</span>
         </label>
         <div class="relative">
-            <input id="city-input" type="text" autocomplete="off" placeholder="Şehir ara..." data-i18n-placeholder="match.select_province" class="w-full py-3 px-4 pr-10 rounded-xl text-sm font-medium bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-primary/40">
+            <input id="city-input" type="text" autocomplete="off" placeholder="Şehir ara..." data-i18n-placeholder="match.select_province" class="w-full py-3 px-4 pr-10 rounded-xl text-sm font-medium bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40">
             <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-primary pointer-events-none" style="font-size:20px">search</span>
             <input type="hidden" id="city-value">
             <div id="city-dropdown" class="city-autocomplete-dropdown"></div>
@@ -317,22 +323,22 @@
     </div>
 
     <!-- ═══ ALT BÖLÜMLER (scroll) ═══ -->
-    <div class="relative z-30 bg-black pb-32 space-y-4">
+    <div class="relative z-30 bg-white dark:bg-black pb-32 space-y-4">
 
         <!-- Streak & Credits -->
         <div id="streak-credits-bar" class="fade-up flex items-center gap-3 px-5 pt-3" style="animation-delay:0.08s">
             <div class="flex-1 glass rounded-2xl p-2.5 flex items-center gap-2">
                 <span class="text-lg streak-fire">🔥</span>
                 <div>
-                    <p id="streak-label" class="text-xs font-bold text-white">0 Gün Streak</p>
-                    <p id="streak-next" class="text-white/40 text-[10px]">Sonraki ödül: 3 günde</p>
+                    <p id="streak-label" class="text-xs font-bold text-black dark:text-white">0 Gün Streak</p>
+                    <p id="streak-next" class="text-black/40 dark:text-white/40 text-[10px]">Sonraki ödül: 3 günde</p>
                 </div>
             </div>
             <div class="glass rounded-2xl p-2.5 flex items-center gap-2 shrink-0">
                 <span class="material-symbols-outlined text-lg text-primary">visibility</span>
                 <div>
-                    <p id="credits-count" class="text-xs font-bold text-white">3</p>
-                    <p id="credits-label" class="text-white/40 text-[10px]">Bugün</p>
+                    <p id="credits-count" class="text-xs font-bold text-black dark:text-white">3</p>
+                    <p id="credits-label" class="text-black/40 dark:text-white/40 text-[10px]">Bugün</p>
                 </div>
             </div>
         </div>
@@ -341,7 +347,7 @@
         <div class="px-5 fade-up" style="animation-delay:0.1s">
             <div class="flex items-center justify-between mb-3">
                 <h3 class="text-xs font-extrabold uppercase tracking-widest text-fuchsia" data-i18n="match.daily_matches_title">Günlük Eşleşmeler</h3>
-                <span class="text-[10px] text-white/40 uppercase">Swipe →</span>
+                <span class="text-[10px] text-black/40 dark:text-white/40 uppercase">Swipe →</span>
             </div>
             <div id="match-ribbon" class="flex overflow-x-auto no-scrollbar gap-4 pb-2">
                 <!-- JS ile doldurulacak -->
@@ -351,9 +357,9 @@
         <!-- ═══ KOZMİK HARİTA ═══ -->
         <div class="px-5 fade-up" style="animation-delay:0.15s">
             <div class="flex justify-between items-center mb-3">
-                <h2 class="text-sm font-bold text-white" data-i18n="match.cosmic_map_title">Kozmik Harita</h2>
+                <h2 class="text-sm font-bold text-black dark:text-white" data-i18n="match.cosmic_map_title">Kozmik Harita</h2>
                 <div class="flex items-center gap-2">
-                    <span class="text-white/40 text-xs" id="map-info"></span>
+                    <span class="text-black/40 dark:text-white/40 text-xs" id="map-info"></span>
                     <button id="btn-change-city" class="flex items-center gap-1 text-xs text-primary font-bold px-2 py-1 rounded-lg bg-primary/10 border border-primary/20 transition active:scale-95">
                         <span class="material-symbols-outlined" style="font-size:14px">edit_location_alt</span>
                         <span id="btn-city-label" data-i18n="match.city_btn">Şehir</span>
@@ -364,30 +370,30 @@
             <div id="city-change-panel" style="display:none" class="mb-3 glass rounded-2xl p-3 flex items-center gap-2 relative z-[900]">
                 <span class="material-symbols-outlined text-primary text-lg">location_on</span>
                 <div class="relative flex-1">
-                    <input id="city-change-input" type="text" autocomplete="off" placeholder="Şehir ara..." data-i18n-placeholder="match.select_province" class="w-full py-2 px-3 pr-8 rounded-xl text-sm font-medium bg-white/5 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-primary/40">
+                    <input id="city-change-input" type="text" autocomplete="off" placeholder="Şehir ara..." data-i18n-placeholder="match.select_province" class="w-full py-2 px-3 pr-8 rounded-xl text-sm font-medium bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-primary/40">
                     <span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-primary pointer-events-none" style="font-size:16px">search</span>
                     <input type="hidden" id="city-change-value">
                     <div id="city-change-dropdown" class="city-autocomplete-dropdown"></div>
                 </div>
                 <button id="btn-save-city" class="px-3 py-2 rounded-xl text-xs font-bold text-white bg-primary transition active:scale-95" data-i18n="match.save_btn">Kaydet</button>
-                <button id="btn-cancel-city" class="px-2 py-2 rounded-xl text-xs text-white/40 transition active:scale-95">
+                <button id="btn-cancel-city" class="px-2 py-2 rounded-xl text-xs text-black/40 dark:text-white/40 transition active:scale-95">
                     <span class="material-symbols-outlined" style="font-size:18px">close</span>
                 </button>
             </div>
-            <div class="relative w-full rounded-3xl overflow-hidden shadow-lg border border-white/10" style="height:220px">
+            <div class="relative w-full rounded-3xl overflow-hidden shadow-lg border border-black/10 dark:border-white/10" style="height:220px">
                 <div id="cosmic-map" style="width:100%;height:100%;z-index:1"></div>
                 <div class="absolute top-3 right-3 z-[500] bg-black/60 backdrop-filter backdrop-blur-md p-2 rounded-full text-white pointer-events-none">
                     <span class="material-icons-outlined text-sm block">map</span>
                 </div>
             </div>
             <div id="map-empty" style="display:none" class="text-center mt-2">
-                <p class="text-white/30 text-xs" data-i18n="match.map_empty">Haritada henüz ruh yok...</p>
+                <p class="text-black/30 dark:text-white/30 text-xs" data-i18n="match.map_empty">Haritada henüz ruh yok...</p>
             </div>
         </div>
 
         <!-- ═══ KOZMİK ANALİZ (AI) ═══ -->
         <div id="insight-section" style="display:none;animation-delay:0.18s" class="fade-up space-y-3 px-5">
-            <h2 class="text-xs font-bold text-white/40 uppercase tracking-widest" data-i18n="match.cosmic_analysis_title">Kozmik Analiz</h2>
+            <h2 class="text-xs font-bold text-black/40 dark:text-white/40 uppercase tracking-widest" data-i18n="match.cosmic_analysis_title">Kozmik Analiz</h2>
             <div class="glass rounded-2xl p-4">
                 <div class="flex items-center gap-2 mb-3">
                     <span class="material-symbols-outlined text-primary text-base">auto_awesome</span>
@@ -399,15 +405,15 @@
                     <div class="h-3 w-4/6 rounded shimmer-placeholder"></div>
                     <div class="h-3 w-5/6 rounded shimmer-placeholder"></div>
                 </div>
-                <p id="insight-ai" class="text-sm leading-relaxed text-white/60" style="white-space:pre-line">—</p>
+                <p id="insight-ai" class="text-sm leading-relaxed text-black/60 dark:text-white/60" style="white-space:pre-line">—</p>
             </div>
         </div>
 
         <!-- ═══ GEÇMİŞ EŞLEŞMELER ═══ -->
         <div class="px-5 fade-up space-y-3" style="animation-delay:0.2s">
-            <h2 class="text-xs font-bold text-white/40 uppercase tracking-widest" data-i18n="match.past_matches_title">Geçmiş Eşleşmeler</h2>
+            <h2 class="text-xs font-bold text-black/40 dark:text-white/40 uppercase tracking-widest" data-i18n="match.past_matches_title">Geçmiş Eşleşmeler</h2>
             <div id="history-list" class="space-y-3"></div>
-            <div id="history-empty" style="display:none" class="text-center py-6 text-white/20 text-xs" data-i18n="match.history_empty">
+            <div id="history-empty" style="display:none" class="text-center py-6 text-black/20 dark:text-white/20 text-xs" data-i18n="match.history_empty">
                 Eşleşme geçmişin burada görünecek
             </div>
         </div>
@@ -419,12 +425,12 @@
 <!-- Connection Popup -->
 <div id="conn-popup-overlay" style="display:none" class="fixed inset-0 bg-black/50 z-[100]"></div>
 <div id="conn-popup" style="display:none" class="fixed z-[101] glass rounded-2xl p-4 shadow-xl max-w-[260px]">
-    <p id="conn-popup-name" class="text-sm font-bold mb-3 truncate text-white"></p>
+    <p id="conn-popup-name" class="text-sm font-bold mb-3 truncate text-black dark:text-white"></p>
     <button id="conn-popup-btn" class="w-full py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all active:scale-95 bg-vibrantRed text-white shadow-sm">
         <span class="material-symbols-outlined text-base">person_add</span>
         <span id="conn-popup-btn-label" data-i18n="match.add_connection">Add Connection</span>
     </button>
-    <p id="conn-popup-status" style="display:none" class="text-white/40 text-xs text-center mt-2"></p>
+    <p id="conn-popup-status" style="display:none" class="text-black/40 dark:text-white/40 text-xs text-center mt-2"></p>
 </div>
 
 </div>
@@ -770,13 +776,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             var showFace = storedIsPrem || item.revealed;
             frag.innerHTML =
                 '<div class="frag-ring w-16 h-20 rounded-xl p-[2px] bg-gradient-to-tr from-vibrantRed/40 to-fuchsia/40 shadow-inner transition-all overflow-hidden border border-white/10">' +
-                    '<div class="frag-inner w-full h-full rounded-[10px] overflow-hidden flex items-center justify-center bg-white/5">' +
+                    '<div class="frag-inner w-full h-full rounded-[10px] overflow-hidden flex items-center justify-center bg-black/5 dark:bg-white/5">' +
                         (showFace
                             ? '<img src="' + getPhoto(p.full_name, p.gender, p.avatar_url) + '" class="w-full h-full object-cover">'
-                            : '<span class="text-white/40 text-lg font-bold">' + initial(p.full_name) + '</span>') +
+                            : '<span class="text-black/40 dark:text-white/40 text-lg font-bold">' + initial(p.full_name) + '</span>') +
                     '</div>' +
                 '</div>' +
-                '<span class="text-[10px] font-bold text-white/60 uppercase tracking-tighter">' + (showFace ? (p.full_name||'?').split(' ')[0] : initial(p.full_name)) + '</span>';
+                '<span class="text-[10px] font-bold text-black/60 dark:text-white/60 uppercase tracking-tighter">' + (showFace ? (p.full_name||'?').split(' ')[0] : initial(p.full_name)) + '</span>';
             frag.addEventListener('click', function() { selectRibbonItem(idx); });
             ribbonEl.appendChild(frag);
         });
@@ -895,7 +901,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             aiEl.innerHTML = '<div style="filter:blur(5px);-webkit-filter:blur(5px);pointer-events:none;user-select:none">Bu iki ruhun kozmik enerjileri birbirini tamamlıyor. Hayat yolları, ruh güdüleri ve kişilik sayıları arasındaki harmonik rezonans güçlü bir bağ oluşturuyor...</div>' +
                 '<div class="flex flex-col items-center gap-2 mt-4">' +
                     '<span class="material-symbols-outlined text-primary text-2xl">lock</span>' +
-                    '<p class="text-xs text-white/40 text-center">Kozmik analizi görmek için Premium\'a geç</p>' +
+                    '<p class="text-xs text-black/40 dark:text-white/40 text-center">Kozmik analizi görmek için Premium\'a geç</p>' +
                     '<button onclick="window.location.href=\'premium_crystal_store.html\'" class="px-5 py-2 rounded-xl bg-vibrantRed text-white text-xs font-bold mt-1">Premium\'a Geç</button>' +
                 '</div>';
             return;
@@ -1156,11 +1162,11 @@ document.addEventListener('DOMContentLoaded', async function() {
         var date = item.matchDate || '';
         var arch = m.life_path ? (window.discovery.ARCHETYPES[m.life_path] || '') : '';
         var card = document.createElement('div');
-        card.className = 'flex items-center gap-4 p-3 bg-white/5 border border-white/10 rounded-2xl shadow-sm transition active:scale-[0.98]';
+        card.className = 'flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl shadow-sm transition active:scale-[0.98]';
         card.innerHTML =
-            '<div class="w-14 h-14 rounded-full border-2 border-vibrantRed/40 overflow-hidden flex-shrink-0 flex items-center justify-center bg-white/5"><img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover" alt=""></div>' +
-            '<div class="flex-1 min-w-0"><h4 class="text-sm font-bold text-white truncate cursor-pointer conn-name-click"' + (m.user_id ? ' data-uid="' + m.user_id + '" data-name="' + (m.full_name || '') + '"' : '') + '>' + (m.full_name || 'Bilinmeyen') + '</h4><p class="text-[10px] text-white/40 uppercase tracking-tighter">LP ' + (m.life_path || '?') + (arch ? ' · ' + arch : '') + '</p></div>' +
-            '<div class="text-right shrink-0"><p class="copper-gradient-text text-sm font-bold">%' + score + '</p><p class="text-white/30 text-[10px]">' + formatDate(date) + '</p></div>';
+            '<div class="w-14 h-14 rounded-full border-2 border-vibrantRed/40 overflow-hidden flex-shrink-0 flex items-center justify-center bg-black/5 dark:bg-black/5 dark:bg-white/5"><img src="' + getPhoto(m.full_name, m.gender, m.avatar_url) + '" class="w-full h-full object-cover" alt=""></div>' +
+            '<div class="flex-1 min-w-0"><h4 class="text-sm font-bold text-black dark:text-white truncate cursor-pointer conn-name-click"' + (m.user_id ? ' data-uid="' + m.user_id + '" data-name="' + (m.full_name || '') + '"' : '') + '>' + (m.full_name || 'Bilinmeyen') + '</h4><p class="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-tighter">LP ' + (m.life_path || '?') + (arch ? ' · ' + arch : '') + '</p></div>' +
+            '<div class="text-right shrink-0"><p class="copper-gradient-text text-sm font-bold">%' + score + '</p><p class="text-black/30 dark:text-white/30 text-[10px]">' + formatDate(date) + '</p></div>';
         if (listEl.firstChild) {
             listEl.insertBefore(card, listEl.firstChild);
         } else {
@@ -1179,11 +1185,11 @@ document.addEventListener('DOMContentLoaded', async function() {
             var score=match.match_score||0; var date=match.match_date||'';
             var arch=m.life_path?(window.discovery.ARCHETYPES[m.life_path]||''):'';
             var card=document.createElement('div');
-            card.className='flex items-center gap-4 p-3 bg-white/5 border border-white/10 rounded-2xl shadow-sm transition active:scale-[0.98] cursor-pointer';
+            card.className='flex items-center gap-4 p-3 bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl shadow-sm transition active:scale-[0.98] cursor-pointer';
             card.innerHTML=
-                '<div class="w-14 h-14 rounded-full border-2 border-vibrantRed/40 overflow-hidden flex-shrink-0 flex items-center justify-center bg-white/5">'+(revealed?'<img src="'+getPhoto(m.full_name,m.gender,m.avatar_url)+'" class="w-full h-full object-cover" alt="">':'<span class="text-white/40 text-sm font-bold">'+initial(m.full_name)+'</span>')+'</div>'+
-                '<div class="flex-1 min-w-0"><h4 class="text-sm font-bold text-white truncate'+(revealed?' conn-name-click':'')+'"'+(revealed&&m.user_id?' data-uid="'+m.user_id+'" data-name="'+(m.full_name||'')+'"':'')+'>'+displayName+'</h4><p class="text-[10px] text-white/40 uppercase tracking-tighter">LP '+(m.life_path||'?')+(arch?' · '+arch:'')+'</p></div>'+
-                '<div class="text-right shrink-0"><p class="copper-gradient-text text-sm font-bold">%'+score+'</p><p class="text-white/30 text-[10px]">'+formatDate(date)+'</p></div>';
+                '<div class="w-14 h-14 rounded-full border-2 border-vibrantRed/40 overflow-hidden flex-shrink-0 flex items-center justify-center bg-black/5 dark:bg-black/5 dark:bg-white/5">'+(revealed?'<img src="'+getPhoto(m.full_name,m.gender,m.avatar_url)+'" class="w-full h-full object-cover" alt="">':'<span class="text-black/40 dark:text-white/40 text-sm font-bold">'+initial(m.full_name)+'</span>')+'</div>'+
+                '<div class="flex-1 min-w-0"><h4 class="text-sm font-bold text-black dark:text-white truncate'+(revealed?' conn-name-click':'')+'"'+(revealed&&m.user_id?' data-uid="'+m.user_id+'" data-name="'+(m.full_name||'')+'"':'')+'>'+displayName+'</h4><p class="text-[10px] text-black/40 dark:text-white/40 uppercase tracking-tighter">LP '+(m.life_path||'?')+(arch?' · '+arch:'')+'</p></div>'+
+                '<div class="text-right shrink-0"><p class="copper-gradient-text text-sm font-bold">%'+score+'</p><p class="text-black/30 dark:text-white/30 text-[10px]">'+formatDate(date)+'</p></div>';
             (function(matchData, profile, matchScore, isRevealed) {
                 card.addEventListener('click', function(e) {
                     if (e.target.closest('.conn-name-click')) return;
