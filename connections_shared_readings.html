@@ -24,7 +24,7 @@
     <script id="tailwind-config">
         tailwind.config = { darkMode: "class", theme: { extend: {
             colors: {
-                        "background-light": "#f8f8f5", primary:"#f2cc0d","background-dark":"#181711","surface-dark":"#221f10", "surface-light": "#ffffff","card-dark":"#393628", "card-light": "#f5f5f0","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899" },
+                        "background-light": "#f8f8f5", primary:"#f2cc0d","background-dark":"#0a0a0a","surface-dark":"#111111", "surface-light": "#ffffff","card-dark":"#1a1a1a", "card-light": "#f5f5f0","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899" },
             fontFamily: { display:["Space Grotesk","sans-serif"] },
             borderRadius: { DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" }
         }}}
@@ -101,7 +101,7 @@
                 <p class="text-slate-900 dark:text-white text-sm font-bold">Profilleri Görmek İçin Premium</p>
                 <p class="text-slate-500 dark:text-white/50 text-xs mt-0.5">Bağlantılarını keşfet, uyumluluğunu gör!</p>
             </div>
-            <button onclick="window.location.href='premium_crystal_store.html'" class="px-4 py-2 rounded-xl bg-primary text-[#181711] text-xs font-bold shrink-0">
+            <button onclick="window.location.href='premium_crystal_store.html'" class="px-4 py-2 rounded-xl bg-primary text-[#0a0a0a] text-xs font-bold shrink-0">
                 Aç
             </button>
         </div>
@@ -178,7 +178,7 @@
     <!-- CTA -->
     <div class="px-4 pt-4">
         <button onclick="window.location.href='data-ready_birth_form.html'"
-            class="w-full bg-primary text-[#181711] py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
+            class="w-full bg-primary text-[#0a0a0a] py-4 rounded-full font-bold text-base shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
             <span class="material-symbols-outlined">person_add</span>
             <span data-i18n="connections.new_analysis_btn">New Analysis for Someone</span>
         </button>
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
                 '</div>' +
                 (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-lg drop-shadow">lock</span></div>' : '') +
-                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                '<div class="absolute -bottom-1 -right-1 text-[#0a0a0a] text-[10px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#0a0a0a]" style="background:' + uc.badge + '">' + lp + '</div>' +
             '</div>' +
             '<span class="text-slate-600 dark:text-white/70 text-xs font-medium max-w-[60px] text-center truncate conn-name">' + dispFirst + '</span>';
         avatarDiv.addEventListener('click', clickFn);
@@ -272,7 +272,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
                 '</div>' +
                 (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-sm drop-shadow">lock</span></div>' : '') +
-                '<div class="absolute -bottom-1 -right-1 text-[#181711] text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                '<div class="absolute -bottom-1 -right-1 text-[#0a0a0a] text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#0a0a0a]" style="background:' + uc.badge + '">' + lp + '</div>' +
             '</div>' +
             '<div class="flex-1 min-w-0 cursor-pointer" data-action="view">' +
                 '<p class="text-slate-900 dark:text-white font-bold truncate conn-name">' + dispName + '</p>' +
@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
                         '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
                     '</div>' +
-                    '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                    '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#0a0a0a]" style="background:' + uc.badge + '">' + lp + '</div>' +
                 '</div>' +
                 '<div class="flex-1 min-w-0">' +
                     '<p class="text-slate-900 dark:text-white font-bold truncate">' + name + '</p>' +
@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                         '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
                     '</div>' +
                     (!connIsPrem ? '<div class="absolute inset-0 flex items-center justify-center"><span class="material-symbols-outlined text-white/80 text-sm drop-shadow">lock</span></div>' : '') +
-                    '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                    '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#0a0a0a]" style="background:' + uc.badge + '">' + lp + '</div>' +
                 '</div>' +
                 '<div class="flex-1 min-w-0">' +
                     '<p class="text-slate-900 dark:text-white font-bold truncate conn-name">' + dispName + '</p>' +
