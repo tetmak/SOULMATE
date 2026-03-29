@@ -217,7 +217,7 @@
 
         <!-- Personal Vibration Card -->
         <div class="px-4 py-4">
-            <div class="relative overflow-hidden rounded-xl ethereal-glow shadow-2xl border border-slate-200 dark:border-white/10">
+            <div id="vib-card" class="relative overflow-hidden rounded-xl ethereal-glow shadow-2xl border border-slate-200 dark:border-white/10">
                 <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none">
                 </div>
                 <div class="p-8 flex flex-col items-center text-center">
@@ -498,18 +498,18 @@
 
         // ─── Vibrasyon Temaları ───────────────────────────────
         var VIB_THEMES = {
-            1:  { title: 'INITIATION',        color: '#f2cc0d', glow: 'rgba(242,204,13,0.5)' },
-            2:  { title: 'EVALUATION',        color: '#a78bfa', glow: 'rgba(167,139,250,0.5)' },
-            3:  { title: 'EXPRESSION',        color: '#fb923c', glow: 'rgba(251,146,60,0.5)'  },
-            4:  { title: 'STRUCTURE',         color: '#4ade80', glow: 'rgba(74,222,128,0.5)'  },
-            5:  { title: 'CHANGE',            color: '#38bdf8', glow: 'rgba(56,189,248,0.5)'  },
-            6:  { title: 'STABILITY',         color: '#f472b6', glow: 'rgba(244,114,182,0.5)' },
-            7:  { title: 'ANALYSIS',          color: '#818cf8', glow: 'rgba(129,140,248,0.5)' },
-            8:  { title: 'CONTROL',           color: '#f2cc0d', glow: 'rgba(242,204,13,0.5)'  },
-            9:  { title: 'COMPLETION',        color: '#c084fc', glow: 'rgba(192,132,252,0.5)' },
-            11: { title: 'HIGH INTENSITY',    color: '#e2e8f0', glow: 'rgba(226,232,240,0.5)' },
-            22: { title: 'MASTER EXECUTION',  color: '#fbbf24', glow: 'rgba(251,191,36,0.5)'  },
-            33: { title: 'MASTER GUIDANCE',   color: '#f9a8d4', glow: 'rgba(249,168,212,0.5)' }
+            1:  { title: 'INITIATION',        color: '#f2cc0d', glow: 'rgba(242,204,13,0.5)',  grad: 'radial-gradient(circle at top right, rgba(242,204,13,0.4), transparent), radial-gradient(circle at bottom left, rgba(200,160,0,0.15), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(242,204,13,0.25), transparent 65%), linear-gradient(135deg, #fffbe6 0%, #fff3c4 100%)' },
+            2:  { title: 'EVALUATION',        color: '#a78bfa', glow: 'rgba(167,139,250,0.5)', grad: 'radial-gradient(circle at top right, rgba(167,139,250,0.5), transparent), radial-gradient(circle at bottom left, rgba(139,92,246,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(167,139,250,0.25), transparent 65%), linear-gradient(135deg, #f3ecff 0%, #e8deff 100%)' },
+            3:  { title: 'EXPRESSION',        color: '#fb923c', glow: 'rgba(251,146,60,0.5)',  grad: 'radial-gradient(circle at top right, rgba(251,146,60,0.45), transparent), radial-gradient(circle at bottom left, rgba(234,88,12,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(251,146,60,0.2), transparent 65%), linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)' },
+            4:  { title: 'STRUCTURE',         color: '#4ade80', glow: 'rgba(74,222,128,0.5)',  grad: 'radial-gradient(circle at top right, rgba(74,222,128,0.4), transparent), radial-gradient(circle at bottom left, rgba(34,197,94,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(74,222,128,0.2), transparent 65%), linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)' },
+            5:  { title: 'CHANGE',            color: '#38bdf8', glow: 'rgba(56,189,248,0.5)',  grad: 'radial-gradient(circle at top right, rgba(56,189,248,0.45), transparent), radial-gradient(circle at bottom left, rgba(14,165,233,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(56,189,248,0.2), transparent 65%), linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)' },
+            6:  { title: 'STABILITY',         color: '#f472b6', glow: 'rgba(244,114,182,0.5)', grad: 'radial-gradient(circle at top right, rgba(244,114,182,0.45), transparent), radial-gradient(circle at bottom left, rgba(219,39,119,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(244,114,182,0.2), transparent 65%), linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)' },
+            7:  { title: 'ANALYSIS',          color: '#818cf8', glow: 'rgba(129,140,248,0.5)', grad: 'radial-gradient(circle at top right, rgba(129,140,248,0.45), transparent), radial-gradient(circle at bottom left, rgba(99,102,241,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(129,140,248,0.2), transparent 65%), linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%)' },
+            8:  { title: 'CONTROL',           color: '#f2cc0d', glow: 'rgba(242,204,13,0.5)',  grad: 'radial-gradient(circle at top right, rgba(242,204,13,0.4), transparent), radial-gradient(circle at bottom left, rgba(200,160,0,0.15), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(242,204,13,0.25), transparent 65%), linear-gradient(135deg, #fffbe6 0%, #fff3c4 100%)' },
+            9:  { title: 'COMPLETION',        color: '#c084fc', glow: 'rgba(192,132,252,0.5)', grad: 'radial-gradient(circle at top right, rgba(192,132,252,0.45), transparent), radial-gradient(circle at bottom left, rgba(168,85,247,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(192,132,252,0.2), transparent 65%), linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)' },
+            11: { title: 'HIGH INTENSITY',    color: '#e2e8f0', glow: 'rgba(226,232,240,0.5)', grad: 'radial-gradient(circle at top right, rgba(226,232,240,0.4), transparent), radial-gradient(circle at bottom left, rgba(148,163,184,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(148,163,184,0.2), transparent 65%), linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' },
+            22: { title: 'MASTER EXECUTION',  color: '#fbbf24', glow: 'rgba(251,191,36,0.5)',  grad: 'radial-gradient(circle at top right, rgba(251,191,36,0.45), transparent), radial-gradient(circle at bottom left, rgba(245,158,11,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(251,191,36,0.2), transparent 65%), linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)' },
+            33: { title: 'MASTER GUIDANCE',   color: '#f9a8d4', glow: 'rgba(249,168,212,0.5)', grad: 'radial-gradient(circle at top right, rgba(249,168,212,0.45), transparent), radial-gradient(circle at bottom left, rgba(236,72,153,0.2), transparent)', gradLight: 'radial-gradient(circle at top right, rgba(249,168,212,0.2), transparent 65%), linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)' }
         };
 
         // Fallback açıklamalar (AI yoksa kullanılır) — i18n destekli
@@ -658,6 +658,13 @@
         if (titEl) {
             titEl.textContent = theme.title;
             titEl.style.color = theme.color;
+        }
+        // Kart arka planını sayıya göre değiştir
+        var vibCard = document.getElementById('vib-card');
+        if (vibCard && theme.grad) {
+            var isDark = document.documentElement.classList.contains('dark');
+            vibCard.style.background = isDark ? theme.grad : (theme.gradLight || theme.grad);
+            vibCard.style.borderColor = theme.color + '40';
         }
 
         // ─── Cache kontrolü ───────────────────────────────────
