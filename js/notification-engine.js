@@ -123,7 +123,7 @@
         'html:not(.dark) #numerael-notif-overlay{background:rgba(0,0,0,0.25)}',
         '#numerael-notif-overlay.open{display:block}',
         /* ── Panel ── */
-        '#numerael-notif-panel{display:none;position:fixed;top:0;right:0;width:min(340px,90vw);height:100vh;background:#1a1810;border-left:1px solid rgba(255,255,255,0.06);z-index:960;flex-direction:column;overflow:hidden;font-family:"Space Grotesk",sans-serif}',
+        '#numerael-notif-panel{display:none;position:fixed;top:0;right:0;width:min(340px,90vw);height:100vh;background:#0a0a0a;border-left:1px solid rgba(255,255,255,0.06);z-index:960;flex-direction:column;overflow:hidden;font-family:"Space Grotesk",sans-serif}',
         'html:not(.dark) #numerael-notif-panel{background:#ffffff;border-left:1px solid rgba(0,0,0,0.08);box-shadow:-4px 0 24px rgba(0,0,0,0.1)}',
         '#numerael-notif-panel.open{display:flex}',
         /* ── Header ── */
