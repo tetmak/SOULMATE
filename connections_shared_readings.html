@@ -121,7 +121,7 @@
         </div>
     </div>
 
-    <!-- Group 1: NuMatch Eşleşmeler -->
+    <!-- Group 1: NuMatch Eşleşmeler (gerçek numerolojik eşleşmeler) -->
     <div id="group-matches" style="display:none" class="pt-4">
         <div class="flex items-center gap-2 px-5 mb-2">
             <span class="material-symbols-outlined text-base" style="color:#ef4444">favorite</span>
@@ -130,6 +130,17 @@
         </div>
         <div id="group-matches-row" class="flex gap-4 overflow-x-auto px-5 hide-scrollbar pb-2"></div>
         <div id="group-matches-list" class="px-4 flex flex-col gap-3 mt-2"></div>
+    </div>
+
+    <!-- Group Friends: Arkadaşlar (bağlantı istekleriyle eklenenler) -->
+    <div id="group-friends" style="display:none" class="pt-4">
+        <div class="flex items-center gap-2 px-5 mb-2">
+            <span class="material-symbols-outlined text-base" style="color:#8b5cf6">group</span>
+            <h3 class="text-slate-900 dark:text-white text-sm font-bold" data-i18n="connections.group_friends">Arkadaşlar</h3>
+            <span id="group-friends-count" class="text-xs text-slate-400 dark:text-white/30"></span>
+        </div>
+        <div id="group-friends-row" class="flex gap-4 overflow-x-auto px-5 hide-scrollbar pb-2"></div>
+        <div id="group-friends-list" class="px-4 flex flex-col gap-3 mt-2"></div>
     </div>
 
     <!-- Group 2: Uyumluluk Analizleri -->
@@ -293,20 +304,91 @@ document.addEventListener('DOMContentLoaded', async function() {
         return card;
     }
 
-    // ─── Match-based connections (from Supabase) — Group 1 ──
-    var matchConns = [];
-    if (currentUserId && window.connectionEngine) {
-        try { matchConns = await window.connectionEngine.getConnections(currentUserId); } catch(e) {}
+    // ─── Group 1: NuMatch Eşleşmeler (gerçek numerolojik eşleşmeler) ──
+    var matchHistory = [];
+    if (currentUserId && window.discovery && window.discovery.getMatchHistory) {
+        try { matchHistory = await window.discovery.getMatchHistory(currentUserId, 30); } catch(e) {}
     }
+    // Sadece revealed (açılmış) eşleşmeleri göster
+    var revealedMatches = matchHistory.filter(function(h) { return h.revealed && h.matched; });
 
-    if (matchConns.length > 0) {
+    if (revealedMatches.length > 0) {
         var grpMatchesEl = document.getElementById('group-matches');
         var grpMatchesRow = document.getElementById('group-matches-row');
         var grpMatchesList = document.getElementById('group-matches-list');
         var grpMatchesCount = document.getElementById('group-matches-count');
 
         grpMatchesEl.style.display = 'block';
-        grpMatchesCount.textContent = matchConns.length + ' eşleşme';
+        grpMatchesCount.textContent = revealedMatches.length + ' eşleşme';
+
+        // Deduplicate (aynı kişi birden çok gün eşleşmiş olabilir)
+        var seenMatchIds = {};
+        revealedMatches.forEach(function(match, idx) {
+            var m = match.matched;
+            var uid = m.user_id || m.full_name;
+            if (seenMatchIds[uid]) return;
+            seenMatchIds[uid] = true;
+
+            var name = m.full_name || 'Bilinmeyen';
+            var lp = m.life_path || calcLP(m.birth_date) || '?';
+            var photo = getPhoto(name, m.gender, m.avatar_url);
+            var firstName = name.split(' ')[0];
+            var arch = ARCH[lp] || 'Soul';
+            var score = match.match_score || 0;
+            var uc = getUserColor(uid);
+
+            // Avatar row
+            var avatarDiv = createAvatarEl(name, firstName, photo, lp, uc, '', firstName, idx, function() {
+                var profUrl = 'kisi_profil.html?kisi=' + encodeURIComponent(name);
+                if (m.user_id) profUrl += '&uid=' + encodeURIComponent(m.user_id);
+                window.location.href = profUrl;
+            });
+            grpMatchesRow.appendChild(avatarDiv);
+
+            // Card
+            var card = document.createElement('div');
+            card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border cursor-pointer fade-in';
+            card.style.borderColor = hexToRgba(uc.border, 0.15);
+            card.style.animationDelay = (0.05 + idx * 0.07) + 's';
+            card.innerHTML =
+                '<div class="relative shrink-0">' +
+                    '<div class="size-14 rounded-full overflow-hidden border-2" style="border-color:' + uc.borderMuted + '">' +
+                        '<img src="' + photo + '" alt="" class="w-full h-full object-cover">' +
+                    '</div>' +
+                    '<div class="absolute -bottom-1 -right-1 text-white text-[9px] font-black h-5 w-5 rounded-full flex items-center justify-center border-2 border-background-light dark:border-[#181711]" style="background:' + uc.badge + '">' + lp + '</div>' +
+                '</div>' +
+                '<div class="flex-1 min-w-0">' +
+                    '<p class="text-slate-900 dark:text-white font-bold truncate">' + name + '</p>' +
+                    '<p class="text-slate-500 dark:text-white/40 text-xs mt-0.5">' + arch + ' · <span class="font-bold" style="color:#ef4444">%' + score + ' uyum</span></p>' +
+                    '<p class="text-slate-400 dark:text-white/25 text-xs">' + shortDate(match.match_date) + '</p>' +
+                '</div>' +
+                '<span class="material-symbols-outlined text-slate-300 dark:text-white/20 shrink-0">chevron_right</span>';
+
+            (function(matchName, matchUid) {
+                card.addEventListener('click', function() {
+                    var profUrl = 'kisi_profil.html?kisi=' + encodeURIComponent(matchName);
+                    if (matchUid) profUrl += '&uid=' + encodeURIComponent(matchUid);
+                    window.location.href = profUrl;
+                });
+            })(name, m.user_id);
+            grpMatchesList.appendChild(card);
+        });
+    }
+
+    // ─── Group Friends: Arkadaşlar (bağlantı istekleriyle eklenenler) ──
+    var matchConns = [];
+    if (currentUserId && window.connectionEngine) {
+        try { matchConns = await window.connectionEngine.getConnections(currentUserId); } catch(e) {}
+    }
+
+    if (matchConns.length > 0) {
+        var grpFriendsEl = document.getElementById('group-friends');
+        var grpFriendsRow = document.getElementById('group-friends-row');
+        var grpFriendsList = document.getElementById('group-friends-list');
+        var grpFriendsCount = document.getElementById('group-friends-count');
+
+        grpFriendsEl.style.display = 'block';
+        grpFriendsCount.textContent = matchConns.length + ' arkadaş';
 
         matchConns.forEach(function(mc, idx) {
             var p = mc.profile || {};
@@ -329,7 +411,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (mc.user_id) profUrl += '&uid=' + encodeURIComponent(mc.user_id);
                 window.location.href = profUrl;
             });
-            grpMatchesRow.appendChild(avatarDiv);
+            grpFriendsRow.appendChild(avatarDiv);
 
             // Card
             var card = document.createElement('div');
@@ -359,7 +441,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (!connIsPrem) { window.location.href = 'premium_crystal_store.html'; return; }
                 window.location.href = 'messaging.html?uid=' + encodeURIComponent(mc.user_id);
             });
-            grpMatchesList.appendChild(card);
+            grpFriendsList.appendChild(card);
         });
     }
 
@@ -381,11 +463,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     var emptyEl = document.getElementById('empty-state');
     var countEl = document.getElementById('connections-count');
 
-    // Update total count (local + match-based)
-    var totalCount = connections.length + matchConns.length;
+    // Update total count
+    var totalCount = connections.length + matchConns.length + revealedMatches.length;
     countEl.textContent = totalCount + ' kişi';
 
-    if (connections.length === 0 && matchConns.length === 0) {
+    if (connections.length === 0 && matchConns.length === 0 && revealedMatches.length === 0) {
         emptyEl.style.display = 'block';
         return;
     }
