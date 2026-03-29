@@ -24,7 +24,7 @@
     <script id="tailwind-config">
         tailwind.config = { darkMode: "class", theme: { extend: {
             colors: {
-                        "background-light": "#f8f8f5", primary:"#f2cc0d","background-dark":"#0a0a0a","surface-dark":"#111111", "surface-light": "#ffffff","card-dark":"#1a1a1a", "card-light": "#f5f5f0","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899" },
+                        "background-light": "#f8f8f5", primary:"#f2cc0d","background-dark":"#0a0a0a","surface-dark":"#111111", "surface-light": "#ffffff","card-dark":"#050505", "card-light": "#f5f5f0","cosmic-violet":"#8b5cf6","cosmic-pink":"#ec4899" },
             fontFamily: { display:["Space Grotesk","sans-serif"] },
             borderRadius: { DEFAULT:"1rem",lg:"2rem",xl:"3rem",full:"9999px" }
         }}}
@@ -39,6 +39,29 @@
         @keyframes fade-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
         .fade-in{animation:fade-in 0.35s ease forwards}
         .card-hover{transition:transform 0.15s ease}
+        .neon-card {
+            position: relative;
+            background: #050505 !important;
+            border: none !important;
+            overflow: hidden;
+        }
+        html:not(.dark) .neon-card {
+            background: #fff !important;
+        }
+        .neon-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            padding: 2px;
+            border-radius: inherit;
+            background: var(--neon-gradient, linear-gradient(135deg, #ff00ff, #00e0ff));
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: destination-out;
+            pointer-events: none;
+        }
+
         .card-hover:active{transform:scale(0.97)}
         /* Notification inbox */
         .notif-inbox-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:16px;cursor:pointer;transition:background 0.15s,transform 0.1s}
@@ -263,8 +286,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // ─── Helper: Local connection kartı oluştur ──
     function createLocalCard(conn, photo, lp, exp, arch, uc, reading, dispName, lockCls, idx) {
         var card = document.createElement('div');
-        card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border fade-in' + lockCls;
-        card.style.borderColor = hexToRgba(uc.border, 0.08);
+        card.className = 'card-hover neon-card flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl fade-in' + lockCls;
+        card.style.setProperty('--neon-gradient', 'linear-gradient(135deg, ' + uc.border + ', ' + hexToRgba(uc.border, 0.3) + ', #00e0ff)');
         card.style.animationDelay = (0.05 + idx * 0.07) + 's';
         card.innerHTML =
             '<div class="relative shrink-0 cursor-pointer" data-action="view">' +
@@ -347,8 +370,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             // Card
             var card = document.createElement('div');
-            card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border cursor-pointer fade-in';
-            card.style.borderColor = hexToRgba(uc.border, 0.15);
+            card.className = 'card-hover neon-card flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl cursor-pointer fade-in';
+            card.style.setProperty('--neon-gradient', 'linear-gradient(135deg, ' + uc.border + ', ' + hexToRgba(uc.border, 0.3) + ', #00e0ff)');
             card.style.animationDelay = (0.05 + idx * 0.07) + 's';
             card.innerHTML =
                 '<div class="relative shrink-0">' +
@@ -415,8 +438,8 @@ document.addEventListener('DOMContentLoaded', async function() {
 
             // Card
             var card = document.createElement('div');
-            card.className = 'card-hover flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl border cursor-pointer fade-in' + lockCls;
-            card.style.borderColor = hexToRgba(uc.border, 0.15);
+            card.className = 'card-hover neon-card flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl cursor-pointer fade-in' + lockCls;
+            card.style.setProperty('--neon-gradient', 'linear-gradient(135deg, ' + uc.border + ', ' + hexToRgba(uc.border, 0.3) + ', #ff00ff)');
             card.style.setProperty('--glow', hexToRgba(uc.border, 0.35));
             card.style.setProperty('--glow-solid', uc.border);
             card.setAttribute('data-chat-uid', mc.user_id || '');
