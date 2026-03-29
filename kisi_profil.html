@@ -38,8 +38,8 @@
         .glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.08)}
         html.dark .glass{background:rgba(26,26,26,0.8);border:1px solid rgba(255,255,255,0.1)}
         .profile-card-fade::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,var(--section-bg));z-index:40;pointer-events:none}
-        :root{--section-bg:#fff}
-        html.dark{--section-bg:#0a0a0a}
+        :root{--section-bg:#fff;--card-overlay:255,255,255}
+        html.dark{--section-bg:#0a0a0a;--card-overlay:0,0,0}
     </style>
     <script src="js/gamification-engine.js"></script>
 </head>
@@ -51,10 +51,10 @@
         <!-- Geri butonu (absolute) -->
         <header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-5 pt-12 pb-4">
             <button onclick="window.location.href='connections_shared_readings.html'"
-                class="text-white p-2 rounded-full backdrop-blur-md bg-black/20 dark:bg-white/10 border border-white/20">
+                class="text-black dark:text-white p-2 rounded-full backdrop-blur-md bg-white/60 dark:bg-white/10 border border-black/10 dark:border-white/20">
                 <span class="material-symbols-outlined">arrow_back_ios</span>
             </button>
-            <h2 id="header-title" class="text-white text-lg font-bold drop-shadow-lg">—</h2>
+            <h2 id="header-title" class="text-black dark:text-white text-lg font-bold drop-shadow-lg">—</h2>
             <div class="w-10"></div>
         </header>
 
@@ -77,9 +77,9 @@
         </div>
 
         <!-- Gradient overlay ile bilgiler -->
-        <div class="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 bg-gradient-to-t from-black via-black/70 to-transparent pt-32">
-            <h1 id="kisi-isim" class="text-4xl font-display font-extrabold text-white mb-1">—</h1>
-            <p id="kisi-tarih" class="text-white/60 text-sm mb-1">—</p>
+        <div class="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 bg-gradient-to-t pt-32" style="background:linear-gradient(to top,rgba(var(--card-overlay),1) 0%,rgba(var(--card-overlay),0.7) 50%,transparent 100%)">
+            <h1 id="kisi-isim" class="text-4xl font-display font-extrabold text-black dark:text-white mb-1">—</h1>
+            <p id="kisi-tarih" class="text-black/60 dark:text-white/60 text-sm mb-1">—</p>
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-vibrantRed text-base">auto_awesome</span>
                 <p id="kisi-unvan" class="text-vibrantRed text-sm font-bold">—</p>

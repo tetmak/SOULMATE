@@ -50,8 +50,8 @@
         .glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,0,0,0.08)}
         html.dark .glass{background:rgba(26,26,26,0.8);border:1px solid rgba(255,255,255,0.1)}
         .profile-card-fade::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,var(--section-bg));z-index:40;pointer-events:none}
-        :root{--section-bg:#fff}
-        html.dark{--section-bg:#0a0a0a}
+        :root{--section-bg:#fff;--card-overlay:255,255,255}
+        html.dark{--section-bg:#0a0a0a;--card-overlay:0,0,0}
     </style>
 </head>
 <body class="bg-white dark:bg-[#0a0a0a] text-black dark:text-white">
@@ -62,18 +62,18 @@
         <!-- Header (absolute) -->
         <header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-5 pt-12 pb-4">
             <button onclick="window.location.href='mystic_numerology_home_1.html'"
-                class="text-white p-2 rounded-full backdrop-blur-md bg-black/20 dark:bg-white/10 border border-white/20">
+                class="text-white p-2 rounded-full backdrop-blur-md bg-white/60 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-md">
                 <span class="material-symbols-outlined">arrow_back_ios</span>
             </button>
-            <h2 class="text-white text-lg font-bold drop-shadow-lg" data-i18n="profile.title">Soul Journey</h2>
+            <h2 class="text-black dark:text-white text-lg font-bold drop-shadow-lg" data-i18n="profile.title">Soul Journey</h2>
             <div class="flex items-center gap-1">
                 <button id="btn-theme-profile"
-                    class="flex size-10 cursor-pointer items-center justify-center rounded-full backdrop-blur-md bg-black/20 dark:bg-white/10 border border-white/20">
-                    <span id="theme-icon-profile" class="material-symbols-outlined text-white">light_mode</span>
+                    class="flex size-10 cursor-pointer items-center justify-center rounded-full backdrop-blur-md bg-white/60 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-md">
+                    <span id="theme-icon-profile" class="material-symbols-outlined text-black dark:text-white">light_mode</span>
                 </button>
                 <button onclick="window.location.href='app_settings_preferences.html'"
-                    class="flex size-10 cursor-pointer items-center justify-center rounded-full backdrop-blur-md bg-black/20 dark:bg-white/10 border border-white/20">
-                    <span class="material-symbols-outlined text-white">settings</span>
+                    class="flex size-10 cursor-pointer items-center justify-center rounded-full backdrop-blur-md bg-white/60 dark:bg-white/10 border border-black/10 dark:border-white/20 backdrop-blur-md">
+                    <span class="material-symbols-outlined text-black dark:text-white">settings</span>
                 </button>
             </div>
         </header>
@@ -103,9 +103,9 @@
         </div>
 
         <!-- Gradient overlay ile bilgiler -->
-        <div class="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 bg-gradient-to-t from-black via-black/70 to-transparent pt-24">
-            <h1 id="profile-name" class="text-4xl font-display font-extrabold text-white mb-1">—</h1>
-            <p id="profile-birthdate" class="text-white/60 text-sm mb-1">—</p>
+        <div class="absolute bottom-0 left-0 right-0 z-20 px-6 pb-8 bg-gradient-to-t pt-24" style="background:linear-gradient(to top,rgba(var(--card-overlay),1) 0%,rgba(var(--card-overlay),0.7) 50%,transparent 100%)">
+            <h1 id="profile-name" class="text-4xl font-display font-extrabold text-black dark:text-white mb-1">—</h1>
+            <p id="profile-birthdate" class="text-black/60 dark:text-white/60 text-sm mb-1">—</p>
             <div class="flex items-center gap-2">
                 <span class="material-symbols-outlined text-vibrantRed text-base">auto_awesome</span>
                 <p id="profile-archetype" class="text-vibrantRed text-sm font-bold">—</p>
