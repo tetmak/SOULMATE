@@ -58,12 +58,18 @@
             <div class="w-10"></div>
         </header>
 
-        <!-- Fotoğraf arka plan -->
-        <div class="absolute inset-0 overflow-hidden bg-gradient-to-br from-fuchsia/20 to-electric/20 dark:from-fuchsia/30 dark:to-electric/30">
-            <div id="profil-foto" class="w-full h-full flex items-center justify-center">
-                <span id="profil-initial" class="text-white/30 text-8xl font-bold">?</span>
+        <!-- Swipe fotoğraf galerisi -->
+        <div id="kisi-gallery" class="absolute inset-0 overflow-hidden bg-gradient-to-br from-fuchsia/20 to-electric/20 dark:from-fuchsia/30 dark:to-electric/30">
+            <div id="kisi-slides" class="flex h-full" style="transition:transform 0.3s ease">
+                <div class="flex-shrink-0 w-full h-full flex items-center justify-center">
+                    <span id="profil-initial" class="text-white/30 text-8xl font-bold">?</span>
+                </div>
             </div>
+            <div id="profil-foto" style="display:none"></div>
         </div>
+
+        <!-- Dot göstergeleri -->
+        <div id="kisi-dots" class="absolute top-24 left-0 right-0 z-40 flex justify-center gap-1.5"></div>
 
         <!-- Life Path Badge -->
         <div class="absolute top-28 left-5 z-30 bg-vibrantRed px-4 py-1.5 rounded-full border border-white/30 rotate-[-5deg] shadow-lg">
@@ -289,9 +295,67 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById('stat-pers').textContent = pers || '—';
     document.getElementById('name-analysis-label').textContent = name.toUpperCase() + ' — Deep Insight';
 
-    // Fotoğraf — tam ekran arka plan
+    // ─── Swipe Galeri ─────────────────────────────────────
+    var _kSlidesEl = document.getElementById('kisi-slides');
+    var _kDotsEl = document.getElementById('kisi-dots');
+    var _kGalleryEl = document.getElementById('kisi-gallery');
+    var _kPhotos = []; var _kIdx = 0;
+
+    function renderKisiGallery(photos) {
+        _kPhotos = (photos || []).filter(Boolean);
+        if (!_kPhotos.length && photo) _kPhotos = [photo];
+        if (!_kPhotos.length) _kPhotos = [null];
+
+        _kSlidesEl.innerHTML = ''; _kDotsEl.innerHTML = ''; _kIdx = 0;
+        _kPhotos.forEach(function(url, i) {
+            var slide = document.createElement('div');
+            slide.className = 'flex-shrink-0 w-full h-full';
+            slide.innerHTML = url
+                ? '<img src="' + url + '" class="w-full h-full object-cover" alt="">'
+                : '<div class="w-full h-full flex items-center justify-center"><span class="material-symbols-outlined text-white/20" style="font-size:64px">person</span></div>';
+            _kSlidesEl.appendChild(slide);
+            if (_kPhotos.length > 1) {
+                var dot = document.createElement('div');
+                dot.className = 'h-1 rounded-full transition-all ' + (i === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40');
+                _kDotsEl.appendChild(dot);
+            }
+        });
+        _kSlidesEl.style.width = (_kPhotos.length * 100) + '%';
+        _kSlidesEl.style.transform = 'translateX(0)';
+    }
+
+    function goKisiSlide(idx) {
+        if (idx < 0) idx = 0; if (idx >= _kPhotos.length) idx = _kPhotos.length - 1;
+        _kIdx = idx;
+        _kSlidesEl.style.transform = 'translateX(-' + (idx * (100 / _kPhotos.length)) + '%)';
+        _kDotsEl.querySelectorAll('div').forEach(function(d, i) {
+            d.className = 'h-1 rounded-full transition-all ' + (i === idx ? 'w-6 bg-white' : 'w-1.5 bg-white/40');
+        });
+    }
+
+    // Touch swipe
+    (function() {
+        var sx = 0, cx = 0, dr = false;
+        _kGalleryEl.addEventListener('touchstart', function(e) { sx = e.touches[0].clientX; dr = true; }, { passive: true });
+        _kGalleryEl.addEventListener('touchmove', function(e) { if (dr) cx = e.touches[0].clientX; }, { passive: true });
+        _kGalleryEl.addEventListener('touchend', function() {
+            if (!dr) return; dr = false;
+            var diff = cx - sx;
+            if (Math.abs(diff) > 50) { if (diff < 0) goKisiSlide(_kIdx + 1); else goKisiSlide(_kIdx - 1); }
+            sx = 0; cx = 0;
+        }, { passive: true });
+    })();
+
+    // Fotoğrafları yükle (kişinin user_id'si varsa)
+    if (kisi.user_id && window.avatarUpload && window.avatarUpload.getPhotos) {
+        window.avatarUpload.getPhotos(kisi.user_id).then(function(photos) {
+            renderKisiGallery(photos);
+        });
+    } else {
+        renderKisiGallery(photo ? [photo] : []);
+    }
+
     var fotoEl = document.getElementById('profil-foto');
-    fotoEl.innerHTML = '<img src="' + photo + '" alt="' + name + '" class="w-full h-full object-cover">';
 
     // ─── Deep Insight butonu ──────────────────────────────────
     document.getElementById('btn-name-analysis').addEventListener('click', function() {

@@ -57,7 +57,7 @@
 <body class="bg-white dark:bg-[#0a0a0a] text-black dark:text-white">
 <div class="relative w-full max-w-[480px] mx-auto h-screen overflow-y-auto">
 
-    <!-- ═══ HERO — Tam ekran profil kartı ═══ -->
+    <!-- ═══ HERO — Swipe fotoğraf galerisi ═══ -->
     <div class="relative profile-card-fade" style="height:50vh;min-height:340px">
         <!-- Header (absolute) -->
         <header class="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-5 pt-12 pb-4">
@@ -78,16 +78,23 @@
             </div>
         </header>
 
-        <!-- Avatar arka plan fotoğrafı -->
-        <div class="absolute inset-0 overflow-hidden bg-gradient-to-br from-fuchsia/20 to-electric/20 dark:from-fuchsia/30 dark:to-electric/30">
-            <div id="profile-avatar" class="w-full h-full flex items-center justify-center cursor-pointer" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
-                <span id="profile-initial" class="text-white/30 text-8xl font-bold">?</span>
+        <!-- Swipe galeri -->
+        <div id="photo-gallery" class="absolute inset-0 overflow-hidden bg-gradient-to-br from-fuchsia/20 to-electric/20 dark:from-fuchsia/30 dark:to-electric/30">
+            <div id="photo-slides" class="flex h-full" style="transition:transform 0.3s ease">
+                <!-- JS ile doldurulacak -->
             </div>
+            <!-- Eski uyumluluk -->
+            <div id="profile-avatar" style="display:none"></div>
         </div>
 
-        <!-- Kamera butonu -->
-        <div id="avatar-edit-badge" class="absolute bottom-20 right-6 z-50 bg-white/90 dark:bg-black/60 backdrop-blur-md text-black dark:text-white h-12 w-12 rounded-full flex items-center justify-center border border-black/10 dark:border-white/20 cursor-pointer shadow-lg" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent" onclick="window._triggerAvatarUpload && window._triggerAvatarUpload()">
-            <span class="material-symbols-outlined text-lg">photo_camera</span>
+        <!-- Dot göstergeleri -->
+        <div id="photo-dots" class="absolute top-24 left-0 right-0 z-40 flex justify-center gap-1.5">
+            <!-- JS ile doldurulacak -->
+        </div>
+
+        <!-- Fotoğraf ekle butonu -->
+        <div id="avatar-edit-badge" class="absolute bottom-20 right-6 z-50 bg-white/90 dark:bg-black/60 backdrop-blur-md text-black dark:text-white h-12 w-12 rounded-full flex items-center justify-center border border-black/10 dark:border-white/20 cursor-pointer shadow-lg" style="touch-action:manipulation;-webkit-tap-highlight-color:transparent" onclick="window._triggerPhotoAdd && window._triggerPhotoAdd()">
+            <span class="material-symbols-outlined text-lg">add_a_photo</span>
         </div>
 
         <!-- LP Badge -->
@@ -330,40 +337,112 @@
 
     var gender = ud.gender || '';
 
-    // Avatar — tam ekran arka plan olarak set et
-    var avatarEl = document.getElementById('profile-avatar');
-    var photo = window.avatarUtil.getAvatarUrl({ avatarUrl: ud.avatarUrl || null, name: name, gender: gender });
-    if (photo) {
-        avatarEl.innerHTML = '<img src="' + photo + '" class="w-full h-full object-cover" alt="">';
+    // ─── Swipe Galeri ─────────────────────────────────────────
+    var _galleryPhotos = [];
+    var _galleryIdx = 0;
+    var _slidesEl = document.getElementById('photo-slides');
+    var _dotsEl = document.getElementById('photo-dots');
+    var _galleryEl = document.getElementById('photo-gallery');
+
+    function renderGallery(photos) {
+        _galleryPhotos = (photos || []).filter(Boolean);
+        var defaultPhoto = window.avatarUtil.getAvatarUrl({ avatarUrl: ud.avatarUrl || null, name: name, gender: gender });
+        if (!_galleryPhotos.length && defaultPhoto) _galleryPhotos = [defaultPhoto];
+        if (!_galleryPhotos.length) _galleryPhotos = [null]; // placeholder
+
+        _slidesEl.innerHTML = '';
+        _dotsEl.innerHTML = '';
+        _galleryIdx = 0;
+
+        _galleryPhotos.forEach(function(url, i) {
+            var slide = document.createElement('div');
+            slide.className = 'flex-shrink-0 w-full h-full';
+            if (url) {
+                slide.innerHTML = '<img src="' + url + '" class="w-full h-full object-cover" alt="">';
+            } else {
+                slide.innerHTML = '<div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-fuchsia/20 to-electric/20 dark:from-fuchsia/30 dark:to-electric/30"><span class="material-symbols-outlined text-white/20" style="font-size:64px">person</span></div>';
+            }
+            _slidesEl.appendChild(slide);
+
+            if (_galleryPhotos.length > 1) {
+                var dot = document.createElement('div');
+                dot.className = 'h-1 rounded-full transition-all ' + (i === 0 ? 'w-6 bg-white' : 'w-1.5 bg-white/40');
+                dot.setAttribute('data-idx', i);
+                _dotsEl.appendChild(dot);
+            }
+        });
+
+        _slidesEl.style.width = (_galleryPhotos.length * 100) + '%';
+        _slidesEl.style.transform = 'translateX(0)';
     }
 
-    // setAvatar uyumluluğu — avatarUpload sonrası güncelleme için
-    window.avatarUtil._profileHeroEl = avatarEl;
-    var _origSetAvatar = window.avatarUtil.setAvatar;
-    window.avatarUtil.setAvatar = function(el, opts) {
-        if (el === avatarEl) {
-            var url = window.avatarUtil.getAvatarUrl(opts);
-            if (url) avatarEl.innerHTML = '<img src="' + url + '" class="w-full h-full object-cover" alt="">';
-            return;
-        }
-        if (_origSetAvatar) _origSetAvatar(el, opts);
-    };
+    function goToSlide(idx) {
+        if (idx < 0) idx = 0;
+        if (idx >= _galleryPhotos.length) idx = _galleryPhotos.length - 1;
+        _galleryIdx = idx;
+        _slidesEl.style.transform = 'translateX(-' + (idx * (100 / _galleryPhotos.length)) + '%)';
+        var dots = _dotsEl.querySelectorAll('div');
+        dots.forEach(function(d, i) {
+            d.className = 'h-1 rounded-full transition-all ' + (i === idx ? 'w-6 bg-white' : 'w-1.5 bg-white/40');
+        });
+    }
 
-    window._triggerAvatarUpload = function() {
+    // Touch swipe
+    (function() {
+        var startX = 0, currentX = 0, dragging = false;
+        _galleryEl.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; dragging = true; }, { passive: true });
+        _galleryEl.addEventListener('touchmove', function(e) { if (dragging) currentX = e.touches[0].clientX; }, { passive: true });
+        _galleryEl.addEventListener('touchend', function() {
+            if (!dragging) return;
+            dragging = false;
+            var diff = currentX - startX;
+            if (Math.abs(diff) > 50) {
+                if (diff < 0) goToSlide(_galleryIdx + 1);
+                else goToSlide(_galleryIdx - 1);
+            }
+            startX = 0; currentX = 0;
+        }, { passive: true });
+    })();
+
+    // Fotoğrafları yükle
+    if (window.avatarUpload && window.avatarUpload.getPhotos) {
+        window.avatarUpload.getPhotos(userId).then(function(photos) {
+            renderGallery(photos);
+        });
+    } else {
+        var defaultPhoto = window.avatarUtil.getAvatarUrl({ avatarUrl: ud.avatarUrl || null, name: name, gender: gender });
+        renderGallery(defaultPhoto ? [defaultPhoto] : []);
+    }
+
+    // Yeni fotoğraf ekleme
+    window._triggerPhotoAdd = function() {
         if (!window.avatarUpload) return;
+        // Boş slot bul
+        var nextIdx = 0;
+        for (var i = 0; i < (window.avatarUpload.MAX_PHOTOS || 4); i++) {
+            if (!_galleryPhotos[i]) { nextIdx = i; break; }
+            if (i === _galleryPhotos.length) { nextIdx = i; break; }
+        }
+        if (nextIdx >= (window.avatarUpload.MAX_PHOTOS || 4)) {
+            nextIdx = _galleryIdx; // Mevcut slide'ı değiştir
+        }
+
         window.avatarUpload.pickPhoto().then(function(dataUrl) {
             if (!dataUrl) return;
-            window.supabaseClient.auth.getSession().then(function(res) {
-                var session = res && res.data && res.data.session;
-                if (!session || !session.user) return;
-                window.avatarUpload.uploadAvatar(session.user.id, dataUrl).then(function(newUrl) {
-                    if (newUrl) {
-                        avatarEl.innerHTML = '<img src="' + newUrl + '" class="w-full h-full object-cover" alt="">';
-                    }
-                }).catch(function(e) { console.error('[Avatar] Upload hatası:', e); });
-            });
-        }).catch(function(e) { console.log('[Avatar] Fotoğraf seçilmedi:', e.message); });
+            window.avatarUpload.uploadPhoto(userId, dataUrl, nextIdx).then(function(result) {
+                if (result && result.photos) {
+                    renderGallery(result.photos);
+                    goToSlide(nextIdx);
+                }
+            }).catch(function(e) { console.error('[Gallery] Upload error:', e); });
+        }).catch(function(e) { console.log('[Gallery] Photo pick cancelled'); });
     };
+
+    // Eski uyumluluk: _triggerAvatarUpload = _triggerPhotoAdd
+    window._triggerAvatarUpload = window._triggerPhotoAdd;
+
+    // Eski setAvatar uyumluluğu
+    var avatarEl = document.getElementById('profile-avatar');
 
     document.getElementById('profile-name').textContent = name;
     document.getElementById('profile-birthdate').textContent = formatDate(bd);

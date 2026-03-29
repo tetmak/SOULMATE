@@ -165,12 +165,132 @@
         });
     }
 
+    // ─── Multi-photo: belirtilen index'e fotoğraf yükle ────
+    var MAX_PHOTOS = 4;
+
+    function uploadPhoto(userId, dataUrl, index) {
+        if (!window.supabaseClient) return Promise.reject(new Error('Supabase yok'));
+        if (index < 0 || index >= MAX_PHOTOS) return Promise.reject(new Error('Geçersiz index'));
+
+        return new Promise(function(resolve, reject) {
+            resizeImage(dataUrl, function(resized) {
+                if (!resized) { reject(new Error('Görsel işlenemedi')); return; }
+
+                var blob = dataUrlToBlob(resized);
+                var filePath = userId + '/photo_' + index + '.jpg';
+
+                window.supabaseClient.storage
+                    .from('avatars')
+                    .upload(filePath, blob, { contentType: 'image/jpeg', upsert: true })
+                    .then(function(result) {
+                        if (result.error) { reject(result.error); return; }
+
+                        var urlResult = window.supabaseClient.storage.from('avatars').getPublicUrl(filePath);
+                        var publicUrl = urlResult.data.publicUrl + '?t=' + Date.now();
+
+                        // Mevcut photos array'ini çek, güncelle, kaydet
+                        window.supabaseClient.from('profiles').select('photos').eq('id', userId).maybeSingle()
+                            .then(function(res) {
+                                var photos = (res.data && res.data.photos) || [];
+                                if (!Array.isArray(photos)) photos = [];
+                                // Array'i index boyutuna genişlet
+                                while (photos.length <= index) photos.push(null);
+                                photos[index] = publicUrl;
+                                // null'ları temizleme — sıra korunsun
+
+                                var updates = { photos: photos, updated_at: new Date().toISOString() };
+                                // İlk fotoğraf aynı zamanda avatar_url olarak da kaydedilir
+                                if (index === 0) updates.avatar_url = publicUrl;
+
+                                var p1 = window.supabaseClient.from('profiles').update(updates).eq('id', userId);
+                                var p2 = window.supabaseClient.from('discovery_profiles').update(updates).eq('user_id', userId);
+
+                                Promise.all([p1, p2]).then(function() {
+                                    // localStorage cache
+                                    try {
+                                        var ud = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
+                                        if (index === 0) ud.avatarUrl = publicUrl;
+                                        ud.photos = photos;
+                                        localStorage.setItem('numerael_user_data', JSON.stringify(ud));
+                                    } catch(e) {}
+                                    console.log('[Avatar] Photo ' + index + ' upload OK:', publicUrl);
+                                    resolve({ url: publicUrl, photos: photos });
+                                }).catch(function(err) {
+                                    console.warn('[Avatar] DB update error:', err);
+                                    resolve({ url: publicUrl, photos: photos });
+                                });
+                            }).catch(reject);
+                    }).catch(reject);
+            });
+        });
+    }
+
+    function deletePhoto(userId, index) {
+        if (!window.supabaseClient) return Promise.reject(new Error('Supabase yok'));
+
+        var filePath = userId + '/photo_' + index + '.jpg';
+
+        return window.supabaseClient.storage.from('avatars').remove([filePath])
+            .then(function() {
+                return window.supabaseClient.from('profiles').select('photos').eq('id', userId).maybeSingle();
+            })
+            .then(function(res) {
+                var photos = (res.data && res.data.photos) || [];
+                if (!Array.isArray(photos)) photos = [];
+                if (index < photos.length) photos[index] = null;
+                // Trailing null'ları kaldır
+                while (photos.length > 0 && photos[photos.length - 1] === null) photos.pop();
+
+                var updates = { photos: photos, updated_at: new Date().toISOString() };
+                // İlk fotoğraf silindiyse avatar_url'i de güncelle
+                if (index === 0) {
+                    var firstValid = null;
+                    for (var i = 0; i < photos.length; i++) { if (photos[i]) { firstValid = photos[i]; break; } }
+                    updates.avatar_url = firstValid;
+                }
+
+                var p1 = window.supabaseClient.from('profiles').update(updates).eq('id', userId);
+                var p2 = window.supabaseClient.from('discovery_profiles').update(updates).eq('user_id', userId);
+
+                return Promise.all([p1, p2]).then(function() {
+                    try {
+                        var ud = JSON.parse(localStorage.getItem('numerael_user_data') || '{}');
+                        ud.photos = photos;
+                        if (index === 0) ud.avatarUrl = updates.avatar_url;
+                        localStorage.setItem('numerael_user_data', JSON.stringify(ud));
+                    } catch(e) {}
+                    return photos;
+                });
+            });
+    }
+
+    function getPhotos(userId) {
+        if (!window.supabaseClient) return Promise.resolve([]);
+        return window.supabaseClient.from('profiles').select('photos, avatar_url').eq('id', userId).maybeSingle()
+            .then(function(res) {
+                var d = res.data;
+                if (!d) return [];
+                var photos = (d.photos && Array.isArray(d.photos)) ? d.photos : [];
+                // photos boşsa ama avatar_url varsa, onu ilk eleman olarak kullan
+                if (photos.filter(Boolean).length === 0 && d.avatar_url) {
+                    photos = [d.avatar_url];
+                }
+                return photos;
+            })
+            .catch(function() { return []; });
+    }
+
     window.avatarUpload = {
         pickPhoto: pickPhoto,
         uploadAvatar: uploadAvatar,
         changeAvatar: changeAvatar,
         resizeImage: resizeImage,
-        isNative: isNative
+        isNative: isNative,
+        // Multi-photo
+        uploadPhoto: uploadPhoto,
+        deletePhoto: deletePhoto,
+        getPhotos: getPhotos,
+        MAX_PHOTOS: MAX_PHOTOS
     };
 
 })();
