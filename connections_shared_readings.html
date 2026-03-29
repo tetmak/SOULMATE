@@ -48,19 +48,7 @@
         html:not(.dark) .neon-card {
             background: #fff !important;
         }
-        .neon-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            padding: 2px;
-            border-radius: inherit;
-            background: var(--neon-gradient, linear-gradient(135deg, #ff00ff, #00e0ff));
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask-composite: exclude;
-            -webkit-mask-composite: destination-out;
-            pointer-events: none;
-        }
+        .neon-card::before { content: ''; position: absolute; inset: 0; padding: 2px; border-radius: inherit; background: var(--neon-color, #fff); mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); mask-composite: exclude; -webkit-mask-composite: destination-out; pointer-events: none; }
 
         .card-hover:active{transform:scale(0.97)}
         /* Notification inbox */
@@ -287,7 +275,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     function createLocalCard(conn, photo, lp, exp, arch, uc, reading, dispName, lockCls, idx) {
         var card = document.createElement('div');
         card.className = 'card-hover neon-card flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl fade-in' + lockCls;
-        card.style.setProperty('--neon-gradient', 'linear-gradient(135deg, ' + uc.border + ', ' + hexToRgba(uc.border, 0.3) + ', #00e0ff)');
+        card.style.setProperty('--neon-color', (m.gender === 'female' || m.gender === 'kadın') ? '#FF2D55' : '#ffffff');
         card.style.animationDelay = (0.05 + idx * 0.07) + 's';
         card.innerHTML =
             '<div class="relative shrink-0 cursor-pointer" data-action="view">' +
@@ -371,7 +359,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Card
             var card = document.createElement('div');
             card.className = 'card-hover neon-card flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl cursor-pointer fade-in';
-            card.style.setProperty('--neon-gradient', 'linear-gradient(135deg, ' + uc.border + ', ' + hexToRgba(uc.border, 0.3) + ', #00e0ff)');
+            card.style.setProperty('--neon-color', (m.gender === 'female' || m.gender === 'kadın') ? '#FF2D55' : '#ffffff');
             card.style.animationDelay = (0.05 + idx * 0.07) + 's';
             card.innerHTML =
                 '<div class="relative shrink-0">' +
@@ -439,7 +427,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Card
             var card = document.createElement('div');
             card.className = 'card-hover neon-card flex items-center gap-4 p-4 bg-white dark:bg-card-dark rounded-2xl cursor-pointer fade-in' + lockCls;
-            card.style.setProperty('--neon-gradient', 'linear-gradient(135deg, ' + uc.border + ', ' + hexToRgba(uc.border, 0.3) + ', #ff00ff)');
+            card.style.setProperty('--neon-color', (p.gender === 'female' || p.gender === 'kadın') ? '#FF2D55' : '#ffffff');
             card.style.setProperty('--glow', hexToRgba(uc.border, 0.35));
             card.style.setProperty('--glow-solid', uc.border);
             card.setAttribute('data-chat-uid', mc.user_id || '');
