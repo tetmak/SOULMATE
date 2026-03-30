@@ -203,7 +203,10 @@
         'Soul Urge: ' + ctx.p1.soulUrge + ' & ' + ctx.p2.soulUrge + '\n' +
         'Overall compatibility score: ' + ctx.overall + '%\n' + genderCtx(ctx) + '\n' +
         'Write about the essence of the bond between them, what these two Life Paths create together, and what kind of power their unique connection carries.\n' +
-        '2 paragraphs, 80-100 words, address the couple directly.';
+        '2 paragraphs, 80-100 words, address the couple directly.' +
+        '
+
+[LANGUAGE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ']';
     },
 
     soul_urge: function(ctx) {
@@ -213,7 +216,10 @@
         'Compatibility score: ' + ctx.soulScore + '%\n' + genderCtx(ctx) + '\n' +
         'How do these two people\'s inner desires and emotional needs affect each other? Where is there deep harmony, and where is there hidden friction?\n' +
         'Write only about Soul Urge compatibility. Writing about Life Path or Personality is forbidden.\n' +
-        '3 paragraphs, 120-140 words.';
+        '3 paragraphs, 120-140 words.' +
+        '
+
+[LANGUAGE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ']';
     },
 
     personality: function(ctx) {
@@ -251,7 +257,10 @@
         '**Relationship & Emotional Realm**\n[Analyze the emotional bond of these two souls, their love languages, trust dynamics, attachment styles, and recurring karmic patterns in the relationship. Which emotional wounds do they trigger in each other, and how do they heal them — 2 paragraphs]\n\n' +
         '**Health & Energy Body**\n[Analyze the impact of this karmic bond on physical and energetic health. Which chakras activate together, which energy blockages dissolve, and how do they affect each other\'s physical and spiritual energy — 2 paragraphs]\n\n' +
         '**Career & Life Mission**\n[Analyze the impact of this karmic bond on career, work life, and life mission. How do they support or hinder each other professionally, do they share a common mission, and how does this bond reflect in their career paths — 2 paragraphs]\n\n' +
-        'Total 500-600 words, mystical and deep tone. Under each heading, provide concrete analysis truly based on numerical energies. Do NOT change the headings, write them exactly as shown.';
+        'Total 500-600 words, mystical and deep tone. Under each heading, provide concrete analysis truly based on numerical energies. Do NOT change the headings, write them exactly as shown.' +
+        '
+
+[LANGUAGE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ']';
     },
 
     expression: function(ctx) {
@@ -270,7 +279,10 @@
         'Personality Numbers: ' + ctx.p1.personality + ' & ' + ctx.p2.personality + '\n' +
         genderCtx(ctx) + '\n' +
         'Describe these two people\'s communication styles, how they understand each other, and what causes misunderstandings between them.\n' +
-        '3 paragraphs, 120-140 words, practical and honest tone.';
+        '3 paragraphs, 120-140 words, practical and honest tone.' +
+        '
+
+[LANGUAGE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ']';
     },
 
     // ─── BREAKDOWN 2 DEEP ANALİZLER ──────────────────────
@@ -286,7 +298,10 @@
         '**Karmik Ders**\n[What is the core lesson the universe wants them to learn through each other? What pain must they transform? — 2 detailed paragraphs]\n\n' +
         '**Karmik Denge**\n[Where is the give-take balance between them? Who holds more energetic debt? What triggers unresolved patterns? — 2 detailed paragraphs]\n\n' +
         '**Karmik Dönüşüm**\n[How can they transcend these patterns? What is the ultimate karmic gift this bond offers if they do the work? — 2 detailed paragraphs]\n\n' +
-        'Total 350-400 words. Deep, mystical, emotionally resonant tone.';
+        'Total 350-400 words. Deep, mystical, emotionally resonant tone.' +
+        '
+
+[LANGUAGE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ']';
     },
 
     deep_communication: function(ctx) {
@@ -301,7 +316,10 @@
         '**Sessiz İletişim**\n[What do they communicate through silence, body language, energy? How do their Personality numbers shape unspoken dynamics? — 2 paragraphs]\n\n' +
         '**Çatışma Noktaları**\n[Where do misunderstandings happen most? What triggers communication breakdowns? Be specific and honest — 2 paragraphs]\n\n' +
         '**Uyum Anahtarı**\n[What is the key to unlocking perfect communication between them? Practical, actionable advice based on their numbers — 2 paragraphs]\n\n' +
-        'Total 300-350 words. Insightful and practical tone.';
+        'Total 300-350 words. Insightful and practical tone.' +
+        '
+
+[LANGUAGE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ']';
     },
 
     deep_emotional: function(ctx) {
@@ -317,7 +335,10 @@
         '**Bağlanma Dinamiği**\n[What are their attachment styles based on their numbers? How do they seek and give love? — 2 paragraphs]\n\n' +
         '**Duygusal Yaralar**\n[Which emotional wounds do they trigger in each other? What childhood patterns replay in this relationship? Be honest — 2 paragraphs]\n\n' +
         '**İyileşme Yolu**\n[How can they heal through each other? What is the emotional gift this bond carries? — 2 paragraphs]\n\n' +
-        'Total 300-350 words. Emotionally deep, empathetic tone.';
+        'Total 300-350 words. Emotionally deep, empathetic tone.' +
+        '
+
+[LANGUAGE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ']';
     },
 
     deep_destiny: function(ctx) {
@@ -333,7 +354,10 @@
         '**Büyüme Haritası**\n[How do they push each other to grow? What challenges will test them and make them stronger? — 2 paragraphs]\n\n' +
         '**Gelecek Projeksiyonu**\n[What does the next chapter look like for them? What milestones, crossroads, and turning points lie ahead based on their combined energy? — 2 paragraphs]\n\n' +
         '**Kader Armağanı**\n[What is the ultimate gift the universe offers through this union? What legacy can they create? — 2 paragraphs]\n\n' +
-        'Total 300-350 words. Visionary, inspiring tone.';
+        'Total 300-350 words. Visionary, inspiring tone.' +
+        '
+
+[LANGUAGE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ']';
     },
 
     full_compat: function(ctx) {
@@ -349,7 +373,10 @@
         '4. CONFLICT POINT: The biggest inevitable friction in this relationship. Be ruthlessly honest.\n' +
         '5. GROWING TOGETHER: What can this couple achieve together, what can they learn?\n' +
         '6. CLOSING: A truth for ' + ctx.p1.name + ' and ' + ctx.p2.name + ' — not a question.\n\n' +
-        'Total 350-420 words.';
+        'Total 350-420 words.' +
+        '
+
+[LANGUAGE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ']';
     }
   };
 
@@ -361,7 +388,7 @@
     var p1Key = (ctx.p1.name + '_' + (ctx.p1.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
     var p2Key = (ctx.p2.name + '_' + (ctx.p2.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
     var sorted = [p1Key, p2Key].sort();
-    return 'numerael_compat_ai_v5__' + _lang + '__' + sorted[0] + '__' + sorted[1] + '__' + type;
+    return 'numerael_compat_ai_v6__' + _lang + '__' + sorted[0] + '__' + sorted[1] + '__' + type;
   }
 
   // Sync cache getter — loading animasyonunu atlamak için
