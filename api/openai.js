@@ -12,7 +12,7 @@ import { detectCrisis } from "./_lib/crisis.js";
 
 // Constants
 const ALLOWED_MODEL = "gpt-4o-mini";
-const MAX_TOKENS_CAP = 500;
+const MAX_TOKENS_CAP = 2000;
 const FREE_DAILY_LIMIT = 50;
 const PREMIUM_DAILY_LIMIT = 200;
 const IP_DAILY_LIMIT = 100;
