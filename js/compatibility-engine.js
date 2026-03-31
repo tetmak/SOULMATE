@@ -388,7 +388,7 @@
     var p1Key = (ctx.p1.name + '_' + (ctx.p1.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
     var p2Key = (ctx.p2.name + '_' + (ctx.p2.birthDate || '')).toLowerCase().trim().replace(/\s+/g,'_');
     var sorted = [p1Key, p2Key].sort();
-    return 'numerael_compat_ai_v6__' + _lang + '__' + sorted[0] + '__' + sorted[1] + '__' + type;
+    return 'numerael_compat_ai_v7__' + _lang + '__' + sorted[0] + '__' + sorted[1] + '__' + type;
   }
 
   // Sync cache getter — loading animasyonunu atlamak için
@@ -409,7 +409,7 @@
     var promptFn = COMPAT_PROMPTS[type];
     if (!promptFn) return null;
 
-    var maxTokens = (type === 'full_compat') ? 1000 : (type === 'karmic' || type === 'deep_karmic') ? 900 : (type.indexOf('deep_') === 0) ? 700 : 350;
+    var maxTokens = (type === 'full_compat') ? 1500 : (type === 'karmic' || type === 'deep_karmic') ? 1200 : (type.indexOf('deep_') === 0) ? 1000 : 500;
 
     try {
       var _aiH = await _getAiAuthHeaders();
