@@ -946,6 +946,16 @@
     var text = input.value.trim();
     if (!text) return;
 
+    // Premium chatbot limit check
+    if (window.premium && !window.premium.isPremium()) {
+        var chatCheck = window.premium.canUse('daily_chatbot');
+        if (!chatCheck.allowed) {
+            window.premium.showPaywall(chatCheck.reason, 'decision_sphere');
+            return;
+        }
+        window.premium.incrementDailyUsage('decision_sphere');
+    }
+
     input.value = '';
     input.style.height = 'auto';
     document.getElementById('ael-send').disabled = true;

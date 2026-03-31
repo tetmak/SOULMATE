@@ -379,6 +379,29 @@
             <div id="home-quests-list" class="space-y-2"></div>
         </div>
 
+        <!-- Weekly Report Teaser Card (Premium) -->
+        <div class="px-4 pb-4">
+            <div id="weekly-report-card" class="relative overflow-hidden rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/5 p-5">
+                <div class="absolute -left-6 -top-6 size-24 bg-cosmic-violet/10 rounded-full blur-2xl"></div>
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="material-symbols-outlined text-cosmic-violet text-lg">calendar_month</span>
+                    <h4 class="text-slate-900 dark:text-white text-sm font-extrabold tracking-tight">Bu Haftanin Kozmik Raporu</h4>
+                </div>
+                <div id="weekly-report-content">
+                    <p class="text-slate-600 dark:text-white/60 text-xs leading-relaxed">Kisisel haftalik enerji analizi yukleniyor...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad Placeholder for Free Users -->
+        <div id="ad-placeholder" style="display:none" class="px-4 pb-4">
+            <div class="rounded-2xl bg-gradient-to-r from-cosmic-violet/5 to-cosmic-pink/5 border border-cosmic-violet/10 p-5 text-center">
+                <span class="material-symbols-outlined text-cosmic-violet/40 text-2xl mb-2">ad_group</span>
+                <p class="text-slate-500 dark:text-white/40 text-xs font-semibold mb-3">Premium ile reklamsiz deneyim</p>
+                <button onclick="window.premium.showPaywall('Reklamsiz deneyim Premium ozelligidir.', 'ad_banner')" class="px-5 py-2 rounded-full bg-cosmic-violet/15 text-cosmic-violet text-xs font-bold hover:bg-cosmic-violet/25 transition-colors">Premium'a Gec</button>
+            </div>
+        </div>
+
         <!-- Quote Section -->
         <div class="px-4 pb-8">
             <div class="rounded-2xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/5 p-6 relative overflow-hidden">
@@ -712,6 +735,38 @@
             }).catch(function(e){ console.warn('Daily vibration AI error:', e); });
         });
 
+    })();
+    </script>
+    <script>
+    // ─── Weekly Report + Ad Placeholder (Premium Gating) ───
+    (function() {
+        var isPrem = window.premium && window.premium.isPremium();
+
+        // Weekly Report Card: blur for free, full for premium
+        var reportCard = document.getElementById('weekly-report-card');
+        var reportContent = document.getElementById('weekly-report-content');
+        if (reportCard && reportContent) {
+            var reportText = 'Bu hafta kisisel enerjin 7 titresiminin etkisi altinda. Ozellikle Carsamba ve Persembe gunleri ic sesinizi dinlemeye ozen gosterin. Hafta sonu romantik enerjiler yukseliyor — onemli konusmalari bu doneme planlayabilirsiniz. Kariyer alaninda sabir odul getirecek, aceleci kararlardan kacinin.';
+            if (isPrem) {
+                reportContent.innerHTML = '<p class="text-slate-700 dark:text-white/70 text-xs leading-relaxed">' + reportText + '</p>';
+            } else {
+                var preview = reportText.substring(0, 80);
+                reportContent.innerHTML =
+                    '<p class="text-slate-700 dark:text-white/70 text-xs leading-relaxed">' + preview + '...</p>' +
+                    '<div style="filter:blur(5px);-webkit-filter:blur(5px);pointer-events:none;user-select:none" class="text-slate-700 dark:text-white/70 text-xs leading-relaxed mt-1">' + reportText.substring(80) + '</div>' +
+                    '<div style="text-align:center;margin-top:12px">' +
+                        '<span class="material-symbols-outlined" style="color:#8b5cf6;font-size:20px">lock</span>' +
+                        '<p style="font-size:11px;color:rgba(255,255,255,0.4);margin:6px 0">Premium ile haftalik raporu oku</p>' +
+                        '<button onclick="window.premium.showPaywall(\'Haftalik kozmik rapor Premium ozelligidir.\', \'weekly_report\')" style="background:linear-gradient(135deg,#8b5cf6,#ec4899);color:white;border:none;padding:6px 16px;border-radius:10px;font-weight:700;font-size:11px;cursor:pointer">Premium\'a Gec</button>' +
+                    '</div>';
+            }
+        }
+
+        // Ad Placeholder: show for free users only
+        var adEl = document.getElementById('ad-placeholder');
+        if (adEl && !isPrem) {
+            adEl.style.display = 'block';
+        }
     })();
     </script>
     <script src="js/numerology-context-engine.js"></script>

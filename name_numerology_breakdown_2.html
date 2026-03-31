@@ -338,6 +338,8 @@
           bars[3].style.height = Math.max(30, ctx.lpScore) + '%';   // Empathy
         }
 
+        var _deepIsPremium = window.premium && window.premium.isPremium();
+
         sectionConfig.forEach(function(cfg) {
           var section = sections[cfg.idx];
           if (!section) return;
@@ -345,6 +347,22 @@
           // İçerik hedef elementi bul
           var contentEl = section.querySelector('.text-elegant, p[style*="italic"]');
           if (!contentEl) return;
+
+          // Free kullanıcılar için deep analysis lock overlay
+          if (!_deepIsPremium) {
+            contentEl.innerHTML =
+              '<div style="position:relative;min-height:120px;">' +
+                '<div style="filter:blur(6px);-webkit-filter:blur(6px);pointer-events:none;user-select:none;color:rgba(255,255,255,0.3);font-size:13px;line-height:1.8">' +
+                  'Bu derin analiz Premium abonelere ozeldir. Karmik bag, iletisim dinamikleri, duygusal sinerji ve ortak kader haritanizi kesfetmek icin Premium\'a gecin...' +
+                '</div>' +
+                '<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:2">' +
+                  '<span class="material-symbols-outlined" style="color:#FF2D55;font-size:28px;margin-bottom:8px">lock</span>' +
+                  '<p style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:10px;text-align:center">Derin analiz Premium ozelligidir</p>' +
+                  '<button onclick="window.premium.showPaywall(\'Derin analiz Premium ozelligidir.\', \'' + cfg.type + '\')" style="background:#FF2D55;color:white;border:none;padding:8px 20px;border-radius:12px;font-weight:700;font-size:12px;cursor:pointer">Premium\'a Gec</button>' +
+                '</div>' +
+              '</div>';
+            return; // Skip AI loading for free users
+          }
 
           // Önce cache'e bak
           var cached = window.CompatEngine.getCachedAnalysis ? window.CompatEngine.getCachedAnalysis(cfg.type, ctx) : null;

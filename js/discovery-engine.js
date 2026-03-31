@@ -287,7 +287,8 @@
     }
 
     // ─── GÜNLÜK EŞLEŞMELER BUL (çoklu) ──────────────────────
-    var MAX_DAILY_MATCHES = 5;
+    function getMaxDailyMatches(isPrem) { return isPrem ? 5 : 1; }
+    var MAX_DAILY_MATCHES = 5; // kept for export compatibility
 
     // Profil listesini zenginleştir (numeroloji sayıları + avatar)
     function enrichProfiles(profiles) {
@@ -333,6 +334,8 @@
     async function findDailyMatches(userId, userProfile) {
         var today = todayStr();
         var sb = window.supabaseClient;
+        var _isPrem = window.premium && window.premium.isPremium();
+        var _maxMatches = getMaxDailyMatches(_isPrem);
 
         // ─── Bugünkü eşleşmeler zaten var mı? ───
         var userGender = userProfile ? (userProfile.gender || 'unknown') : 'unknown';
@@ -385,11 +388,11 @@
                                allPastIds.indexOf(p.user_id) === -1;
                     });
 
-                    if (missingProfiles.length > 0 && existing.data.length < MAX_DAILY_MATCHES) {
+                    if (missingProfiles.length > 0 && existing.data.length < _maxMatches) {
                         // Yeni profiller ekle (mevcut eşleşmeleri koru)
                         console.log('[Match] ' + missingProfiles.length + ' yeni profil bulundu, eşleşmelere ekleniyor');
                         enrichProfiles(missingProfiles);
-                        var slotsLeft = MAX_DAILY_MATCHES - existing.data.length;
+                        var slotsLeft = _maxMatches - existing.data.length;
                         var toAdd = missingProfiles.slice(0, slotsLeft);
                         for (var ai = 0; ai < toAdd.length; ai++) {
                             var addP = toAdd[ai];
@@ -465,8 +468,8 @@
         });
         scored.sort(function(a,b) { return b.score - a.score; });
 
-        // En fazla MAX_DAILY_MATCHES kadar eşleşme seç
-        var dailyPicks = scored.slice(0, MAX_DAILY_MATCHES);
+        // En fazla _maxMatches kadar eşleşme seç
+        var dailyPicks = scored.slice(0, _maxMatches);
         console.log('[Match] ' + dailyPicks.length + ' yeni günlük eşleşme oluşturuluyor');
 
         // Hepsini DB'ye kaydet + karşılıklı eşleşme oluştur

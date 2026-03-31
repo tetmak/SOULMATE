@@ -145,6 +145,9 @@
         <span class="text-white text-xs streak-fire">🔥</span>
         <span id="streak-count" class="text-white text-xs font-black">0</span>
     </div>
+    <button id="btn-match-filter" onclick="handleMatchFilter()" class="relative p-2 rounded-full backdrop-blur-md bg-black/5 dark:bg-white/10 border border-black/10 dark:border-white/10 text-black dark:text-white ml-2">
+        <span class="material-symbols-outlined text-lg">tune</span>
+    </button>
 </header>
 
 <!-- ═══ OPT-IN EKRANI ═══ -->
@@ -491,6 +494,16 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     var ribbonMatches = []; var activeRibbonIdx = 0; var storedRemaining = 0; var storedIsPrem = false;
 
+    // Match filter button handler (premium only)
+    window.handleMatchFilter = function() {
+        if (window.premium && window.premium.isPremium()) {
+            // Premium: show filter panel (placeholder)
+            alert('Filtre paneli yakında aktif olacak!');
+        } else {
+            window.premium.showPaywall('Eşleşme filtresi Premium özelliği.', 'match_filter');
+        }
+    };
+
     // Gamification
     if (window.gamification) {
         window.gamification.addXP('cosmic_match_view', 0);
@@ -776,21 +789,39 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         });
         if (!ribbonMatches.length) return;
+        var isFreeUser = !(window.premium && window.premium.isPremium());
         ribbonMatches.forEach(function(item, idx) {
+            var isLocked = isFreeUser && idx > 0; // Free: only 1st match accessible
             var frag = document.createElement('button');
             frag.className = 'scroll-fragment flex-shrink-0 flex flex-col items-center gap-1.5 focus:outline-none group' + (idx === 0 ? ' ribbon-active' : '');
             var p = item.profile;
             var showFace = storedIsPrem || item.revealed;
-            frag.innerHTML =
-                '<div class="frag-ring w-16 h-20 rounded-xl p-[2px] bg-gradient-to-tr from-vibrantRed/40 to-fuchsia/40 shadow-inner transition-all overflow-hidden border border-white/10">' +
-                    '<div class="frag-inner w-full h-full rounded-[10px] overflow-hidden flex items-center justify-center bg-black/5 dark:bg-white/5">' +
-                        (showFace
-                            ? '<img src="' + getPhoto(p.full_name, p.gender, p.avatar_url) + '" class="w-full h-full object-cover">'
-                            : '<span class="text-black/40 dark:text-white/40 text-lg font-bold">' + initial(p.full_name) + '</span>') +
+            if (isLocked) {
+                frag.innerHTML =
+                    '<div class="frag-ring w-16 h-20 rounded-xl p-[2px] bg-gradient-to-tr from-white/10 to-white/5 shadow-inner transition-all overflow-hidden border border-white/10 relative">' +
+                        '<div class="frag-inner w-full h-full rounded-[10px] overflow-hidden flex items-center justify-center bg-black/10 dark:bg-white/5" style="filter:blur(4px);-webkit-filter:blur(4px)">' +
+                            '<span class="text-black/40 dark:text-white/40 text-lg font-bold">' + initial(p.full_name) + '</span>' +
+                        '</div>' +
+                        '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2">' +
+                            '<span class="material-symbols-outlined" style="color:#FF2D55;font-size:20px;filter:none;-webkit-filter:none">lock</span>' +
+                        '</div>' +
                     '</div>' +
-                '</div>' +
-                '<span class="text-[10px] font-bold text-black/60 dark:text-white/60 uppercase tracking-tighter">' + (showFace ? (p.full_name||'?').split(' ')[0] : initial(p.full_name)) + '</span>';
-            frag.addEventListener('click', function() { selectRibbonItem(idx); });
+                    '<span class="text-[10px] font-bold text-black/30 dark:text-white/30 uppercase tracking-tighter">?</span>';
+                frag.addEventListener('click', function() {
+                    window.premium.showPaywall('Daha fazla eşleşme görmek için Premium\'a geç!', 'match_ribbon');
+                });
+            } else {
+                frag.innerHTML =
+                    '<div class="frag-ring w-16 h-20 rounded-xl p-[2px] bg-gradient-to-tr from-vibrantRed/40 to-fuchsia/40 shadow-inner transition-all overflow-hidden border border-white/10">' +
+                        '<div class="frag-inner w-full h-full rounded-[10px] overflow-hidden flex items-center justify-center bg-black/5 dark:bg-white/5">' +
+                            (showFace
+                                ? '<img src="' + getPhoto(p.full_name, p.gender, p.avatar_url) + '" class="w-full h-full object-cover">'
+                                : '<span class="text-black/40 dark:text-white/40 text-lg font-bold">' + initial(p.full_name) + '</span>') +
+                        '</div>' +
+                    '</div>' +
+                    '<span class="text-[10px] font-bold text-black/60 dark:text-white/60 uppercase tracking-tighter">' + (showFace ? (p.full_name||'?').split(' ')[0] : initial(p.full_name)) + '</span>';
+                frag.addEventListener('click', function() { selectRibbonItem(idx); });
+            }
             ribbonEl.appendChild(frag);
         });
     }

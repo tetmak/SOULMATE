@@ -82,6 +82,7 @@
             <span class="material-symbols-outlined">arrow_back_ios</span>
         </div>
         <h2 class="text-slate-900 dark:text-white text-xl font-extrabold tracking-tighter uppercase italic flex-1 text-center" style="font-family:Montserrat,sans-serif" data-i18n="connections.title">NuConnect</h2>
+        <span id="conn-premium-badge" style="display:none" class="material-symbols-outlined text-amber-400 text-lg ml-1" title="Premium">workspace_premium</span>
         <button onclick="openSearchModal()"
             class="flex size-10 cursor-pointer items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-white/10 transition-colors text-slate-500 dark:text-white/60">
             <span class="material-symbols-outlined">person_add</span>
@@ -200,6 +201,12 @@
 document.addEventListener('DOMContentLoaded', async function() {
     // Auth hazır olana kadar bekle (Supabase'den veri çekilsin)
     if (window.auth && window.auth.whenReady) await window.auth.whenReady();
+
+    // Premium badge in header
+    if (window.premium && window.premium.isPremium()) {
+        var premBadge = document.getElementById('conn-premium-badge');
+        if (premBadge) premBadge.style.display = 'inline';
+    }
 
     // ─── Pisagor ──────────────────────────────────────────────
     var TABLE = {A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8,'Ş':1,'Ç':3,'Ü':3,'Ö':6,'Ğ':7,'İ':9};

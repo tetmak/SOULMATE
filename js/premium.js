@@ -21,13 +21,18 @@
         friendship_dynamics: false,
         manifest_per_month: 0,           // free kullanıcılar manifest oluşturamaz
         manifest_per_day: 1,             // günde 1 niyet (herkes)
-        breakdown_pages: 1
+        breakdown_pages: 1,
+        daily_ai_analysis: 3,            // günde 3 AI analiz (free)
+        daily_matches: 1,               // günde 1 eşleşme (free), premium=5
+        photos: 1,                       // 1 fotoğraf (free), premium=4
+        daily_chatbot: 3,               // günde 3 chatbot mesajı (free)
+        match_filter: false              // eşleşme filtresi (premium only)
     };
 
     var PREMIUM_PRICE = { monthly: 79.99, yearly: 599.99, currency: 'TRY' };
 
     // ─── PREMIUM DURUMU ──────────────────────────────────────
-    var EVERYONE_IS_PREMIUM = true;
+    var EVERYONE_IS_PREMIUM = false;
 
     function isPremium() {
         if (EVERYONE_IS_PREMIUM) return true;
@@ -221,8 +226,37 @@
             case 'cosmic_match_reveal': return { allowed: false, reason: 'Eşleşme açma Premium özelliği.' };
             case 'friendship_dynamics': return { allowed: false, reason: 'Arkadaşlık Dinamiği analizi Premium özelliği.' };
             case 'breakdown_page_2': case 'breakdown_page_3': return { allowed: false, reason: 'Bu analiz sayfası Premium özelliği.' };
+            case 'daily_ai_analysis':
+                var aiUsed = getDailyUsageCount('ai_analysis');
+                if (aiUsed >= FREE_LIMITS.daily_ai_analysis) {
+                    return { allowed: false, reason: 'Bugün ' + FREE_LIMITS.daily_ai_analysis + ' AI analiz hakkını kullandın. Premium ile sınırsız!' };
+                }
+                return { allowed: true, dailyLeft: FREE_LIMITS.daily_ai_analysis - aiUsed };
+            case 'photos':
+                return { allowed: false, reason: '4 fotoğraf yükleme Premium özelliği.' };
+            case 'daily_chatbot':
+                var chatUsed = getDailyUsageCount('decision_sphere');
+                if (chatUsed >= FREE_LIMITS.daily_chatbot) {
+                    return { allowed: false, reason: 'Bugün ' + FREE_LIMITS.daily_chatbot + ' chatbot mesaj hakkını kullandın. Premium ile sınırsız!' };
+                }
+                return { allowed: true, dailyLeft: FREE_LIMITS.daily_chatbot - chatUsed };
+            case 'match_filter':
+                return { allowed: false, reason: 'Eşleşme filtresi Premium özelliği.' };
             default: return { allowed: true };
         }
+    }
+
+    // ─── BLUR WALL HELPER ────────────────────────────────────
+    function renderBlurWall(el, text, isPrem) {
+        if (isPrem) { el.textContent = text; return; }
+        var preview = text.substring(0, 150);
+        el.innerHTML = '<span>' + preview + '...</span>' +
+            '<div style="filter:blur(5px);-webkit-filter:blur(5px);pointer-events:none;user-select:none">' + text.substring(150) + '</div>' +
+            '<div style="text-align:center;margin-top:12px">' +
+            '<span class="material-symbols-outlined" style="color:#FF2D55;font-size:24px">lock</span>' +
+            '<p style="font-size:12px;color:rgba(255,255,255,0.5);margin:8px 0">Premium ile devamını gör</p>' +
+            '<button onclick="window.premium.showPaywall(\'AI analiz Premium özelliği\')" style="background:#FF2D55;color:white;border:none;padding:8px 20px;border-radius:12px;font-weight:700;font-size:13px;cursor:pointer">Premium\'a Geç</button>' +
+            '</div>';
     }
 
     // ─── PLATFORM ALGILAMA ──────────────────────────────────
@@ -522,6 +556,7 @@
     window.premium = {
         isPremium: isPremium, isPremiumAsync: isPremiumAsync, checkStatus: checkPremiumStatus,
         canUse: canUseFeature, gate: gate,
+        renderBlurWall: renderBlurWall,
         showPaywall: showPaywall, showBadge: showPremiumBadge,
         startPurchase: startPurchase,
         restorePurchases: restorePurchases,

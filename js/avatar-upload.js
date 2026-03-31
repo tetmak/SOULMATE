@@ -166,11 +166,18 @@
     }
 
     // ─── Multi-photo: belirtilen index'e fotoğraf yükle ────
-    var MAX_PHOTOS = 4;
+    function getMaxPhotos() {
+        return (window.premium && window.premium.isPremium()) ? 4 : 1;
+    }
 
     function uploadPhoto(userId, dataUrl, index) {
         if (!window.supabaseClient) return Promise.reject(new Error('Supabase yok'));
-        if (index < 0 || index >= MAX_PHOTOS) return Promise.reject(new Error('Geçersiz index'));
+        var maxPhotos = getMaxPhotos();
+        if (index < 0 || index >= 4) return Promise.reject(new Error('Geçersiz index'));
+        if (index >= maxPhotos) {
+            if (window.premium) window.premium.showPaywall('4 fotoğraf Premium özelliği', 'photos');
+            return Promise.reject(new Error('Premium gerekli: fotoğraf limiti'));
+        }
 
         return new Promise(function(resolve, reject) {
             resizeImage(dataUrl, function(resized) {
@@ -299,7 +306,8 @@
         uploadPhoto: uploadPhoto,
         deletePhoto: deletePhoto,
         getPhotos: getPhotos,
-        MAX_PHOTOS: MAX_PHOTOS
+        getMaxPhotos: getMaxPhotos,
+        MAX_PHOTOS: 4 // max possible (premium), use getMaxPhotos() for effective limit
     };
 
 })();
