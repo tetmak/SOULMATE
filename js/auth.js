@@ -93,7 +93,7 @@ var auth = {
         var redirectUrl = window.location.origin + '/mystic_sign_up_screen.html';
         var res = await window.supabaseClient.auth.signInWithOAuth({
             provider: 'apple',
-            options: { redirectTo: redirectUrl }
+            options: { redirectTo: redirectUrl, scopes: 'name email' }
         });
         if (res.error) throw res.error;
         return res.data;
