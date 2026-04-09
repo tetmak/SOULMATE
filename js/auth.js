@@ -106,7 +106,7 @@ var auth = {
         return res.data;
     },
 
-    async verifyPhoneOtp(phone, token) {
+    async verifyOTP(phone, token) {
         if (!window.supabaseClient) throw new Error('Supabase not available');
         var res = await window.supabaseClient.auth.verifyOtp({ phone: phone, token: token, type: 'sms' });
         if (res.error) throw res.error;
@@ -137,6 +137,7 @@ var auth = {
         var currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
         var authPages = [
+            'mystic_splash_screen.html',
             'cosmic_onboarding_welcome.html',
             'mystic_sign_up_screen.html',
             'branded_celestial_splash_screen.html',
