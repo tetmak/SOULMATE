@@ -299,13 +299,17 @@
                         <!-- Transparency Box -->
                         <div id="karmic-transparency" style="background:rgba(239,68,77,0.1);border:1px solid rgba(239,68,77,0.3);border-radius:8px;padding:12px;margin-bottom:12px"></div>
                         <div id="karmic-ai-text" style="color:rgba(186,181,156,0.9);font-size:14px;line-height:1.75;"></div>
-                        <!-- Numeroloji Ustası Butonu -->
-                        <div id="karmic-master-btn-wrap" style="margin-top:16px;display:none;">
-                            <button id="btn-goto-master"
-                                style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#7f1313,#c0392b);color:white;border:none;border-radius:12px;padding:14px;font-size:13px;font-weight:800;letter-spacing:0.05em;cursor:pointer;text-transform:uppercase;">
-                                <span class="material-symbols-outlined" style="font-size:18px;">psychology</span>
-                                <span data-i18n="breakdown1.ask_master_btn">Numeroloji Ustasına Sor</span>
-                            </button>
+                        <!-- Inline Chat Alanı -->
+                        <div id="karmic-chat-wrap" style="margin-top:16px;display:none;">
+                            <div id="karmic-chat-messages" style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;"></div>
+                            <div style="display:flex;gap:8px;">
+                                <input id="karmic-chat-input" type="text" placeholder="Karmik borcun hakkında sor..." data-i18n-placeholder="breakdown1.karmic_chat_placeholder"
+                                    style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:11px 14px;color:white;font-size:13px;outline:none;font-family:'Space Grotesk',sans-serif;" />
+                                <button id="karmic-chat-send"
+                                    style="background:linear-gradient(135deg,#7f1313,#c0392b);border:none;border-radius:12px;padding:11px 14px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+                                    <span class="material-symbols-outlined" style="color:white;font-size:18px;">send</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -374,37 +378,7 @@
 
 
 
-    <!-- ═══ NUMEROLOJİ USTASI CHAT MODAL ═══ -->
-    <div id="master-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);flex-direction:column;">
-        <div style="display:flex;flex-direction:column;height:100%;max-width:480px;margin:0 auto;position:relative;">
-            <!-- Modal Header -->
-            <div style="background:linear-gradient(135deg,#1a0808,#2d1010);border-bottom:1px solid rgba(192,57,43,0.3);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#7f1313,#c0392b);display:flex;align-items:center;justify-content:center;border:2px solid rgba(192,57,43,0.5);">
-                        <span class="material-symbols-outlined" style="color:white;font-size:20px;">psychology</span>
-                    </div>
-                    <div>
-                        <p style="color:white;font-weight:800;font-size:14px;letter-spacing:0.05em;" data-i18n="breakdown1.master_modal_title">NUMEROLOJİ USTASI</p>
-                        <p style="color:rgba(255,255,255,0.4);font-size:11px;" data-i18n="breakdown1.master_modal_subtitle">Karmik sorularınızı yanıtlıyor</p>
-                    </div>
-                </div>
-                <button onclick="closeMasterModal()" style="background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:white;">
-                    <span class="material-symbols-outlined" style="font-size:20px;">close</span>
-                </button>
-            </div>
-            <!-- Mesajlar -->
-            <div id="master-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;"></div>
-            <!-- Input -->
-            <div style="padding:12px 16px;background:#1a1711;border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;display:flex;gap:8px;">
-                <input id="master-input" type="text" placeholder="Karmik borcunuz hakkında sorun..." data-i18n-placeholder="breakdown1.master_input_placeholder"
-                    style="flex:1;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px 16px;color:white;font-size:14px;outline:none;font-family:'Space Grotesk',sans-serif;" />
-                <button id="master-send"
-                    style="background:linear-gradient(135deg,#7f1313,#c0392b);border:none;border-radius:12px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-                    <span class="material-symbols-outlined" style="color:white;font-size:20px;">send</span>
-                </button>
-            </div>
-        </div>
-    </div>
+    <!-- Modal kaldırıldı — chat karmik kartın içinde -->
 
     <script src="js/numerology-engine.js"></script>
     <script src="js/numerology-context-engine.js"></script>
@@ -869,19 +843,71 @@
             }
             return { digitStr: digitStr, sum1: sum1, final: reduced1, steps: steps };
         }
+        // İndirgeme sırasında karmik sayıları (13,14,16,19) tespit et
+        function findKarmicInReduction(n) {
+            var found = [];
+            while (n > 9 && n !== 11 && n !== 22 && n !== 33) {
+                if (KARMIC_DEBTS.includes(n)) found.push(n);
+                n = String(n).split('').reduce(function(a,d){return a+parseInt(d);},0);
+            }
+            if (KARMIC_DEBTS.includes(n)) found.push(n);
+            return found;
+        }
+
+        // Pythagorean harf-sayı tablosu
+        var PYTH_MAP = {
+            A:1, B:2, C:3, D:4, E:5, F:6, G:7, H:8, I:9,
+            J:1, K:2, L:3, M:4, N:5, O:6, P:7, Q:8, R:9,
+            S:1, T:2, U:3, V:4, W:5, X:6, Y:7, Z:8,
+            'Ş':1, 'Ç':3, 'Ü':3, 'Ö':6, 'Ğ':7, 'İ':9
+        };
+        var PYTH_VOWELS = 'AEIOUİIÖÜ';
+
         function detectKarmicDebt(birthDate, name) {
-            var debts = [];
-            // Doğum tarihinden ham sayılar
-            var rawLP = getRawLP(birthDate);
-            KARMIC_DEBTS.forEach(function(k) { if (rawLP === k) debts.push(k); });
-            // Doğum tarihinin parçaları (gün, ay karmik olabilir)
+            var result = { debts: [], theme: null, sources: {} };
+
+            function addDebt(k, source) {
+                if (!result.debts.includes(k)) result.debts.push(k);
+                if (!result.sources[k]) result.sources[k] = [];
+                if (result.sources[k].indexOf(source) === -1) result.sources[k].push(source);
+            }
+
+            // 1. Life Path — 3-bileşen ara toplamı
             if (birthDate) {
                 var parts = birthDate.split('-');
-                var day = parseInt(parts[2]);
+                var year = parseInt(parts[0]);
                 var month = parseInt(parts[1]);
-                [day, month].forEach(function(v) { if (KARMIC_DEBTS.includes(v) && !debts.includes(v)) debts.push(v); });
+                var day = parseInt(parts[2]);
+                var mR = reduceNum(month);
+                var dR = reduceNum(day);
+                var yDigitSum = String(year).split('').reduce(function(a,d){return a+parseInt(d);},0);
+                var yR = reduceNum(yDigitSum);
+                var lpIntermediate = mR + dR + yR;
+                findKarmicInReduction(lpIntermediate).forEach(function(k) { addDebt(k, 'Life Path'); });
+                // Karmik TEMA — doğum günü 13,14,16,19 ise borç değil ama tematik etki
+                if (KARMIC_DEBTS.includes(day)) result.theme = day;
             }
-            return debts;
+
+            // 2. İsim sayıları — Expression, Soul Urge, Personality
+            if (name) {
+                var clean = name.toUpperCase().replace(/[^A-ZÇĞİIÖŞÜ]/g, '');
+                var exprSum = 0, soulSum = 0, persSum = 0;
+                for (var i = 0; i < clean.length; i++) {
+                    var ch = clean[i];
+                    var val = PYTH_MAP[ch] || 0;
+                    exprSum += val;
+                    if (PYTH_VOWELS.indexOf(ch) >= 0) { soulSum += val; }
+                    else { persSum += val; }
+                }
+                findKarmicInReduction(exprSum).forEach(function(k) { addDebt(k, 'Expression'); });
+                findKarmicInReduction(soulSum).forEach(function(k) { addDebt(k, 'Soul Urge'); });
+                findKarmicInReduction(persSum).forEach(function(k) { addDebt(k, 'Personality'); });
+            }
+
+            // Tema borçla çakışıyorsa temayı kaldır
+            if (result.theme && result.debts.includes(result.theme)) result.theme = null;
+
+            return result;
         }
 
         // ─── Kullanıcı verisi — birden fazla kaynaktan çek ──────────
@@ -1029,18 +1055,21 @@
             var lp = calcLP(birthDate);
             var rawLP = getRawLP(birthDate);
             var calcSteps = buildCalcSteps(birthDate);
-            var debts = detectKarmicDebt(birthDate, name);
-            var primaryDebt = debts.length > 0 ? debts[0] : null;
+            var karmicResult = detectKarmicDebt(birthDate, name);
+            var allDebts = karmicResult.debts; // tüm karmik borçlar (LP, Expression, Soul Urge, Personality)
+            var primaryDebt = allDebts.length > 0 ? allDebts[0] : null;
+            var karmicTheme = karmicResult.theme; // doğum gününden gelen karmik tema (borç değil)
+            var debtSources = karmicResult.sources; // {13: ['Personality'], 16: ['Expression']}
             // Gün ve ay numaraları
             var birthParts = (birthDate||'').split('-');
             var birthDay = parseInt(birthParts[2]||0);
             var birthMonth = parseInt(birthParts[1]||0);
             var birthYear = parseInt(birthParts[0]||0);
-            // Karmic detection source
-            var debtSource = [];
-            if (KARMIC_DEBTS.includes(birthDay)) debtSource.push(_t('karmic.source_day', 'day number') + ' ' + birthDay);
-            if (KARMIC_DEBTS.includes(birthMonth)) debtSource.push(_t('karmic.source_month', 'month number') + ' ' + birthMonth);
-            if (KARMIC_DEBTS.includes(rawLP)) debtSource.push(_t('karmic.source_total', 'birth date total') + ' ' + rawLP);
+            // Kaynak bilgisi — AI prompt ve UI için
+            var KARMIC_LABELS = {13: '13/4', 14: '14/5', 16: '16/7', 19: '19/1'};
+            var debtSummary = allDebts.map(function(k) {
+                return (KARMIC_LABELS[k]||k) + ' (' + (debtSources[k]||[]).join(', ') + ')';
+            }).join(' + ');
 
             // Kart üzerinde başlangıçta yıldız göster, AI analiz edince detay çıkar
             var numEl = document.getElementById('karmic-number');
@@ -1048,15 +1077,15 @@
             if (numEl) { numEl.textContent = '✦'; numEl.style.fontSize = '22px'; }
             if (badgeEl) badgeEl.textContent = _t('karmic.analyze_btn', 'ANALYZE');
 
-            // Cache key
-            var cacheKey = 'numerael_karmic_v13__' + _langCode + '__' + name.toLowerCase().replace(/\s+/g,'_') + '__' + (birthDate||'').replace(/-/g,'') + '__' + (primaryDebt||0);
+            // Cache key — v15: çoklu borç desteği
+            var cacheKey = 'numerael_karmic_v15__' + _langCode + '__' + name.toLowerCase().replace(/\s+/g,'_') + '__' + (birthDate||'').replace(/-/g,'') + '__' + allDebts.join('-') + '__t' + (karmicTheme||0);
 
             // Accordion tıklama
             var btn = document.getElementById('karmic-bond-btn');
             var content = document.getElementById('karmic-content');
             var icon = document.getElementById('karmic-expand-icon');
             var aiText = document.getElementById('karmic-ai-text');
-            var masterWrap = document.getElementById('karmic-master-btn-wrap');
+            var masterWrap = document.getElementById('karmic-chat-wrap');
             var loaded = false;
 
             if (btn) {
@@ -1085,7 +1114,11 @@
                             return;
                         }
                         var birthDisplay = birthDate.split('-').reverse().join('/'); // YYYY-MM-DD → DD/MM/YYYY
-                        var prompt = 'The most dominant and exhausting karma for ' + birthDisplay;
+                        var debtInfo = allDebts.length > 0
+                            ? 'Karmic DEBTS detected: ' + debtSummary + '.'
+                            : 'No karmic debt from any source.';
+                        var themeInfo = karmicTheme ? ' Karmic THEME from birth day ' + karmicTheme + ' (NOT a debt, thematic lesson).' : '';
+                        var prompt = debtInfo + themeInfo + ' Name: ' + name + '. Analyze the karma for ' + birthDisplay;
                         // Timeout ile fetch
                         var controller = new AbortController();
                         var timeoutId = setTimeout(function() {
@@ -1102,13 +1135,13 @@
                             body: JSON.stringify({
                                 model: 'gpt-4o-mini',
                                 messages: [
-                                    { role: 'system', content: 'You are a Pythagorean numerology karmic debt expert. ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ' Be clear and practical. Karmic debt numbers are ONLY 13,14,16,19. NEVER reduce the day number.\n\nMANDATORY FORMAT — use these 5 headings with bold markers (**) in this exact order in every response:\n\n**Karmic Debt Detection**\n[Detected debt number and 1-2 sentence explanation]\n\n**Why This Karma?**\n[Numerological reason — why this number, what it signals]\n\n**Practical Effects**\n* [at least 4, at most 6 bullet points]\n\n**Lesson of This Karma**\n* [at least 3, at most 4 bullet points]\n\n**Hard Truth**\n[Single sentence, blunt and realistic]\n\nHeadings must be THE SAME for every user. Only the content changes per person. CRITICAL LANGUAGE RULE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') },
-                                    { role: 'user', content: 'The most dominant and exhausting karma for 19/10/1997' },
-                                    { role: 'assistant', content: '**Karmic Debt Detection**\n19/1 karmic debt detected. The number 19 in the birth date is a classic karmic debt number pointing to misuse of power and authority.\n\n**Why This Karma?**\nIn numerology, 19 is the karmic debt number associated with misuse of power, authority and individuality. Patterns of selfish leadership and disregarding others in past lives led to this debt.\n\n**Practical Effects**\n* Being forced to progress alone\n* Ego-humility conflict\n* Friction with authority\n* Taking on responsibility early\n* Delayed success\n\n**Lesson of This Karma**\n* Using power by sharing it with others\n* Not seeing asking for help as weakness\n* Leading by example\n\n**Hard Truth**\nThis karma is not bad luck; it is a mechanism forcing correction of misused power.' },
+                                    { role: 'system', content: 'You are a Pythagorean numerology karmic debt expert. ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') + ' Be clear and practical. Karmic debt numbers are ONLY 13,14,16,19.\n\nKARMIC DEBT DETECTION — MULTIPLE SOURCES:\nKarmic debt can come from FOUR sources. Check each independently:\n\n1. LIFE PATH: Reduce month, day, year separately → sum the 3 reduced values. If sum is 13/14/16/19 → karmic debt.\n   Example: 28/07/1988 → 7+1+8=16 → 16/7 debt from Life Path.\n\n2. EXPRESSION (all letters summed): If intermediate reduction passes through 13/14/16/19 → karmic debt.\n   Example: Name sum=88 → 16 → 7. Passes through 16 → 16/7 debt from Expression.\n\n3. SOUL URGE (vowels summed): Same reduction check.\n\n4. PERSONALITY (consonants summed): Same reduction check.\n   Example: Consonant sum=49 → 13 → 4. Passes through 13 → 13/4 debt from Personality.\n\nA person can have MULTIPLE karmic debts from different sources. List ALL of them.\n\nKarmic THEME: If birth day is 13/14/16/19 but NO debt was found from any source, mention it as a thematic lesson, NOT a debt.\n\nNEVER say someone has karmic debt when they only have a karmic theme from their birth day. NEVER ignore name-based debts.\n\nCRITICAL:\nFollow this numerology system EXACTLY as defined.\nDo not use any alternative numerology logic.\nDo not infer karmic debt outside the defined 4-source detection system.\nDo not treat birthday 19 as karmic debt unless detected by the system.\nIf real karmic debts exist, do not mention karmic theme.\n\nMANDATORY FORMAT — use these 5 headings with bold markers (**) in this exact order in every response:\n\n**Karmic Debt Detection**\n[Detected debt number and 1-2 sentence explanation, OR state no karmic debt found]\n\n**Why This Karma?**\n[Numerological reason — why this number, what it signals]\n\n**Practical Effects**\n* [at least 4, at most 6 bullet points]\n\n**Lesson of This Karma**\n* [at least 3, at most 4 bullet points]\n\n**Hard Truth**\n[Single sentence, blunt and realistic]\n\nHeadings must be THE SAME for every user. Only the content changes per person. CRITICAL LANGUAGE RULE: ' + (window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.') },
+                                    { role: 'user', content: 'The most dominant and exhausting karma for 28/07/1988' },
+                                    { role: 'assistant', content: '**Karmic Debt Detection**\n16/7 karmic debt detected. Month 7 + Day 1 (28→2+8=10→1) + Year 8 (1988→26→8) = 16. The sum 16 is a classic karmic debt number pointing to ego destruction and spiritual awakening.\n\n**Why This Karma?**\nIn numerology, 16 is the karmic debt number associated with ego-driven destruction. Past life patterns of vanity, pride and ignoring spiritual truths created this debt. The tower must fall so truth can emerge.\n\n**Practical Effects**\n* Sudden collapses in career or relationships\n* Ego-humility conflict\n* Being forced into solitude for reflection\n* Plans failing at the peak of success\n* Deep spiritual questioning after loss\n\n**Lesson of This Karma**\n* Embracing humility over pride\n* Seeking inner truth rather than external validation\n* Rebuilding stronger after each collapse\n\n**Hard Truth**\nThis karma will keep destroying what ego builds until you learn to build from authentic self.' },
                                     { role: 'user', content: prompt }
                                 ],
                                 temperature: 0.75,
-                                max_tokens: 400
+                                max_tokens: 600
                             })
                         }).then(function(r) {
                             clearTimeout(timeoutId);
@@ -1142,11 +1175,8 @@
 
             // Ustaya sor butonu
             var masterBtn = document.getElementById('btn-goto-master');
-            if (masterBtn) {
-                masterBtn.addEventListener('click', function() {
-                    openMasterModal(name, birthDate, lp, primaryDebt);
-                });
-            }
+            // Inline chat'i başlat (analiz yüklendikten sonra)
+            initInlineChat(name, birthDate, lp, allDebts, debtSources, karmicTheme);
         }
 
         function renderKarmicText(el, text) {
@@ -1183,161 +1213,162 @@
             el.innerHTML = html || '<p style="color:' + _tc('rgba(186,181,156,0.6)','#94a3b8') + ';">' + _t('karmic.analysis_failed', 'Analysis could not be prepared.') + '</p>';
         }
 
-        // ─── NUMEROLOJİ USTASI CHAT ──────────────────────────────
+        // ─── INLINE KARMIC CHAT (kart içi) ──────────────────────────
         var chatHistory = [];
-        var chatContext = {};
 
-        window.openMasterModal = function(name, birthDate, lp, primaryDebt) {
+        function initInlineChat(name, birthDate, lp, allDebts, debtSources, karmicTheme) {
             var DEBT_THEMES = {13: _t('karmic.theme_13', 'Laziness & Discipline'), 14: _t('karmic.theme_14', 'Misuse of Freedom'), 16: _t('karmic.theme_16', 'Ego & Pride'), 19: _t('karmic.theme_19', 'Power & Independence')};
-            chatContext = { name: name, birthDate: birthDate, lp: lp, primaryDebt: primaryDebt, debtTheme: primaryDebt ? (DEBT_THEMES[primaryDebt]||'') : '' };
-            chatHistory = [];
-            var modal = document.getElementById('master-modal');
-            modal.style.display = 'flex';
-            // Hide bottom nav so chat input is not blocked
-            var nav = document.getElementById('numerael-bottom-nav');
-            if (nav) nav.style.display = 'none';
-            var msgEl = document.getElementById('master-messages');
-            msgEl.innerHTML = '';
-
-            // Opening message
-            var KARMIC_INFO_local = {
-                13: '13/4', 14: '14/5', 16: '16/7', 19: '19/1'
-            };
-            var karmicLabel = primaryDebt ? (KARMIC_INFO_local[primaryDebt] || primaryDebt) : _t('karmic.none', 'none');
-            var openingMsg = (primaryDebt
-                ? _t('karmic.chat_opening_debt', '{label} karmic debt detected. Which topic shall we explore?\n\n• money/work\n• relationships\n• health\n\nOr describe your current situation (sector, business model, relationship issue) — I\'ll analyze specifically for that area.').replace('{label}', karmicLabel)
-                : _t('karmic.chat_opening_none', 'No classic karmic debt number detected in your birth date. We can discuss your Life Path {lp} lessons. What would you like to ask?').replace('{lp}', lp));
-
-            addMessage('assistant', openingMsg);
+            var KARMIC_INFO_local = { 13: '13/4', 14: '14/5', 16: '16/7', 19: '19/1' };
             var _aiLangChat = window.i18n ? window.i18n.getAILang() : 'Türkçe yaz.';
-            chatHistory.push({ role: 'system', content: `You are a Pythagorean numerology karmic debt expert. ${_aiLangChat} Be clear and practical.
+            var debtListStr = allDebts.length > 0
+                ? allDebts.map(function(k) { return (KARMIC_INFO_local[k]||k) + ' (from ' + (debtSources[k]||[]).join(', ') + ')'; }).join(', ')
+                : 'none';
+            var karmicThemeInfo = karmicTheme ? ('\n- Karmic theme (from birth day): ' + (DEBT_THEMES[karmicTheme]||karmicTheme) + ' — thematic lesson, NOT a classic debt') : '';
 
-Person being analyzed:
+            chatHistory = [{ role: 'system', content: `You are the SOULNUM karmic analysis engine. ${_aiLangChat} Be direct, confident, insightful.
+
+Person:
 - Name: ${name}
 - Birth date: ${birthDate}
 - Life Path: ${lp}
-- Karmic debt: ${primaryDebt ? karmicLabel : 'none'}
+- Karmic debts: ${debtListStr}${karmicThemeInfo}
 
-RULES:
-- No mystical language, no astrology, no motivational fluff.
-- If user writes about "money/work", "relationships", "health" or mentions a profession/sector, analyze under that topic.
-- If user specifies a sector (automation, software, food etc.), explain the karmic impact specific to that sector.
-- At the end of each response, suggest another topic.
+TONE:
+- Direct, confident, slightly confronting when needed
+- Write like someone explaining a life pattern, NOT a generic chatbot
+- No mystical language, no astrology, no motivational fluff
 
-IF MONEY/WORK TOPIC IS REQUESTED, write in this format:
-[DATE] – Money & Work karma ([DEBT]) clear analysis
+DEPTH:
+- Every response must include explanation + real-life interpretation + cause-effect logic
+- Minimum 2-4 paragraphs or structured sections
+- Never give shallow, one-line answers
 
-Core problem
-* [bullet]
-* [bullet]
+FLOW — 7-STEP ANALYSIS (guide user through these):
+1. Karmic structure (main debt analysis)
+2. Character pattern (how debt shapes personality)
+3. Career / work style
+4. Money behavior
+5. Relationship patterns
+6. Risks & self-sabotage
+7. Action guidance
 
-Typical cycle in work life
-[numbered list]
+After each answer, naturally transition to the next topic. Use transitions like:
+- "Bu yapı en çok ... etkiler"
+- "Asıl kırılma noktası ..."
+- "Şimdi bunu ... üzerinden açalım"
+NEVER ask "Devam edelim mi?" — just lead forward.
 
-Areas vulnerable to money loss
-* [bullet]
+TOPIC FORMATS:
+If money/work → Core problem, Work cycle, Money loss areas, Right earning path, Suitable business models, Golden rule
+If relationships → Attraction pattern, Conflict source, Ideal partner profile, Warning signs, Growth path
+If health → Stress pattern, Vulnerable areas, Energy management, Daily practice
 
-The right way to earn money
-* [bullet]
+ADAPTIVE INTELLIGENCE:
+Before responding, detect user type from their language, intent and tone:
+1. DIRECT/LOGICAL (short questions, result-focused) → sharp, structured, minimal fluff
+2. EXPLORER (curious, open-ended) → deeper explanation, layered insights, pattern connections
+3. EMOTIONAL (love, feelings, people) → human, relational interpretation
+4. BUSINESS (work, success, money) → practical, strategic, no fluff
 
-Suitable business models
-* [bullet]
+Adapt tone and depth to detected type. Track what user cares about most and bias future responses toward that.
 
-Timing reality
-* [bullet]
+ADAPTIVE FLOW: Override default 7-step order based on user intent. If user focuses on money → jump to money. If relationships → prioritize that.
 
-Golden rule
-[single sentence]
+REPETITION CONTROL: Never repeat same explanation. If similar topic returns → go deeper, add new angle.
 
-IF RELATIONSHIPS TOPIC IS REQUESTED, do a similar structured relationship-focused analysis.
-IF HEALTH TOPIC IS REQUESTED, do a health and psychology-focused analysis.
+DEPTH ADJUSTMENT: If user keeps engaging → increase depth. If short answers → compress but keep insight.
 
-CRITICAL LANGUAGE RULE: ${_aiLangChat}` });
-            chatHistory.push({ role: 'assistant', content: openingMsg });
+PSYCHOLOGICAL HOOK: Each response must create curiosity for next step. Reveal partially, then pull deeper. Do NOT dump everything at once.
+Example: "Bu kalıp aslında iş kararlarında çok daha tehlikeli..."
 
-            document.getElementById('master-input').focus();
-        };
+SMART TRANSITIONS adapt to user type:
+Business user → "Bu karar modelin para tarafında ciddi risk yaratır"
+Emotional user → "Bu yüzden ilişkilerde aynı döngüyü yaşıyorsun"
 
-        window.closeMasterModal = function() {
-            document.getElementById('master-modal').style.display = 'none';
-            // Bottom nav'ı geri getir
-            var nav = document.getElementById('numerael-bottom-nav');
-            if (nav) nav.style.display = 'flex';
-        };
+You are not answering questions. You are pulling the user into a progressively deeper self-analysis journey that adapts to them.
 
-        function addMessage(role, text) {
-            var msgEl = document.getElementById('master-messages');
+GAMIFICATION LEVELS (reference naturally, do NOT sound like a game UI):
+Level 1: Basic Insight → Level 2: Hidden Patterns → Level 3: Karma Deep → Level 4: Relationship Mapping → Level 5: Money Analysis → Level 6: Life Strategy
+Reference levels naturally in text: "Bu aslında 3. seviyede ortaya çıkan bir pattern" or "Bu seviyeye çoğu kişi gelmez"
+
+PARTIAL REVEAL: Do NOT reveal everything at once. Show 60-70% of the insight, tease the deeper layer.
+Examples: "Burada daha kritik bir pattern var ama yüzey analizde çıkmaz" or "Asıl tehlikeli olan bu değil — bir sonraki katmanda göreceğiz"
+
+CRITICAL: ${_aiLangChat}` }];
+
+            // Chat input listeners
+            var sendBtn = document.getElementById('karmic-chat-send');
+            var input = document.getElementById('karmic-chat-input');
+            if (sendBtn) sendBtn.addEventListener('click', sendChatMessage);
+            if (input) input.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendChatMessage(); });
+        }
+
+        function addChatMessage(role, text) {
+            var msgEl = document.getElementById('karmic-chat-messages');
             var isUser = role === 'user';
             var div = document.createElement('div');
             div.style.cssText = 'display:flex;' + (isUser ? 'justify-content:flex-end;' : 'justify-content:flex-start;');
             var bubble = document.createElement('div');
-            bubble.style.cssText = 'max-width:80%;padding:12px 16px;border-radius:' + (isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px') + ';font-size:14px;line-height:1.65;' +
-                (isUser ? 'background:linear-gradient(135deg,#7f1313,#c0392b);color:white;' : 'background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.88);border:1px solid rgba(255,255,255,0.1);');
-            bubble.textContent = text;
+            bubble.style.cssText = 'max-width:90%;padding:12px 16px;border-radius:' + (isUser ? '14px 14px 4px 14px' : '14px 14px 14px 4px') + ';font-size:13px;line-height:1.7;' +
+                (isUser
+                    ? 'background:linear-gradient(135deg,#7f1313,#c0392b);color:white;'
+                    : 'background:' + _tc('rgba(255,255,255,0.05)','rgba(0,0,0,0.04)') + ';color:' + _tc('rgba(186,181,156,0.9)','#475569') + ';border:1px solid ' + _tc('rgba(255,255,255,0.08)','rgba(0,0,0,0.08)') + ';');
+            // Markdown-lite rendering for assistant
+            if (!isUser) {
+                bubble.innerHTML = text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#f2cc0d;">$1</strong>')
+                    .replace(/\n\n/g, '</p><p style="margin-top:8px;">')
+                    .replace(/\n\* /g, '<br>✦ ')
+                    .replace(/\n- /g, '<br>✦ ')
+                    .replace(/\n(\d+)\. /g, '<br>$1. ')
+                    .replace(/\n/g, '<br>');
+            } else {
+                bubble.textContent = text;
+            }
             div.appendChild(bubble);
             msgEl.appendChild(div);
-            msgEl.scrollTop = msgEl.scrollHeight;
+            // Scroll karmic card content into view
+            div.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
 
-        function addLoadingBubble() {
-            var msgEl = document.getElementById('master-messages');
+        function addChatLoading() {
+            var msgEl = document.getElementById('karmic-chat-messages');
             var div = document.createElement('div');
-            div.id = 'master-loading';
+            div.id = 'karmic-chat-loading';
             div.style.cssText = 'display:flex;justify-content:flex-start;';
-            div.innerHTML = '<div style="padding:12px 16px;border-radius:16px 16px 16px 4px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:13px;">✦ ' + _t('karmic.thinking', 'thinking...') + '</div>';
+            div.innerHTML = '<div style="padding:10px 14px;border-radius:14px;background:' + _tc('rgba(255,255,255,0.05)','rgba(0,0,0,0.04)') + ';border:1px solid ' + _tc('rgba(255,255,255,0.08)','rgba(0,0,0,0.08)') + ';color:' + _tc('rgba(186,181,156,0.5)','#94a3b8') + ';font-size:12px;"><span class="material-symbols-outlined" style="animation:spin 1s linear infinite;font-size:14px;vertical-align:middle;margin-right:6px;">cycle</span>' + _t('karmic.thinking', 'düşünüyor...') + '</div>';
             msgEl.appendChild(div);
-            msgEl.scrollTop = msgEl.scrollHeight;
+            div.scrollIntoView({ behavior: 'smooth', block: 'end' });
         }
 
-        async function sendMasterMessage() {
-            var input = document.getElementById('master-input');
+        async function sendChatMessage() {
+            var input = document.getElementById('karmic-chat-input');
             var text = (input.value || '').trim();
             if (!text) return;
             input.value = '';
-            addMessage('user', text);
+            addChatMessage('user', text);
             chatHistory.push({ role: 'user', content: text });
-            addLoadingBubble();
-
-            // API key /api/openai proxy'si tarafından server-side ekleniyor
-            // Few-shot: ChatGPT'nin para/iş cevabını örnek olarak ekle
-            var messagesWithExamples = chatHistory.slice(); // kopyala
-            // Sadece para/iş sorusu için örnek enjekte et
-            var lastUserMsg = (messagesWithExamples[messagesWithExamples.length-1]||{}).content||'';
-            if (lastUserMsg.match(/para|iş|kariyer|meslek|sektör|çalış|kazanç|gelir|işim|şirket|money|work|career|job|sector|income|business|earn/i)) {
-                var exampleIdx = messagesWithExamples.findIndex(function(m){ return m.role==='system'; });
-                if (exampleIdx !== -1) {
-                    messagesWithExamples.splice(exampleIdx+1, 0,
-                        { role: 'user', content: '19/10/1997 money/work' },
-                        { role: 'assistant', content: '19/10/1997 Money & Work karma (19/1):\n* Money does not come easily.\n* Partnerships are exhausting.\n* Work-reward balance is established late.\n\nRight path:\n* Solo leader model\n* Jobs that produce tangible output\n* Project-based work\n\nGolden rule: Systematize your income.' }
-                    );
-                }
-            }
+            addChatLoading();
 
             try {
                 var _h = window.__getAiAuthHeaders ? await window.__getAiAuthHeaders() : { 'Content-Type': 'application/json' };
                 var r = await fetch((window.__NUMERAEL_API_BASE||'') + '/api/openai', {
                     method: 'POST',
                     headers: _h,
-                    body: JSON.stringify({ model: 'gpt-4o-mini', messages: messagesWithExamples, temperature: 0.75, max_tokens: 600 })
+                    body: JSON.stringify({ model: 'gpt-4o-mini', messages: chatHistory, temperature: 0.75, max_tokens: 800 })
                 });
                 var d = await r.json();
-                var reply = d.choices && d.choices[0] ? d.choices[0].message.content.trim() : _t('karmic.no_response', 'Could not get a response. Please try again.');
-                document.getElementById('master-loading').remove();
-                addMessage('assistant', reply);
+                var reply = d.choices && d.choices[0] ? d.choices[0].message.content.trim() : _t('karmic.no_response', 'Could not get a response.');
+                var loadEl = document.getElementById('karmic-chat-loading');
+                if (loadEl) loadEl.remove();
+                addChatMessage('assistant', reply);
                 chatHistory.push({ role: 'assistant', content: reply });
             } catch(e) {
-                document.getElementById('master-loading').remove();
-                addMessage('assistant', _t('karmic.connection_error', 'Connection error') + '.');
+                var loadEl2 = document.getElementById('karmic-chat-loading');
+                if (loadEl2) loadEl2.remove();
+                addChatMessage('assistant', '⚠ ' + _t('karmic.connection_error', 'Bağlantı hatası') + '.');
             }
         }
-
-        // Send butonu ve Enter tuşu
-        document.addEventListener('DOMContentLoaded', function() {
-            var sendBtn = document.getElementById('master-send');
-            var input = document.getElementById('master-input');
-            if (sendBtn) sendBtn.addEventListener('click', sendMasterMessage);
-            if (input) input.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendMasterMessage(); });
-        });
 
     })();
     </script>
@@ -1415,18 +1446,9 @@ CRITICAL LANGUAGE RULE: ${_aiLangChat}` });
             var soul = NumerologyEngine.calcSoulUrge(name, 'pythagorean');
             var pers = NumerologyEngine.calcPersonality(name, 'pythagorean');
 
-            // Karmik borç algıla
-            var KARMIC_DEBTS_CTX = [13,14,16,19];
-            var rawLP = birthDate.replace(/\D/g,'').split('').reduce(function(a,x){return a+parseInt(x);},0);
-            var karmicDebt = null;
-            KARMIC_DEBTS_CTX.forEach(function(k) { if (rawLP === k) karmicDebt = k; });
-            if (!karmicDebt && birthDate) {
-                var bp = birthDate.split('-');
-                var bDay = parseInt(bp[2]||0);
-                var bMonth = parseInt(bp[1]||0);
-                if (KARMIC_DEBTS_CTX.includes(bDay)) karmicDebt = bDay;
-                else if (KARMIC_DEBTS_CTX.includes(bMonth)) karmicDebt = bMonth;
-            }
+            // Karmik borç algıla — LP + isim sayıları (çoklu kaynak)
+            var ctxKarmicResult = detectKarmicDebt(birthDate, name);
+            var karmicDebt = ctxKarmicResult.debts.length > 0 ? ctxKarmicResult.debts[0] : null;
 
             // Context Build (Step 1)
             var weightedCtx = NumerologyContext.buildContext({

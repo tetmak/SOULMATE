@@ -2,7 +2,7 @@ var http = require('http');
 var fs = require('fs');
 var path = require('path');
 
-var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 var ROOT = path.resolve(__dirname, '..');
 
 var MIME = {
