@@ -301,6 +301,8 @@
                         <div id="karmic-ai-text" style="color:rgba(186,181,156,0.9);font-size:14px;line-height:1.75;"></div>
                         <!-- Inline Chat Alanı -->
                         <div id="karmic-chat-wrap" style="margin-top:16px;display:none;">
+                            <!-- Suggestion Chips -->
+                            <div id="karmic-suggestions" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;"></div>
                             <div id="karmic-chat-messages" style="display:flex;flex-direction:column;gap:10px;margin-bottom:12px;"></div>
                             <div style="display:flex;gap:8px;">
                                 <input id="karmic-chat-input" type="text" placeholder="Karmik borcun hakkında sor..." data-i18n-placeholder="breakdown1.karmic_chat_placeholder"
@@ -1296,11 +1298,48 @@ Examples: "Burada daha kritik bir pattern var ama yüzey analizde çıkmaz" or "
 
 CRITICAL: ${_aiLangChat}` }];
 
+            // Suggestion chips
+            renderSuggestions([
+                _t('karmic.sug_character', 'Karakterimi nasıl etkiliyor?'),
+                _t('karmic.sug_money', 'Para tuzağım ne?'),
+                _t('karmic.sug_relationship', 'İlişkide en büyük hatam?'),
+                _t('karmic.sug_career', 'Hangi işlere girmeliyim?'),
+                _t('karmic.sug_risk', 'En büyük riskim ne?')
+            ]);
+
             // Chat input listeners
             var sendBtn = document.getElementById('karmic-chat-send');
             var input = document.getElementById('karmic-chat-input');
             if (sendBtn) sendBtn.addEventListener('click', sendChatMessage);
             if (input) input.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendChatMessage(); });
+        }
+
+        function renderSuggestions(items) {
+            var wrap = document.getElementById('karmic-suggestions');
+            if (!wrap) return;
+            wrap.innerHTML = '';
+            items.forEach(function(label) {
+                var btn = document.createElement('button');
+                btn.textContent = label;
+                btn.style.cssText = 'background:' + _tc('rgba(255,255,255,0.06)','rgba(0,0,0,0.04)') + ';border:1px solid ' + _tc('rgba(192,57,43,0.3)','rgba(192,57,43,0.2)') + ';border-radius:20px;padding:7px 14px;color:' + _tc('rgba(186,181,156,0.85)','#64748b') + ';font-size:12px;cursor:pointer;transition:all 0.2s;font-family:inherit;';
+                btn.addEventListener('mouseenter', function() {
+                    btn.style.background = _tc('rgba(192,57,43,0.15)','rgba(192,57,43,0.1)');
+                    btn.style.borderColor = _tc('rgba(192,57,43,0.5)','rgba(192,57,43,0.4)');
+                    btn.style.color = _tc('#ef4444','#c0392b');
+                });
+                btn.addEventListener('mouseleave', function() {
+                    btn.style.background = _tc('rgba(255,255,255,0.06)','rgba(0,0,0,0.04)');
+                    btn.style.borderColor = _tc('rgba(192,57,43,0.3)','rgba(192,57,43,0.2)');
+                    btn.style.color = _tc('rgba(186,181,156,0.85)','#64748b');
+                });
+                btn.addEventListener('click', function() {
+                    document.getElementById('karmic-chat-input').value = label;
+                    sendChatMessage();
+                    // İlk tıklamada chip'leri gizle, AI cevabından sonra yeni chip'ler gelecek
+                    wrap.style.display = 'none';
+                });
+                wrap.appendChild(btn);
+            });
         }
 
         function addChatMessage(role, text) {
@@ -1363,11 +1402,58 @@ CRITICAL: ${_aiLangChat}` }];
                 if (loadEl) loadEl.remove();
                 addChatMessage('assistant', reply);
                 chatHistory.push({ role: 'assistant', content: reply });
+                // Konuya uygun yeni suggestion chip'leri oluştur
+                updateSuggestionsFromReply(reply, text);
             } catch(e) {
                 var loadEl2 = document.getElementById('karmic-chat-loading');
                 if (loadEl2) loadEl2.remove();
                 addChatMessage('assistant', '⚠ ' + _t('karmic.connection_error', 'Bağlantı hatası') + '.');
             }
+        }
+
+        function updateSuggestionsFromReply(reply, userMsg) {
+            var wrap = document.getElementById('karmic-suggestions');
+            if (!wrap) return;
+            // Cevaptaki konuya göre ilgili takip soruları
+            var lower = (reply + ' ' + userMsg).toLowerCase();
+            var suggestions = [];
+            if (lower.match(/karakter|kişilik|personality|character|ego|disiplin/)) {
+                suggestions = [
+                    _t('karmic.sug_career2', 'Bu karakter iş hayatımı nasıl etkiler?'),
+                    _t('karmic.sug_sabotage', 'Kendimi nasıl sabote ediyorum?'),
+                    _t('karmic.sug_strength', 'Güçlü yanlarım neler?')
+                ];
+            } else if (lower.match(/para|money|kazanç|gelir|maaş|iş|career|kariyer|meslek|sektör|business/)) {
+                suggestions = [
+                    _t('karmic.sug_money_trap', 'Para kaybetme kalıbım ne?'),
+                    _t('karmic.sug_business_model', 'Bana uygun iş modeli?'),
+                    _t('karmic.sug_timing', 'Ne zaman büyük adım atmalıyım?'),
+                    _t('karmic.sug_relationship2', 'İlişkilerime etkisi ne?')
+                ];
+            } else if (lower.match(/ilişki|relationship|aşk|love|partner|evlilik|sevgili|çift/)) {
+                suggestions = [
+                    _t('karmic.sug_attract', 'Kimi çekiyorum ve neden?'),
+                    _t('karmic.sug_conflict', 'İlişkideki ana çatışma kalıbım?'),
+                    _t('karmic.sug_ideal', 'İdeal partner profilim?'),
+                    _t('karmic.sug_money2', 'Para tarafını analiz et')
+                ];
+            } else if (lower.match(/sağlık|health|stres|enerji|psikoloji/)) {
+                suggestions = [
+                    _t('karmic.sug_stress', 'Stres kalıbımı açıkla'),
+                    _t('karmic.sug_energy', 'Enerji yönetimim nasıl olmalı?'),
+                    _t('karmic.sug_action', 'Günlük aksiyonlar öner')
+                ];
+            } else {
+                // Genel takip soruları
+                suggestions = [
+                    _t('karmic.sug_deeper', 'Daha derine in'),
+                    _t('karmic.sug_money3', 'Para ve kariyer tarafı'),
+                    _t('karmic.sug_love', 'İlişki kalıbım'),
+                    _t('karmic.sug_action2', 'Ne yapmalıyım?')
+                ];
+            }
+            renderSuggestions(suggestions);
+            wrap.style.display = 'flex';
         }
 
     })();
