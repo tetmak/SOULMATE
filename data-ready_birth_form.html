@@ -545,27 +545,40 @@
                                         updated_at: new Date().toISOString()
                                     });
                                     console.log('[Form] Supabase profiles güncellendi');
-                                    // 7 günlük ücretsiz trial premium oluştur
+                                    // 7 günlük ücretsiz trial premium oluştur (mevcut subscription yoksa)
                                     try {
-                                        var trialExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-                                        await window.supabaseClient.from('subscriptions').upsert({
-                                            user_id: sess.user.id,
-                                            plan: 'trial',
-                                            status: 'active',
-                                            amount: 0,
-                                            currency: 'TRY',
-                                            starts_at: new Date().toISOString(),
-                                            expires_at: trialExpires,
-                                            payment_provider: 'trial',
-                                            payment_ref: 'welcome_trial_7d'
-                                        }, { onConflict: 'user_id' });
-                                        localStorage.setItem('numerael_premium', JSON.stringify({
-                                            active: true, plan: 'trial',
-                                            expires_at: trialExpires,
-                                            source: 'trial', cached_at: new Date().toISOString()
-                                        }));
-                                        console.log('[Form] 7-day trial premium activated');
-                                    } catch(trialErr) { console.warn('[Form] Trial oluşturma hatası:', trialErr); }
+                                        var existingSub = await window.supabaseClient.from('subscriptions')
+                                            .select('id, status, expires_at')
+                                            .eq('user_id', sess.user.id)
+                                            .maybeSingle();
+                                        var hasActiveSub = existingSub.data && (existingSub.data.status === 'active' || new Date(existingSub.data.expires_at) > new Date());
+                                        if (!hasActiveSub) {
+                                            var trialExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+                                            var trialRes = await window.supabaseClient.from('subscriptions').upsert({
+                                                user_id: sess.user.id,
+                                                plan: 'trial',
+                                                status: 'active',
+                                                amount: 0,
+                                                currency: 'TRY',
+                                                starts_at: new Date().toISOString(),
+                                                expires_at: trialExpires,
+                                                payment_provider: 'trial',
+                                                payment_ref: 'welcome_trial_7d'
+                                            }, { onConflict: 'user_id' });
+                                            if (trialRes.error) {
+                                                console.error('[Form] Trial INSERT hatası:', trialRes.error);
+                                            } else {
+                                                localStorage.setItem('numerael_premium', JSON.stringify({
+                                                    active: true, plan: 'trial',
+                                                    expires_at: trialExpires,
+                                                    source: 'trial', cached_at: new Date().toISOString()
+                                                }));
+                                                console.log('[Form] 7-day trial premium activated, expires:', trialExpires);
+                                            }
+                                        } else {
+                                            console.log('[Form] Mevcut subscription var, trial atlandı');
+                                        }
+                                    } catch(trialErr) { console.error('[Form] Trial oluşturma hatası:', trialErr); }
                                 }
                             } catch(supErr) { console.warn('[Form] Supabase kayıt hatası:', supErr); }
                         } else {
