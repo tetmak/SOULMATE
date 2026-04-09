@@ -25,7 +25,7 @@
                     colors: {
                         "primary": "#cfa117",
                         "background-light": "#f8f7f6",
-                        "background-dark": "#0a0a0a",
+                        "background-dark": "#181611",
                     },
                     fontFamily: {
                         "display": ["Space Grotesk", "sans-serif"]
@@ -45,12 +45,7 @@
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
         .parchment-texture {
-            background-image:
-                radial-gradient(circle at 2px 2px, rgba(207, 161, 23, 0.05) 1px, transparent 0),
-                url("https://lh3.googleusercontent.com/aida-public/AB6AXuDoQZy9HVvAnjH7jiTRvGRM2iclMUDK29JStgLw4Pq-JCabmjlzNp2-mJFSYw6uvD3Ol-O4lCldbhZ2OCDCKo8UC-N5YHeTGZBWr1tKAr0fyayNLDcgy6xVCjoBmIxrtVXvjJ_csZTUQ5yyVv55STSo4gHu8XOs7t9C5fz5wcT-2EQVpp-irGbaDOb2wWjuCT3JB4mwiIhxl-cBpJs8oE_tyZA2UVgXKnbgYhYzPkOOd39cUdXJlPJ52pdZbx5OhPe7YtVGiqJcKZlG");
-            background-size: 24px 24px, cover;
-            background-position: center, center;
-            background-blend-mode: overlay;
+            background: #0a0a0a;
         }
         .scroll-mask {
             mask-image: linear-gradient(to bottom, transparent, black 5%, black 95%, transparent);
@@ -75,7 +70,7 @@
         }
         /* Date bar */
         html.dark .archive-date-bar {
-            background-color: #0a0a0a;
+            background-color: #181611;
         }
         html:not(.dark) .archive-date-bar {
             background-color: #2a261c;
@@ -115,7 +110,7 @@
     <main class="max-w-md mx-auto relative">
         <div class="px-4 pt-6">
             <div class="archive-hero bg-cover bg-center flex flex-col justify-end overflow-hidden rounded-t-3xl min-h-[200px] border-x border-t border-primary/20 relative"
-                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDoQZy9HVvAnjH7jiTRvGRM2iclMUDK29JStgLw4Pq-JCabmjlzNp2-mJFSYw6uvD3Ol-O4lCldbhZ2OCDCKo8UC-N5YHeTGZBWr1tKAr0fyayNLDcgy6xVCjoBmIxrtVXvjJ_csZTUQ5yyVv55STSo4gHu8XOs7t9C5fz5wcT-2EQVpp-irGbaDOb2wWjuCT3JB4mwiIhxl-cBpJs8oE_tyZA2UVgXKnbgYhYzPkOOd39cUdXJlPJ52pdZbx5OhPe7YtVGiqJcKZlG"); background-color: #0a0a0a;'>
+                style='background-color: #0a0a0a;'>
                 <div class="flex p-6 flex-col gap-2">
                     <span class="text-primary text-xs font-bold uppercase tracking-[0.3em]" data-i18n="archive.eternal_record">Eternal Archive
                         Record</span>
@@ -152,7 +147,7 @@
                 <span class="material-symbols-outlined text-primary text-9xl leading-none"
                     style="font-variation-settings: 'FILL' 1">skillet</span>
             </div>
-            <div class="p-8 pt-4 space-y-8 text-[#d1cdbc] leading-relaxed text-lg relative z-10">
+            <div class="p-8 pt-4 space-y-8 text-white/90 leading-relaxed text-lg relative z-10">
                 <div class="flex justify-center py-4">
                     <span class="material-symbols-outlined text-primary opacity-40 text-4xl">auto_awesome</span>
                 </div>
@@ -454,8 +449,6 @@
     <script src="js/decision-timing-engine.js"></script>
     <script src="js/numerology-ai.js"></script>
 <script src="js/notification-engine.js"></script>
-<script src="js/lottie.min.js"></script>
-<script src="js/mascot.js"></script>
 <script src="js/bottom-nav.js"></script>
 </body>
 
