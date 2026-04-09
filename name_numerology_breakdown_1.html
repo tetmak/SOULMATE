@@ -1325,18 +1325,36 @@ CRITICAL: ${_aiLangChat}` }];
             // Markdown-lite rendering for assistant
             if (!isUser) {
                 var sectionColor = _tc('#f2cc0d','#b8860b');
-                bubble.innerHTML = text
+                // [NEXT] bölümünü ayır — tıklanabilir buton yapacağız
+                var nextText = '';
+                var bodyText = text.replace(/\[NEXT\]\s*\n?([\s\S]*?)(?=\[|$)/i, function(match, content) {
+                    nextText = content.trim().replace(/\n.*/g, '').trim(); // İlk satırı al
+                    return ''; // Mesajdan kaldır
+                });
+                bubble.innerHTML = bodyText
                     .replace(/\[RESULT\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:8px 0 4px;text-transform:uppercase;">⚡ RESULT</div>')
                     .replace(/\[SUMMARY\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">📋 SUMMARY</div>')
                     .replace(/\[ANALYSIS\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">🔍 ANALYSIS</div>')
                     .replace(/\[REAL LIFE\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">🌍 REAL LIFE</div>')
-                    .replace(/\[NEXT\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">➡ NEXT</div>')
                     .replace(/\*\*(.*?)\*\*/g, '<strong style="color:' + sectionColor + ';">$1</strong>')
                     .replace(/\n\n/g, '</p><p style="margin-top:8px;">')
                     .replace(/\n\* /g, '<br>✦ ')
                     .replace(/\n- /g, '<br>✦ ')
                     .replace(/\n(\d+)\. /g, '<br>$1. ')
                     .replace(/\n/g, '<br>');
+                // [NEXT] tıklanabilir devam butonu
+                if (nextText) {
+                    var nextBtn = document.createElement('button');
+                    nextBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:6px;">arrow_forward</span>' + nextText;
+                    nextBtn.style.cssText = 'display:flex;align-items:center;width:100%;margin-top:12px;padding:12px 16px;background:linear-gradient(135deg,' + _tc('rgba(192,57,43,0.15)','rgba(192,57,43,0.08)') + ',' + _tc('rgba(127,19,19,0.2)','rgba(127,19,19,0.1)') + ');border:1px solid ' + _tc('rgba(192,57,43,0.3)','rgba(192,57,43,0.2)') + ';border-radius:12px;color:' + _tc('#ef4444','#c0392b') + ';font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;text-align:left;line-height:1.4;transition:all 0.2s;';
+                    nextBtn.addEventListener('click', function() {
+                        nextBtn.style.opacity = '0.5';
+                        nextBtn.style.pointerEvents = 'none';
+                        document.getElementById('karmic-chat-input').value = nextText;
+                        sendChatMessage();
+                    });
+                    bubble.appendChild(nextBtn);
+                }
             } else {
                 bubble.textContent = text;
             }
