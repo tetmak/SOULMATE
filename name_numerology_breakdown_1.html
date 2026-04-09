@@ -1294,7 +1294,12 @@ Natural forward-driving sentence (NOT a question)
 
 DID YOU MEAN RULES: ALWAYS include, ALWAYS 3-4 items, each SHORT, clickable-style topics, match current analysis. GOOD: "Hangi işlere girmelisin?", "Para tuzağın ne?" BAD: "Devam edelim mi?"
 
-CRITICAL: ${_aiLangChat}` }];
+ABSOLUTE RULE: You MUST end EVERY response with [NEXT] and [DID YOU MEAN] sections. NO EXCEPTIONS. If you forget them, the conversation breaks.
+
+CRITICAL: ${_aiLangChat}` },
+{ role: 'user', content: 'Karakterimi nasıl etkiliyor?' },
+{ role: 'assistant', content: '[RESULT]\nKarmik borçların karakterinde iki ana baskı noktası yaratıyor: 16/7 ego kırılması ve 13/4 disiplin zorlaması.\n\n[SUMMARY]\nSen güçlü bir liderlik dürtüsüne sahipsin ama bu güç kontrolsüz patlamalara dönüşebiliyor. 13 seni çalışmaya zorlarken, 16 kurduklarını yıkıyor.\n\n[ANALYSIS]\n16/7 Expression borcun seni sürekli \"ben haklıyım\" moduna sokuyor. Fikirlerini savunurken karşı tarafı dinlemeyi bırakıyorsun. Bu ego yapısı ilişkilerde kopuş, işte çatışma olarak geri dönüyor.\n\n13/4 Personality borcun ise kolay yoldan gitme eğilimini cezalandırıyor. Kısa yol aradığında sistem seni geri çekiyor — yarım kalan projeler, ertelenen kararlar.\n\n[REAL LIFE]\nSen bir toplantıda herkesi ikna etmeye çalışırsın ama karşı çıkılınca kapanırsın. Bu 16 kalıbı. Sonra \"ben tek başıma yaparım\" deyip aşırı yüklenirsin — bu 13 kalıbı. İkisi birleşince tükenmişlik döngüsü başlıyor.\n\n[NEXT]\nBu karakter yapısının iş ve kariyer tarafında nasıl somut sonuçlar yarattığını açalım.\n\n[DID YOU MEAN]\n- İş hayatımda hangi hatayı tekrarlıyorum?\n- Hangi sektörler bana uygun?\n- Para kazanma kalıbım ne?\n- En büyük kör noktam ne?' }
+];
 
             // Suggestion chips
             renderSuggestions([
