@@ -1213,7 +1213,8 @@
                 : 'none';
             var karmicThemeInfo = karmicTheme ? ('\n- Karmic theme (from birth day): ' + (DEBT_THEMES[karmicTheme]||karmicTheme) + ' — thematic lesson, NOT a classic debt') : '';
 
-            chatHistory = [{ role: 'system', content: `You are the SOULNUM karmic analysis engine. ${_aiLangChat} Be direct, confident, insightful.
+            chatHistory = [{ role: 'system', content: `You are the SOULNUM core system. ${_aiLangChat}
+Your role: numerology engine, life pattern analyst, conversation flow driver, retention system.
 
 Person:
 - Name: ${name}
@@ -1221,66 +1222,49 @@ Person:
 - Life Path: ${lp}
 - Karmic debts: ${debtListStr}${karmicThemeInfo}
 
-TONE:
-- Direct, confident, slightly confronting when needed
-- Write like someone explaining a life pattern, NOT a generic chatbot
-- No mystical language, no astrology, no motivational fluff
+NUMEROLOGY SYSTEM (STRICT — DO NOT CHANGE):
+Karmic debt numbers: 13, 14, 16, 19. Detection from 4 sources: Life Path (3-component sum), Expression (all letters), Soul Urge (vowels), Personality (consonants). Multiple debts allowed. Karmic theme: only if birth day is 13/14/16/19 AND no real debt. IF ANY REAL DEBT → DO NOT mention theme. NEVER treat birthday 19 as debt alone.
 
-DEPTH:
-- Every response must include explanation + real-life interpretation + cause-effect logic
-- Minimum 2-4 paragraphs or structured sections
-- Never give shallow, one-line answers
+DEPTH: Each response MUST include explanation + cause-effect + real-life interpretation. Minimum 2-4 paragraphs.
 
-FLOW — 7-STEP ANALYSIS (guide user through these):
-1. Karmic structure (main debt analysis)
-2. Character pattern (how debt shapes personality)
-3. Career / work style
-4. Money behavior
-5. Relationship patterns
-6. Risks & self-sabotage
-7. Action guidance
+FLOW ENGINE (guide user step-by-step):
+1. Karma structure → 2. Character pattern → 3. Career & work → 4. Money behavior → 5. Relationships → 6. Risks & self-sabotage → 7. Action strategy
+NEVER stop after one answer. ALWAYS move forward. DO NOT ask permission.
 
-After each answer, naturally transition to the next topic. Use transitions like:
-- "Bu yapı en çok ... etkiler"
-- "Asıl kırılma noktası ..."
-- "Şimdi bunu ... üzerinden açalım"
-NEVER ask "Devam edelim mi?" — just lead forward.
+TRANSITIONS: "Bu yapı en çok ... etkiler", "Asıl kırılma noktası ...", "Şimdi bunu ... tarafında açalım"
+NEVER: "devam edelim mi", "istersen söyle"
 
-TOPIC FORMATS:
-If money/work → Core problem, Work cycle, Money loss areas, Right earning path, Suitable business models, Golden rule
-If relationships → Attraction pattern, Conflict source, Ideal partner profile, Warning signs, Growth path
-If health → Stress pattern, Vulnerable areas, Energy management, Daily practice
+ADAPTIVE: Detect user type (direct/explorer/emotional/business). Adapt tone. Track interest, shift flow accordingly. Override default order based on user intent.
 
-ADAPTIVE INTELLIGENCE:
-Before responding, detect user type from their language, intent and tone:
-1. DIRECT/LOGICAL (short questions, result-focused) → sharp, structured, minimal fluff
-2. EXPLORER (curious, open-ended) → deeper explanation, layered insights, pattern connections
-3. EMOTIONAL (love, feelings, people) → human, relational interpretation
-4. BUSINESS (work, success, money) → practical, strategic, no fluff
+PSYCHOLOGICAL HOOK: Reveal 60-70%. Create curiosity: "Bu pattern aslında para tarafında daha büyük sorun yaratıyor..."
+GAMIFICATION (subtle): "Bu çoğu kişinin fark etmediği bir katman", "Burada kritik bir nokta var"
+REPETITION: Never repeat. Always add new layer.
 
-Adapt tone and depth to detected type. Track what user cares about most and bias future responses toward that.
+CRITICAL OUTPUT FORMAT (NO JSON):
+You MUST ALWAYS use this exact structure:
 
-ADAPTIVE FLOW: Override default 7-step order based on user intent. If user focuses on money → jump to money. If relationships → prioritize that.
+[RESULT]
+Clear main result
 
-REPETITION CONTROL: Never repeat same explanation. If similar topic returns → go deeper, add new angle.
+[SUMMARY]
+2-3 lines short summary
 
-DEPTH ADJUSTMENT: If user keeps engaging → increase depth. If short answers → compress but keep insight.
+[ANALYSIS]
+Deep explanation (core logic)
 
-PSYCHOLOGICAL HOOK: Each response must create curiosity for next step. Reveal partially, then pull deeper. Do NOT dump everything at once.
-Example: "Bu kalıp aslında iş kararlarında çok daha tehlikeli..."
+[REAL LIFE]
+How this appears in real life
 
-SMART TRANSITIONS adapt to user type:
-Business user → "Bu karar modelin para tarafında ciddi risk yaratır"
-Emotional user → "Bu yüzden ilişkilerde aynı döngüyü yaşıyorsun"
+[NEXT]
+Natural forward-driving sentence (NOT a question)
 
-You are not answering questions. You are pulling the user into a progressively deeper self-analysis journey that adapts to them.
+[DID YOU MEAN]
+- short suggestion 1
+- short suggestion 2
+- short suggestion 3
+- short suggestion 4
 
-GAMIFICATION LEVELS (reference naturally, do NOT sound like a game UI):
-Level 1: Basic Insight → Level 2: Hidden Patterns → Level 3: Karma Deep → Level 4: Relationship Mapping → Level 5: Money Analysis → Level 6: Life Strategy
-Reference levels naturally in text: "Bu aslında 3. seviyede ortaya çıkan bir pattern" or "Bu seviyeye çoğu kişi gelmez"
-
-PARTIAL REVEAL: Do NOT reveal everything at once. Show 60-70% of the insight, tease the deeper layer.
-Examples: "Burada daha kritik bir pattern var ama yüzey analizde çıkmaz" or "Asıl tehlikeli olan bu değil — bir sonraki katmanda göreceğiz"
+DID YOU MEAN RULES: ALWAYS include, ALWAYS 3-4 items, each SHORT, clickable-style topics, match current analysis. GOOD: "Hangi işlere girmelisin?", "Para tuzağın ne?" BAD: "Devam edelim mi?"
 
 CRITICAL: ${_aiLangChat}` }];
 
@@ -1340,8 +1324,14 @@ CRITICAL: ${_aiLangChat}` }];
                     : 'background:' + _tc('rgba(255,255,255,0.05)','rgba(0,0,0,0.04)') + ';color:' + _tc('rgba(186,181,156,0.9)','#475569') + ';border:1px solid ' + _tc('rgba(255,255,255,0.08)','rgba(0,0,0,0.08)') + ';');
             // Markdown-lite rendering for assistant
             if (!isUser) {
+                var sectionColor = _tc('#f2cc0d','#b8860b');
                 bubble.innerHTML = text
-                    .replace(/\*\*(.*?)\*\*/g, '<strong style="color:#f2cc0d;">$1</strong>')
+                    .replace(/\[RESULT\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:8px 0 4px;text-transform:uppercase;">⚡ RESULT</div>')
+                    .replace(/\[SUMMARY\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">📋 SUMMARY</div>')
+                    .replace(/\[ANALYSIS\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">🔍 ANALYSIS</div>')
+                    .replace(/\[REAL LIFE\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">🌍 REAL LIFE</div>')
+                    .replace(/\[NEXT\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">➡ NEXT</div>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong style="color:' + sectionColor + ';">$1</strong>')
                     .replace(/\n\n/g, '</p><p style="margin-top:8px;">')
                     .replace(/\n\* /g, '<br>✦ ')
                     .replace(/\n- /g, '<br>✦ ')
@@ -1386,10 +1376,11 @@ CRITICAL: ${_aiLangChat}` }];
                 var reply = d.choices && d.choices[0] ? d.choices[0].message.content.trim() : _t('karmic.no_response', 'Could not get a response.');
                 var loadEl = document.getElementById('karmic-chat-loading');
                 if (loadEl) loadEl.remove();
-                addChatMessage('assistant', reply);
+                // [DID YOU MEAN] bölümünü ayır ve chip'lere dönüştür
+                var parsed = parseDYM(reply);
+                addChatMessage('assistant', parsed.text);
                 chatHistory.push({ role: 'assistant', content: reply });
-                // Konuya uygun yeni suggestion chip'leri oluştur
-                updateSuggestionsFromReply(reply, text);
+                updateSuggestionsFromReply(parsed.suggestions);
             } catch(e) {
                 var loadEl2 = document.getElementById('karmic-chat-loading');
                 if (loadEl2) loadEl2.remove();
@@ -1397,49 +1388,40 @@ CRITICAL: ${_aiLangChat}` }];
             }
         }
 
-        function updateSuggestionsFromReply(reply, userMsg) {
+        // AI cevabından [DID YOU MEAN] bölümünü ayır
+        function parseDYM(text) {
+            var dymMatch = text.match(/\[DID YOU MEAN\]\s*\n([\s\S]*?)$/i);
+            if (!dymMatch) {
+                // Alternatif: [DID YOU MEAN] olmadan - ile biten satırları kontrol et
+                dymMatch = text.match(/\[DID YOU MEAN\]([\s\S]*?)$/i);
+            }
+            if (dymMatch) {
+                var cleanText = text.substring(0, dymMatch.index).trim();
+                var items = dymMatch[1].split('\n')
+                    .map(function(l) { return l.replace(/^[\s\-\*•]+/, '').trim(); })
+                    .filter(function(l) { return l.length > 0 && l.length < 60; });
+                return { text: cleanText, suggestions: items };
+            }
+            // [SECTION] tag'lerini de güzel render et
+            return { text: text, suggestions: [] };
+        }
+
+        function updateSuggestionsFromReply(items) {
             var wrap = document.getElementById('karmic-suggestions');
             if (!wrap) return;
-            // Cevaptaki konuya göre ilgili takip soruları
-            var lower = (reply + ' ' + userMsg).toLowerCase();
-            var suggestions = [];
-            if (lower.match(/karakter|kişilik|personality|character|ego|disiplin/)) {
-                suggestions = [
-                    _t('karmic.sug_career2', 'Bu karakter iş hayatımı nasıl etkiler?'),
-                    _t('karmic.sug_sabotage', 'Kendimi nasıl sabote ediyorum?'),
-                    _t('karmic.sug_strength', 'Güçlü yanlarım neler?')
-                ];
-            } else if (lower.match(/para|money|kazanç|gelir|maaş|iş|career|kariyer|meslek|sektör|business/)) {
-                suggestions = [
-                    _t('karmic.sug_money_trap', 'Para kaybetme kalıbım ne?'),
-                    _t('karmic.sug_business_model', 'Bana uygun iş modeli?'),
-                    _t('karmic.sug_timing', 'Ne zaman büyük adım atmalıyım?'),
-                    _t('karmic.sug_relationship2', 'İlişkilerime etkisi ne?')
-                ];
-            } else if (lower.match(/ilişki|relationship|aşk|love|partner|evlilik|sevgili|çift/)) {
-                suggestions = [
-                    _t('karmic.sug_attract', 'Kimi çekiyorum ve neden?'),
-                    _t('karmic.sug_conflict', 'İlişkideki ana çatışma kalıbım?'),
-                    _t('karmic.sug_ideal', 'İdeal partner profilim?'),
-                    _t('karmic.sug_money2', 'Para tarafını analiz et')
-                ];
-            } else if (lower.match(/sağlık|health|stres|enerji|psikoloji/)) {
-                suggestions = [
-                    _t('karmic.sug_stress', 'Stres kalıbımı açıkla'),
-                    _t('karmic.sug_energy', 'Enerji yönetimim nasıl olmalı?'),
-                    _t('karmic.sug_action', 'Günlük aksiyonlar öner')
-                ];
+            if (items.length > 0) {
+                renderSuggestions(items);
+                wrap.style.display = 'flex';
             } else {
-                // Genel takip soruları
-                suggestions = [
+                // AI suggestion üretmediyse fallback
+                renderSuggestions([
                     _t('karmic.sug_deeper', 'Daha derine in'),
                     _t('karmic.sug_money3', 'Para ve kariyer tarafı'),
                     _t('karmic.sug_love', 'İlişki kalıbım'),
                     _t('karmic.sug_action2', 'Ne yapmalıyım?')
-                ];
+                ]);
+                wrap.style.display = 'flex';
             }
-            renderSuggestions(suggestions);
-            wrap.style.display = 'flex';
         }
 
     })();
