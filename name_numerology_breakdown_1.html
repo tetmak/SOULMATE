@@ -1345,7 +1345,7 @@ CRITICAL: ${_aiLangChat}` },
             });
         }
 
-        function addChatMessage(role, text) {
+        function addChatMessage(role, text, nextText) {
             var msgEl = document.getElementById('karmic-chat-messages');
             var isUser = role === 'user';
             var div = document.createElement('div');
@@ -1355,27 +1355,21 @@ CRITICAL: ${_aiLangChat}` },
                 (isUser
                     ? 'background:linear-gradient(135deg,#7f1313,#c0392b);color:white;'
                     : 'background:' + _tc('rgba(255,255,255,0.05)','rgba(0,0,0,0.04)') + ';color:' + _tc('rgba(186,181,156,0.9)','#475569') + ';border:1px solid ' + _tc('rgba(255,255,255,0.08)','rgba(0,0,0,0.08)') + ';');
-            // Markdown-lite rendering for assistant
             if (!isUser) {
                 var sectionColor = _tc('#f2cc0d','#b8860b');
-                // [NEXT] bölümünü ayır — tıklanabilir buton yapacağız
-                var nextText = '';
-                var bodyText = text.replace(/\[NEXT\]\s*\n?([\s\S]*?)(?=\[|$)/i, function(match, content) {
-                    nextText = content.trim().replace(/\n.*/g, '').trim(); // İlk satırı al
-                    return ''; // Mesajdan kaldır
-                });
-                bubble.innerHTML = bodyText
+                bubble.innerHTML = text
                     .replace(/\[RESULT\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:8px 0 4px;text-transform:uppercase;">⚡ RESULT</div>')
                     .replace(/\[SUMMARY\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">📋 SUMMARY</div>')
                     .replace(/\[ANALYSIS\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">🔍 ANALYSIS</div>')
                     .replace(/\[REAL LIFE\]/gi, '<div style="color:' + sectionColor + ';font-weight:800;font-size:12px;letter-spacing:0.08em;margin:12px 0 4px;text-transform:uppercase;">🌍 REAL LIFE</div>')
+                    .replace(/\[NEXT\]/gi, '') // Zaten parse edildi, kaldır
                     .replace(/\*\*(.*?)\*\*/g, '<strong style="color:' + sectionColor + ';">$1</strong>')
                     .replace(/\n\n/g, '</p><p style="margin-top:8px;">')
                     .replace(/\n\* /g, '<br>✦ ')
                     .replace(/\n- /g, '<br>✦ ')
                     .replace(/\n(\d+)\. /g, '<br>$1. ')
                     .replace(/\n/g, '<br>');
-                // [NEXT] tıklanabilir devam butonu
+                // Devam butonu — HER ZAMAN göster (AI üretsin veya üretmesin)
                 if (nextText) {
                     var nextBtn = document.createElement('button');
                     nextBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle;margin-right:6px;">arrow_forward</span>' + nextText;
@@ -1427,9 +1421,9 @@ CRITICAL: ${_aiLangChat}` },
                 var reply = d.choices && d.choices[0] ? d.choices[0].message.content.trim() : _t('karmic.no_response', 'Could not get a response.');
                 var loadEl = document.getElementById('karmic-chat-loading');
                 if (loadEl) loadEl.remove();
-                // [DID YOU MEAN] bölümünü ayır ve chip'lere dönüştür
-                var parsed = parseDYM(reply);
-                addChatMessage('assistant', parsed.text);
+                // Cevabı parse et — [NEXT] buton, [DID YOU MEAN] chip, fallback dahil
+                var parsed = parseAIResponse(reply);
+                addChatMessage('assistant', parsed.text, parsed.nextText);
                 chatHistory.push({ role: 'assistant', content: reply });
                 updateSuggestionsFromReply(parsed.suggestions);
             } catch(e) {
@@ -1439,40 +1433,71 @@ CRITICAL: ${_aiLangChat}` },
             }
         }
 
-        // AI cevabından [DID YOU MEAN] bölümünü ayır
-        function parseDYM(text) {
-            var dymMatch = text.match(/\[DID YOU MEAN\]\s*\n([\s\S]*?)$/i);
-            if (!dymMatch) {
-                // Alternatif: [DID YOU MEAN] olmadan - ile biten satırları kontrol et
-                dymMatch = text.match(/\[DID YOU MEAN\]([\s\S]*?)$/i);
-            }
+        // AI cevabını parse et — [NEXT], [DID YOU MEAN] ayır + fallback üret
+        function parseAIResponse(text) {
+            var result = { text: text, nextText: '', suggestions: [] };
+
+            // 1. [DID YOU MEAN] bölümünü ayır
+            var dymMatch = text.match(/\[DID YOU MEAN\][\s\n]*([\s\S]*?)$/i);
             if (dymMatch) {
-                var cleanText = text.substring(0, dymMatch.index).trim();
-                var items = dymMatch[1].split('\n')
+                result.text = text.substring(0, dymMatch.index).trim();
+                result.suggestions = dymMatch[1].split('\n')
                     .map(function(l) { return l.replace(/^[\s\-\*•]+/, '').trim(); })
-                    .filter(function(l) { return l.length > 0 && l.length < 60; });
-                return { text: cleanText, suggestions: items };
+                    .filter(function(l) { return l.length > 2 && l.length < 60; });
             }
-            // [SECTION] tag'lerini de güzel render et
-            return { text: text, suggestions: [] };
+
+            // 2. [NEXT] bölümünü ayır
+            var nextMatch = result.text.match(/\[NEXT\][\s\n]*(.*?)(?:\n\n|\[|$)/i);
+            if (nextMatch) {
+                result.nextText = nextMatch[1].trim();
+                result.text = result.text.replace(/\[NEXT\][\s\n]*.*?(?:\n\n|\[|$)/i, '').trim();
+            }
+
+            // 3. FALLBACK — AI tag kullanmadıysa son cümleyi [NEXT] olarak al
+            if (!result.nextText) {
+                var sentences = result.text.replace(/\n/g, ' ').split(/[.!?]+/).filter(function(s) { return s.trim().length > 10; });
+                if (sentences.length > 1) {
+                    var lastSentence = sentences[sentences.length - 1].trim();
+                    // Son cümle devam yönlendirmesiyse al
+                    if (lastSentence.match(/açalım|bakalım|inceleyelim|etkile|tarafın|analiz|görelim|konuşalım/i)) {
+                        result.nextText = lastSentence;
+                    }
+                }
+                // Hala yoksa otomatik oluştur
+                if (!result.nextText) {
+                    var lower = result.text.toLowerCase();
+                    if (lower.match(/karakter|kişilik|ego|disiplin/)) result.nextText = _t('karmic.auto_next_career', 'Bu karakter yapısının iş ve kariyer tarafındaki etkisini açalım');
+                    else if (lower.match(/kariyer|iş|çalış|meslek/)) result.nextText = _t('karmic.auto_next_money', 'Şimdi para ve kazanç tarafına bakalım');
+                    else if (lower.match(/para|kazanç|gelir|maaş/)) result.nextText = _t('karmic.auto_next_rel', 'Bu yapının ilişki kalıplarına etkisini inceleyelim');
+                    else if (lower.match(/ilişki|aşk|partner|sevgili/)) result.nextText = _t('karmic.auto_next_risk', 'En büyük risk ve sabotaj kalıplarını görelim');
+                    else result.nextText = _t('karmic.auto_next_default', 'Bir sonraki katmanı açalım');
+                }
+            }
+
+            // 4. FALLBACK — AI suggestion üretmediyse keyword-based üret
+            if (result.suggestions.length === 0) {
+                var lower2 = result.text.toLowerCase();
+                if (lower2.match(/karakter|kişilik|ego/)) {
+                    result.suggestions = ['İş hayatımda nasıl etkiliyor?', 'Kendimi nasıl sabote ediyorum?', 'Para tuzağım ne?'];
+                } else if (lower2.match(/kariyer|iş|çalış|meslek/)) {
+                    result.suggestions = ['Para kaybetme kalıbım ne?', 'Bana uygun iş modeli?', 'İlişkilerime etkisi ne?'];
+                } else if (lower2.match(/para|kazanç|gelir/)) {
+                    result.suggestions = ['İlişki kalıbım ne?', 'En büyük riskim?', 'Ne yapmalıyım?'];
+                } else if (lower2.match(/ilişki|aşk|partner/)) {
+                    result.suggestions = ['Risk ve sabotaj kalıbım?', 'Aksiyon planı?', 'Para tarafını analiz et'];
+                } else {
+                    result.suggestions = ['Daha derine in', 'Para ve kariyer tarafı', 'İlişki kalıbım', 'Ne yapmalıyım?'];
+                }
+            }
+
+            return result;
         }
 
         function updateSuggestionsFromReply(items) {
             var wrap = document.getElementById('karmic-suggestions');
             if (!wrap) return;
-            if (items.length > 0) {
-                renderSuggestions(items);
-                wrap.style.display = 'flex';
-            } else {
-                // AI suggestion üretmediyse fallback
-                renderSuggestions([
-                    _t('karmic.sug_deeper', 'Daha derine in'),
-                    _t('karmic.sug_money3', 'Para ve kariyer tarafı'),
-                    _t('karmic.sug_love', 'İlişki kalıbım'),
-                    _t('karmic.sug_action2', 'Ne yapmalıyım?')
-                ]);
-                wrap.style.display = 'flex';
-            }
+            renderSuggestions(items);
+            wrap.style.display = 'flex';
         }
 
     })();
