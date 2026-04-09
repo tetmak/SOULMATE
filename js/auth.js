@@ -99,6 +99,20 @@ var auth = {
         return res.data;
     },
 
+    async signInWithPhone(phone) {
+        if (!window.supabaseClient) throw new Error('Supabase not available');
+        var res = await window.supabaseClient.auth.signInWithOtp({ phone: phone });
+        if (res.error) throw res.error;
+        return res.data;
+    },
+
+    async verifyOTP(phone, token) {
+        if (!window.supabaseClient) throw new Error('Supabase not available');
+        var res = await window.supabaseClient.auth.verifyOtp({ phone: phone, token: token, type: 'sms' });
+        if (res.error) throw res.error;
+        return res.data;
+    },
+
     async signOut() {
         if (!window.supabaseClient) return;
         var res = await window.supabaseClient.auth.signOut();

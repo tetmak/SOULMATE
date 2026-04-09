@@ -140,12 +140,82 @@
                 <span class="text-white dark:text-black font-semibold text-sm" data-i18n="signup.btn_apple">Sign in with Apple</span>
             </button>
 
+            <!-- Phone Sign In Button -->
+            <button id="btn-phone"
+                class="w-full h-14 rounded-xl border border-slate-300 dark:border-[#544e3b] bg-white dark:bg-[#27241b]/60 hover:bg-slate-50 dark:hover:bg-[#27241b]/80 transition-all flex items-center justify-center gap-3 cursor-pointer">
+                <span class="material-symbols-outlined text-slate-600 dark:text-white text-xl">phone_android</span>
+                <span class="text-slate-700 dark:text-white font-semibold text-sm" data-i18n="signup.btn_phone">Sign in with Phone</span>
+            </button>
+
             <p class="text-center text-slate-500 dark:text-[#bab29c] text-sm mt-2">
                 <span id="toggle-msg" data-i18n="signup.toggle_login">Already have an account?</span>
                 <a id="btn-toggle"
                     class="text-primary font-semibold hover:underline decoration-primary/50 underline-offset-4 cursor-pointer" data-i18n="signup.link_login">Login</a>
             </p>
         </div>
+        <!-- Phone OTP Modal -->
+        <div id="phone-modal" style="display:none;" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm px-6">
+            <div class="w-full max-w-sm bg-white dark:bg-[#1a1711] rounded-2xl p-6 shadow-2xl">
+                <!-- Step 1: Phone Number -->
+                <div id="phone-step1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-primary/15 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-primary">phone_android</span>
+                        </div>
+                        <div>
+                            <h3 class="text-slate-900 dark:text-white font-bold text-base" data-i18n="signup.phone_title">Phone Login</h3>
+                            <p class="text-slate-500 dark:text-[#bab29c] text-xs" data-i18n="signup.phone_subtitle">We'll send a verification code</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mb-4">
+                        <select id="phone-country" class="w-24 h-12 rounded-xl border border-slate-300 dark:border-[#544e3b] bg-white dark:bg-[#27241b]/60 text-slate-900 dark:text-white text-sm px-2 outline-none">
+                            <option value="+90">🇹🇷 +90</option>
+                            <option value="+1">🇺🇸 +1</option>
+                            <option value="+44">🇬🇧 +44</option>
+                            <option value="+49">🇩🇪 +49</option>
+                            <option value="+33">🇫🇷 +33</option>
+                            <option value="+34">🇪🇸 +34</option>
+                            <option value="+7">🇷🇺 +7</option>
+                            <option value="+55">🇧🇷 +55</option>
+                            <option value="+966">🇸🇦 +966</option>
+                            <option value="+971">🇦🇪 +971</option>
+                            <option value="+31">🇳🇱 +31</option>
+                            <option value="+46">🇸🇪 +46</option>
+                        </select>
+                        <input id="phone-number" type="tel" placeholder="5XX XXX XX XX" class="flex-1 h-12 rounded-xl border border-slate-300 dark:border-[#544e3b] bg-white dark:bg-[#27241b]/60 text-slate-900 dark:text-white text-base px-4 outline-none focus:border-primary" />
+                    </div>
+                    <button id="phone-send-btn" class="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-background-dark font-bold text-sm transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-lg">send</span>
+                        <span data-i18n="signup.phone_send_code">Send Code</span>
+                    </button>
+                    <p id="phone-error" class="text-red-500 text-xs mt-2 text-center" style="display:none;"></p>
+                </div>
+                <!-- Step 2: OTP Verification -->
+                <div id="phone-step2" style="display:none;">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-green-500/15 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-green-500">verified</span>
+                        </div>
+                        <div>
+                            <h3 class="text-slate-900 dark:text-white font-bold text-base" data-i18n="signup.otp_title">Enter Code</h3>
+                            <p id="phone-sent-to" class="text-slate-500 dark:text-[#bab29c] text-xs"></p>
+                        </div>
+                    </div>
+                    <input id="otp-code" type="text" inputmode="numeric" maxlength="6" placeholder="• • • • • •" class="w-full h-14 rounded-xl border border-slate-300 dark:border-[#544e3b] bg-white dark:bg-[#27241b]/60 text-slate-900 dark:text-white text-2xl text-center font-bold tracking-[0.5em] px-4 outline-none focus:border-primary mb-4" />
+                    <button id="otp-verify-btn" class="w-full h-12 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-sm transition-all flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-lg">check_circle</span>
+                        <span data-i18n="signup.otp_verify">Verify & Login</span>
+                    </button>
+                    <p id="otp-error" class="text-red-500 text-xs mt-2 text-center" style="display:none;"></p>
+                    <button id="otp-back-btn" class="w-full mt-3 text-slate-500 dark:text-[#bab29c] text-xs hover:underline cursor-pointer bg-transparent border-none" data-i18n="signup.otp_change_number">Change number</button>
+                </div>
+                <!-- Close button -->
+                <button id="phone-close-btn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-white bg-transparent border-none cursor-pointer">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+        </div>
+
         <!-- Abstract Decoration -->
         <div class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20 overflow-hidden -z-10">
             <div class="absolute top-1/4 -right-20 w-64 h-64 bg-primary blur-[120px] rounded-full"></div>
@@ -404,10 +474,121 @@
                     var _t = window.i18n ? window.i18n.t : function(k,f){return f||k;};
                     try {
                         await window.auth.signInWithApple();
-                        // Supabase will redirect to Apple consent screen
                     } catch (e) {
                         alert(_t('common.error', 'Hata') + ': ' + e.message);
                     }
+                });
+            }
+
+            // Phone Sign In
+            var btnPhone = document.getElementById('btn-phone');
+            var phoneModal = document.getElementById('phone-modal');
+            var phoneStep1 = document.getElementById('phone-step1');
+            var phoneStep2 = document.getElementById('phone-step2');
+            var phoneSendBtn = document.getElementById('phone-send-btn');
+            var otpVerifyBtn = document.getElementById('otp-verify-btn');
+            var phoneCloseBtn = document.getElementById('phone-close-btn');
+            var otpBackBtn = document.getElementById('otp-back-btn');
+            var _phoneNumber = '';
+
+            if (btnPhone) {
+                btnPhone.addEventListener('click', function() {
+                    phoneModal.style.display = 'flex';
+                    phoneStep1.style.display = 'block';
+                    phoneStep2.style.display = 'none';
+                    document.getElementById('phone-number').value = '';
+                    document.getElementById('phone-error').style.display = 'none';
+                });
+            }
+            if (phoneCloseBtn) {
+                phoneCloseBtn.addEventListener('click', function() { phoneModal.style.display = 'none'; });
+            }
+            if (otpBackBtn) {
+                otpBackBtn.addEventListener('click', function() {
+                    phoneStep1.style.display = 'block';
+                    phoneStep2.style.display = 'none';
+                });
+            }
+            // Modal dışına tıklayınca kapat
+            if (phoneModal) {
+                phoneModal.addEventListener('click', function(e) { if (e.target === phoneModal) phoneModal.style.display = 'none'; });
+            }
+
+            // Step 1: Send OTP
+            if (phoneSendBtn) {
+                phoneSendBtn.addEventListener('click', async function() {
+                    var _t = window.i18n ? window.i18n.t : function(k,f){return f||k;};
+                    var countryCode = document.getElementById('phone-country').value;
+                    var rawNum = document.getElementById('phone-number').value.replace(/\D/g,'');
+                    if (!rawNum || rawNum.length < 7) {
+                        var errEl = document.getElementById('phone-error');
+                        errEl.textContent = _t('signup.phone_invalid', 'Please enter a valid phone number');
+                        errEl.style.display = 'block';
+                        return;
+                    }
+                    // Başında 0 varsa kaldır
+                    if (rawNum.startsWith('0')) rawNum = rawNum.substring(1);
+                    _phoneNumber = countryCode + rawNum;
+                    phoneSendBtn.disabled = true;
+                    phoneSendBtn.innerHTML = '<span class="material-symbols-outlined text-lg" style="animation:spin 1s linear infinite;">progress_activity</span>';
+                    try {
+                        await window.auth.signInWithPhone(_phoneNumber);
+                        phoneStep1.style.display = 'none';
+                        phoneStep2.style.display = 'block';
+                        document.getElementById('phone-sent-to').textContent = _t('signup.otp_sent_to', 'Code sent to') + ' ' + _phoneNumber;
+                        document.getElementById('otp-code').value = '';
+                        document.getElementById('otp-code').focus();
+                    } catch(e) {
+                        var errEl2 = document.getElementById('phone-error');
+                        errEl2.textContent = e.message || _t('signup.phone_send_error', 'Could not send code');
+                        errEl2.style.display = 'block';
+                    }
+                    phoneSendBtn.disabled = false;
+                    phoneSendBtn.innerHTML = '<span class="material-symbols-outlined text-lg">send</span><span>' + _t('signup.phone_send_code', 'Send Code') + '</span>';
+                });
+            }
+
+            // Step 2: Verify OTP
+            if (otpVerifyBtn) {
+                otpVerifyBtn.addEventListener('click', async function() {
+                    var _t = window.i18n ? window.i18n.t : function(k,f){return f||k;};
+                    var code = document.getElementById('otp-code').value.replace(/\D/g,'');
+                    if (!code || code.length !== 6) {
+                        var errEl = document.getElementById('otp-error');
+                        errEl.textContent = _t('signup.otp_invalid', 'Please enter the 6-digit code');
+                        errEl.style.display = 'block';
+                        return;
+                    }
+                    otpVerifyBtn.disabled = true;
+                    otpVerifyBtn.innerHTML = '<span class="material-symbols-outlined text-lg" style="animation:spin 1s linear infinite;">progress_activity</span>';
+                    try {
+                        await window.auth.verifyOTP(_phoneNumber, code);
+                        phoneModal.style.display = 'none';
+                        // Profil kontrol — yoksa birth form'a yönlendir
+                        var sess = await window.auth.getSession();
+                        var hasProfile = false;
+                        if (sess && sess.user && window.supabaseClient) {
+                            try {
+                                var { data: prof } = await window.supabaseClient.from('profiles').select('full_name, birth_date').eq('id', sess.user.id).single();
+                                if (prof && prof.full_name && prof.birth_date) hasProfile = true;
+                            } catch(e2) {}
+                        }
+                        window.location.href = hasProfile ? 'mystic_numerology_home_1.html' : 'data-ready_birth_form.html';
+                    } catch(e) {
+                        var errEl2 = document.getElementById('otp-error');
+                        errEl2.textContent = e.message || _t('signup.otp_wrong', 'Invalid code. Please try again.');
+                        errEl2.style.display = 'block';
+                    }
+                    otpVerifyBtn.disabled = false;
+                    otpVerifyBtn.innerHTML = '<span class="material-symbols-outlined text-lg">check_circle</span><span>' + _t('signup.otp_verify', 'Verify & Login') + '</span>';
+                });
+            }
+
+            // OTP input'ta 6 hane girilince otomatik verify
+            var otpInput = document.getElementById('otp-code');
+            if (otpInput) {
+                otpInput.addEventListener('input', function() {
+                    if (otpInput.value.replace(/\D/g,'').length === 6 && otpVerifyBtn) otpVerifyBtn.click();
                 });
             }
         })();
